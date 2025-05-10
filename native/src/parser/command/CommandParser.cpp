@@ -6,6 +6,7 @@
 #include <iostream>
 #include <Lexer.h>
 #include "ExecuteBlockParser.h"
+#include "ExecuteBlock.h"
 
 CommandParser::CommandParser(const std::vector<Token>& tokens) : tokens(tokens) {}
 
@@ -37,7 +38,7 @@ bool CommandParser::check(TokenType type) const {
 }
 
 std::shared_ptr<Command> CommandParser::parseCommand() {
-    if (!match(TokenType::IDENTIFIER) || tokens[current - 1].value != "command") {
+    if (!match(TokenType::COMMAND)) {
         throw std::runtime_error("Expected 'command' keyword");
     }
     
@@ -59,6 +60,12 @@ std::shared_ptr<Command> CommandParser::parseCommand() {
     }
     
     return command;
+}
+
+void CommandParser::skipWhitespace() {
+    while (!isAtEnd() && peek().type == TokenType::WHITESPACE) {
+        advance();
+    }
 }
 
 void CommandParser::parseCommandProperties(std::shared_ptr<Command> command) {
@@ -108,32 +115,91 @@ void CommandParser::parseArgumentsBlock(std::shared_ptr<Command> command) {
         throw std::runtime_error("Expected '{' after 'arguments'");
     }
     
-    std::string blockContent = parseBlockContent();
-    command->addBlock("arguments", blockContent);
-    
-    // Parse individual arguments
-    std::istringstream iss(blockContent);
-    std::string line;
-    
-    while (std::getline(iss, line)) {
-        // Skip empty lines and comments
-        if (line.empty() || line.find("//") == 0) continue;
+    while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)) {
+        // Skip whitespace tokens
+        while (!isAtEnd() && check(TokenType::WHITESPACE)) {
+            advance();
+        }
         
-        // Create tokens for the line
-        Lexer lexer(line);
-        std::vector<Token> lineTokens = lexer.tokenize();
+        if (check(TokenType::RIGHT_BRACE)) {
+            break;
+        }
         
-        if (!lineTokens.empty() && lineTokens[0].type == TokenType::IDENTIFIER) {
-            try {
-                VariableParser varParser(lineTokens);
-                auto variable = varParser.parse();
-                command->addArgument(variable);
-            } catch (const std::exception& e) {
-                std::cerr << "Error parsing argument: " << e.what() << std::endl;
+        // We expect to find an identifier (argument name)
+        if (!check(TokenType::IDENTIFIER)) {
+            // If we don't find an identifier, advance and continue
+            advance();
+            continue;
+        }
+        
+        // Save the starting position for error recovery
+        size_t startPos = current;
+        int currentLine = !isAtEnd() ? tokens[current].line : 0;  // Declare outside try block
+        
+        try {
+            // Collect tokens for a single argument until we find:
+            // 1. Another identifier at the start of a new line (next argument)
+            // 2. The closing brace
+            std::vector<Token> argTokens;
+            int currentLine = tokens[current].line;
+            
+            // Add the first identifier
+            argTokens.push_back(advance());
+            
+            // Collect the rest of the argument tokens
+            while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)) {
+                Token nextToken = peek();
+                
+                // Check if we've reached the next argument
+                if (nextToken.type == TokenType::IDENTIFIER && 
+                    nextToken.line > currentLine &&
+                    nextToken.column <= 40) {  // Rough heuristic for new line + small indentation
+                    break;
+                }
+                
+                argTokens.push_back(advance());
+                
+                // Safety check - if we've advanced too far without finding a type, break
+                if (argTokens.size() > 40) {  // Arbitrary limit
+                    throw std::runtime_error("Argument definition too long");
+                }
+            }
+            
+            // Add end-of-file token
+            argTokens.push_back(Token(TokenType::END_OF_FILE, "", 0, 0));
+            
+            // Parse the argument
+            VariableParser varParser(argTokens);
+            auto variable = varParser.parse();
+            command->addArgument(variable);
+            
+        } catch (const std::exception& e) {
+            std::cerr << "Error parsing argument at position " << startPos << ": " << e.what() << std::endl;
+            
+            // Ensure we always make progress - advance at least one token
+            if (current == startPos) {
+                advance();  // This prevents infinite loop
+            }
+            
+            // Skip to the next identifier or closing brace
+            while (!isAtEnd() && 
+                   !check(TokenType::RIGHT_BRACE) && 
+                   !(check(TokenType::IDENTIFIER) && tokens[current].line > currentLine)) {
+                advance();
             }
         }
+        
+        // Final safety check - if we haven't made any progress, force advance
+        if (current == startPos) {
+            advance();
+        }
+    }
+    
+    if (!match(TokenType::RIGHT_BRACE)) {
+        throw std::runtime_error("Expected '}' to close arguments block");
     }
 }
+
 
 void CommandParser::parseExecuteBlock(std::shared_ptr<Command> command) {
     if (!match(TokenType::LEFT_BRACE)) {
@@ -275,7 +341,7 @@ std::vector<std::shared_ptr<Command>> CommandParser::parse() {
             
             // Skip to the next "command" keyword
             while (!isAtEnd()) {
-                if (check(TokenType::IDENTIFIER) && peek().value == "command") {
+                if (check(TokenType::COMMAND)) {
                     break;
                 }
                 advance();

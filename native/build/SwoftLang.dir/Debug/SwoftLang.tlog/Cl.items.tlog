@@ -1,0 +1,10 @@
+E:\VSC\SwoftLang\native\src\SwoftLangParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\SwoftLangParser.obj
+E:\VSC\SwoftLang\native\src\jni\SwoftLangJNIBridge.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\SwoftLangJNIBridge.obj
+E:\VSC\SwoftLang\native\src\jni\implementations\net_swofty_nativebridge_NativeBridge.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\net_swofty_nativebridge_NativeBridge.obj
+E:\VSC\SwoftLang\native\src\jni\implementations\net_swofty_nativebridge_NativeParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\net_swofty_nativebridge_NativeParser.obj
+E:\VSC\SwoftLang\native\src\parser\Lexer.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\Lexer.obj
+E:\VSC\SwoftLang\native\src\parser\TypeParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\TypeParser.obj
+E:\VSC\SwoftLang\native\src\parser\VariableParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\VariableParser.obj
+E:\VSC\SwoftLang\native\src\parser\command\CommandParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\CommandParser.obj
+E:\VSC\SwoftLang\native\src\parser\command\ExecuteBlockParser.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\ExecuteBlockParser.obj
+E:\VSC\SwoftLang\native\src\types\DataType.cpp;E:\VSC\SwoftLang\native\build\SwoftLang.dir\Debug\DataType.obj

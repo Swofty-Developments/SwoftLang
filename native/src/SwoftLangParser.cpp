@@ -3,15 +3,38 @@
 #include "Lexer.h"
 #include "CommandParser.h"
 #include <sstream>
+#include <iostream>
 
 std::vector<std::shared_ptr<Command>> SwoftLangParser::parseCommands(const std::string& source) {
-    // Tokenize the source
     Lexer lexer(source);
     std::vector<Token> tokens = lexer.tokenize();
     
-    // Parse the tokens into commands
     CommandParser parser(tokens);
-    return parser.parse();
+    std::vector<std::shared_ptr<Command>> commands;
+    
+    try {
+        // Parse all commands in the file
+        while (!parser.isAtEnd()) {
+            // Skip any remaining whitespace or empty tokens
+            parser.skipWhitespace();
+            
+            if (parser.isAtEnd()) {
+                break;
+            }
+            
+            // Parse a single command
+            auto command = parser.parseCommand();
+            if (command) {
+                commands.push_back(command);
+            }
+        }
+    } catch (const std::exception& e) {
+        // Log the error and continue
+        std::cerr << "Error parsing command: " << e.what() << std::endl;
+        // Don't throw - return what we've parsed so far
+    }
+    
+    return commands;
 }
 
 std::string SwoftLangParser::commandsToJson(const std::vector<std::shared_ptr<Command>>& commands) {
@@ -49,18 +72,18 @@ std::string SwoftLangParser::commandsToJson(const std::vector<std::shared_ptr<Co
         }
         json << "    ],\n";
         
-        // Blocks
+        // Blocks - fix the error here
         json << "    \"blocks\": {\n";
         const auto& blocks = cmd->getBlocks();
         bool first = true;
-        for (const auto& [blockType, block] : blocks) {
+        for (const auto& [blockType, blockContent] : blocks) {  // blockContent is already a string
             if (!first) {
                 json << ",\n";
             }
             first = false;
             
             // Escape special characters in the code
-            std::string escapedCode = block->getCode();
+            std::string escapedCode = blockContent;  // No need for ->getCode()
             size_t pos = 0;
             while ((pos = escapedCode.find("\"", pos)) != std::string::npos) {
                 escapedCode.replace(pos, 1, "\\\"");
@@ -76,7 +99,7 @@ std::string SwoftLangParser::commandsToJson(const std::vector<std::shared_ptr<Co
             json << "      \"";
             json << blockType;
             json << "\": \"";
-            json << escapedCode; 
+            json << escapedCode;
             json << "\"";
         }
         json << "\n    }\n";

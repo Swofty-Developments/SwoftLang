@@ -1,9 +1,26 @@
 #pragma once
 #include <jni.h>
-#include "Command.h"
 #include <vector>
 #include <memory>
-#include <ast/ExecuteBlock.h>
+
+// Include all AST files individually
+#include "ASTNode.h"
+#include "Expression.h"
+#include "Statement.h"
+#include "SendCommand.h"
+#include "TeleportCommand.h"
+#include "HaltCommand.h"
+#include "IfStatement.h"
+#include "BlockStatement.h"
+#include "VariableAssignment.h"
+#include "StringLiteral.h"
+#include "VariableReference.h"
+#include "BinaryExpression.h"
+#include "TypeLiteral.h"
+#include "ExecuteBlock.h"
+#include "Command.h"
+#include "Variable.h"
+#include "DataType.h"
 
 class SwoftLangJNIBridge {
 public:
@@ -22,10 +39,10 @@ private:
     static jobject createJavaVariable(JNIEnv* env, const std::shared_ptr<Variable>& variable);
     static jobject createJavaDataType(JNIEnv* env, const std::shared_ptr<DataType>& dataType);
     
-    // New methods for AST conversion
+    // New methods for AST conversion - fix the function signatures
     static jobject createJavaExecuteBlock(JNIEnv* env, const std::shared_ptr<ExecuteBlock>& block);
     static jobject createJavaStatement(JNIEnv* env, const std::shared_ptr<Statement>& statement);
-    static jobject createJavaExpression(JNIEnv* env, const std::shared_ptr<Expression>& expression);
+    static jobject createJavaExpression(JNIEnv* env, const std::shared_ptr<Expression>& expression); 
     
     // Statement creation methods
     static jobject createJavaSendCommand(JNIEnv* env, const std::shared_ptr<SendCommand>& command);
@@ -39,5 +56,5 @@ private:
     static jobject createJavaStringLiteral(JNIEnv* env, const std::shared_ptr<StringLiteral>& literal);
     static jobject createJavaVariableReference(JNIEnv* env, const std::shared_ptr<VariableReference>& reference);
     static jobject createJavaBinaryExpression(JNIEnv* env, const std::shared_ptr<BinaryExpression>& expression);
-    static jobject createJavaTypeLiteral(JNIEnv* env, const std::shared_ptr<TypeLiteral>& literal);
+    static jobject createJavaTypeLiteral(JNIEnv* env, const std::shared_ptr<TypeLiteral>& literal);  // Add missing declaration
 };

@@ -1,6 +1,6 @@
 package net.swofty.nativebridge.representation;
 
-import net.swofty.execution.Statement;
+import net.swofty.nativebridge.execution.Statement;
 
 import java.util.ArrayList;
 import java.util.List;

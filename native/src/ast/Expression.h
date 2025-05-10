@@ -1,10 +1,7 @@
 #pragma once
+#include "ASTNode.h"
 
-#include <ASTNode.h>
-#include <string>
-
+// Base class for expressions
 class Expression : public ASTNode {
-    public:
-        virtual std::string toJson() const = 0;
-    };
-    
+public:
+};

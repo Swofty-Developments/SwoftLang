@@ -1,5 +1,20 @@
 #include "Lexer.h"
 #include <cctype>
+#include <unordered_map>
+
+// Keywords map
+static const std::unordered_map<std::string, TokenType> KEYWORDS = {
+    {"command", TokenType::COMMAND},
+    {"if", TokenType::IF},
+    {"else", TokenType::ELSE},
+    {"halt", TokenType::HALT},
+    {"send", TokenType::SEND},
+    {"teleport", TokenType::TELEPORT},
+    {"to", TokenType::TO},
+    {"is", TokenType::IS},
+    {"not", TokenType::NOT},
+    {"either", TokenType::EITHER} 
+};
 
 Lexer::Lexer(const std::string& source) : source(source) {}
 
@@ -47,11 +62,9 @@ Token Lexer::scanToken() {
     
     char c = peek();
     
-    // Handle newlines as tokens
-    if (c == '\n') {
-        int startColumn = column;
-        advance();
-        return Token(TokenType::WHITESPACE, "\n", line - 1, startColumn);
+    // Check for comments FIRST
+    if (c == '/' && position + 1 < source.length() && source[position + 1] == '/') {
+        return scanComment();
     }
     
     if (std::isalpha(c) || c == '_') {
@@ -64,11 +77,6 @@ Token Lexer::scanToken() {
     
     switch (c) {
         case '"': return scanString();
-        case '/': 
-            if (position + 1 < source.length() && source[position + 1] == '/') {
-                return scanComment();
-            }
-            break;
         case ':': 
             advance();
             return Token(TokenType::COLON, ":", line, column - 1);
@@ -93,6 +101,9 @@ Token Lexer::scanToken() {
         case ',': 
             advance();
             return Token(TokenType::COMMA, ",", line, column - 1);
+        case '.':
+            advance();
+            return Token(TokenType::DOT, ".", line, column - 1);
     }
     
     // Handle unexpected character
@@ -106,6 +117,12 @@ Token Lexer::scanIdentifier() {
     
     while (!isAtEnd() && (std::isalnum(peek()) || peek() == '_')) {
         value += advance();
+    }
+    
+    // Check if it's a keyword
+    auto it = KEYWORDS.find(value);
+    if (it != KEYWORDS.end()) {
+        return Token(it->second, value, line, startColumn);
     }
     
     return Token(TokenType::IDENTIFIER, value, line, startColumn);
@@ -171,11 +188,12 @@ Token Lexer::scanComment() {
     advance();
     advance();
     
-    // Read until end of line
+    // Read until end of line OR end of file
     while (!isAtEnd() && peek() != '\n') {
         value += advance();
     }
     
+    // Don't advance past the newline - let skipWhitespace handle it
     return Token(TokenType::COMMENT, value, line, startColumn);
 }
 
@@ -184,8 +202,10 @@ std::vector<Token> Lexer::tokenize() {
     
     while (!isAtEnd()) {
         Token token = scanToken();
-        // Don't filter out WHITESPACE tokens - they contain important spacing info
-        tokens.push_back(token);
+        // Skip comments AND whitespace tokens
+        if (token.type != TokenType::WHITESPACE && token.type != TokenType::COMMENT) {
+            tokens.push_back(token);
+        }
     }
     
     tokens.push_back(Token(TokenType::END_OF_FILE, "", line, column));

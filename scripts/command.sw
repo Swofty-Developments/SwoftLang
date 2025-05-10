@@ -23,6 +23,6 @@ command "teleport" {
         }
 
         teleport args.player to args.target
-        send "<lime>Teleported ${player} to {args.target}"
+        send "<lime>Teleported ${sender} to ${args.target}"
     }
 }

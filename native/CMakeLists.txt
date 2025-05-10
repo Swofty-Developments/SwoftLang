@@ -64,6 +64,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/jni
     ${CMAKE_SOURCE_DIR}/src/jni/implementations
     ${CMAKE_SOURCE_DIR}/src/types
+    ${CMAKE_SOURCE_DIR}/src/ast
+    ${CMAKE_SOURCE_DIR}/src/ast/expressions
+    ${CMAKE_SOURCE_DIR}/src/ast/statements
 )
 
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")

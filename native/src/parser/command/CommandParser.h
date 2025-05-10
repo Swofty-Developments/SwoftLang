@@ -12,11 +12,9 @@ private:
     
     Token peek() const;
     Token advance();
-    bool isAtEnd() const;
     bool match(TokenType type);
     bool check(TokenType type) const;
     
-    std::shared_ptr<Command> parseCommand();
     void parseCommandProperties(std::shared_ptr<Command> command);
     void parseArgumentsBlock(std::shared_ptr<Command> command);
     void parseExecuteBlock(std::shared_ptr<Command> command);
@@ -25,4 +23,7 @@ private:
 public:
     CommandParser(const std::vector<Token>& tokens);
     std::vector<std::shared_ptr<Command>> parse();
+    bool isAtEnd() const;
+    void skipWhitespace();
+    std::shared_ptr<Command> parseCommand();
 };

@@ -87,7 +87,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -108,10 +108,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";SwoftLang_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -134,7 +134,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -156,10 +156,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";SwoftLang_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -182,7 +182,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -204,10 +204,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";SwoftLang_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -230,7 +230,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -251,10 +251,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";SwoftLang_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-21\include;C:\Program Files\Java\jdk-21\include\win32;E:\VSC\SwoftLang\native\include;E:\VSC\SwoftLang\native\src;E:\VSC\SwoftLang\native\src\parser;E:\VSC\SwoftLang\native\src\parser\command;E:\VSC\SwoftLang\native\src\jni;E:\VSC\SwoftLang\native\src\jni\implementations;E:\VSC\SwoftLang\native\src\types;E:\VSC\SwoftLang\native\src\ast;E:\VSC\SwoftLang\native\src\ast\expressions;E:\VSC\SwoftLang\native\src\ast\statements;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -341,6 +341,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\TypeParser.cpp" />
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\VariableParser.cpp" />
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\CommandParser.cpp" />
+    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\ExecuteBlockParser.cpp" />
     <ClCompile Include="E:\VSC\SwoftLang\native\src\types\DataType.cpp" />
   </ItemGroup>
   <ItemGroup />

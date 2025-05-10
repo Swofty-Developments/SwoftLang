@@ -1,20 +1,25 @@
 package net.swofty.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import net.swofty.execution.BlockStatement;
-import net.swofty.execution.Expression;
-import net.swofty.execution.Statement;
-import net.swofty.execution.commands.*;
-import net.swofty.execution.expressions.BinaryExpression;
-import net.swofty.execution.expressions.StringLiteral;
-import net.swofty.execution.expressions.TypeLiteral;
-import net.swofty.execution.expressions.VariableReference;
+import net.minestom.server.item.ItemStack;
+import net.swofty.nativebridge.execution.BlockStatement;
+import net.swofty.nativebridge.execution.Expression;
+import net.swofty.nativebridge.execution.Statement;
+import net.swofty.nativebridge.execution.commands.HaltCommand;
+import net.swofty.nativebridge.execution.commands.IfStatement;
+import net.swofty.nativebridge.execution.commands.SendCommand;
+import net.swofty.nativebridge.execution.commands.TeleportCommand;
+import net.swofty.nativebridge.execution.commands.VariableAssignment;
+import net.swofty.nativebridge.execution.expressions.BinaryExpression;
+import net.swofty.nativebridge.execution.expressions.StringLiteral;
+import net.swofty.nativebridge.execution.expressions.TypeLiteral;
+import net.swofty.nativebridge.execution.expressions.VariableReference;
 import net.swofty.nativebridge.representation.ExecuteBlock;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Executes pre-parsed SwoftLang AST directly
@@ -71,7 +76,7 @@ public class ASTExecutor {
         // Format color codes
         message = formatColorCodes(message);
 
-        if (target == null || target.equals("sender")) {
+        if (target == null || target == sender || target.equals("sender")) {
             sender.sendMessage(message);
         } else if (target.equals("all")) {
             // Send to all players
@@ -241,7 +246,7 @@ public class ASTExecutor {
                 if (closeIndex != -1) {
                     String varName = text.substring(i + 2, closeIndex);
                     Object value = getVariable(varName);
-                    result.append(value != null ? value.toString() : "");
+                    result.append(value != null ? getDisplayString(value) : "");
                     i = closeIndex + 1;
                     continue;
                 }
@@ -251,6 +256,22 @@ public class ASTExecutor {
         }
 
         return result.toString();
+    }
+
+    private String getDisplayString(Object value) {
+        if (value instanceof Player) {
+            return ((Player) value).getUsername();
+        } else if (value instanceof Pos) {
+            Pos loc = (Pos) value;
+            return String.format("x=%.1f, y=%.1f, z=%.1f", loc.x(), loc.y(), loc.z());
+        } else if (value instanceof ItemStack) {
+            ItemStack item = (ItemStack) value;
+            return item.material().name() + " x" + item.amount();
+        } else if (value != null) {
+            return value.toString();
+        } else {
+            return "null";
+        }
     }
 
     /**

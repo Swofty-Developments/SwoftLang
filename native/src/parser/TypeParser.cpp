@@ -32,20 +32,27 @@ bool TypeParser::check(TokenType type) const {
 }
 
 std::shared_ptr<DataType> TypeParser::parseType() {
+    Token token = peek();
+    
+    // Handle 'either' keyword specially
+    if (match(TokenType::EITHER)) {
+        return parseEitherType();
+    }
+    
+    // Handle regular identifiers
     if (match(TokenType::IDENTIFIER)) {
         Token typeName = tokens[current - 1];
         
-        if (typeName.value == "either") {
-            return parseEitherType();
-        }
-        
+        // Accept any identifier as a type (including "Player", "Location", etc.)
         return DataType::fromString(typeName.value);
     }
     
-    throw std::runtime_error("Expected type name");
+    throw std::runtime_error("Expected type name, found token type " + 
+                            std::to_string((int)token.type) + " value '" + token.value + "'");
 }
 
 std::shared_ptr<DataType> TypeParser::parseEitherType() {
+    // Already matching EITHER token, now expect '<'
     if (!match(TokenType::LEFT_ANGLE)) {
         throw std::runtime_error("Expected '<' after 'either'");
     }

@@ -1,0 +1,10 @@
+^E:\VSC\SWOFTLANG\NATIVE\BUILD\CMAKEFILES\2BEDA7C7F3325E6B419A2AD7DDF5A1BF\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SE:/VSC/SwoftLang/native -BE:/VSC/SwoftLang/native/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file E:/VSC/SwoftLang/native/build/SwoftLang.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -38,4 +38,12 @@ public class MinestomSenderAdapter implements CommandSender {
     public @NotNull TagHandler tagHandler() {
         return TagHandler.newHandler();
     }
+
+    @Override
+    public String toString() {
+        if (getMinestomSender() instanceof Player) {
+            return ((Player) getMinestomSender()).getUsername();
+        }
+        return "Console";
+    }
 }

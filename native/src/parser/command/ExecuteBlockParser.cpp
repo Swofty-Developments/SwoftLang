@@ -1,5 +1,15 @@
 #include "ExecuteBlockParser.h"
 #include <stdexcept>
+#include <HaltCommand.h>
+#include <iostream>
+#include <IfStatement.h>
+#include <SendCommand.h>
+#include <VariableAssignment.h>
+#include <TypeLiteral.h>
+#include <StringLiteral.h>
+#include <VariableReference.h>
+#include <BlockStatement.h>
+#include <TeleportCommand.h>
 
 ExecuteBlockParser::ExecuteBlockParser(const std::vector<Token>& tokens) : tokens(tokens) {}
 
@@ -72,19 +82,19 @@ std::shared_ptr<ExecuteBlock> ExecuteBlockParser::parseExecuteBlock() {
 std::shared_ptr<Statement> ExecuteBlockParser::parseStatement() {
     skipWhitespace();
     
-    if (match(TokenType::IF, "if")) {
+    if (match(TokenType::IF)) {
         return parseIfStatement();
     }
     
-    if (match(TokenType::SEND, "send")) {
+    if (match(TokenType::SEND)) {
         return parseSendCommand();
     }
     
-    if (match(TokenType::TELEPORT, "teleport")) {
+    if (match(TokenType::TELEPORT)) {
         return parseTeleportCommand();
     }
     
-    if (match(TokenType::HALT, "halt")) {
+    if (match(TokenType::HALT)) {
         skipWhitespace();
         return std::make_shared<HaltCommand>();
     }
@@ -132,10 +142,10 @@ std::shared_ptr<Statement> ExecuteBlockParser::parseIfStatement() {
     std::shared_ptr<Statement> elseStatement = nullptr;
     
     skipWhitespace();
-    if (match(TokenType::ELSE, "else")) {
+    if (match(TokenType::ELSE)) {
         skipWhitespace();
         
-        if (match(TokenType::IF, "if")) {
+        if (match(TokenType::IF)) {
             // else if
             elseStatement = parseIfStatement();
         } else if (match(TokenType::LEFT_BRACE)) {
@@ -157,7 +167,7 @@ std::shared_ptr<Statement> ExecuteBlockParser::parseSendCommand() {
     std::shared_ptr<Expression> target = nullptr;
     
     skipWhitespace();
-    if (match(TokenType::TO, "to")) {
+    if (match(TokenType::TO)) {
         skipWhitespace();
         target = parseExpression();
     }
@@ -225,7 +235,7 @@ std::shared_ptr<Expression> ExecuteBlockParser::parseExpression() {
 std::shared_ptr<Expression> ExecuteBlockParser::parseLogicalOr() {
     auto expr = parseLogicalAnd();
     
-    while (match(TokenType::OR, "||")) {
+    while (match(TokenType::OR)) {
         skipWhitespace();
         auto right = parseLogicalAnd();
         expr = std::make_shared<BinaryExpression>(expr, BinaryExpression::Operator::OR, right);
@@ -237,7 +247,7 @@ std::shared_ptr<Expression> ExecuteBlockParser::parseLogicalOr() {
 std::shared_ptr<Expression> ExecuteBlockParser::parseLogicalAnd() {
     auto expr = parseComparison();
     
-    while (match(TokenType::AND, "&&")) {
+    while (match(TokenType::AND)) {
         skipWhitespace();
         auto right = parseComparison();
         expr = std::make_shared<BinaryExpression>(expr, BinaryExpression::Operator::AND, right);
@@ -252,17 +262,17 @@ std::shared_ptr<Expression> ExecuteBlockParser::parseComparison() {
     while (true) {
         BinaryExpression::Operator op;
         
-        if (match(TokenType::EQUALS, "==")) {
+        if (match(TokenType::EQUALS)) {
             op = BinaryExpression::Operator::EQUALS;
-        } else if (match(TokenType::NOT_EQUALS, "!=")) {
+        } else if (match(TokenType::NOT_EQUALS)) {
             op = BinaryExpression::Operator::NOT_EQUALS;
-        } else if (match(TokenType::LESS_THAN, "<")) {
+        } else if (match(TokenType::LESS_THAN)) {
             op = BinaryExpression::Operator::LESS_THAN;
-        } else if (match(TokenType::GREATER_THAN, ">")) {
+        } else if (match(TokenType::GREATER_THAN)) {
             op = BinaryExpression::Operator::GREATER_THAN;
-        } else if (match(TokenType::LESS_EQUALS, "<=")) {
+        } else if (match(TokenType::LESS_EQUALS)) {
             op = BinaryExpression::Operator::LESS_EQUALS;
-        } else if (match(TokenType::GREATER_EQUALS, ">=")) {
+        } else if (match(TokenType::GREATER_EQUALS)) {
             op = BinaryExpression::Operator::GREATER_EQUALS;
         } else {
             break;
@@ -280,11 +290,11 @@ std::shared_ptr<Expression> ExecuteBlockParser::parseIsExpression() {
     auto expr = parsePrimary();
     
     skipWhitespace();
-    if (match(TokenType::IS, "is")) {
+    if (match(TokenType::IS)) {
         bool isNot = false;
         
         skipWhitespace();
-        if (match(TokenType::NOT, "not")) {
+        if (match(TokenType::NOT)) {
             isNot = true;
             skipWhitespace();
         }
@@ -317,7 +327,7 @@ std::shared_ptr<Expression> ExecuteBlockParser::parsePrimary() {
         std::string identifier = tokens[current - 1].value;
         
         // Check for dot notation (e.g., args.player)
-        if (match(TokenType::DOT, ".")) {
+        if (match(TokenType::DOT)) {
             Token property = consume(TokenType::IDENTIFIER, "Expected property name after '.'");
             identifier += "." + property.value;
         }
@@ -328,7 +338,7 @@ std::shared_ptr<Expression> ExecuteBlockParser::parsePrimary() {
             std::string fullName = varName.value;
             
             // Support dot notation in interpolation
-            while (match(TokenType::DOT, ".")) {
+            while (match(TokenType::DOT)) {
                 Token property = consume(TokenType::IDENTIFIER, "Expected property name after '.'");
                 fullName += "." + property.value;
             }

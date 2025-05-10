@@ -1,3 +1,5 @@
+// Add this to your Variable.h file:
+
 #pragma once
 #include <string>
 #include <memory>
@@ -33,5 +35,14 @@ public:
     
     bool getHasDefault() const {
         return hasDefault;
+    }
+    
+    std::string toJson() const {
+        std::string json = "{\"name\":\"" + name + "\",\"type\":" + type->toString();
+        if (hasDefault) {
+            json += ",\"default\":\"" + defaultValue + "\"";
+        }
+        json += "}";
+        return json;
     }
 };

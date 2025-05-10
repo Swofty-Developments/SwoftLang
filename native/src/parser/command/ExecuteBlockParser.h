@@ -2,7 +2,10 @@
 #include <vector>
 #include <memory>
 #include "Token.h"
-#include "SwoftLangAST.h"
+#include <Statement.h>
+#include <Expression.h>
+#include <ExecuteBlock.h>
+#include <BinaryExpression.h>
 
 class ExecuteBlockParser {
 private:

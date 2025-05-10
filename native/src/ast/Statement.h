@@ -1,7 +1,7 @@
-#include <ASTNode.h>
-#include <string>
+#pragma once
+#include "ASTNode.h"
 
+// Base class for statements
 class Statement : public ASTNode {
-    public:
-        virtual std::string toJson() const = 0;
-    };
+public:
+};

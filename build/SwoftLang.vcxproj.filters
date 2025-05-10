@@ -25,6 +25,9 @@
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\CommandParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\ExecuteBlockParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\types\DataType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
