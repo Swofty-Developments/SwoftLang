@@ -7,6 +7,7 @@ command "hello" {
     }
 }
 
+command "tp",
 command "teleport" {
     permission: "swoftlang.teleport"
     description: "Teleport a player to coordinates or another player"

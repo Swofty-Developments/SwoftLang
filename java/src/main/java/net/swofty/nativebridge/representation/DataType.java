@@ -10,6 +10,11 @@ public class DataType {
     public DataType(BaseType baseType) {
         this.baseType = baseType;
     }
+
+    public DataType(DataType other) {
+        this.baseType = other.baseType;
+        this.subTypes = other.subTypes;
+    }
     
     public void addSubType(DataType subType) {
         this.subTypes.add(subType);

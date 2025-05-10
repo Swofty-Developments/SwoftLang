@@ -49,17 +49,21 @@ std::shared_ptr<Command> CommandParser::parseCommand() {
     std::string commandName = tokens[current - 1].value;
     auto command = std::make_shared<Command>(commandName);
     
-    if (!match(TokenType::LEFT_BRACE)) {
-        throw std::runtime_error("Expected '{' after command name");
+    // Check if this is the start of a command group (next token is comma or left brace)
+    size_t savedPosition = current;
+    
+    if (match(TokenType::LEFT_BRACE)) {
+        // This is a standalone command
+        parseCommandProperties(command);
+        
+        if (!match(TokenType::RIGHT_BRACE)) {
+            throw std::runtime_error("Expected '}' to close command definition");
+        }
+        
+        return command;
+    } else {
+        throw std::runtime_error("Expected ',' or '{' after command name");
     }
-    
-    parseCommandProperties(command);
-    
-    if (!match(TokenType::RIGHT_BRACE)) {
-        throw std::runtime_error("Expected '}' to close command definition");
-    }
-    
-    return command;
 }
 
 void CommandParser::skipWhitespace() {
@@ -200,7 +204,6 @@ void CommandParser::parseArgumentsBlock(std::shared_ptr<Command> command) {
     }
 }
 
-
 void CommandParser::parseExecuteBlock(std::shared_ptr<Command> command) {
     if (!match(TokenType::LEFT_BRACE)) {
         throw std::runtime_error("Expected '{' after 'execute'");
@@ -329,13 +332,122 @@ std::string CommandParser::parseBlockContent() {
     return content;
 }
 
-std::vector<std::shared_ptr<Command>> CommandParser::parse() {
+void CommandParser::skipWhitespaceAndNewlines() {
+    while (!isAtEnd()) {
+        TokenType currentType = peek().type;
+        if (currentType == TokenType::WHITESPACE) {
+            advance();
+        } else {
+            break;
+        }
+    }
+}
+
+std::vector<std::shared_ptr<Command>> CommandParser::parseCommandsWithAliases() {
+    // Parse multiple commands that might share functionality
+    std::vector<std::string> commandNames;
+    
+    // Parse all command declarations before the opening brace
+    while (!isAtEnd()) {
+        // Skip any whitespace and newlines
+        skipWhitespaceAndNewlines();
+        
+        if (!match(TokenType::COMMAND)) {
+            if (commandNames.empty()) {
+                throw std::runtime_error("Expected 'command' keyword");
+            } else {
+                break; // We've finished parsing command names
+            }
+        }
+        
+        // Skip whitespace between "command" and the string literal
+        skipWhitespaceAndNewlines();
+        
+        if (!match(TokenType::STRING_LITERAL)) {
+            throw std::runtime_error("Expected command name as string literal");
+        }
+        
+        std::string commandName = tokens[current - 1].value;
+        commandNames.push_back(commandName);
+        
+        // Skip whitespace after the command name
+        skipWhitespaceAndNewlines();
+        
+        // Check if there's a comma for more aliases
+        if (check(TokenType::COMMA)) {
+            advance(); // consume comma
+            // Skip any whitespace and newlines after comma
+            skipWhitespaceAndNewlines();
+        } else {
+            // No comma, so we expect the opening brace next
+            break;
+        }
+    }
+    
+    if (commandNames.empty()) {
+        throw std::runtime_error("No command names found");
+    }
+    
+    // Skip whitespace before opening brace
+    skipWhitespaceAndNewlines();
+    
+    // Parse the shared command body
+    if (!match(TokenType::LEFT_BRACE)) {
+        throw std::runtime_error("Expected '{' after command name(s)");
+    }
+    
+    // Create a temporary command to parse the properties
+    auto templateCommand = std::make_shared<Command>(commandNames[0]);
+    parseCommandProperties(templateCommand);
+    
+    if (!match(TokenType::RIGHT_BRACE)) {
+        throw std::runtime_error("Expected '}' to close command definition");
+    }
+    
+    // Create all command variants with the same properties
     std::vector<std::shared_ptr<Command>> commands;
+    for (const auto& name : commandNames) {
+        auto command = std::make_shared<Command>(name);
+        
+        // Copy all properties from the template
+        command->setPermission(templateCommand->getPermission());
+        command->setDescription(templateCommand->getDescription());
+        
+        // Copy arguments
+        for (const auto& arg : templateCommand->getArguments()) {
+            command->addArgument(arg);
+        }
+        
+        // Copy execute block
+        if (templateCommand->getExecuteBlock()) {
+            command->setExecuteBlock(templateCommand->getExecuteBlock());
+        }
+        
+        // Copy code blocks (for backward compatibility)
+        for (const auto& block : templateCommand->getBlocks()) {
+            command->addBlock(block.first, block.second);
+        }
+        
+        commands.push_back(command);
+    }
+    
+    return commands;
+}
+
+std::vector<std::shared_ptr<Command>> CommandParser::parse() {
+    std::vector<std::shared_ptr<Command>> allCommands;
     
     while (!isAtEnd()) {
+        skipWhitespace();
+        
+        if (isAtEnd()) {
+            break;
+        }
+        
         try {
-            auto command = parseCommand();
-            commands.push_back(command);
+            // Parse potentially multiple commands with shared functionality
+            auto commands = parseCommandsWithAliases();
+            allCommands.insert(allCommands.end(), commands.begin(), commands.end());
         } catch (const std::exception& e) {
             std::cerr << "Error parsing command: " << e.what() << std::endl;
             
@@ -347,7 +459,10 @@ std::vector<std::shared_ptr<Command>> CommandParser::parse() {
                 advance();
             }
         }
+        
+        // Skip any extra whitespace
+        skipWhitespace();
     }
     
-    return commands;
+    return allCommands;
 }

@@ -5,36 +5,15 @@
 #include <sstream>
 #include <iostream>
 
+
 std::vector<std::shared_ptr<Command>> SwoftLangParser::parseCommands(const std::string& source) {
     Lexer lexer(source);
     std::vector<Token> tokens = lexer.tokenize();
     
     CommandParser parser(tokens);
-    std::vector<std::shared_ptr<Command>> commands;
     
-    try {
-        // Parse all commands in the file
-        while (!parser.isAtEnd()) {
-            // Skip any remaining whitespace or empty tokens
-            parser.skipWhitespace();
-            
-            if (parser.isAtEnd()) {
-                break;
-            }
-            
-            // Parse a single command
-            auto command = parser.parseCommand();
-            if (command) {
-                commands.push_back(command);
-            }
-        }
-    } catch (const std::exception& e) {
-        // Log the error and continue
-        std::cerr << "Error parsing command: " << e.what() << std::endl;
-        // Don't throw - return what we've parsed so far
-    }
-    
-    return commands;
+    // Use the parse() method which handles aliases automatically
+    return parser.parse();
 }
 
 std::string SwoftLangParser::commandsToJson(const std::vector<std::shared_ptr<Command>>& commands) {
