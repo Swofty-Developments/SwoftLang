@@ -13,6 +13,7 @@ private:
     std::string permission;
     std::string description;
     std::vector<std::shared_ptr<Variable>> arguments;
+    std::shared_ptr<ExecuteBlock> executeBlock;
     std::unordered_map<std::string, std::shared_ptr<CodeBlock>> blocks;
 
 public:
@@ -41,6 +42,14 @@ public:
     const std::string& getPermission() const {
         return permission;
     }
+
+    void setExecuteBlock(std::shared_ptr<ExecuteBlock> block) {
+        executeBlock = block;
+    }
+    
+    std::shared_ptr<ExecuteBlock> getExecuteBlock() const {
+        return executeBlock;
+    }
     
     const std::string& getDescription() const {
         return description;
@@ -52,5 +61,33 @@ public:
     
     const std::unordered_map<std::string, std::shared_ptr<CodeBlock>>& getBlocks() const {
         return blocks;
+    }
+
+    std::string toJson() const {
+        std::string json = "{\"name\":\"" + name + "\"";
+        
+        if (!permission.empty()) {
+            json += ",\"permission\":\"" + permission + "\"";
+        }
+        
+        if (!description.empty()) {
+            json += ",\"description\":\"" + description + "\"";
+        }
+        
+        if (!arguments.empty()) {
+            json += ",\"arguments\":[";
+            for (size_t i = 0; i < arguments.size(); i++) {
+                if (i > 0) json += ",";
+                json += arguments[i]->toJson();
+            }
+            json += "]";
+        }
+        
+        if (executeBlock) {
+            json += ",\"executeBlock\":" + executeBlock->toJson();
+        }
+        
+        json += "}";
+        return json;
     }
 };

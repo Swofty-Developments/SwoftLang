@@ -14,10 +14,7 @@ import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.entity.EntityFinder;
-import net.swofty.nativebridge.representation.BaseType;
-import net.swofty.nativebridge.representation.CodeBlock;
-import net.swofty.nativebridge.representation.DataType;
-import net.swofty.nativebridge.representation.Variable;
+import net.swofty.nativebridge.representation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -494,26 +491,21 @@ public class MinestomCommandRegistrar {
     }
 
     /**
-     * Execute the SwoftLang command using our new architecture
+     * Execute the SwoftLang command using the pre-parsed AST
      */
     private void executeSwoftCommand(net.swofty.nativebridge.representation.Command swoftCommand,
                                      net.minestom.server.command.CommandSender minestomSender,
                                      Map<String, Object> argValues) {
         try {
-            // Get the execute block
-            CodeBlock executeBlock = swoftCommand.getBlocks().get("execute");
-
-            if (executeBlock == null) {
-                minestomSender.sendMessage("Command has no execution block!");
-                return;
-            }
+            // Get the execute block (now pre-parsed AST)
+            ExecuteBlock executeBlock = swoftCommand.getExecuteBlock();
 
             // Adapt the Minestom sender to our CommandSender interface
             CommandSender sender = new MinestomSenderAdapter(minestomSender);
 
-            // Create and run the SwoftLang executor using our new architecture
-            SwoftLangExecutor executor = new SwoftLangExecutor(executeBlock, sender, argValues);
-            executor.execute();
+            // Create and run the AST executor
+            ASTExecutor executor = new ASTExecutor(sender, argValues);
+            executor.execute(executeBlock);
 
         } catch (Exception e) {
             minestomSender.sendMessage("Error executing command: " + e.getMessage());

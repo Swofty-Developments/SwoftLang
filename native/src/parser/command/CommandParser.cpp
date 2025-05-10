@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <Lexer.h>
+#include "ExecuteBlockParser.h"
 
 CommandParser::CommandParser(const std::vector<Token>& tokens) : tokens(tokens) {}
 
@@ -139,7 +140,49 @@ void CommandParser::parseExecuteBlock(std::shared_ptr<Command> command) {
         throw std::runtime_error("Expected '{' after 'execute'");
     }
     
-    std::string blockContent = parseBlockContent();
+    // Extract all tokens in the execute block
+    std::vector<Token> blockTokens;
+    int braceCount = 1;
+    
+    while (!isAtEnd() && braceCount > 0) {
+        Token token = peek();
+        
+        if (token.type == TokenType::LEFT_BRACE) {
+            braceCount++;
+        } else if (token.type == TokenType::RIGHT_BRACE) {
+            braceCount--;
+            if (braceCount == 0) {
+                break; // Don't include the closing brace
+            }
+        }
+        
+        blockTokens.push_back(token);
+        advance();
+    }
+    
+    // Consume the closing brace
+    if (!isAtEnd() && peek().type == TokenType::RIGHT_BRACE) {
+        advance();
+    }
+    
+    // Create an execute block parser and parse the statements
+    ExecuteBlockParser executeParser(blockTokens);
+    auto executeBlock = executeParser.parseExecuteBlock();
+    
+    // Set the execute block on the command
+    command->setExecuteBlock(executeBlock);
+    
+    // Also store the raw content for backward compatibility
+    std::string blockContent;
+    for (const auto& token : blockTokens) {
+        if (token.type == TokenType::STRING_LITERAL) {
+            blockContent += "\"" + token.value + "\"";
+        } else {
+            blockContent += token.value;
+        }
+        blockContent += " ";
+    }
+    
     command->addBlock("execute", blockContent);
 }
 

@@ -1,6 +1,7 @@
 package net.swofty.nativebridge;
 
 import net.swofty.nativebridge.representation.Command;
+import net.swofty.nativebridge.representation.ExecuteBlock;
 
 public class NativeParser {
     /**
@@ -16,4 +17,11 @@ public class NativeParser {
      * @return An array of Command objects
      */
     public static native Command[] parseSwoftLangToCommands(String code);
+
+    /**
+     * Parse an execute block and return an ExecuteBlock object.
+     * @param code The execute block code to parse
+     * @return An ExecuteBlock object
+     */
+    public static native ExecuteBlock parseExecuteBlock(String code);
 }
