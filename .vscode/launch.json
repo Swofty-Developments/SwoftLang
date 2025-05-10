@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+  
+      {
+          "type": "java",
+          "name": "Launch SwoftLang",
+          "request": "launch",
+          "mainClass": "net.swofty.Bootstrap",
+          "preLaunchTask": "build-all",
+          
+          "vmArgs": "-Djava.library.path=${workspaceFolder}\\native\\build\\Debug"
+      }
+  ]
+}

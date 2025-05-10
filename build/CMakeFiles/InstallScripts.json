@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/VSC/SwoftLang/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

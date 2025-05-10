@@ -1,0 +1,3 @@
+E:/VSC/SwoftLang/build/CMakeFiles/SwoftLang.dir
+E:/VSC/SwoftLang/build/CMakeFiles/ALL_BUILD.dir
+E:/VSC/SwoftLang/build/CMakeFiles/ZERO_CHECK.dir

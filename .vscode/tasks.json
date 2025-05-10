@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "clean-native",
+          "type": "shell",
+          "command": "if (Test-Path 'native/build') { Remove-Item -Recurse -Force 'native/build' }",
+          "group": "build"
+      },
+      {
+          "label": "clean-java",
+          "type": "shell",
+          "command": "./gradlew.bat clean",
+          "group": "build"
+      },
+      {
+          "label": "generate-headers",
+          "type": "shell",
+          "command": "./gradlew.bat :java:genJniHeaders",
+          "group": "build"
+      },
+      {
+        "label": "configure-native",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["-S", "native", "-B", "native/build"],
+        "group": "build"
+      },
+      {
+        "label": "build-native",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "native/build", "--config", "Debug"],
+        "dependsOn": ["configure-native"],
+        "group": "build"
+      },
+      {
+          "label": "build-java",
+          "type": "shell",
+          "command": "./gradlew.bat :java:build",
+          "group": "build"
+      },
+      {
+        "label": "build-all",
+        "dependsOn": [
+          "clean-native",
+          "clean-java",
+          "generate-headers",
+          "configure-native",
+          "build-native",
+          "build-java"
+        ],
+        "dependsOrder": "sequence",
+        "group": { "kind": "build", "isDefault": true }
+      }
+  ]
+}
