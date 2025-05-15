@@ -22,6 +22,10 @@
 #include "Variable.h"
 #include "DataType.h"
 
+// Event-related includes
+#include "Event.h"
+#include "CancelEventStatement.h"
+
 class SwoftLangJNIBridge {
 public:
     // Parse SwoftLang code and return a JSON representation
@@ -29,6 +33,9 @@ public:
     
     // Parse SwoftLang code and return a Command array
     static jobjectArray parseSwoftLangToCommands(JNIEnv* env, jstring jcode);
+    
+    // Parse SwoftLang code and return an Event array
+    static jobjectArray parseSwoftLangToEvents(JNIEnv* env, jstring jcode);
     
     // Parse execute block and return a Java ExecuteBlock object
     static jobject parseExecuteBlock(JNIEnv* env, jstring jcode);
@@ -39,10 +46,10 @@ private:
     static jobject createJavaVariable(JNIEnv* env, const std::shared_ptr<Variable>& variable);
     static jobject createJavaDataType(JNIEnv* env, const std::shared_ptr<DataType>& dataType);
     
-    // New methods for AST conversion - fix the function signatures
+    // AST conversion - fix the function signatures
     static jobject createJavaExecuteBlock(JNIEnv* env, const std::shared_ptr<ExecuteBlock>& block);
     static jobject createJavaStatement(JNIEnv* env, const std::shared_ptr<Statement>& statement);
-    static jobject createJavaExpression(JNIEnv* env, const std::shared_ptr<Expression>& expression); 
+    static jobject createJavaExpression(JNIEnv* env, const std::shared_ptr<Expression>& expression);
     
     // Statement creation methods
     static jobject createJavaSendCommand(JNIEnv* env, const std::shared_ptr<SendCommand>& command);
@@ -56,5 +63,9 @@ private:
     static jobject createJavaStringLiteral(JNIEnv* env, const std::shared_ptr<StringLiteral>& literal);
     static jobject createJavaVariableReference(JNIEnv* env, const std::shared_ptr<VariableReference>& reference);
     static jobject createJavaBinaryExpression(JNIEnv* env, const std::shared_ptr<BinaryExpression>& expression);
-    static jobject createJavaTypeLiteral(JNIEnv* env, const std::shared_ptr<TypeLiteral>& literal);  // Add missing declaration
+    static jobject createJavaTypeLiteral(JNIEnv* env, const std::shared_ptr<TypeLiteral>& literal);
+    
+    // Event-related methods
+    static jobject createJavaEvent(JNIEnv* env, const std::shared_ptr<Event>& event);
+    static jobject createJavaCancelEventStatement(JNIEnv* env, const std::shared_ptr<CancelEventStatement>& statement);
 };

@@ -17,7 +17,9 @@ class BinaryExpression : public Expression {
             AND,            // &&
             OR,             // ||
             IS_TYPE,        // is a
-            IS_NOT_TYPE     // is not a
+            IS_NOT_TYPE,    // is not a
+            CONTAINS,       // For string contains checks
+            CONCATENATE     // + for string concatenation
         };
         
     private:
@@ -46,6 +48,8 @@ class BinaryExpression : public Expression {
                 case Operator::OR: opStr = "||"; break;
                 case Operator::IS_TYPE: opStr = "is"; break;
                 case Operator::IS_NOT_TYPE: opStr = "is not"; break;
+                case Operator::CONCATENATE: opStr = "+"; break;
+                case Operator::CONTAINS: opStr = "contains"; break;
             }
             
             return "{\"type\":\"BinaryExpression\",\"left\":" + left->toJson() + 

@@ -16,16 +16,22 @@
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\Lexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\ScriptParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\TypeParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\VariableParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\block\ExecuteBlockParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\CommandParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\command\ExecuteBlockParser.cpp">
+    <ClCompile Include="E:\VSC\SwoftLang\native\src\parser\event\EventParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="E:\VSC\SwoftLang\native\src\types\DataType.cpp">

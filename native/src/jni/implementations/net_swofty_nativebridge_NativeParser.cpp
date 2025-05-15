@@ -26,6 +26,16 @@ JNIEXPORT jobjectArray JNICALL Java_net_swofty_nativebridge_NativeParser_parseSw
     return SwoftLangJNIBridge::parseSwoftLangToCommands(env, code);
 }
 
+/*
+ * Class:     net_swofty_nativebridge_NativeParser
+ * Method:    parseSwoftLangToEvents
+ * Signature: (Ljava/lang/String;)[Lnet/swofty/nativebridge/representation/Event;
+ */
+JNIEXPORT jobjectArray JNICALL Java_net_swofty_nativebridge_NativeParser_parseSwoftLangToEvents
+  (JNIEnv* env, jclass clazz, jstring jcode) {
+    return SwoftLangJNIBridge::parseSwoftLangToEvents(env, jcode);
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -5,6 +5,7 @@
 // Keywords map
 static const std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"command", TokenType::COMMAND},
+    {"event", TokenType::EVENT},
     {"if", TokenType::IF},
     {"else", TokenType::ELSE},
     {"halt", TokenType::HALT},
@@ -13,7 +14,10 @@ static const std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"to", TokenType::TO},
     {"is", TokenType::IS},
     {"not", TokenType::NOT},
-    {"either", TokenType::EITHER} 
+    {"either", TokenType::EITHER},
+    {"cancel", TokenType::CANCEL},
+    {"set", TokenType::SET},
+    {"contains", TokenType::CONTAINS}
 };
 
 Lexer::Lexer(const std::string& source) : source(source) {}
@@ -104,6 +108,9 @@ Token Lexer::scanToken() {
         case '.':
             advance();
             return Token(TokenType::DOT, ".", line, column - 1);
+        case '+':
+            advance();
+            return Token(TokenType::PLUS, "+", line, column - 1);
     }
     
     // Handle unexpected character

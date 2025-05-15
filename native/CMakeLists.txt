@@ -61,6 +61,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/parser
     ${CMAKE_SOURCE_DIR}/src/parser/command
+    ${CMAKE_SOURCE_DIR}/src/parser/block
+    ${CMAKE_SOURCE_DIR}/src/parser/event
     ${CMAKE_SOURCE_DIR}/src/jni
     ${CMAKE_SOURCE_DIR}/src/jni/implementations
     ${CMAKE_SOURCE_DIR}/src/types

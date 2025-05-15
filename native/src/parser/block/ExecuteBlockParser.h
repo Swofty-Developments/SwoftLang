@@ -33,12 +33,12 @@ private:
     std::shared_ptr<Expression> parseLogicalOr();
     std::shared_ptr<Expression> parseLogicalAnd();
     std::shared_ptr<Expression> parseComparison();
+    std::shared_ptr<Expression> parseAdditive();
+    std::shared_ptr<Expression> parseContainsExpression();
     std::shared_ptr<Expression> parseIsExpression();
     std::shared_ptr<Expression> parsePrimary();
-    
-    // Helper methods
-    BinaryExpression::Operator parseComparisonOperator();
-    
+    std::pair<std::string, std::string> parsePropertyPath();
+
 public:
     ExecuteBlockParser(const std::vector<Token>& tokens);
     std::shared_ptr<ExecuteBlock> parseExecuteBlock();

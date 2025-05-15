@@ -25,6 +25,147 @@ bool checkAndClearJNIException(JNIEnv* env, const char* context) {
     return false;
 }
 
+jobjectArray SwoftLangJNIBridge::parseSwoftLangToEvents(JNIEnv* env, jstring jcode) {
+    if (!env || !jcode) {
+        std::cerr << "Null pointer in parseSwoftLangToEvents" << std::endl;
+        return NULL;
+    }
+    
+    // Convert Java string to C++ string
+    const char* codeChars = env->GetStringUTFChars(jcode, NULL);
+    if (!codeChars) {
+        return NULL;
+    }
+    
+    std::string code(codeChars);
+    env->ReleaseStringUTFChars(jcode, codeChars);
+    
+    try {
+        // Parse the SwoftLang code for events
+        std::vector<std::shared_ptr<Event>> events = SwoftLangParser::parseEvents(code);
+        
+        // Find Event class
+        jclass eventClass = env->FindClass("net/swofty/nativebridge/representation/Event");
+        if (!eventClass) {
+            checkAndClearJNIException(env, "FindClass Event");
+            return NULL;
+        }
+        
+        // Create an array of Event objects
+        jobjectArray result = env->NewObjectArray(events.size(), eventClass, NULL);
+        if (!result) {
+            checkAndClearJNIException(env, "NewObjectArray");
+            return NULL;
+        }
+        
+        // Fill the array with Event objects
+        for (size_t i = 0; i < events.size(); i++) {
+            if (!events[i]) continue;
+            
+            jobject jevent = createJavaEvent(env, events[i]);
+            if (jevent) {
+                env->SetObjectArrayElement(result, i, jevent);
+                env->DeleteLocalRef(jevent);
+            }
+        }
+        
+        return result;
+    } catch (const std::exception& e) {
+        jclass exceptionClass = env->FindClass("java/lang/RuntimeException");
+        if (exceptionClass) {
+            env->ThrowNew(exceptionClass, e.what());
+        }
+        return NULL;
+    }
+}
+
+jobject SwoftLangJNIBridge::createJavaEvent(JNIEnv* env, const std::shared_ptr<Event>& event) {
+    if (!env || !event) {
+        return NULL;
+    }
+    
+    try {
+        // Find Event class
+        jclass eventClass = env->FindClass("net/swofty/nativebridge/representation/Event");
+        if (!eventClass) {
+            checkAndClearJNIException(env, "FindClass Event");
+            return NULL;
+        }
+        
+        // Find constructor
+        jmethodID constructor = env->GetMethodID(eventClass, "<init>", "(Ljava/lang/String;)V");
+        if (!constructor) {
+            checkAndClearJNIException(env, "GetMethodID Event constructor");
+            return NULL;
+        }
+        
+        // Create Event object
+        jstring jname = env->NewStringUTF(event->getName().c_str());
+        if (!jname) return NULL;
+        
+        jobject jevent = env->NewObject(eventClass, constructor, jname);
+        env->DeleteLocalRef(jname);
+        
+        if (!jevent) {
+            checkAndClearJNIException(env, "NewObject Event");
+            return NULL;
+        }
+        
+        // Set priority
+        jmethodID setPriority = env->GetMethodID(eventClass, "setPriority", "(I)V");
+        if (setPriority) {
+            env->CallVoidMethod(jevent, setPriority, event->getPriority());
+            checkAndClearJNIException(env, "CallVoidMethod setPriority");
+        }
+        
+        // Set execute block
+        if (event->getExecuteBlock()) {
+            jmethodID setExecuteBlock = env->GetMethodID(eventClass, "setExecuteBlock", 
+                "(Lnet/swofty/nativebridge/representation/ExecuteBlock;)V");
+            if (setExecuteBlock) {
+                jobject jexecuteBlock = createJavaExecuteBlock(env, event->getExecuteBlock());
+                if (jexecuteBlock) {
+                    env->CallVoidMethod(jevent, setExecuteBlock, jexecuteBlock);
+                    env->DeleteLocalRef(jexecuteBlock);
+                }
+            }
+        }
+        
+        return jevent;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception in createJavaEvent: " << e.what() << std::endl;
+        return NULL;
+    }
+}
+
+jobject SwoftLangJNIBridge::createJavaCancelEventStatement(JNIEnv* env, const std::shared_ptr<CancelEventStatement>& stmt) {
+    if (!env || !stmt) {
+        return NULL;
+    }
+    
+    try {
+        // Find CancelEventStatement class
+        jclass stmtClass = env->FindClass("net/swofty/nativebridge/execution/commands/CancelEventStatement");
+        if (!stmtClass) {
+            checkAndClearJNIException(env, "FindClass CancelEventStatement");
+            return NULL;
+        }
+        
+        // Find constructor
+        jmethodID constructor = env->GetMethodID(stmtClass, "<init>", "()V");
+        if (!constructor) {
+            checkAndClearJNIException(env, "GetMethodID CancelEventStatement constructor");
+            return NULL;
+        }
+        
+        // Create CancelEventStatement object
+        return env->NewObject(stmtClass, constructor);
+    } catch (const std::exception& e) {
+        std::cerr << "Exception in createJavaCancelEventStatement: " << e.what() << std::endl;
+        return NULL;
+    }
+}
+
 jstring SwoftLangJNIBridge::parseSwoftLang(JNIEnv* env, jstring jcode) {
     if (!env) {
         std::cerr << "JNIEnv is null in parseSwoftLang" << std::endl;
@@ -463,6 +604,8 @@ jobject SwoftLangJNIBridge::createJavaStatement(JNIEnv* env, const std::shared_p
             return createJavaBlockStatement(env, blockStmt);
         } else if (auto varAssign = std::dynamic_pointer_cast<VariableAssignment>(statement)) {
             return createJavaVariableAssignment(env, varAssign);
+        }        else if (auto cancelEvent = std::dynamic_pointer_cast<CancelEventStatement>(statement)) {
+            return createJavaCancelEventStatement(env, cancelEvent);
         }
         
         // Unknown statement type
@@ -1273,3 +1416,4 @@ jobject SwoftLangJNIBridge::createJavaDataType(JNIEnv* env, const std::shared_pt
         return NULL;
     }
 }
+

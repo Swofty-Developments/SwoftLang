@@ -5,9 +5,7 @@
 #include <unordered_map>
 #include "Variable.h"
 #include "CodeBlock.h"
-
-// Forward declaration
-class ExecuteBlock;
+#include "ExecuteBlock.h"
 
 class Command {
 private:
@@ -65,9 +63,6 @@ public:
         return blocks;
     }
     
-    // Remove the toJson() method that's causing errors
-    // Or implement it properly if needed:
-    /*
     std::string toJson() const {
         std::string json = "{\"name\":\"" + name + "\"";
         
@@ -83,8 +78,7 @@ public:
             json += ",\"arguments\":[";
             for (size_t i = 0; i < arguments.size(); i++) {
                 if (i > 0) json += ",";
-                // json += arguments[i]->toJson(); // Uncomment when Variable has toJson()
-                json += "{\"placeholder\":\"variable\"}"; // Temporary placeholder
+                json += arguments[i]->toJson();
             }
             json += "]";
         }
@@ -96,5 +90,4 @@ public:
         json += "}";
         return json;
     }
-    */
 };

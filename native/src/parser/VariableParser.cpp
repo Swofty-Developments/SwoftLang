@@ -30,11 +30,6 @@ bool VariableParser::match(TokenType type) {
 
 bool VariableParser::check(TokenType type) const {
     if (isAtEnd()) return false;
-    if (peek().type != type) {
-        std::cout << "check() - Expected type " << (int)type 
-                  << ", but found type " << (int)peek().type 
-                  << " value '" << peek().value << "'" << std::endl;
-    }
     return peek().type == type;
 }
 

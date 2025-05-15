@@ -13,7 +13,9 @@ public class BinaryExpression implements Expression {
         AND("&&"),
         OR("||"),
         IS_TYPE("is"),
-        IS_NOT_TYPE("is not");
+        IS_NOT_TYPE("is not"),
+        CONTAINS("contains"),
+        CONCATENATE("+");
 
         private final String symbol;
 

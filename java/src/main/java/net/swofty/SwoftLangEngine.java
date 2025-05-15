@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import net.swofty.processors.CommandProcessor;
+import net.swofty.processors.EventProcessor;
 
 /**
  * Main entry point for the SwoftLang scripting engine
@@ -12,6 +13,7 @@ import net.swofty.processors.CommandProcessor;
 public class SwoftLangEngine {
     private final ScriptLoader scriptLoader;
     private final CommandProcessor commandProcessor;
+    private final EventProcessor eventProcessor;
 
     /**
      * Initialize the SwoftLang engine with default settings
@@ -28,6 +30,7 @@ public class SwoftLangEngine {
     public SwoftLangEngine(String scriptsDirectory, String fileExtension) {
         this.scriptLoader = new ScriptLoader(scriptsDirectory, fileExtension);
         this.commandProcessor = new CommandProcessor(scriptLoader);
+        this.eventProcessor = new EventProcessor(scriptLoader);
     }
 
     /**
@@ -40,9 +43,13 @@ public class SwoftLangEngine {
         List<File> files = scriptLoader.scanScripts();
         System.out.println("Found " + files.size() + " script files");
 
-        // Process components
-        int commandCount = commandProcessor.processCommands();
-        System.out.println("Processed " + commandCount + " commands");
+       // Process commands
+       int commandCount = commandProcessor.processCommands();
+       System.out.println("Processed " + commandCount + " commands");
+       
+       // Process events
+       int eventCount = eventProcessor.processEvents();
+       System.out.println("Processed " + eventCount + " events");
     }
 
     /**
@@ -52,7 +59,8 @@ public class SwoftLangEngine {
         // Register commands
         commandProcessor.register();
 
-        // Additional registration methods for other components can be called here
+        // Register events
+        eventProcessor.registerEvents();
     }
 
     /**
@@ -62,6 +70,10 @@ public class SwoftLangEngine {
         return commandProcessor;
     }
 
+    public EventProcessor getEventProcessor() {
+        return eventProcessor;
+    }
+    
     /**
      * Get the script loader
      */

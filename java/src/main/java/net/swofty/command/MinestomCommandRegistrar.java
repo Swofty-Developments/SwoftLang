@@ -14,6 +14,7 @@ import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.entity.EntityFinder;
+import net.swofty.ASTExecutor;
 import net.swofty.nativebridge.representation.*;
 
 import java.util.ArrayList;

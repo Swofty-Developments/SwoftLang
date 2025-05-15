@@ -12,6 +12,7 @@ public:
     bool isAtEnd() const;
     void skipWhitespace();
     void skipWhitespaceAndNewlines(); 
+    std::vector<std::shared_ptr<Command>> parseCommandsWithAliases();
     
 private:
     std::vector<Token> tokens;
@@ -25,7 +26,6 @@ private:
     
     // Parsing methods
     std::shared_ptr<Command> parseCommand();
-    std::vector<std::shared_ptr<Command>> parseCommandsWithAliases();
     void parseCommandProperties(std::shared_ptr<Command> command);
     void parseArgumentsBlock(std::shared_ptr<Command> command);
     void parseExecuteBlock(std::shared_ptr<Command> command);

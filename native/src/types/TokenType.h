@@ -8,6 +8,7 @@ enum class TokenType {
     
     // Keywords
     COMMAND, 
+    EVENT,
     IF,
     ELSE,
     HALT,
@@ -17,6 +18,9 @@ enum class TokenType {
     IS,
     NOT,
     EITHER,
+    CANCEL,  
+    SET,      
+    CONTAINS, 
     
     // Operators
     COLON,          // :
@@ -29,6 +33,7 @@ enum class TokenType {
     AND,            // &&
     OR,             // ||
     DOT,            // .
+    PLUS,           // +
     
     // Brackets/Parentheses
     LEFT_BRACE,     // {
