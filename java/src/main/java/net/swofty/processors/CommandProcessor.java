@@ -19,24 +19,45 @@ public class CommandProcessor {
     }
 
     /**
-     * Process all script files and extract commands
+     * Process all script files and extract commands. Colliding names (a
+     * later script or imported addon declaring an already-taken command or
+     * alias) log an error naming both sources instead of silently
+     * last-winning. The first registration is kept, with one fail-closed
+     * exception: a permission-guarded declaration always beats an
+     * unguarded one, so scan order can never leave a guarded command
+     * shadowed by an open handler.
      * @return Number of commands processed
      */
     public int processCommands() {
         commandMap.clear();
+        Map<String, File> provenance = new HashMap<>();
         List<File> scriptFiles = scriptLoader.getScriptFiles();
-        
+
         int totalCommands = 0;
-        
+
         for (File scriptFile : scriptFiles) {
             try {
-                String scriptContent = scriptLoader.readScriptContent(scriptFile);
-                Command[] commands = net.swofty.nativebridge.NativeParser.parseSwoftLangToCommands(scriptContent);
-                
-                if (commands != null) {
-                    for (Command command : commands) {
+                for (Command command : scriptLoader.parseScript(scriptFile).commands()) {
+                    if (command != null) {
+                        Command existing = commandMap.get(command.getName());
+                        if (existing != null) {
+                            File first = provenance.get(command.getName());
+                            boolean preferIncoming = isGuarded(command) && !isGuarded(existing);
+                            System.err.println("Error: duplicate command '" + command.getName()
+                                    + "': declared in both "
+                                    + (first != null ? first.getName() : "an earlier script")
+                                    + " and " + scriptFile.getName() + " - keeping the "
+                                    + (preferIncoming
+                                            ? "permission-guarded declaration from "
+                                                    + scriptFile.getName()
+                                            : "first"));
+                            if (!preferIncoming) {
+                                continue;
+                            }
+                        }
                         // Store the command in the map, using name as the key
                         commandMap.put(command.getName(), command);
+                        provenance.put(command.getName(), scriptFile);
                         System.out.println("Loaded command: " + command.getName() + " from " + scriptFile.getName());
                         totalCommands++;
                     }
@@ -46,9 +67,13 @@ public class CommandProcessor {
                 e.printStackTrace();
             }
         }
-        
+
         System.out.println("Total commands processed: " + totalCommands);
         return commandMap.size();
+    }
+
+    private static boolean isGuarded(Command command) {
+        return command.getPermission() != null && !command.getPermission().isEmpty();
     }
 
     /**

@@ -30,6 +30,16 @@ public class DataType {
     
     @Override
     public String toString() {
+        if (baseType == BaseType.MAP) {
+            return subTypes.isEmpty() ? "map"
+                    : "map<" + subTypes.get(0).toString() + ">";
+        }
+
+        if (baseType == BaseType.LIST) {
+            return subTypes.isEmpty() ? "list"
+                    : "list<" + subTypes.get(0).toString() + ">";
+        }
+
         if (baseType == BaseType.EITHER) {
             StringBuilder sb = new StringBuilder("either<");
             for (int i = 0; i < subTypes.size(); i++) {
@@ -48,6 +58,7 @@ public class DataType {
             case DOUBLE: return "Double";
             case BOOLEAN: return "Boolean";
             case PLAYER: return "Player";
+            case OFFLINE_PLAYER: return "OfflinePlayer";
             case LOCATION: return "Location";
             default: return "Unknown";
         }

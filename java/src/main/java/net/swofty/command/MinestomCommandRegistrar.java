@@ -11,10 +11,12 @@ import net.minestom.server.command.builder.arguments.ArgumentWord;
 import net.minestom.server.command.builder.arguments.minecraft.ArgumentEntity;
 import net.minestom.server.command.builder.arguments.number.ArgumentDouble;
 import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.entity.EntityFinder;
 import net.swofty.ASTExecutor;
+import net.swofty.async.AsyncRuntime;
 import net.swofty.nativebridge.representation.*;
 
 import java.util.ArrayList;
@@ -34,10 +36,13 @@ public class MinestomCommandRegistrar {
         // Create a new Minestom command with the name from SwoftLang command
         Command minestomCommand = new Command(swoftCommand.getName());
 
-        // Set permission if specified
+        // Enforce the declared permission through the pluggable provider
+        // (design 6D): the pinned Minestom has no permission API of its
+        // own, so the PermissionProvider decides (default allows + logs)
         if (swoftCommand.getPermission() != null && !swoftCommand.getPermission().isEmpty()) {
-            //minestomCommand.setCondition((sender, commandString) ->
-                    //sender.hasPermission(swoftCommand.getPermission()));
+            String permission = swoftCommand.getPermission();
+            minestomCommand.setCondition((sender, commandString) ->
+                    net.swofty.permissions.Permissions.check(sender, permission));
         }
 
         // Set default executor to display usage or error message
@@ -99,10 +104,31 @@ public class MinestomCommandRegistrar {
             }
         }
 
-        // Add the syntax
-        minestomCommand.addSyntax((sender, context) -> {
+        // Add the syntax (carrying the permission condition: the command
+        // graph takes the SYNTAX condition for execution, so a bare
+        // addSyntax would bypass setCondition on the dispatch path)
+        addSyntax(minestomCommand, (sender, context) -> {
             executeCommand(swoftCommand, sender, context);
-        }, arguments.toArray(new Argument[0]));
+        }, arguments);
+    }
+
+    /**
+     * addSyntax that re-attaches the command's permission condition to
+     * the syntax itself. In the pinned Minestom command graph a syntax's
+     * own condition REPLACES the command-level condition on the
+     * execution chain (GraphImpl.ExecutionImpl), so a syntax without one
+     * would make /cmd dispatch skip the permission check entirely while
+     * tab-complete still hid it.
+     */
+    private static void addSyntax(Command minestomCommand,
+            net.minestom.server.command.builder.CommandExecutor executor,
+            List<Argument<?>> arguments) {
+        if (minestomCommand.getCondition() != null) {
+            minestomCommand.addConditionalSyntax(minestomCommand.getCondition(),
+                    executor, arguments.toArray(new Argument[0]));
+        } else {
+            minestomCommand.addSyntax(executor, arguments.toArray(new Argument[0]));
+        }
     }
 
     /**
@@ -131,10 +157,10 @@ public class MinestomCommandRegistrar {
                 syntaxArguments.addAll(variant.getArguments());
             }
 
-            // Add the syntax with these arguments
-            minestomCommand.addSyntax((sender, context) -> {
+            // Add the syntax with these arguments (permission-carrying)
+            addSyntax(minestomCommand, (sender, context) -> {
                 executeCommandWithVariants(swoftCommand, sender, context, combination);
-            }, syntaxArguments.toArray(new Argument[0]));
+            }, syntaxArguments);
         }
     }
 
@@ -180,8 +206,7 @@ public class MinestomCommandRegistrar {
 
                 if (subBaseType == BaseType.PLAYER) {
                     // Player variant
-                    ArgumentEntity playerArg = ArgumentType.Entity(arg.getName())
-                            .onlyPlayers(true);
+                    ArgumentEntity playerArg = playerArgument(arg.getName());
 
                     // Set error callback
                     playerArg.setCallback((sender, exception) ->
@@ -250,10 +275,32 @@ public class MinestomCommandRegistrar {
             case BOOLEAN:
                 return ArgumentType.Boolean(name);
             case PLAYER:
-                return ArgumentType.Entity(name).onlyPlayers(true);
+                return playerArgument(name);
             default:
                 return null;
         }
+    }
+
+    /**
+     * A player command argument (@a/@p selectors + username), carrying a
+     * server-side suggestion callback that lists ONLY real connected players.
+     *
+     * <p>Without the callback the vanilla client autocompletes an entity /
+     * player-selector argument from ITS OWN player list, which includes the
+     * fake PlayerInfo tablist entries the UI runtime injects ("tab0", "tab1",
+     * ...) — those leaked into {@code /tp <player>} completion. Attaching a
+     * suggestion callback flips the node to ASK_SERVER (Argument.
+     * setSuggestionCallback sets SuggestionType.ASK_SERVER), so the client
+     * asks the server and we answer with getOnlinePlayers usernames only.
+     */
+    private static ArgumentEntity playerArgument(String name) {
+        ArgumentEntity arg = ArgumentType.Entity(name).onlyPlayers(true);
+        arg.setSuggestionCallback((sender, context, suggestion) -> {
+            for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+                suggestion.addEntry(new SuggestionEntry(player.getUsername()));
+            }
+        });
+        return arg;
     }
 
     /**
@@ -307,8 +354,7 @@ public class MinestomCommandRegistrar {
                 minestomArg = ArgumentType.Boolean(arg.getName());
                 break;
             case PLAYER:
-                minestomArg = ArgumentType.Entity(arg.getName())
-                        .onlyPlayers(true);
+                minestomArg = playerArgument(arg.getName());
                 break;
             default:
                 return null;
@@ -492,21 +538,27 @@ public class MinestomCommandRegistrar {
     }
 
     /**
-     * Execute the SwoftLang command using the pre-parsed AST
+     * Execute the SwoftLang command using the pre-parsed AST. Async execute
+     * blocks detach onto a virtual thread over a snapshot of the argument
+     * environment; the command callback returns immediately.
      */
     private void executeSwoftCommand(net.swofty.nativebridge.representation.Command swoftCommand,
                                      net.minestom.server.command.CommandSender minestomSender,
                                      Map<String, Object> argValues) {
         try {
-            // Get the execute block (now pre-parsed AST)
             ExecuteBlock executeBlock = swoftCommand.getExecuteBlock();
 
             // Adapt the Minestom sender to our CommandSender interface
             CommandSender sender = new MinestomSenderAdapter(minestomSender);
 
-            // Create and run the AST executor
-            ASTExecutor executor = new ASTExecutor(sender, argValues);
-            executor.execute(executeBlock);
+            if (executeBlock.isAsync()) {
+                Map<String, Object> snapshot = new HashMap<>(argValues);
+                AsyncRuntime.start("command " + swoftCommand.getName(),
+                        () -> new ASTExecutor(sender, snapshot).execute(executeBlock));
+                return;
+            }
+
+            new ASTExecutor(sender, argValues).execute(executeBlock);
 
         } catch (Exception e) {
             minestomSender.sendMessage("Error executing command: " + e.getMessage());

@@ -37,9 +37,19 @@ public class SwoftPlayerChatEvent extends AbstractSwoftEvent<PlayerChatEvent> {
     public String getMessage() {
         return message;
     }
-    
+
     public void setMessage(String message) {
         this.message = message;
         minestomEvent.setFormattedMessage(Component.text(message));
+    }
+
+    /** The unformatted message the client sent. */
+    public String getRawMessage() {
+        return minestomEvent.getRawMessage();
+    }
+
+    /** Players this chat message will be delivered to. */
+    public java.util.List<Player> getRecipients() {
+        return new java.util.ArrayList<>(minestomEvent.getRecipients());
     }
 }

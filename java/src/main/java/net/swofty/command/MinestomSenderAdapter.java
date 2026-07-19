@@ -22,6 +22,16 @@ public class MinestomSenderAdapter implements CommandSender {
     }
 
     /**
+     * Component sends (the send/broadcast statement renders MiniMessage to a
+     * Component now) must forward to the wrapped sender - the default Audience
+     * method is a no-op, which would silently swallow every scripted send.
+     */
+    @Override
+    public void sendMessage(net.kyori.adventure.text.Component message) {
+        minestomSender.sendMessage(message);
+    }
+
+    /**
      * Get the wrapped Minestom sender
      * @return The underlying Minestom CommandSender
      */

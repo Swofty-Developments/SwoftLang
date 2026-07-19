@@ -6,7 +6,12 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        // net.minestom:minestom:2026.07.12-26.2 ships Java 25 bytecode and its
+        // Gradle module metadata declares org.gradle.jvm.version=25, so the
+        // consumer toolchain must be 25 for variant selection to succeed. The
+        // Gradle launcher still runs on JDK21; JDK25 is used only as the compile
+        // toolchain (its install path is registered in the root gradle.properties).
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -16,7 +21,25 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom-snapshots:ebaa2bbf64")
+    implementation("net.minestom:minestom:2026.07.12-26.2")
+    // Polar world format (phase-6 worlds), matched to the current Minestom.
+    implementation("dev.hollowcube:polar:1.16.0")
+    // Polar's PolarLoader has @NotNull-annotated fastutil (Short2ObjectMap)
+    // parameters; minestom pulls fastutil only at runtime, so javac needs it on
+    // the compile classpath to read Polar's annotated bytecode. Match minestom's
+    // forced 8.5.18.
+    implementation("it.unimi.dsi:fastutil:8.5.18")
+    // Adventure 5.2.0 to match the version net.minestom:minestom:2026.07.12-26.2
+    // forces transitively (adventure-api 5.2.0). 4.18.0 is binary-incompatible
+    // with a mixed 5.x classpath.
+    implementation("net.kyori:adventure-text-minimessage:5.2.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
+    implementation("com.google.code.gson:gson:2.14.0")
+
+    // Persistence backends (net.swofty.persist)
+    implementation("org.xerial:sqlite-jdbc:3.47.1.0")
+    implementation("com.mysql:mysql-connector-j:9.1.0")
+    implementation("org.mongodb:mongodb-driver-sync:5.2.1")
 }
 
 application {
@@ -42,70 +65,12 @@ sourceSets {
     }
 }
 
+// Phase-7 event catalog: ship compiler/data/events.json inside the jar as
+// /events.json so EventCatalog's classpath fallback works in a deployed
+// server (outside the repo root there is no compiler/data on disk).
 tasks.processResources {
-    // Keep the first copy we hit; silently drop the duplicate
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from("$rootDir/native/build/Debug") {          // after `build-native`
-        include("SwoftLang.dll")
-        into("Debug")                              // matches resourcePath
-    }
+    from(rootProject.file("compiler/data/events.json"))
 }
-
-/* ─────────────────────────────────────────────────────────────── */
-/*  Generate JNI headers into native/include before native build   */
-/* ─────────────────────────────────────────────────────────────── */
-tasks.register<JavaCompile>("genJniHeaders") {
-    val headersDir = file("${rootProject.projectDir}/native/include")
-    
-    // Only include classes in the 'net/swofty/native' package
-    source = fileTree("src/main/java") {
-        include("net/swofty/nativebridge/**/*.java")
-    }
-    
-    // Required classpath
-    classpath = sourceSets.main.get().compileClasspath
-    
-    // Configure javac
-    options.compilerArgs = listOf(
-        "-h", headersDir.absolutePath
-    )
-    
-    // The output directory for class files (not headers)
-    destinationDirectory.set(layout.buildDirectory.dir("tmp/jni-header-stubs"))
-    
-      // Clean existing headers and ensure directory exists
-    doFirst { 
-        // Delete all .h files in the include directory
-        if (headersDir.exists()) {
-            headersDir.listFiles()?.forEach { file ->
-                if (file.name.endsWith(".h")) {
-                    file.delete()
-                    println("Deleted existing header: ${file.name}")
-                }
-            }
-        } else {
-            headersDir.mkdirs()
-            println("Created include directory: ${headersDir.absolutePath}")
-        }
-        
-        println("Generating JNI headers in: ${headersDir.absolutePath}")
-        println("Source files: ${source.files}")
-    }
-    
-    // Report what was generated
-    doLast {
-        println("Generated headers:")
-        headersDir.listFiles()?.forEach { file ->
-            if (file.name.endsWith(".h")) {
-                println(" - ${file.name}")
-            }
-        }
-    }
-}
-
-/* Make Java compilation depend on the header generation */
-tasks.named("compileJava") { dependsOn("genJniHeaders") }
-tasks.named("run") { dependsOn(":buildNative") }
 
 tasks.register("showDependencies") {
     doLast {
@@ -115,13 +80,27 @@ tasks.register("showDependencies") {
     }
 }
 
+tasks.register<JavaExec>("execHarness") {
+    mainClass.set("net.swofty.harness.ExecHarness")
+    classpath = sourceSets.main.get().runtimeClasspath
+    workingDir = rootDir
+    // The :java module compiles to Java-25 bytecode, so the harness must run on
+    // the JDK-25 toolchain even though the Gradle launcher itself is JDK 21.
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    })
+    if (project.hasProperty("harnessArgs")) {
+        args((project.property("harnessArgs") as String).split(" "))
+    }
+}
+
 tasks.withType<Jar> {
     // Include everything in the final JAR
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-    
+
     // Avoid duplicate META-INF files
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    
+
     // Add manifest with main class
     manifest {
         attributes["Main-Class"] = "net.swofty.Bootstrap"

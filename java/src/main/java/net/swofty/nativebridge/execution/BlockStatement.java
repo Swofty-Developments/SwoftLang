@@ -3,7 +3,9 @@ package net.swofty.nativebridge.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockStatement implements Statement {
+import net.swofty.runtime.ExecutionContext;
+
+public class BlockStatement extends AbstractAstNode implements Statement {
     private final List<Statement> statements = new ArrayList<>();
 
     public void addStatement(Statement statement) {
@@ -12,5 +14,12 @@ public class BlockStatement implements Statement {
 
     public List<Statement> getStatements() {
         return statements;
+    }
+
+    @Override
+    public void execute(ExecutionContext context) {
+        for (Statement statement : statements) {
+            context.execute(statement);
+        }
     }
 }

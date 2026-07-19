@@ -1,88 +1,123 @@
 package net.swofty.event;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.EventNode;
+import net.swofty.event.events.GenericSwoftEvent;
 import net.swofty.nativebridge.representation.Event;
+
+/**
+ * Registers script event handlers against the global event handler.
+ * Curated wrappers keep precedence for their event types (EventType);
+ * every other name resolves through the generated Minestom catalog and
+ * is delivered via the GenericSwoftEvent wrapper (phase 7).
+ */
 public class EventRegistrar {
-    private final EventNode<net.minestom.server.event.Event> rootNode;
-    private final Map<String, EventNode<?>> eventNodes = new ConcurrentHashMap<>();
+    private EventNode<net.minestom.server.event.Event> rootNode;
+    private final Map<String, EventNode<net.minestom.server.event.Event>> eventNodes =
+            new ConcurrentHashMap<>();
 
     public EventRegistrar() {
-        this.rootNode = MinecraftServer.getGlobalEventHandler();
+        // The global event handler is resolved lazily (registerEvent runs after
+        // MinecraftServer.init): minestom 26.2 leaves MinecraftServer.serverProcess
+        // null until init(), so grabbing it in the constructor — which runs during
+        // engine construction, before Bootstrap calls init() — would NPE.
     }
 
-    @SuppressWarnings("unchecked")
+    private EventNode<net.minestom.server.event.Event> rootNode() {
+        if (rootNode == null) {
+            rootNode = MinecraftServer.getGlobalEventHandler();
+        }
+        return rootNode;
+    }
+
+    /**
+     * Detach every script event listener from the global handler and forget
+     * the child nodes, so a hot reload can re-register from a clean slate
+     * without piling duplicate listeners onto the same node. Tick-safe: call
+     * on the tick thread as part of an engine reload.
+     */
+    public void reset() {
+        for (EventNode<net.minestom.server.event.Event> node : eventNodes.values()) {
+            try {
+                rootNode().removeChild(node);
+            } catch (RuntimeException ignored) {
+            }
+        }
+        eventNodes.clear();
+    }
+
     public void registerEvent(Event event) {
         String eventName = event.getName();
 
-        // Find the EventType for this event name
-        EventType eventType = EventType.fromIdentifier(eventName);
-        if (eventType == null) {
-            System.err.println("Unknown event type: " + eventName);
+        // curated wrappers first: typed rows + bespoke behavior win over
+        // the generic catalog path for the events they cover
+        EventType curated = EventType.fromIdentifier(eventName);
+        if (curated != null) {
+            registerListener(eventName, EventType.getMinestomClassName(eventName),
+                    (minestomEvent) -> curated.getFactory().create(minestomEvent, event)
+                            .execute());
             return;
         }
 
-        // Get the Minestom class name for this event
-        String minestomClassName = EventType.getMinestomClassName(eventName);
-        
-        // Get or create event node for this event type
-        EventNode<?> node = eventNodes.computeIfAbsent(eventName, name -> {
-            try {
-                // Load the Minestom event class
-                Class<?> minestomEventClass = Class.forName(minestomClassName);
-                System.out.println("Found Minestom event class: " + minestomEventClass.getName());
-                
-                // Create a node for this event type
-                EventNode<net.minestom.server.event.Event> eventNode = EventNode.all("swoftlang-" + name);
-                rootNode.addChild(eventNode);
-                return eventNode;
-            } catch (ClassNotFoundException e) {
-                System.err.println("Could not find Minestom event class: " + minestomClassName);
-                e.printStackTrace();
-                return null;
+        // generic catalog path: short name, short name + "Event", or the
+        // fully qualified class name of any generated event entry
+        EventCatalog.Entry entry = EventCatalog.resolve(eventName).orElse(null);
+        if (entry == null) {
+            if (EventCatalog.entries().isEmpty()) {
+                // a misdeployed server (no /events.json on the classpath and
+                // no catalog on disk) must fail loudly, not silently drop
+                // every generic handler
+                throw new IllegalStateException("event catalog unavailable: cannot "
+                        + "register 'event " + eventName + "' — the deployment is "
+                        + "missing /events.json (see the EventCatalog warning above)");
             }
-        });
-
-
-        if (node == null) return;
-
-        try {
-            // Load the Minestom event class
-            Class<net.minestom.server.event.Event> eventClass = 
-                (Class<net.minestom.server.event.Event>) Class.forName(minestomClassName);
-                
-            // Create the listener
-            EventListener<net.minestom.server.event.Event> listener = 
-                EventListener.of(eventClass, minestomEvent -> {
-                    // Use the event type factory to create the appropriate wrapper
-                    AbstractSwoftEvent<?> wrapper = eventType.getFactory().create(minestomEvent, event);
-                    
-                    // Execute the SwoftLang event handler
-                    wrapper.execute();
-                });
-                
-            // Register the listener
-            ((EventNode<net.minestom.server.event.Event>) node).addListener(listener);
-            System.out.println("Successfully registered listener for event: " + eventName);
-        } catch (ClassNotFoundException e) {
-            System.err.println("Failed to create listener for event: " + eventName);
-            e.printStackTrace();
+            List<String> suggestions = EventCatalog.suggest(eventName, 3);
+            System.err.println("Unknown event type: " + eventName
+                    + (suggestions.isEmpty() ? ""
+                            : " (did you mean: " + String.join(", ", suggestions) + "?)"));
+            return;
         }
+        registerListener(eventName, entry.className(),
+                (minestomEvent) -> new GenericSwoftEvent(minestomEvent, event).execute());
     }
 
-    private Class<? extends net.minestom.server.event.Event> getEventClass(String eventName) {
-        try {
-            String className = eventName.startsWith("Player") ?
-                    "net.minestom.server.event.player." + eventName :
-                    "net.minestom.server.event.entity." + eventName;
+    private interface WrapperInvoker {
+        void deliver(net.minestom.server.event.Event minestomEvent);
+    }
 
-            return (Class<? extends net.minestom.server.event.Event>) Class.forName(className);
+    @SuppressWarnings("unchecked")
+    private void registerListener(String eventName, String className, WrapperInvoker invoker) {
+        Class<net.minestom.server.event.Event> eventClass;
+        try {
+            Class<?> loaded = Class.forName(className);
+            if (!net.minestom.server.event.Event.class.isAssignableFrom(loaded)) {
+                System.err.println("Event class is not a Minestom event: " + className);
+                return;
+            }
+            eventClass = (Class<net.minestom.server.event.Event>) loaded;
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Event class not found: " + eventName, e);
+            System.err.println("Could not find Minestom event class: " + className);
+            return;
         }
+
+        // warm the generated property table so binding problems surface
+        // at registration time instead of first delivery
+        EventPropertyResolver.handlesFor(eventClass);
+
+        EventNode<net.minestom.server.event.Event> node = eventNodes.computeIfAbsent(
+                eventName, name -> {
+                    EventNode<net.minestom.server.event.Event> child =
+                            EventNode.all("swoftlang-" + name);
+                    rootNode().addChild(child);
+                    return child;
+                });
+        node.addListener(EventListener.of(eventClass, invoker::deliver));
+        System.out.println("Registered listener for event: " + eventName
+                + " -> " + className);
     }
 }

@@ -1,0 +1,67 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "items": [
+    {
+      "id": "aspect_of_the_end",
+      "material": "DIAMOND_SWORD",
+      "name": "Aspect of the End",
+      "rarity": "rare",
+      "glint": true,
+      "stats": { "damage": 100, "strength": 100, "crit_damage": 25 },
+      "attributes": { "speed": 0.05, "max_health": 10 },
+      "tags": { "kills": 0, "soulbound": true },
+      "lore": [
+        { "kind": "line", "text": { "kind": "string", "value": "Teleport 8 blocks ahead of you." } },
+        { "kind": "blank" },
+        { "kind": "line", "text": { "kind": "binary", "op": "CONCATENATE",
+            "left": { "kind": "string", "value": "Kills: " },
+            "right": { "kind": "prop", "target": { "kind": "var", "name": "tags" }, "name": "kills" } } }
+      ],
+      "ability": {
+        "name": "Instant Transmission",
+        "activation": "right_click",
+        "cooldown_ms": 3000,
+        "description": "Teleport 8 blocks ahead of you and gain +50 Speed for 3 seconds.",
+        "execute": [
+          { "kind": "send", "message": { "kind": "string", "value": "whoosh!" } }
+        ]
+      }
+    },
+    {
+      "id": "crypt_key",
+      "skull": "3e4f49535a276aacc4dc84133bfe81be5f2a4799a4c04d9a4ddb72d819ec2b2b",
+      "name": "<gold>Crypt Key",
+      "rarity": "epic",
+      "lore": [
+        { "kind": "line", "text": { "kind": "string", "value": "Opens something spooky." } }
+      ]
+    }
+  ],
+  "mobs": [
+    {
+      "id": "crypt_ghoul",
+      "type": "ZOMBIE",
+      "name": { "kind": "string", "value": "<red>Crypt Ghoul" },
+      "health": 200,
+      "damage": 25,
+      "speed": 0.3,
+      "ai": "melee",
+      "drops": [
+        { "item": "aspect_of_the_end", "chance": 0.05, "amount": 1 },
+        { "item": "ROTTEN_FLESH", "chance": 0.5, "amount": 2 }
+      ],
+      "on_death": [
+        { "kind": "send", "message": { "kind": "string", "value": "ghoul down" } }
+      ]
+    }
+  ],
+  "packet_handlers": [
+    {
+      "name": "ClientPlayerDiggingPacket",
+      "execute": [
+        { "kind": "cancel_packet" }
+      ]
+    }
+  ]
+}

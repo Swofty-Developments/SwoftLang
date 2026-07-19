@@ -2,8 +2,6 @@ package net.swofty.nativebridge.representation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Represents a SwoftLang command
@@ -13,7 +11,6 @@ public class Command {
     private String permission;
     private String description;
     private final List<Variable> arguments = new ArrayList<>();
-    private final Map<String, CodeBlock> blocks = new HashMap<>();
     private ExecuteBlock executeBlock;
 
     public Command(String name) {
@@ -46,14 +43,6 @@ public class Command {
 
     public void addArgument(Variable argument) {
         arguments.add(argument);
-    }
-
-    public Map<String, CodeBlock> getBlocks() {
-        return blocks;
-    }
-
-    public void addBlock(String type, CodeBlock block) {
-        blocks.put(type, block);
     }
 
     /**

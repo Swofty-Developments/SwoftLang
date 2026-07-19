@@ -1,7 +1,6 @@
 package net.swofty.processors;
 
 import net.swofty.ScriptLoader;
-import net.swofty.nativebridge.NativeParser;
 import net.swofty.nativebridge.representation.Event;
 import net.swofty.event.EventRegistrar;
 
@@ -27,16 +26,11 @@ public class EventProcessor {
         
         for (File scriptFile : scriptFiles) {
             try {
-                String scriptContent = scriptLoader.readScriptContent(scriptFile);
-                Event[] parsedEvents = NativeParser.parseSwoftLangToEvents(scriptContent);
-                
-                if (parsedEvents != null) {
-                    for (Event event : parsedEvents) {
-                        if (event != null) {
-                            events.add(event);
-                            System.out.println("Loaded event: " + event.getName() + " from " + scriptFile.getName());
-                            totalEvents++;
-                        }
+                for (Event event : scriptLoader.parseScript(scriptFile).events()) {
+                    if (event != null) {
+                        events.add(event);
+                        System.out.println("Loaded event: " + event.getName() + " from " + scriptFile.getName());
+                        totalEvents++;
                     }
                 }
             } catch (Exception e) {
@@ -61,5 +55,10 @@ public class EventProcessor {
 
     public List<Event> getEvents() {
         return new ArrayList<>(events);
+    }
+
+    /** The registrar, exposed so a hot reload can detach old listeners. */
+    public EventRegistrar getEventRegistrar() {
+        return eventRegistrar;
     }
 }
