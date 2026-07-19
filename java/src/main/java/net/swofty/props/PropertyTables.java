@@ -489,6 +489,11 @@ public final class PropertyTables {
                     throw new net.swofty.ScriptError(
                             "entity.tags is not directly assignable - set entity.tags.<key> instead");
                 }));
+        // viewers of <entity> / entity.viewers: the entity's current viewers as
+        // an ordered list<Player> (W-viewers feature 1). getViewers() is an
+        // unordered set, so ViewerControl sorts by username for a stable order.
+        PropertyRegistry.register(PropertyDef.readOnly("viewers", Entity.class,
+                net.swofty.entities.ViewerControl::orderedViewers));
     }
 
     /** EntityPose enum name -> lowercase snake_case script name. */

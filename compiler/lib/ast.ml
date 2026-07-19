@@ -275,6 +275,14 @@ and stmt_node =
   | SSetNpcName of { snn_name : string; snn_value : expr }
   | SSetNpcLocation of { snl_name : string; snl_value : expr }
   | SRemoveNpc of string
+  (* --- W-viewers: Minestom Viewable API on entities ---
+     show <entity> to <player|list<Player>|all>   -> addViewer(s)
+     hide <entity> from <player|list<Player>|all> -> removeViewer(s) *)
+  | SShowEntity of { she_entity : expr; she_target : expr }
+  | SHideEntity of { hie_entity : expr; hie_target : expr }
+  (* set name of <entity> to <String> for <player>: per-viewer overhead name,
+     sent to that one viewer only (per-viewer EntityMetadataPacket) *)
+  | SSetEntityName of { sen_entity : expr; sen_value : expr; sen_viewer : expr }
 
 and gui_open = {
   go_name : string;
@@ -444,6 +452,9 @@ type hologram = {
   h_billboard : string; (* center | vertical | horizontal | fixed (default center) *)
   h_billboard_pos : pos; (* position of the billboard value, for the enum error *)
   h_scale : expr option;
+  (* viewable: <Bool> (W-viewers §1) — auto-viewable at spawn; false => hidden
+     until shown to a player *)
+  h_viewable : bool option;
   h_update : update_spec;
   h_lines : stmt list; (* restricted DSL: line/blank/if/loop *)
   (* first-class handlers: on_click / on_line_click (W-inline-handlers) *)
@@ -461,6 +472,9 @@ type npc = {
   n_display_name : expr option; (* overhead name, MiniMessage, per-viewer capable *)
   n_skin : npc_skin option;
   n_look_at_players : bool; (* head tracks nearest player *)
+  (* viewable: <Bool> (W-viewers §1) — auto-viewable at spawn; false => hidden
+     until shown to a player *)
+  n_viewable : bool option;
   n_on_click : (string * stmt list) option; (* right-click: (player binder, body) *)
   n_on_left_click : (string * stmt list) option;
   (* generic handler path (reconciled with on_click/on_left_click above): used
@@ -517,6 +531,22 @@ type mob_drop = {
   dr_amount : expr option;
 }
 
+(* a typed mob tag block entry (W-viewers §2): a field is either a TYPE
+   declaration (`hits: map<Player, Integer>` -> a typed, indexable tag store)
+   or an item-style value init (`level: 5` -> type inferred from the value).
+   Typed tags hold LIVE in-memory values on the entity (a real map/list object),
+   no NBT serialization needed. Undeclared keys still work as freeform
+   optional<Any> entity tags via mob.tags.<anykey>. *)
+type mob_tag_spec =
+  | MTType of data_type
+  | MTValue of expr
+
+type mob_tag = {
+  mt_name : string;
+  mt_pos : pos;
+  mt_spec : mob_tag_spec;
+}
+
 type mob_decl = {
   mb_id : string;
   mb_exported : bool;
@@ -526,6 +556,11 @@ type mob_decl = {
   mb_damage : expr option;
   mb_speed : expr option;
   mb_ai : (string * pos) option; (* melee | passive | none *)
+  (* viewable: <Bool> (W-viewers §1) — setAutoViewable at spawn. false =>
+     the mob is hidden until explicitly shown with 'show <mob> to <player>' *)
+  mb_viewable : bool option;
+  (* typed tag block (W-viewers §2): mob.tags.<name> gets the declared type *)
+  mb_tags : mob_tag list;
   mb_drops : mob_drop list;
   mb_on_spawn : stmt list option;
   mb_on_death : stmt list option;

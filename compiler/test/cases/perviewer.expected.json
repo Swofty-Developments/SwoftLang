@@ -1,0 +1,452 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 17,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 18,
+            "col": 5,
+            "kind": "spawn_mob",
+            "id": {
+              "line": 18,
+              "col": 15,
+              "kind": "string",
+              "value": "zombie"
+            },
+            "at": {
+              "line": 18,
+              "col": 27,
+              "kind": "call",
+              "name": "in_front_of",
+              "args": [
+                {
+                  "line": 18,
+                  "col": 45,
+                  "kind": "prop",
+                  "target": {
+                    "line": 18,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "player"
+                },
+                {
+                  "line": 18,
+                  "col": 53,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            },
+            "as": "z"
+          },
+          {
+            "line": 19,
+            "col": 5,
+            "kind": "set_entity_name",
+            "entity": { "line": 19, "col": 17, "kind": "var", "name": "z" },
+            "value": {
+              "line": 19,
+              "col": 22,
+              "kind": "string",
+              "value": "<red>Zombie <gray>0/5"
+            },
+            "viewer": {
+              "line": 19,
+              "col": 56,
+              "kind": "prop",
+              "target": {
+                "line": 19,
+                "col": 50,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 20,
+            "col": 5,
+            "kind": "show_entity",
+            "entity": { "line": 20, "col": 10, "kind": "var", "name": "z" },
+            "target": {
+              "line": 20,
+              "col": 21,
+              "kind": "prop",
+              "target": {
+                "line": 20,
+                "col": 15,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": {
+    "line": 1,
+    "col": 1,
+    "auth": { "kind": "mojang", "secret": null },
+    "host": "0.0.0.0",
+    "port": 25565,
+    "brand": null,
+    "motd": null
+  },
+  "mobs": [
+    {
+      "line": 2,
+      "col": 1,
+      "id": "zombie",
+      "type": "ZOMBIE",
+      "name": null,
+      "health": null,
+      "damage": null,
+      "speed": null,
+      "ai": null,
+      "drops": [],
+      "on_spawn": null,
+      "on_death": null,
+      "on_attack": null,
+      "viewable": false,
+      "tags": {
+        "hits": {
+          "kind": "type",
+          "type": {
+            "base": "MAP",
+            "key_type": { "base": "PLAYER" },
+            "subtypes": [ { "base": "INTEGER" } ]
+          }
+        }
+      },
+      "on_hit": {
+        "attacker": "attacker",
+        "body": [
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 7,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 7,
+                "col": 12,
+                "kind": "var",
+                "name": "attacker"
+              }
+            },
+            "then": {
+              "line": 7,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 8,
+                  "col": 13,
+                  "kind": "call",
+                  "name": "map_set",
+                  "args": [
+                    {
+                      "line": 8,
+                      "col": 26,
+                      "kind": "prop",
+                      "target": {
+                        "line": 8,
+                        "col": 21,
+                        "kind": "prop",
+                        "target": {
+                          "line": 8,
+                          "col": 17,
+                          "kind": "var",
+                          "name": "mob"
+                        },
+                        "name": "tags"
+                      },
+                      "name": "hits"
+                    },
+                    {
+                      "line": 8,
+                      "col": 31,
+                      "kind": "var",
+                      "name": "attacker"
+                    },
+                    {
+                      "line": 8,
+                      "col": 58,
+                      "kind": "binary",
+                      "op": "ADD",
+                      "left": {
+                        "line": 8,
+                        "col": 58,
+                        "kind": "binary",
+                        "op": "OR_ELSE",
+                        "left": {
+                          "line": 8,
+                          "col": 58,
+                          "kind": "call",
+                          "name": "map_get",
+                          "args": [
+                            {
+                              "line": 8,
+                              "col": 54,
+                              "kind": "prop",
+                              "target": {
+                                "line": 8,
+                                "col": 49,
+                                "kind": "prop",
+                                "target": {
+                                  "line": 8,
+                                  "col": 45,
+                                  "kind": "var",
+                                  "name": "mob"
+                                },
+                                "name": "tags"
+                              },
+                              "name": "hits"
+                            },
+                            {
+                              "line": 8,
+                              "col": 59,
+                              "kind": "var",
+                              "name": "attacker"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "line": 8,
+                          "col": 79,
+                          "kind": "number",
+                          "value": 0,
+                          "integer": true
+                        }
+                      },
+                      "right": {
+                        "line": 8,
+                        "col": 84,
+                        "kind": "number",
+                        "value": 1,
+                        "integer": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "line": 9,
+                  "col": 13,
+                  "kind": "set_entity_name",
+                  "entity": {
+                    "line": 9,
+                    "col": 25,
+                    "kind": "var",
+                    "name": "mob"
+                  },
+                  "value": {
+                    "line": 9,
+                    "col": 32,
+                    "kind": "binary",
+                    "op": "CONCATENATE",
+                    "left": {
+                      "line": 9,
+                      "col": 32,
+                      "kind": "binary",
+                      "op": "CONCATENATE",
+                      "left": {
+                        "line": 9,
+                        "col": 32,
+                        "kind": "string",
+                        "value": "<red>Zombie <gray>"
+                      },
+                      "right": {
+                        "line": 9,
+                        "col": 32,
+                        "kind": "binary",
+                        "op": "OR_ELSE",
+                        "left": {
+                          "line": 9,
+                          "col": 32,
+                          "kind": "call",
+                          "name": "map_get",
+                          "args": [
+                            {
+                              "line": 9,
+                              "col": 32,
+                              "kind": "prop",
+                              "target": {
+                                "line": 9,
+                                "col": 32,
+                                "kind": "prop",
+                                "target": {
+                                  "line": 9,
+                                  "col": 32,
+                                  "kind": "var",
+                                  "name": "mob"
+                                },
+                                "name": "tags"
+                              },
+                              "name": "hits"
+                            },
+                            {
+                              "line": 9,
+                              "col": 32,
+                              "kind": "var",
+                              "name": "attacker"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "line": 9,
+                          "col": 32,
+                          "kind": "number",
+                          "value": 0,
+                          "integer": true
+                        }
+                      }
+                    },
+                    "right": {
+                      "line": 9,
+                      "col": 32,
+                      "kind": "string",
+                      "value": "/5"
+                    }
+                  },
+                  "viewer": {
+                    "line": 9,
+                    "col": 97,
+                    "kind": "var",
+                    "name": "attacker"
+                  }
+                },
+                {
+                  "line": 10,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 10,
+                    "col": 30,
+                    "kind": "binary",
+                    "op": "GREATER_EQUALS",
+                    "left": {
+                      "line": 10,
+                      "col": 30,
+                      "kind": "binary",
+                      "op": "OR_ELSE",
+                      "left": {
+                        "line": 10,
+                        "col": 30,
+                        "kind": "call",
+                        "name": "map_get",
+                        "args": [
+                          {
+                            "line": 10,
+                            "col": 26,
+                            "kind": "prop",
+                            "target": {
+                              "line": 10,
+                              "col": 21,
+                              "kind": "prop",
+                              "target": {
+                                "line": 10,
+                                "col": 17,
+                                "kind": "var",
+                                "name": "mob"
+                              },
+                              "name": "tags"
+                            },
+                            "name": "hits"
+                          },
+                          {
+                            "line": 10,
+                            "col": 31,
+                            "kind": "var",
+                            "name": "attacker"
+                          }
+                        ]
+                      },
+                      "right": {
+                        "line": 10,
+                        "col": 51,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    },
+                    "right": {
+                      "line": 10,
+                      "col": 57,
+                      "kind": "number",
+                      "value": 5,
+                      "integer": true
+                    }
+                  },
+                  "then": {
+                    "line": 10,
+                    "col": 59,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 11,
+                        "col": 17,
+                        "kind": "hide_entity",
+                        "entity": {
+                          "line": 11,
+                          "col": 22,
+                          "kind": "var",
+                          "name": "mob"
+                        },
+                        "target": {
+                          "line": 11,
+                          "col": 31,
+                          "kind": "var",
+                          "name": "attacker"
+                        }
+                      },
+                      {
+                        "line": 12,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 12,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "<green>You slew your zombie!"
+                        },
+                        "target": {
+                          "line": 12,
+                          "col": 56,
+                          "kind": "var",
+                          "name": "attacker"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ]
+}

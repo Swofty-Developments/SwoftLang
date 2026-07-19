@@ -1,10 +1,11 @@
 // SwoftLang live demo — a single, self-contained showcase script.
 //
 // Highlights: an online-mode (Mojang auth) server with world lighting, a files
-// storage backend, two flavours of persistent state (a per-player counter and a
-// Player-keyed map), a custom mob whose damage is handled INLINE by its own
-// on_hit block, a join greeting with a live scoreboard + tablist, and a /tp
-// command over an either<Player|Location> argument.
+// storage backend, a per-player visit counter, and a PER-VIEWER zombie: it is
+// auto-viewable OFF, shown only to the player who joined, tracks each player's
+// hits as a map<Player,Integer> stored AS METADATA ON THE ZOMBIE, shows each
+// viewer their own nametag, and is despawned just for them (viewer removed) on
+// their 5th hit. Plus a live per-player scoreboard + tablist and a /tp command.
 
 server {
     auth: mojang
@@ -23,27 +24,30 @@ storage {
 // per-player visit counter, kept across restarts
 persistent visits for Player: Integer = 0
 
-// how many hits each player has left on the counter mob, keyed by the player
-persistent hits: map<Player, Integer> = new_map()
-
-mob "hit_counter" {
+mob "zombie" {
     type: "ZOMBIE"
-    name: "<gold>Hit me! <yellow><bold>5</bold> <gold>left"
     health: 200
     ai: none
+    viewable: false                       // auto-viewable OFF — nobody sees it until shown
 
-    // fired whenever a player punches this mob; the whole hit-counter game
-    // lives right here, next to the mob it belongs to.
+    // per-player hit counts live ON the zombie, like NBT tags on an item
+    tags { hits: map<Player, Integer> }
+
+    // fired whenever a player punches this mob; the whole per-viewer game lives
+    // right here, next to the mob it belongs to.
     on_hit(attacker) {
         if attacker exists {
-            set left to (hits[attacker] otherwise 5) - 1
+            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
+            set count to mob.tags.hits[attacker] otherwise 0
 
-            if left <= 0 {
-                despawn mob
-                broadcast "<green>The hit-counter mob was destroyed!"
+            // this viewer sees their own nametag
+            set name of mob to "<gold>Zombie <yellow>${count}<gray>/5" for attacker
+
+            if count >= 5 {
+                hide mob from attacker             // despawn it just for them
+                send "<green>You slew your zombie!" to attacker
             } else {
-                set hits at attacker to left
-                set mob.name to "<gold>Hit me! <yellow><bold>${left}</bold> <gold>left"
+                send "<red>Hit! <gray>(${count}/5)" to attacker
             }
         }
     }
@@ -51,21 +55,20 @@ mob "hit_counter" {
 
 event PlayerJoin {
     execute {
-        if not event.first_spawn {
-            halt
-        }
-
         send "<green>Hello, <yellow>${event.player.name}<green>! Welcome to the SwoftLang demo." to event.player
-        send "<gray>Try <white>/tp</white>, watch the scoreboard, and punch the mob in front of you." to event.player
+        send "<gray>Punch your zombie 5 times to slay it — each player gets their own." to event.player
 
         set visits for event.player to (visits for event.player) + 1
 
         show scoreboard "hud" to event.player
         show tablist "tab" to event.player
 
-        // spawn the counter mob three blocks ahead of the player and light it up
-        spawn mob "hit_counter" at in_front_of(event.player, 3) as m
-        set m.glowing to true
+        // spawn a zombie 5 blocks ahead, name it for this player, and reveal it
+        // only to them
+        spawn mob "zombie" at in_front_of(event.player, 5) as z
+        set name of z to "<gold>Zombie <yellow>0<gray>/5" for event.player
+        set z.glowing to true
+        show z to event.player
     }
 }
 
@@ -111,5 +114,5 @@ scoreboard "hud" {
 tablist "tab" {
     update: every 2 seconds
     header: "<aqua><bold>SWOFTLANG</bold> <gray>live demo"
-    footer: "<green>Punch the mob • try /tp"
+    footer: "<green>Punch your zombie • try /tp"
 }

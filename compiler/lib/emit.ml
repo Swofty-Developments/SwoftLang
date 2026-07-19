@@ -401,6 +401,18 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
       [ ("kind", `String "set_npc_location"); ("name", `String snl_name);
         ("value", expr snl_value) ]
   | SRemoveNpc name -> node [ ("kind", `String "remove_npc"); ("name", `String name) ]
+  | SShowEntity { she_entity; she_target } ->
+    node
+      [ ("kind", `String "show_entity"); ("entity", expr she_entity);
+        ("target", expr she_target) ]
+  | SHideEntity { hie_entity; hie_target } ->
+    node
+      [ ("kind", `String "hide_entity"); ("entity", expr hie_entity);
+        ("target", expr hie_target) ]
+  | SSetEntityName { sen_entity; sen_value; sen_viewer } ->
+    node
+      [ ("kind", `String "set_entity_name"); ("entity", expr sen_entity);
+        ("value", expr sen_value); ("viewer", expr sen_viewer) ]
 
 and gui_open_fields go =
   [
@@ -666,6 +678,7 @@ let hologram h =
           ("per_viewer", `Bool (hologram_per_viewer h.h_lines));
           ("lines", statements h.h_lines);
         ]
+       @ (match h.h_viewable with Some v -> [ ("viewable", `Bool v) ] | None -> [])
        @ handlers_field h.h_handlers))
 
 let npc n =
@@ -677,6 +690,9 @@ let npc n =
           ("display_name", opt expr n.n_display_name);
           ("skin", opt npc_skin n.n_skin);
           ("look_at_players", `Bool n.n_look_at_players);
+        ]
+       @ (match n.n_viewable with Some v -> [ ("viewable", `Bool v) ] | None -> [])
+       @ [
           ( "on_click",
             opt
               (fun (binder, body) ->
@@ -807,6 +823,16 @@ let mob_drop dr =
          ("amount", opt const_number dr.dr_amount);
        ])
 
+(* typed mob tag block (W-viewers §2): each entry is either a type declaration
+   (an empty, typed, indexable store) or a value init (type inferred). Emitted
+   only when non-empty so pre-existing mob scripts stay byte-identical. *)
+let mob_tag_spec = function
+  | MTType dt -> `Assoc [ ("kind", `String "type"); ("type", data_type dt) ]
+  | MTValue e -> `Assoc [ ("kind", `String "value"); ("value", expr e) ]
+
+let mob_tags ts =
+  `Assoc (List.map (fun (t : mob_tag) -> (t.mt_name, mob_tag_spec t.mt_spec)) ts)
+
 let mob_decl mb =
   `Assoc
     (with_pos mb.mb_pos
@@ -823,6 +849,10 @@ let mob_decl mb =
           ("on_death", opt statements mb.mb_on_death);
           ("on_attack", opt statements mb.mb_on_attack);
         ]
+       (* viewable + typed tags are additive: only present when declared, so
+          pre-existing mob scripts emit byte-identical JSON (W-viewers) *)
+       @ (match mb.mb_viewable with Some v -> [ ("viewable", `Bool v) ] | None -> [])
+       @ (if mb.mb_tags = [] then [] else [ ("tags", mob_tags mb.mb_tags) ])
        (* on_hit is additive: only present when declared, so pre-existing mob
           scripts emit byte-identical JSON *)
        @ (match mb.mb_on_hit with

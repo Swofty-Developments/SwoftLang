@@ -41,4 +41,7 @@ fi
 # from demo/ to load ONLY demo/scripts/demo.sw.
 cd "$DEMO_DIR"
 echo "Starting SwoftLang demo on 0.0.0.0:25565 (online mode) - Ctrl-C to stop"
-exec "$JAVA" -jar "$JAR"
+# Forward extra args (e.g. --debug [port]) to the server. --debug hosts the
+# live tracer WebSocket (default port 25580) the VS Code extension connects to,
+# and hot-reloads demo/scripts/*.sw on save.
+exec "$JAVA" -jar "$JAR" "$@"

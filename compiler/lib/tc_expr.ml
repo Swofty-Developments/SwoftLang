@@ -212,6 +212,12 @@ and prop_type ctx bctx env whole target name =
           "cannot access property '%s' on either<%s>; narrow it first with 'is a'" name
           (String.concat "|" (List.map ty_to_string ts));
         TAny
+      (* W-viewers §2: a declared typed tag of the current mob resolves to its
+         declared type (an indexable map/list), so mob.tags.hits[k] typechecks
+         against map<K, V>. Undeclared keys fall through to the freeform
+         optional<Any> tag namespace below. *)
+      | TEntityTags when List.mem_assoc name ctx.cur_mob_tags ->
+        List.assoc name ctx.cur_mob_tags
       | _ -> (
         match props_of_ty owner with
         | None ->
@@ -583,6 +589,20 @@ and collection_builtin_type ctx bctx env pos name args =
 
 and builtin_call_type ctx bctx env pos name args looked =
   match name with
+  (* W-viewers: 'viewers of <entity>' -> list<Player> (getViewers) *)
+  | "viewers_of" ->
+    (match args with
+    | [ a ] ->
+      let t = type_of ctx bctx env a in
+      require_present ctx env a t ~use:"the entity in 'viewers of'";
+      (match unwrap t with
+      | TEntity | TMob | TAny -> ()
+      | _ ->
+        err ctx a.epos "'viewers of' expects an Entity or Mob (got %s)" (ty_to_string t))
+    | _ ->
+      err ctx pos "'viewers of' expects a single entity";
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
+    TList TPlayer
   | "map_get" | "map_set" | "map_has" | "map_delete" | "map_keys" | "map_size" ->
     map_builtin_type ctx bctx env pos name args
   | "sort" | "sort_by" | "sort_by_desc" | "reverse" | "shuffle" | "random_in" | "min_by"

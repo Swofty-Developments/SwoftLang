@@ -497,6 +497,8 @@ public final class NpcRuntime {
             super(EntityType.PLAYER, npc.entityUuid);
             this.npc = npc;
             setNoGravity(true);
+            // viewable:false => hidden until an explicit `show npc ... to ...`.
+            setAutoViewable(npc.model.viewable());
         }
 
         @Override

@@ -316,6 +316,12 @@ and parse_primary st =
     in
     let sc_body = !lambda_body_ref st in
     mke p (ESchedule { sc_after; sc_every; sc_name; sc_body })
+  (* W-viewers: 'viewers of <entity>' reads the entity's current viewer set as
+     list<Player> (Minestom Viewable#getViewers) *)
+  | Token.IDENT "viewers" when soft2 st "of" ->
+    ignore (advance st);
+    ignore (advance st);
+    mke p (ECall ("viewers_of", [ parse_postfix st ]))
   | Token.IDENT name when peek2_tok st = Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);

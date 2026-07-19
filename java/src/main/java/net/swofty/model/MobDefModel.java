@@ -27,7 +27,9 @@ public record MobDefModel(
         ExecuteBlock onDamage,
         ExecuteBlock onAttack,
         ExecuteBlock onHit,
-        Map<String, InlineHandler> handlers) {
+        Map<String, InlineHandler> handlers,
+        Map<String, MobTagDecl> tags,
+        boolean viewable) {
 
     /** Pre-on_hit shape, kept for existing call sites and smoke tests. */
     public MobDefModel(String id, String type, Expression name, double health,
@@ -45,6 +47,16 @@ public record MobDefModel(
             ExecuteBlock onAttack, ExecuteBlock onHit) {
         this(id, type, name, health, damage, speed, ai, drops,
                 onSpawn, onDeath, onDamage, onAttack, onHit, Map.of());
+    }
+
+    /** Pre-typed-tags/viewable shape (handlers but no tags block). */
+    public MobDefModel(String id, String type, Expression name, double health,
+            double damage, double speed, String ai, List<MobDropModel> drops,
+            ExecuteBlock onSpawn, ExecuteBlock onDeath, ExecuteBlock onDamage,
+            ExecuteBlock onAttack, ExecuteBlock onHit,
+            Map<String, InlineHandler> handlers) {
+        this(id, type, name, health, damage, speed, ai, drops,
+                onSpawn, onDeath, onDamage, onAttack, onHit, handlers, Map.of(), true);
     }
 
     /** The generic first-class handler for {@code event}, or null. */

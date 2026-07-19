@@ -592,6 +592,20 @@ let rec parse_statement st =
     ignore (advance st);
     ignore (advance st);
     mks p (SRemoveNpc (expect_string st "npc name"))
+  (* --- W-viewers: entity viewer control (must come AFTER every UI show/hide
+     form above; the UI keyword branches — scoreboard/tablist/bossbar/hologram/
+     display/toast — are matched first, so this only fires on an entity
+     expression like 'show z to p' / 'hide mob from attacker') --- *)
+  | Token.IDENT "show" ->
+    ignore (advance st);
+    let she_entity = parse_expr st in
+    expect st Token.TO "'to' in show statement";
+    mks p (SShowEntity { she_entity; she_target = parse_target st })
+  | Token.IDENT "hide" ->
+    ignore (advance st);
+    let hie_entity = parse_expr st in
+    expect_soft st "from";
+    mks p (SHideEntity { hie_entity; hie_target = parse_target st })
   | Token.IDENT "title" when starts_expression (peek2_tok st) ->
     ignore (advance st);
     let title = parse_expr st in
@@ -719,6 +733,18 @@ and parse_set st p =
     expect st Token.TO "'to' in set server motd statement";
     mks p (SSetServerMotd (parse_expr st))
   end
+  else if soft st "name" && soft2 st "of" then begin
+    (* W-viewers: 'set name of <entity> to <String> for <player>' — sets the
+       entity's overhead name for THAT viewer only (per-viewer metadata) *)
+    ignore (advance st);
+    ignore (advance st);
+    let sen_entity = parse_expr st in
+    expect st Token.TO "'to' in set name statement";
+    let sen_value = parse_expr st in
+    expect_soft st "for";
+    let sen_viewer = parse_target st in
+    mks p (SSetEntityName { sen_entity; sen_value; sen_viewer })
+  end
   else if
     soft st "nametag"
     && (soft2 st "of" || soft2 st "prefix" || soft2 st "suffix" || soft2 st "color")
@@ -814,7 +840,17 @@ and parse_set st p =
   end
   else begin
     let lvalue = parse_lvalue st in
-    if eat_soft st "at" then begin
+    if peek_tok st = Token.LBRACKET then begin
+      (* map index-set with bracket syntax: 'set m[k] to v' (and the typed-tag
+         form 'set mob.tags.hits[attacker] to N') desugars to map_set(m, k, v) *)
+      ignore (advance st);
+      let key = parse_expr st in
+      expect st Token.RBRACKET "']' after map index in 'set'";
+      expect st Token.TO "'to' after map index in 'set'";
+      let value = parse_expr st in
+      mks p (SCall ("map_set", [ lvalue; key; value ]))
+    end
+    else if eat_soft st "at" then begin
       (* map index-set sugar: 'set m at k to v' desugars to map_set(m, k, v)
          (phase 10) *)
       let key = parse_expr st in

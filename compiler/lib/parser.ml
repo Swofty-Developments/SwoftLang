@@ -107,6 +107,9 @@ let parse ~file source =
     | Token.IDENT "mob" -> mobs := parse_mob_decl st :: !mobs
     | Token.IDENT "on" when soft2 st "packet" ->
       packet_listeners := parse_packet_listener st :: !packet_listeners
+    (* 'on <EventName> { body }' — event-handler shorthand (must come after the
+       'on packet' branch above) *)
+    | Token.IDENT "on" -> events := parse_event_shorthand st :: !events
     | Token.IDENT "api" -> apis := parse_api_decl st :: !apis
     | Token.IDENT "every" -> schedulers := parse_sched_decl st :: !schedulers
     | Token.IDENT "fishing_loot" -> fishing_loots := parse_fishing_loot st :: !fishing_loots

@@ -709,7 +709,50 @@ public class SwoftJsonLoader {
                         : has(obj, "on_damaged") ? buildExecuteBlock(obj.get("on_damaged")) : null,
                 has(obj, "on_attack") ? buildExecuteBlock(obj.get("on_attack")) : null,
                 has(obj, "on_hit") ? buildExecuteBlock(obj.get("on_hit")) : null,
-                buildInlineHandlers(obj));
+                buildInlineHandlers(obj),
+                buildMobTags(obj),
+                !has(obj, "viewable") || obj.get("viewable").getAsBoolean());
+    }
+
+    /**
+     * Parse a mob {@code tags { ... }} block (W-viewers feature 2). Each entry is
+     * emitted by the compiler as either:
+     * <ul>
+     *   <li>a TYPE declaration — {@code {"kind":"type","type":{"base":"MAP"|"LIST"|...}}}
+     *       — seeded as an empty live container (map/list) or a none scalar; or</li>
+     *   <li>a value init — {@code {"kind":"value","value":<literal>}} (item style) —
+     *       seeded with the literal, its type inferred.</li>
+     * </ul>
+     * (A bare primitive/literal is tolerated as a value init for forward
+     * compatibility.) Undeclared keys still work at runtime as freeform NBT tags.
+     */
+    private static Map<String, net.swofty.model.MobTagDecl> buildMobTags(JsonObject obj) {
+        Map<String, net.swofty.model.MobTagDecl> tags = new LinkedHashMap<>();
+        if (!has(obj, "tags")) {
+            return tags;
+        }
+        for (Map.Entry<String, JsonElement> entry : obj.getAsJsonObject("tags").entrySet()) {
+            String key = entry.getKey();
+            JsonElement element = entry.getValue();
+            if (element.isJsonObject() && element.getAsJsonObject().has("kind")
+                    && "type".equals(element.getAsJsonObject().get("kind").getAsString())) {
+                String base = element.getAsJsonObject().getAsJsonObject("type")
+                        .get("base").getAsString();
+                net.swofty.model.MobTagDecl.Kind kind = switch (base.toUpperCase()) {
+                    case "MAP" -> net.swofty.model.MobTagDecl.Kind.MAP;
+                    case "LIST" -> net.swofty.model.MobTagDecl.Kind.LIST;
+                    default -> net.swofty.model.MobTagDecl.Kind.SCALAR;
+                };
+                tags.put(key, net.swofty.model.MobTagDecl.typed(key, kind));
+            } else if (element.isJsonObject() && element.getAsJsonObject().has("kind")
+                    && "value".equals(element.getAsJsonObject().get("kind").getAsString())) {
+                tags.put(key, net.swofty.model.MobTagDecl.value(key,
+                        scalarValue(element.getAsJsonObject().get("value"))));
+            } else {
+                tags.put(key, net.swofty.model.MobTagDecl.value(key, scalarValue(element)));
+            }
+        }
+        return tags;
     }
 
     /** Declaration scalar: raw JSON primitive or a literal expression node. */
@@ -1046,6 +1089,28 @@ public class SwoftJsonLoader {
                         SetBossbarPartStatement.Part.valueOf(obj.get("part").getAsString().toUpperCase()),
                         buildExpression(obj.getAsJsonObject("value")),
                         buildExpression(obj.getAsJsonObject("target")));
+            case "show_entity":
+                // show <entity> to <player|list<Player>|all> (W-viewers). The
+                // UI show-verbs keep their own kinds; this fires only when the
+                // object of `show` is an entity expression.
+                return new net.swofty.nativebridge.execution.commands.entities
+                        .ShowEntityStatement(
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        buildExpression(obj.getAsJsonObject("target")));
+            case "hide_entity":
+                // hide <entity> from <player|list<Player>|all> (W-viewers).
+                return new net.swofty.nativebridge.execution.commands.entities
+                        .HideEntityStatement(
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        buildExpression(obj.getAsJsonObject("target")));
+            case "set_entity_name":
+                // set name of <entity> to <String> for <player> (W-viewers,
+                // per-viewer overhead nametag).
+                return new net.swofty.nativebridge.execution.commands.entities
+                        .SetEntityNameForStatement(
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        buildExpression(obj.getAsJsonObject("value")),
+                        buildExpression(obj.getAsJsonObject("viewer")));
             case "show_hologram":
                 return new ShowHologramStatement(obj.get("name").getAsString(),
                         buildExpression(obj.getAsJsonObject("target")));
@@ -1508,6 +1573,10 @@ public class SwoftJsonLoader {
             }
             case "all_players":
                 return new AllPlayersExpression();
+            case "viewers_of":
+                // viewers of <entity> -> ordered list<Player> (W-viewers)
+                return new net.swofty.nativebridge.execution.expressions
+                        .ViewersOfExpression(buildExpression(obj.getAsJsonObject("entity")));
             case "schedule": {
                 // schedule [after d] [every d] { body } (design 6D)
                 JsonArray body = has(obj, "body") ? obj.getAsJsonArray("body")
@@ -1771,7 +1840,8 @@ public class SwoftJsonLoader {
                 optBoolean(obj, "look_at_players"),
                 buildNpcHandler(obj, "on_click"),
                 buildNpcHandler(obj, "on_left_click"),
-                buildInlineHandlers(obj));
+                buildInlineHandlers(obj),
+                !has(obj, "viewable") || obj.get("viewable").getAsBoolean());
     }
 
     /**

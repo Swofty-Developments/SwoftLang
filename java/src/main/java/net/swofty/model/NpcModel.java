@@ -32,7 +32,8 @@ public record NpcModel(
         boolean lookAtPlayers,
         ExecuteBlock onClick,
         ExecuteBlock onLeftClick,
-        Map<String, InlineHandler> handlers) {
+        Map<String, InlineHandler> handlers,
+        boolean viewable) {
 
     /** Pre-inline-handlers shape, kept for existing call sites/smoke tests. */
     public NpcModel(String name, Expression location, Expression displayName,
@@ -40,6 +41,14 @@ public record NpcModel(
             ExecuteBlock onLeftClick) {
         this(name, location, displayName, skin, lookAtPlayers, onClick,
                 onLeftClick, Map.of());
+    }
+
+    /** Pre-viewable shape (handlers but no viewable flag). */
+    public NpcModel(String name, Expression location, Expression displayName,
+            NpcSkinModel skin, boolean lookAtPlayers, ExecuteBlock onClick,
+            ExecuteBlock onLeftClick, Map<String, InlineHandler> handlers) {
+        this(name, location, displayName, skin, lookAtPlayers, onClick,
+                onLeftClick, handlers, true);
     }
 
     /** The generic first-class handler for {@code event}, or null. */

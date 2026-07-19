@@ -652,6 +652,30 @@ let check_mob_decl ctx mb =
                           allowed in declarations)"
       | None -> ())
     mb.mb_drops;
+  (* typed tag block (W-viewers §2): declare mob.tags.<name> with a type (an
+     empty, indexable store) or an item-style value init (type inferred). The
+     mapping is published on ctx while checking this mob's handlers so
+     mob.tags.<declared> resolves to its declared type. *)
+  let seen_tags = Hashtbl.create 8 in
+  let tag_tys =
+    List.map
+      (fun (mt : mob_tag) ->
+        if Hashtbl.mem seen_tags mt.mt_name then
+          err ctx mt.mt_pos "duplicate mob tag '%s'" mt.mt_name;
+        Hashtbl.replace seen_tags mt.mt_name ();
+        let ty =
+          match mt.mt_spec with
+          | MTType dt -> ty_of_dt dt
+          | MTValue e ->
+            let t = type_of ctx bctx menv e in
+            require_present ctx menv e t
+              ~use:(Printf.sprintf "the '%s' tag value" mt.mt_name);
+            t
+        in
+        (mt.mt_name, ty))
+      mb.mb_tags
+  in
+  ctx.cur_mob_tags <- tag_tys;
   let handler what bindings body =
     match body with
     | None -> ()
@@ -671,7 +695,8 @@ let check_mob_decl ctx mb =
     check_binding_shadows ctx mb.mb_pos "on_hit" [ "mob"; attacker ];
     let env = bind (bind empty_env "mob" TMob) attacker (TOptional TPlayer) in
     ignore (check_stmts ctx bctx env ss));
-  check_inline_handlers ctx KMob mb.mb_handlers
+  check_inline_handlers ctx KMob mb.mb_handlers;
+  ctx.cur_mob_tags <- []
 
 (* --- first-class holograms + npcs (GROUP C/D) --- *)
 

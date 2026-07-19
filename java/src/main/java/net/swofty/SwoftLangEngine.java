@@ -261,6 +261,7 @@ public class SwoftLangEngine {
         net.swofty.handlers.InlineHandlerRuntime.init();
         net.swofty.entities.ProjectileRuntime.init();
         NametagRuntime.init();
+        net.swofty.entities.EntityNametagRuntime.init();
         // dispenser block-entities: wipe stale inventories/state each reload
         net.swofty.blocks.DispenserRuntime.reset();
         net.swofty.blocks.DispenserRuntime.init();

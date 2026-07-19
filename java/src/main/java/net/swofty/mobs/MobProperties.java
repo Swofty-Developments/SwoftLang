@@ -54,5 +54,16 @@ public final class MobProperties {
                         net.minestom.server.entity.attribute.Attribute.MOVEMENT_SPEED)
                         .setBaseValue(((Number) value).doubleValue()),
                 null, Coercions::toDouble, ThreadPolicy.TICK));
+        // mob.tags: the typed-tag overlay (W-viewers feature 2). More specific
+        // than the Entity 'tags' row, so it wins the class walk; declared typed
+        // keys resolve to the live in-memory store, undeclared keys fall through
+        // to freeform NBT (and flush back via MobTagsView.flush).
+        PropertyRegistry.register(PropertyDef.passThroughHop("tags", SwoftMob.class,
+                MobTagsView::of,
+                (mob, value) -> ((MobTagsView) value).flush(),
+                value -> {
+                    throw new net.swofty.ScriptError(
+                            "mob.tags is not directly assignable - set mob.tags.<key> instead");
+                }));
     }
 }

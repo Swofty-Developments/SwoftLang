@@ -775,6 +775,31 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SRemoveNpc name ->
     check_decl_name ctx st.spos "npc" ctx.npcs name;
     (env, false)
+  (* --- W-viewers: entity viewer control + per-viewer nametag --- *)
+  | SShowEntity { she_entity; she_target } ->
+    check_viewer_entity ctx bctx env she_entity ~what:"show";
+    check_ui_target ctx bctx env she_target ~what:"show an entity";
+    (env, false)
+  | SHideEntity { hie_entity; hie_target } ->
+    check_viewer_entity ctx bctx env hie_entity ~what:"hide";
+    check_ui_target ctx bctx env hie_target ~what:"hide an entity";
+    (env, false)
+  | SSetEntityName { sen_entity; sen_value; sen_viewer } ->
+    check_viewer_entity ctx bctx env sen_entity ~what:"set the name of";
+    let vt = type_of ctx bctx env sen_value in
+    require_present ctx env sen_value vt ~use:"the entity name";
+    (match vt with
+    | TString | TAny -> ()
+    | _ -> err ctx sen_value.epos "entity name must be a String (got %s)" (ty_to_string vt));
+    (* the per-viewer nametag is sent to exactly one viewer: a single Player *)
+    let vwt = type_of ctx bctx env sen_viewer in
+    require_present ctx env sen_viewer vwt ~use:"the viewer";
+    (match vwt with
+    | TPlayer | TAny -> ()
+    | _ ->
+      err ctx sen_viewer.epos
+        "the per-viewer name target must be a Player (got %s)" (ty_to_string vwt));
+    (env, false)
 
 (* loop bodies execute more than once: widen the entry env to a fixpoint of
    entry ⊔ post-body (quiet passes) so facts and types the body invalidates
@@ -805,6 +830,16 @@ and check_ui_target ?(what = "show this") ctx bctx env t =
   if not (target_ok t tt) then
     err ctx t.epos "cannot %s to a %s; expected a Player, a list of players, or 'all'" what
       (ty_to_string tt)
+
+(* W-viewers: the subject of show/hide/set-name must be a live entity — an
+   Entity or a Mob (which is a subtype of Entity) *)
+and check_viewer_entity ctx bctx env e ~what =
+  let t = type_of ctx bctx env e in
+  require_present ctx env e t ~use:"the entity";
+  match unwrap t with
+  | TEntity | TMob | TAny -> ()
+  | _ ->
+    err ctx e.epos "can only %s an entity or mob (got %s)" what (ty_to_string t)
 
 (* --- phase-6 argument helpers --- *)
 

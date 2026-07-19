@@ -76,6 +76,11 @@ type ctx = {
      module description, for a precise "private" error instead of a generic
      unknown-function one *)
   import_privates : (string, string) Hashtbl.t;
+  (* W-viewers §2: the typed tags of the mob decl currently being checked
+     (name -> declared type). Set while checking a mob{}'s handler bodies so
+     mob.tags.<declared> resolves to its declared type (indexable maps/lists);
+     empty everywhere else, where mob.tags.<key> stays freeform optional<Any>. *)
+  mutable cur_mob_tags : (string * ty) list;
 }
 
 let err ctx (pos : pos) fmt =

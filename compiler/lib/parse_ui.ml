@@ -151,11 +151,26 @@ let parse_hologram st =
   let billboard = ref "center" in
   let billboard_pos = ref h_pos in
   let scale = ref None in
+  let viewable = ref None in
   let update = ref UManual in
   let lines = ref None in
   let handlers = ref [] in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     match peek_tok st with
+    | Token.IDENT "viewable" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'viewable'";
+      (match peek_tok st with
+      | Token.TRUE ->
+        ignore (advance st);
+        viewable := Some true
+      | Token.FALSE ->
+        ignore (advance st);
+        viewable := Some false
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'true' or 'false' after 'viewable:', found %s"
+             (Token.describe t)))
     | Token.IDENT "location" ->
       ignore (advance st);
       expect st Token.COLON "':' after 'location'";
@@ -200,6 +215,7 @@ let parse_hologram st =
     h_billboard = !billboard;
     h_billboard_pos = !billboard_pos;
     h_scale = !scale;
+    h_viewable = !viewable;
     h_update = !update;
     h_lines;
     h_handlers = List.rev !handlers;
@@ -228,11 +244,26 @@ let parse_npc st =
   let display_name = ref None in
   let skin = ref None in
   let look = ref false in
+  let viewable = ref None in
   let on_click = ref None in
   let on_left = ref None in
   let handlers = ref [] in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     match peek_tok st with
+    | Token.IDENT "viewable" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'viewable'";
+      (match peek_tok st with
+      | Token.TRUE ->
+        ignore (advance st);
+        viewable := Some true
+      | Token.FALSE ->
+        ignore (advance st);
+        viewable := Some false
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'true' or 'false' after 'viewable:', found %s"
+             (Token.describe t)))
     | Token.IDENT "location" ->
       ignore (advance st);
       expect st Token.COLON "':' after 'location'";
@@ -285,6 +316,7 @@ let parse_npc st =
     n_display_name = !display_name;
     n_skin = !skin;
     n_look_at_players = !look;
+    n_viewable = !viewable;
     n_on_click = !on_click;
     n_on_left_click = !on_left;
     n_handlers = List.rev !handlers;

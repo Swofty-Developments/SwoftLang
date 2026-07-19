@@ -164,6 +164,34 @@ let parse_drops st =
   expect st Token.RBRACE "'}' to close drops block";
   List.rev !drops
 
+(* a typed mob tag block: '{ name: <Type> | name: <value>, ... }'. A field whose
+   value position looks like a type (map/list/optional/either or a known type
+   name) is a TYPE declaration (an empty, typed, indexable tag store); otherwise
+   it is an item-style value init whose type is inferred (W-viewers §2). *)
+let looks_like_type st =
+  match peek_tok st with
+  | Token.EITHER -> true
+  | Token.IDENT ("optional" | "list" | "map") -> peek2_tok st = Token.LT
+  | Token.IDENT name -> Parse_type.base_of_name name <> None && peek2_tok st <> Token.LPAREN
+  | _ -> false
+
+let parse_mob_tags st =
+  expect st Token.LBRACE "'{' after 'tags'";
+  let entries = ref [] in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    let mt_pos = pos_here st in
+    let mt_name = expect_ident st "tag name" in
+    expect st Token.COLON "':' after tag name";
+    let mt_spec =
+      if looks_like_type st then MTType (Parse_type.parse_type st)
+      else MTValue (parse_expr st)
+    in
+    entries := { mt_name; mt_pos; mt_spec } :: !entries;
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close tags block";
+  List.rev !entries
+
 let parse_mob_decl st =
   let mb_pos = pos_here st in
   ignore (advance st);
@@ -175,6 +203,8 @@ let parse_mob_decl st =
   let damage = ref None in
   let speed = ref None in
   let ai = ref None in
+  let viewable = ref None in
+  let tags = ref [] in
   let drops = ref [] in
   let on_spawn = ref None in
   let on_death = ref None in
@@ -216,6 +246,25 @@ let parse_mob_decl st =
       if !ai <> None then dup "ai";
       let apos = pos_here st in
       ai := Some (expect_ident st "ai mode", apos)
+    | Token.IDENT "viewable" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'viewable'";
+      if !viewable <> None then dup "viewable";
+      (match peek_tok st with
+      | Token.TRUE ->
+        ignore (advance st);
+        viewable := Some true
+      | Token.FALSE ->
+        ignore (advance st);
+        viewable := Some false
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'true' or 'false' after 'viewable:', found %s"
+             (Token.describe t)))
+    | Token.IDENT "tags" ->
+      ignore (advance st);
+      if !tags <> [] then dup "tags";
+      tags := parse_mob_tags st
     | Token.IDENT "drops" ->
       ignore (advance st);
       if !drops <> [] then dup "drops";
@@ -263,6 +312,8 @@ let parse_mob_decl st =
     mb_damage = !damage;
     mb_speed = !speed;
     mb_ai = !ai;
+    mb_viewable = !viewable;
+    mb_tags = !tags;
     mb_drops = !drops;
     mb_on_spawn = !on_spawn;
     mb_on_death = !on_death;

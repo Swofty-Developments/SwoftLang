@@ -137,6 +137,17 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 2 && args[0].equals("--perviewer-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = PerViewerSmoke.run(args[1]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 1 && args[0].equals("--wevents-probe")) {
             // MinecraftServer.init() starts non-daemon threads: always exit
             int code;

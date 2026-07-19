@@ -31,6 +31,7 @@ let make_ctx file =
     schedules = Hashtbl.create 8;
     mod_vars = Hashtbl.create 8;
     import_privates = Hashtbl.create 8;
+    cur_mob_tags = [];
   }
 
 (* Collect every named-schedule name declared in a script: top-level
@@ -177,6 +178,16 @@ let collect_sched_names (script : Ast.script) : string list =
     | SSendPacket { sp_fields; sp_target; _ } ->
       List.iter (fun (_, v) -> we v) sp_fields;
       we sp_target
+    | SShowEntity { she_entity; she_target } ->
+      we she_entity;
+      we she_target
+    | SHideEntity { hie_entity; hie_target } ->
+      we hie_entity;
+      we hie_target
+    | SSetEntityName { sen_entity; sen_value; sen_viewer } ->
+      we sen_entity;
+      we sen_value;
+      we sen_viewer
     | SShowDisplay { sh_display; sh_target } ->
       we sh_display;
       we sh_target

@@ -58,6 +58,14 @@ public class SwoftMob extends EntityCreature {
     private static final long ATTACK_COOLDOWN_MILLIS = 500;
 
     private final MobDefModel def;
+    /**
+     * Live, in-memory store for the mob's declared typed tags (design
+     * W-viewers feature 2). A {@code map<Player,Integer>} tag is a real
+     * {@link net.swofty.runtime.MapValue} here — indexable and mutable with no
+     * NBT serialization — sitting alongside (and shadowing, by key) the freeform
+     * NBT {@code entity.tags} store. Seeded once at construction.
+     */
+    private final Map<String, Object> liveTags = new java.util.concurrent.ConcurrentHashMap<>();
     private volatile String nameOverride;
     private volatile double attackDamage;
     private volatile long lastAttackMillis;
@@ -73,9 +81,41 @@ public class SwoftMob extends EntityCreature {
         getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(def.speed());
         getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(def.damage());
 
+        // viewable:false => hidden until an explicit `show <mob> to ...`. Set
+        // before spawn so setInstance never auto-adds viewers.
+        setAutoViewable(def.viewable());
+        seedTypedTags();
+
         setCustomNameVisible(true);
         renderName();
         applyAi();
+    }
+
+    /** Seed the declared typed tags with live empty containers / init values. */
+    private void seedTypedTags() {
+        for (net.swofty.model.MobTagDecl tag : def.tags().values()) {
+            switch (tag.kind()) {
+                case MAP -> liveTags.put(tag.name(), new net.swofty.runtime.MapValue());
+                case LIST -> liveTags.put(tag.name(), new java.util.ArrayList<>());
+                case SCALAR -> liveTags.put(tag.name(),
+                        tag.initValue() == null ? NoneValue.INSTANCE : tag.initValue());
+            }
+        }
+    }
+
+    /** True when {@code key} is a declared typed/value tag (live store). */
+    public boolean hasLiveTag(String key) {
+        return liveTags.containsKey(key);
+    }
+
+    /** The live value of a declared tag, or null when undeclared. */
+    public Object liveTag(String key) {
+        return liveTags.get(key);
+    }
+
+    /** The mutable live typed-tag store (used by {@code mob.tags} writes). */
+    public Map<String, Object> liveTags() {
+        return liveTags;
     }
 
     public static EntityType resolveType(String type) {
@@ -216,6 +256,7 @@ public class SwoftMob extends EntityCreature {
     @Override
     public void remove() {
         MobRegistry.untrack(this);
+        net.swofty.entities.EntityNametagRuntime.forget(this);
         super.remove();
     }
 
