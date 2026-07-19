@@ -48,6 +48,11 @@ and expr_node =
   | EBinary of string * expr * expr
   | EUnary of string * expr
   | ECall of string * expr list
+  (* W-collections: method call on a receiver — <receiver>.<name>(<args>).
+     Resolves by the receiver's static type (list<T>/map<K,V>/String) against
+     the per-type method tables in registry.ml. Pure methods are expressions;
+     mutating methods are statements (SMethodCall). *)
+  | EMethod of expr * string * expr list
   | EAllPlayers
   | EList of expr list
   | EProp of expr * string
@@ -107,6 +112,10 @@ and stmt_node =
      key and the V value over each entry of the map *)
   | SForeachMap of { fm_key : string; fm_val : string; fm_map : expr; fm_body : stmt }
   | SCall of string * expr list
+  (* W-collections: a bare method-call statement — <receiver>.<name>(<args>) —
+     for the in-place mutating methods (list add/remove/..., map set/delete/...).
+     Carries the receiver, method name, and arguments. *)
+  | SMethodCall of expr * string * expr list
   | SReturn of expr option
   | SWait of expr * string
   | SSpawn of string * expr list

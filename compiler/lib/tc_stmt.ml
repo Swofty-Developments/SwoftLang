@@ -176,6 +176,9 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SCall (name, args) ->
     ignore (call_type ctx bctx env st.spos name args);
     (env, false)
+  | SMethodCall (recv, name, args) ->
+    ignore (check_method ctx bctx env st.spos recv name args ~as_stmt:true);
+    (env, false)
   | SReturn v ->
     (match bctx.ret_sink with
     | Some (vals, bare) -> (

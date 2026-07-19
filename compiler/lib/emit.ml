@@ -76,6 +76,10 @@ let rec expr (e : Ast.expr) : Yojson.Safe.t =
   | ECall (name, args) ->
     node
       [ ("kind", `String "call"); ("name", `String name); ("args", `List (List.map expr args)) ]
+  | EMethod (recv, name, args) ->
+    node
+      [ ("kind", `String "method_call"); ("receiver", expr recv); ("name", `String name);
+        ("args", `List (List.map expr args)) ]
   | EAllPlayers -> node [ ("kind", `String "all_players") ]
   | EList items -> node [ ("kind", `String "list"); ("items", `List (List.map expr items)) ]
   | EProp (target, name) ->
@@ -167,6 +171,10 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
   | SCall (name, args) ->
     node
       [ ("kind", `String "call"); ("name", `String name); ("args", `List (List.map expr args)) ]
+  | SMethodCall (recv, name, args) ->
+    node
+      [ ("kind", `String "method_call_stmt"); ("receiver", expr recv); ("name", `String name);
+        ("args", `List (List.map expr args)) ]
   | SReturn value -> node [ ("kind", `String "return"); ("value", opt expr value) ]
   | SWait (amount, unit) ->
     node [ ("kind", `String "wait"); ("amount", expr amount); ("unit", `String unit) ]
@@ -589,6 +597,7 @@ let references_player_expr =
     | EBinary (_, a, b) -> e_p a || e_p b
     | EUnary (_, a) -> e_p a
     | ECall (_, args) | EList args -> List.exists e_p args
+    | EMethod (recv, _, args) -> e_p recv || List.exists e_p args
     | EPersistGet (_, s) -> Option.fold ~none:false ~some:e_p s
     | EMap fs -> List.exists (fun (_, v) -> e_p v) fs
     | EMapLit es -> List.exists (fun (_, v) -> e_p v) es

@@ -989,7 +989,28 @@ let all_event_names =
         else [ short; simple ])
       Events_data.generated_events
 
+(* W-collections: zero-arg accessors on lists/maps/strings use property form
+   (no parens), reusing the ordinary prop-access machinery. list<T>: size /
+   is_empty + first/last (optional<T>). map<K,V>: size / is_empty + keys
+   (list<K>) / values (list<V>). String: length. Everything that TAKES an
+   argument is a method (see the method tables below). *)
+let list_props elem =
+  [
+    ro "size" TInteger;
+    ro "is_empty" TBoolean;
+    ro "first" (TOptional elem);
+    ro "last" (TOptional elem);
+  ]
+
+let map_props k v =
+  [ ro "size" TInteger; ro "is_empty" TBoolean; ro "keys" (TList k); ro "values" (TList v) ]
+
+let string_props = [ ro "length" TInteger ]
+
 let props_of_ty = function
+  | TString -> Some string_props
+  | TList elem -> Some (list_props elem)
+  | TMap (k, v) -> Some (map_props k v)
   (* Player <: OfflinePlayer (phase 8): the OfflinePlayer-only rows compose
      onto Player values *)
   | TPlayer -> Some (player_props @ offline_extra_props)
@@ -1278,6 +1299,123 @@ let builtins =
   ]
 
 let find_builtin name = List.find_opt (fun bl -> bl.b_name = name) builtins
+
+(* --- W-collections: method tables keyed by base type (List / Map / String).
+
+   Method parameter and return types are written against the receiver's type
+   variables so one entry covers every instantiation:
+     SElem = list element T, SKey = map key K, SVal = map value V,
+     SSelf = the receiver's own type (list<T> / map<K,V> / String).
+   Concrete leaves (SInt/SStr/SBool/SAny) and the SList/SOpt constructors let a
+   method mention Integer / String / Boolean / list<..> / optional<..>.
+   SFn is a lambda parameter: its argument schemes plus the return ROLE it must
+   satisfy — FBool (filtered), FComparable (sorted_by/min_by/max_by keys), or
+   FFree (mapped, whose element type flows out as U).
+   me_mut splits pure EXPRESSION methods (false) from in-place MUTATING
+   statement methods (true); the typechecker rejects the wrong context.
+
+   These are a second entry point to the SAME runtime as the free builtins
+   (map_get/sort/uppercase/...), which stay as deprecated aliases. *)
+type fn_role =
+  | FBool (* the lambda must return a Boolean (filtered) *)
+  | FComparable (* the lambda must return a Number or String key *)
+  | FFree (* the lambda return is a free element U (mapped) *)
+
+type mscheme =
+  | SElem
+  | SKey
+  | SVal
+  | SSelf
+  | SInt
+  | SStr
+  | SBool
+  | SAny
+  | SList of mscheme
+  | SOpt of mscheme
+  | SFn of mscheme list * fn_role
+
+type mret =
+  | RScheme of mscheme
+  | RMappedList (* list<U> where U is the (single) fn argument's return type *)
+
+type meth = {
+  me_name : string;
+  me_params : mscheme list;
+  me_ret : mret;
+  me_mut : bool; (* true = in-place mutation, statement-only; false = pure expr *)
+}
+
+let me name params ret mut = { me_name = name; me_params = params; me_ret = ret; me_mut = mut }
+let pe name params ret = me name params (RScheme ret) false (* pure expression method *)
+let mu name params = me name params (RScheme SSelf) true (* mutating statement method *)
+
+let map_methods =
+  [
+    (* expression (pure) *)
+    pe "get" [ SKey ] (SOpt SVal);
+    pe "has" [ SKey ] SBool;
+    pe "get_or" [ SKey; SVal ] SVal;
+    pe "sorted_by_key" [] SSelf;
+    pe "sorted_by_key_desc" [] SSelf;
+    pe "sorted_by_value" [] SSelf;
+    pe "sorted_by_value_desc" [] SSelf;
+    pe "sorted_by" [ SFn ([ SKey; SVal ], FComparable) ] SSelf;
+    (* statement (mutating in place) *)
+    mu "set" [ SKey; SVal ];
+    mu "delete" [ SKey ];
+    mu "clear" [];
+    mu "put_all" [ SSelf ];
+  ]
+
+let list_methods =
+  [
+    (* expression (pure) *)
+    pe "contains" [ SElem ] SBool;
+    pe "index_of" [ SElem ] (SOpt SInt);
+    pe "get" [ SInt ] (SOpt SElem);
+    pe "joined" [ SStr ] SStr;
+    pe "count" [ SElem ] SInt;
+    pe "sorted" [] SSelf;
+    pe "sorted_by" [ SFn ([ SElem ], FComparable) ] SSelf;
+    pe "sorted_by_desc" [ SFn ([ SElem ], FComparable) ] SSelf;
+    pe "reversed" [] SSelf;
+    pe "shuffled" [] SSelf;
+    pe "filtered" [ SFn ([ SElem ], FBool) ] SSelf;
+    me "mapped" [ SFn ([ SElem ], FFree) ] RMappedList false;
+    pe "taken" [ SInt ] SSelf;
+    pe "dropped" [ SInt ] SSelf;
+    pe "min_by" [ SFn ([ SElem ], FComparable) ] (SOpt SElem);
+    pe "max_by" [ SFn ([ SElem ], FComparable) ] (SOpt SElem);
+    (* statement (mutating in place) *)
+    mu "add" [ SElem ];
+    mu "add_all" [ SSelf ];
+    mu "remove" [ SElem ];
+    mu "remove_at" [ SInt ];
+    mu "clear" [];
+    mu "insert" [ SInt; SElem ];
+  ]
+
+let string_methods =
+  [
+    pe "length" [] SInt;
+    pe "upper" [] SStr;
+    pe "lower" [] SStr;
+    pe "trimmed" [] SStr;
+    pe "contains" [ SStr ] SBool;
+    pe "starts_with" [ SStr ] SBool;
+    pe "ends_with" [ SStr ] SBool;
+    pe "replace" [ SStr; SStr ] SStr;
+    pe "split" [ SStr ] (SList SStr);
+    pe "substring" [ SInt; SInt ] SStr;
+    pe "index_of" [ SStr ] (SOpt SInt);
+    pe "repeated" [ SInt ] SStr;
+    pe "reversed" [] SStr;
+    pe "padded_left" [ SInt; SStr ] SStr;
+    pe "padded_right" [ SInt; SStr ] SStr;
+  ]
+
+let find_method methods name = List.find_opt (fun m -> m.me_name = name) methods
+let method_names methods = List.map (fun m -> m.me_name) methods
 
 (* --- enums --- *)
 

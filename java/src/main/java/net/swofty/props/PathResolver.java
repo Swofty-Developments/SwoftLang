@@ -1,6 +1,7 @@
 package net.swofty.props;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import net.minestom.server.entity.Player;
 import net.swofty.ScriptError;
 import net.swofty.async.TickDispatch;
+import net.swofty.runtime.MapValue;
 
 /**
  * Shared property-path resolution used by structured prop/set_prop chains AND
@@ -31,6 +33,53 @@ public final class PathResolver {
     public static Object getProperty(Object owner, String name, int line, int col) {
         if (NoneValue.isNone(owner)) {
             return NoneValue.INSTANCE;
+        }
+        // W-collections: zero-arg property-form accessors on script maps, lists
+        // and strings (size / is_empty / keys / values / first / last / length).
+        // These compute a value; they are NOT key lookups (index syntax m[k] is
+        // the key-lookup path). Checked before the generic Map branch because a
+        // MapValue is itself a Map. keys/values return a fresh list so callers
+        // can loop or mutate without touching the backing map.
+        if (owner instanceof MapValue mapValue) {
+            switch (name) {
+                case "size":
+                    return mapValue.size();
+                case "is_empty":
+                    return mapValue.isEmpty();
+                case "keys":
+                    return new ArrayList<Object>(mapValue.keySet());
+                case "values":
+                    return new ArrayList<Object>(mapValue.values());
+                default:
+                    break; // fall through to the generic key-lookup below
+            }
+        }
+        if (owner instanceof List<?> list) {
+            switch (name) {
+                case "size":
+                    return list.size();
+                case "is_empty":
+                    return list.isEmpty();
+                case "first": {
+                    if (list.isEmpty()) {
+                        return NoneValue.INSTANCE;
+                    }
+                    Object value = list.get(0);
+                    return value == null ? NoneValue.INSTANCE : value;
+                }
+                case "last": {
+                    if (list.isEmpty()) {
+                        return NoneValue.INSTANCE;
+                    }
+                    Object value = list.get(list.size() - 1);
+                    return value == null ? NoneValue.INSTANCE : value;
+                }
+                default:
+                    break;
+            }
+        }
+        if (owner instanceof String string && name.equals("length")) {
+            return string.length();
         }
         if (owner instanceof Map<?, ?> map) {
             Object value = map.get(name);

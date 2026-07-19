@@ -967,6 +967,12 @@ public class SwoftJsonLoader {
             case "call":
                 return new FunctionCallStatement(obj.get("name").getAsString(),
                         buildExpressionList(obj.getAsJsonArray("args")));
+            case "method_call_stmt":
+                // <receiver>.<name>(<args>) in-place mutating collection method
+                return new net.swofty.nativebridge.execution.commands.MethodCallStatement(
+                        buildExpression(obj.getAsJsonObject("receiver")),
+                        obj.get("name").getAsString(),
+                        buildExpressionList(obj.getAsJsonArray("args")));
             case "return":
                 return new ReturnStatement(
                         has(obj, "value") ? buildExpression(obj.getAsJsonObject("value")) : null);
@@ -1483,6 +1489,12 @@ public class SwoftJsonLoader {
                         buildExpression(obj.getAsJsonObject("operand")));
             case "call":
                 return new FunctionCallExpression(obj.get("name").getAsString(),
+                        buildExpressionList(obj.getAsJsonArray("args")));
+            case "method_call":
+                // <receiver>.<name>(<args>) pure collection/string method
+                return new net.swofty.nativebridge.execution.expressions.MethodCallExpression(
+                        buildExpression(obj.getAsJsonObject("receiver")),
+                        obj.get("name").getAsString(),
                         buildExpressionList(obj.getAsJsonArray("args")));
             case "index":
                 // target[key] read (map_get / list index) - design phase-10 §1

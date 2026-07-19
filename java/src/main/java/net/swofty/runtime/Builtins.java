@@ -565,14 +565,8 @@ public final class Builtins {
             }
             case "shuffle": {
                 List<Object> copy = requireListCopy(name, evaluateArg(context, args, 0));
-                // Fisher-Yates via ThreadLocalRandom; the copy is a NEW list, so
-                // the argument is never mutated.
-                for (int i = copy.size() - 1; i > 0; i--) {
-                    int j = ThreadLocalRandom.current().nextInt(i + 1);
-                    Object tmp = copy.get(i);
-                    copy.set(i, copy.get(j));
-                    copy.set(j, tmp);
-                }
+                // the copy is a NEW list, so the argument is never mutated
+                shuffleInPlace(copy);
                 return copy;
             }
 
@@ -622,6 +616,368 @@ public final class Builtins {
                 System.err.println("Error: Unknown function: " + name);
                 return null;
         }
+    }
+
+    // ==================================================================
+    // W-collections: method-call dispatch (receiver.name(args))
+    //
+    // A second entry point onto the SAME runtime the free builtins use: the
+    // sort/random/map-op helpers below (sortNatural, sortByKey, extreme,
+    // sortedMap, sortedMap, mapKey, requireCallable, shuffleInPlace) are shared,
+    // no logic is duplicated. Dispatch is by the receiver's runtime type;
+    // mutating list/map methods mutate the live value in place, pure methods
+    // return new values.
+    // ==================================================================
+
+    /**
+     * Dispatch {@code receiver.name(args)} by the receiver's runtime type.
+     * The static checker has already validated that the method exists on the
+     * receiver's type and that arity/arg types line up, so these switches only
+     * re-check what the runtime needs (a live List for mutation, key coercion).
+     */
+    static Object callMethod(ExecutionContext context, Object receiver, String name,
+            List<Expression> args) {
+        if (receiver instanceof MapValue map) {
+            return mapMethod(context, map, name, args);
+        }
+        if (receiver instanceof String str) {
+            return stringMethod(context, str, name, args);
+        }
+        if (receiver instanceof Collection<?>) {
+            return listMethod(context, receiver, name, args);
+        }
+        throw new ScriptError("cannot call method '" + name + "' on "
+                + Values.displayString(receiver));
+    }
+
+    // -------------------------- map methods ---------------------------
+
+    private static Object mapMethod(ExecutionContext context, MapValue map, String name,
+            List<Expression> args) {
+        switch (name) {
+            // ---- pure expression methods ----
+            case "get": {
+                Object value = map.get(mapKey(name, evaluateArg(context, args, 0)));
+                return value != null ? value : NoneValue.INSTANCE;
+            }
+            case "has":
+                return map.containsKey(mapKey(name, evaluateArg(context, args, 0)));
+            case "get_or": {
+                Object value = map.get(mapKey(name, evaluateArg(context, args, 0)));
+                // unwrap_or: present value, else the caller's default
+                return value != null ? value : evaluateArg(context, args, 1);
+            }
+            case "sorted_by_key":
+                return sortedMap(name, map, false, (k, v) -> k, context, null);
+            case "sorted_by_key_desc":
+                return sortedMap(name, map, true, (k, v) -> k, context, null);
+            case "sorted_by_value":
+                return sortedMap(name, map, false, (k, v) -> v, context, null);
+            case "sorted_by_value_desc":
+                return sortedMap(name, map, true, (k, v) -> v, context, null);
+            case "sorted_by": {
+                SwoftCallable key = requireCallable(name, evaluateArg(context, args, 0));
+                return sortedMap(name, map, false, null, context, key);
+            }
+            // ---- mutating statement methods (live map) ----
+            case "set": {
+                Object key = mapKey(name, evaluateArg(context, args, 0));
+                Object value = evaluateArg(context, args, 1);
+                // storing none is a delete, matching map_set / index-assign
+                if (NoneValue.isNone(value)) {
+                    map.remove(key);
+                } else {
+                    map.put(key, value);
+                }
+                return map;
+            }
+            case "delete":
+                map.remove(mapKey(name, evaluateArg(context, args, 0)));
+                return map;
+            case "clear":
+                map.clear();
+                return map;
+            case "put_all": {
+                MapValue other = requireMap(name, evaluateArg(context, args, 0));
+                // per-entry put() (not putAll) so MapValue's synchronized
+                // mutator guards the persistence flush thread
+                for (Map.Entry<Object, Object> entry : other.entrySet()) {
+                    map.put(entry.getKey(), entry.getValue());
+                }
+                return map;
+            }
+            default:
+                throw new ScriptError("unknown map method '" + name + "'");
+        }
+    }
+
+    // -------------------------- list methods --------------------------
+
+    private static Object listMethod(ExecutionContext context, Object receiver, String name,
+            List<Expression> args) {
+        switch (name) {
+            // ---- pure expression methods ----
+            case "contains":
+                return listIndexOf(readList(name, receiver), evaluateArg(context, args, 0)) >= 0;
+            case "index_of": {
+                int index = listIndexOf(readList(name, receiver), evaluateArg(context, args, 0));
+                return index >= 0 ? (Object) index : NoneValue.INSTANCE;
+            }
+            case "get": {
+                List<Object> list = readList(name, receiver);
+                int index = intArg(context, name, args, 0);
+                return index >= 0 && index < list.size() ? list.get(index) : NoneValue.INSTANCE;
+            }
+            case "joined": {
+                String separator = strArg(context, args, 0);
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                for (Object element : readList(name, receiver)) {
+                    if (!first) {
+                        sb.append(separator);
+                    }
+                    first = false;
+                    sb.append(Values.displayString(element));
+                }
+                return sb.toString();
+            }
+            case "count": {
+                Object needle = evaluateArg(context, args, 0);
+                int count = 0;
+                for (Object element : readList(name, receiver)) {
+                    if (Values.objectsEqual(element, needle)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+            case "sorted": {
+                List<Object> copy = requireListCopy(name, receiver);
+                sortNatural(name, copy, false);
+                return copy;
+            }
+            case "sorted_by":
+            case "sorted_by_desc": {
+                List<Object> copy = requireListCopy(name, receiver);
+                SwoftCallable key = requireCallable(name, evaluateArg(context, args, 0));
+                sortByKey(context, name, copy, key, name.endsWith("_desc"));
+                return copy;
+            }
+            case "reversed": {
+                List<Object> copy = requireListCopy(name, receiver);
+                java.util.Collections.reverse(copy);
+                return copy;
+            }
+            case "shuffled": {
+                List<Object> copy = requireListCopy(name, receiver);
+                shuffleInPlace(copy);
+                return copy;
+            }
+            case "filtered": {
+                List<Object> copy = requireListCopy(name, receiver);
+                SwoftCallable predicate = requireCallable(name, evaluateArg(context, args, 0));
+                List<Object> out = new ArrayList<>();
+                for (Object element : copy) {
+                    if (Values.toBoolean(applyKey(context, name, predicate, element))) {
+                        out.add(element);
+                    }
+                }
+                return out;
+            }
+            case "mapped": {
+                List<Object> copy = requireListCopy(name, receiver);
+                SwoftCallable transform = requireCallable(name, evaluateArg(context, args, 0));
+                List<Object> out = new ArrayList<>(copy.size());
+                for (Object element : copy) {
+                    out.add(applyKey(context, name, transform, element));
+                }
+                return out;
+            }
+            case "taken": {
+                List<Object> list = readList(name, receiver);
+                int n = Math.clamp(intArg(context, name, args, 0), 0, list.size());
+                return new ArrayList<>(list.subList(0, n));
+            }
+            case "dropped": {
+                List<Object> list = readList(name, receiver);
+                int n = Math.clamp(intArg(context, name, args, 0), 0, list.size());
+                return new ArrayList<>(list.subList(n, list.size()));
+            }
+            case "min_by":
+            case "max_by": {
+                List<Object> copy = requireListCopy(name, receiver);
+                SwoftCallable key = requireCallable(name, evaluateArg(context, args, 0));
+                return extreme(context, name, copy, key, name.equals("max_by"));
+            }
+            // ---- mutating statement methods (live list) ----
+            case "add":
+                liveList(name, receiver).add(evaluateArg(context, args, 0));
+                return receiver;
+            case "add_all": {
+                List<Object> other = requireListCopy(name, evaluateArg(context, args, 0));
+                liveList(name, receiver).addAll(other);
+                return receiver;
+            }
+            case "remove": {
+                List<Object> live = liveList(name, receiver);
+                Object needle = evaluateArg(context, args, 0);
+                int index = listIndexOf(live, needle);
+                if (index >= 0) {
+                    live.remove(index);
+                }
+                return receiver;
+            }
+            case "remove_at": {
+                List<Object> live = liveList(name, receiver);
+                int index = intArg(context, name, args, 0);
+                if (index >= 0 && index < live.size()) {
+                    live.remove(index);
+                }
+                return receiver;
+            }
+            case "clear":
+                liveList(name, receiver).clear();
+                return receiver;
+            case "insert": {
+                List<Object> live = liveList(name, receiver);
+                int index = Math.clamp(intArg(context, name, args, 0), 0, live.size());
+                live.add(index, evaluateArg(context, args, 1));
+                return receiver;
+            }
+            default:
+                throw new ScriptError("unknown list method '" + name + "'");
+        }
+    }
+
+    // ------------------------- string methods -------------------------
+
+    private static Object stringMethod(ExecutionContext context, String str, String name,
+            List<Expression> args) {
+        switch (name) {
+            case "length":
+                return str.length();
+            case "upper":
+                return str.toUpperCase(Locale.ROOT);
+            case "lower":
+                return str.toLowerCase(Locale.ROOT);
+            case "trimmed":
+                return str.trim();
+            case "contains":
+                return str.contains(strArg(context, args, 0));
+            case "starts_with":
+                return str.startsWith(strArg(context, args, 0));
+            case "ends_with":
+                return str.endsWith(strArg(context, args, 0));
+            case "replace":
+                return str.replace(strArg(context, args, 0), strArg(context, args, 1));
+            case "split": {
+                String separator = strArg(context, args, 0);
+                List<Object> out = new ArrayList<>();
+                // literal (non-regex) split; empty separator splits every char
+                if (separator.isEmpty()) {
+                    for (int i = 0; i < str.length(); i++) {
+                        out.add(String.valueOf(str.charAt(i)));
+                    }
+                } else {
+                    for (String part : str.split(java.util.regex.Pattern.quote(separator), -1)) {
+                        out.add(part);
+                    }
+                }
+                return out;
+            }
+            case "substring": {
+                int begin = Math.clamp(intArg(context, name, args, 0), 0, str.length());
+                int end = Math.clamp(intArg(context, name, args, 1), begin, str.length());
+                return str.substring(begin, end);
+            }
+            case "index_of": {
+                int index = str.indexOf(strArg(context, args, 0));
+                return index >= 0 ? (Object) index : NoneValue.INSTANCE;
+            }
+            case "repeated": {
+                int n = Math.max(0, intArg(context, name, args, 0));
+                return str.repeat(n);
+            }
+            case "reversed":
+                return new StringBuilder(str).reverse().toString();
+            case "padded_left":
+                return pad(str, intArg(context, name, args, 0), strArg(context, args, 1), true);
+            case "padded_right":
+                return pad(str, intArg(context, name, args, 0), strArg(context, args, 1), false);
+            default:
+                throw new ScriptError("unknown string method '" + name + "'");
+        }
+    }
+
+    // ------------------------- method helpers -------------------------
+
+    /** Read-only view of a list receiver (any Collection), copied if needed. */
+    private static List<Object> readList(String method, Object value) {
+        if (value instanceof List<?> list) {
+            @SuppressWarnings("unchecked")
+            List<Object> typed = (List<Object>) list;
+            return typed;
+        }
+        if (value instanceof Collection<?> collection) {
+            return new ArrayList<>(collection);
+        }
+        throw new ScriptError(method + "() expects a list, got: " + Values.displayString(value));
+    }
+
+    /** The live, mutable list backing a receiver; required by mutating methods. */
+    private static List<Object> liveList(String method, Object value) {
+        if (value instanceof List<?> list) {
+            @SuppressWarnings("unchecked")
+            List<Object> typed = (List<Object>) list;
+            return typed;
+        }
+        throw new ScriptError(method + "() can only mutate a list value, got: "
+                + Values.displayString(value));
+    }
+
+    /** First index of a value by numeric-aware equality, or -1 if absent. */
+    private static int listIndexOf(List<Object> list, Object needle) {
+        for (int i = 0; i < list.size(); i++) {
+            if (Values.objectsEqual(list.get(i), needle)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Fisher-Yates shuffle in place via ThreadLocalRandom. */
+    private static void shuffleInPlace(List<Object> list) {
+        for (int i = list.size() - 1; i > 0; i--) {
+            int j = ThreadLocalRandom.current().nextInt(i + 1);
+            Object tmp = list.get(i);
+            list.set(i, list.get(j));
+            list.set(j, tmp);
+        }
+    }
+
+    /** Pad a string to width using the first char of pad (or a space). */
+    private static String pad(String str, int width, String pad, boolean left) {
+        int missing = width - str.length();
+        if (missing <= 0) {
+            return str;
+        }
+        char fill = pad.isEmpty() ? ' ' : pad.charAt(0);
+        String padding = String.valueOf(fill).repeat(missing);
+        return left ? padding + str : str + padding;
+    }
+
+    private static int intArg(ExecutionContext context, String method, List<Expression> args,
+            int index) {
+        Object value = evaluateArg(context, args, index);
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        throw new ScriptError(method + "() expects a number argument, got: "
+                + Values.displayString(value));
+    }
+
+    private static String strArg(ExecutionContext context, List<Expression> args, int index) {
+        return (String) Coercions.toStringValue(evaluateArg(context, args, index));
     }
 
     /** A map builtin's first argument must be a script map. */

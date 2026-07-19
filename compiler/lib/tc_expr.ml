@@ -83,6 +83,8 @@ let rec type_of ctx bctx env e : ty =
     let elem = match ts with [] -> TAny | t :: rest -> List.fold_left join t rest in
     TList elem
   | ECall (name, args) -> call_type ctx bctx env e.epos name args
+  | EMethod (recv, name, args) ->
+    check_method ctx bctx env e.epos recv name args ~as_stmt:false
   | ELambda { lam_async; lam_params; lam_body } ->
     lambda_type ctx bctx env lam_async lam_params lam_body
   | EMap entries ->
@@ -688,6 +690,144 @@ and builtin_call_type ctx bctx env pos name args looked =
         err ctx pos "unknown function '%s'%s" name (suggestion name candidates)));
     List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny)
+
+(* --- W-collections: method-call resolution (expression + statement) ---
+
+   Resolve `<receiver>.<name>(<args>)` by the receiver's static type against the
+   per-type method tables in registry.ml. Unknown method -> error + suggestion;
+   wrong arity/args -> error; pure methods are expression-only and mutating
+   methods statement-only (each rejected in the wrong context). Fn-argument
+   methods take a lambda whose parameter is the element type and whose return
+   role is validated (Boolean / comparable / free). *)
+and method_owner_of ty =
+  match unwrap ty with
+  | TList elem -> Some (`List elem)
+  | TMap (k, v) -> Some (`Map (k, v))
+  | TString -> Some `Str
+  | _ -> None
+
+and method_kind_str = function `List _ -> "list" | `Map _ -> "map" | `Str -> "string"
+
+and methods_of_owner = function
+  | `List _ -> Registry.list_methods
+  | `Map _ -> Registry.map_methods
+  | `Str -> Registry.string_methods
+
+and inst_mscheme owner (s : Registry.mscheme) : ty =
+  match s with
+  | SElem -> ( match owner with `List elem -> elem | _ -> TAny)
+  | SKey -> ( match owner with `Map (k, _) -> k | _ -> TAny)
+  | SVal -> ( match owner with `Map (_, v) -> v | _ -> TAny)
+  | SSelf -> (
+    match owner with `List elem -> TList elem | `Map (k, v) -> TMap (k, v) | `Str -> TString)
+  | SInt -> TInteger
+  | SStr -> TString
+  | SBool -> TBoolean
+  | SAny -> TAny
+  | SList s -> TList (inst_mscheme owner s)
+  | SOpt s -> TOptional (inst_mscheme owner s)
+  | SFn (ps, role) ->
+    TFunction
+      {
+        fn_async = false;
+        fn_params = List.map (inst_mscheme owner) ps;
+        fn_ret = (match role with FBool -> TBoolean | FComparable | FFree -> TAny);
+      }
+
+(* check a single method argument; returns its inferred type (for a lambda arg,
+   the TFunction type — mapped's result element flows out of it) *)
+and check_method_arg ctx bctx env owner name i (sch : Registry.mscheme) a : ty =
+  match sch with
+  | SFn (ps, role) -> check_method_lambda ctx bctx env owner name (i + 1) ps role a
+  | _ ->
+    let pty = inst_mscheme owner sch in
+    let at = type_of ctx bctx env a in
+    require_present ctx env a at ~use:(Printf.sprintf "argument %d of '%s'" (i + 1) name);
+    if not (param_compat pty at) then
+      err ctx a.epos "argument %d of '%s' expects %s, got %s" (i + 1) name (ty_to_string pty)
+        (ty_to_string at);
+    at
+
+and check_method_lambda ctx bctx env owner name argno ps (role : Registry.fn_role) a : ty =
+  let lt = type_of ctx bctx env a in
+  (match lt with
+  | TFunction f ->
+    let want = List.length ps in
+    ignore (List.map (inst_mscheme owner) ps);
+    if List.length f.fn_params <> want then
+      err ctx a.epos "the function argument of '%s' must take %d argument(s), got %d" name want
+        (List.length f.fn_params);
+    (match role with
+    | FBool ->
+      if not (boolish (unwrap f.fn_ret)) then
+        err ctx a.epos "the function argument of '%s' must return a Boolean (got %s)" name
+          (ty_to_string f.fn_ret)
+    | FComparable -> (
+      match unwrap f.fn_ret with
+      | TInteger | TDouble | TString | TAny -> ()
+      | other ->
+        err ctx a.epos "the function argument of '%s' must return a Number or String (got %s)"
+          name (ty_to_string other))
+    | FFree -> ())
+  | TAny -> ()
+  | _ -> err ctx a.epos "argument %d of '%s' expects a function, got %s" argno name (ty_to_string lt));
+  lt
+
+and check_method ctx bctx env pos recv name args ~as_stmt : ty =
+  let rt = type_of ctx bctx env recv in
+  require_present ctx env recv rt ~use:"the method receiver";
+  match method_owner_of rt with
+  | None ->
+    (match unwrap rt with
+    | TAny -> ()
+    | other ->
+      err ctx pos "cannot call method '%s' on %s (only lists, maps, and Strings have methods)"
+        name (ty_to_string other));
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TAny
+  | Some owner -> (
+    let methods = methods_of_owner owner in
+    match Registry.find_method methods name with
+    | None ->
+      err ctx pos "unknown method '%s' on %s%s" name (ty_to_string (unwrap rt))
+        (suggestion name (Registry.method_names methods));
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+      TAny
+    | Some m ->
+      if as_stmt && not m.me_mut then
+        err ctx pos
+          "method '%s' returns a value and has no effect as a statement; use its result in an \
+           expression (e.g. 'set x to %s.%s(...)')"
+          name (method_kind_str owner) name
+      else if (not as_stmt) && m.me_mut then
+        err ctx pos
+          "method '%s' mutates the %s in place; call it as a statement, not inside an expression"
+          name (method_kind_str owner);
+      let expected = List.length m.me_params in
+      let got = List.length args in
+      let arg_tys =
+        if got <> expected then begin
+          err ctx pos "method '%s' expects %d argument(s), got %d" name expected got;
+          List.map (fun a -> ignore (type_of ctx bctx env a); TAny) args
+        end
+        else List.mapi (fun i (sch, a) -> check_method_arg ctx bctx env owner name i sch a)
+               (List.combine m.me_params args)
+      in
+      (* map sorted_by_value(_desc) needs comparable values, mirroring the
+         sort_by_value builtin *)
+      (match (owner, name) with
+      | `Map (_, v), ("sorted_by_value" | "sorted_by_value_desc") -> (
+        match v with
+        | TInteger | TDouble | TString | TAny -> ()
+        | _ ->
+          err ctx pos "method '%s' needs a map with Number or String values (got map values of %s)"
+            name (ty_to_string v))
+      | _ -> ());
+      match m.me_ret with
+      | RScheme s -> inst_mscheme owner s
+      | RMappedList ->
+        let u = match arg_tys with [ TFunction f ] -> f.fn_ret | _ -> TAny in
+        TList u)
 
 and check_persist_subject ctx bctx env pos name pi subject =
   match (pi.pi_subject, subject) with

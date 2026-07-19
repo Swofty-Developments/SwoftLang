@@ -650,6 +650,16 @@ let rec parse_statement st =
     ignore (advance st);
     ignore (advance st);
     mks p (SCall (name, parse_call_args st))
+  | (Token.IDENT _ | Token.EVENT) when peek2_tok st = Token.DOT ->
+    (* W-collections: a bare method-call statement — <receiver>.<name>(args).
+       Parse the postfix expression; only a method call (not a bare property
+       read) is a valid statement here. *)
+    let e = parse_postfix st in
+    (match e.e with
+    | EMethod (recv, name, args) -> mks e.epos (SMethodCall (recv, name, args))
+    | _ ->
+      error st
+        "expected a method call like 'list.add(x)' or an assignment like 'set ... to ...'")
   | tok ->
     error st (Printf.sprintf "Unexpected %s at start of statement" (Token.describe tok))
 

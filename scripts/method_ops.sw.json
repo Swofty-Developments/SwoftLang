@@ -1,0 +1,4550 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 9,
+      "col": 1,
+      "names": [ "map_ops" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "m",
+            "value": {
+              "line": 12,
+              "col": 18,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "b",
+                  "value": {
+                    "line": 12,
+                    "col": 25,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "a",
+                  "value": {
+                    "line": 12,
+                    "col": 33,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "c",
+                  "value": {
+                    "line": 12,
+                    "col": 41,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 15,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 15,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 15,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "get",
+                "args": [
+                  { "line": 15, "col": 24, "kind": "string", "value": "a" }
+                ]
+              },
+              "right": {
+                "line": 15,
+                "col": 39,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 16,
+              "col": 14,
+              "kind": "string",
+              "value": "m.get.hit ${r}"
+            },
+            "target": {
+              "line": 16,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 17,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 17,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 17,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "get",
+                "args": [
+                  { "line": 17, "col": 24, "kind": "string", "value": "z" }
+                ]
+              },
+              "right": {
+                "line": 17,
+                "col": 39,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 17,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 18,
+              "col": 14,
+              "kind": "string",
+              "value": "m.get.miss ${r}"
+            },
+            "target": {
+              "line": 18,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 19,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 19,
+                "col": 18,
+                "kind": "var",
+                "name": "m"
+              },
+              "name": "has",
+              "args": [
+                { "line": 19, "col": 24, "kind": "string", "value": "a" }
+              ]
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 20,
+              "col": 14,
+              "kind": "string",
+              "value": "m.has.true ${r}"
+            },
+            "target": {
+              "line": 20,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 21,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 21,
+                "col": 18,
+                "kind": "var",
+                "name": "m"
+              },
+              "name": "has",
+              "args": [
+                { "line": 21, "col": 24, "kind": "string", "value": "z" }
+              ]
+            }
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 22,
+              "col": 14,
+              "kind": "string",
+              "value": "m.has.false ${r}"
+            },
+            "target": {
+              "line": 22,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 23,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 23,
+                "col": 18,
+                "kind": "var",
+                "name": "m"
+              },
+              "name": "get_or",
+              "args": [
+                { "line": 23, "col": 27, "kind": "string", "value": "a" },
+                {
+                  "line": 23,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 99,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "m.get_or.hit ${r}"
+            },
+            "target": {
+              "line": 24,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 25,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 25,
+                "col": 18,
+                "kind": "var",
+                "name": "m"
+              },
+              "name": "get_or",
+              "args": [
+                { "line": 25, "col": 27, "kind": "string", "value": "z" },
+                {
+                  "line": 25,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 99,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 26,
+              "col": 14,
+              "kind": "string",
+              "value": "m.get_or.miss ${r}"
+            },
+            "target": {
+              "line": 26,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "string",
+              "value": "m.size ${m.size}"
+            },
+            "target": {
+              "line": 27,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 28,
+              "col": 14,
+              "kind": "string",
+              "value": "m.is_empty ${m.is_empty}"
+            },
+            "target": {
+              "line": 28,
+              "col": 44,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 29,
+              "col": 25,
+              "kind": "method_call",
+              "receiver": {
+                "line": 29,
+                "col": 20,
+                "kind": "prop",
+                "target": {
+                  "line": 29,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 29, "col": 32, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 30,
+              "col": 14,
+              "kind": "string",
+              "value": "m.keys ${r}"
+            },
+            "target": {
+              "line": 30,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 31,
+              "col": 27,
+              "kind": "method_call",
+              "receiver": {
+                "line": 31,
+                "col": 20,
+                "kind": "prop",
+                "target": {
+                  "line": 31,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "values"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 31, "col": 34, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 32,
+              "col": 14,
+              "kind": "string",
+              "value": "m.values ${r}"
+            },
+            "target": {
+              "line": 32,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 35,
+              "col": 41,
+              "kind": "method_call",
+              "receiver": {
+                "line": 35,
+                "col": 36,
+                "kind": "prop",
+                "target": {
+                  "line": 35,
+                  "col": 20,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 35,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "m"
+                  },
+                  "name": "sorted_by_key",
+                  "args": []
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 35, "col": 48, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 36,
+              "col": 14,
+              "kind": "string",
+              "value": "m.sbk ${r}"
+            },
+            "target": {
+              "line": 36,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 37,
+              "col": 46,
+              "kind": "method_call",
+              "receiver": {
+                "line": 37,
+                "col": 41,
+                "kind": "prop",
+                "target": {
+                  "line": 37,
+                  "col": 20,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 37,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "m"
+                  },
+                  "name": "sorted_by_key_desc",
+                  "args": []
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 37, "col": 53, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 38,
+              "col": 14,
+              "kind": "string",
+              "value": "m.sbk_desc ${r}"
+            },
+            "target": {
+              "line": 38,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 39,
+              "col": 43,
+              "kind": "method_call",
+              "receiver": {
+                "line": 39,
+                "col": 38,
+                "kind": "prop",
+                "target": {
+                  "line": 39,
+                  "col": 20,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 39,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "m"
+                  },
+                  "name": "sorted_by_value",
+                  "args": []
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 39, "col": 50, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 40,
+              "col": 14,
+              "kind": "string",
+              "value": "m.sbv ${r}"
+            },
+            "target": {
+              "line": 40,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 41,
+              "col": 48,
+              "kind": "method_call",
+              "receiver": {
+                "line": 41,
+                "col": 43,
+                "kind": "prop",
+                "target": {
+                  "line": 41,
+                  "col": 20,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 41,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "m"
+                  },
+                  "name": "sorted_by_value_desc",
+                  "args": []
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 41, "col": 55, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 42,
+              "col": 14,
+              "kind": "string",
+              "value": "m.sbv_desc ${r}"
+            },
+            "target": {
+              "line": 42,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 43,
+              "col": 60,
+              "kind": "method_call",
+              "receiver": {
+                "line": 43,
+                "col": 55,
+                "kind": "prop",
+                "target": {
+                  "line": 43,
+                  "col": 20,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 43,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "m"
+                  },
+                  "name": "sorted_by",
+                  "args": [
+                    {
+                      "line": 43,
+                      "col": 30,
+                      "kind": "lambda",
+                      "async": false,
+                      "params": [
+                        { "line": 43, "col": 39, "name": "k", "type": null },
+                        { "line": 43, "col": 42, "name": "v", "type": null }
+                      ],
+                      "body": [
+                        {
+                          "line": 43,
+                          "col": 45,
+                          "kind": "return",
+                          "value": {
+                            "line": 43,
+                            "col": 52,
+                            "kind": "var",
+                            "name": "v"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 43, "col": 67, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 44,
+              "col": 14,
+              "kind": "string",
+              "value": "m.sortby ${r}"
+            },
+            "target": {
+              "line": 44,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 47,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 47,
+              "col": 25,
+              "kind": "method_call",
+              "receiver": {
+                "line": 47,
+                "col": 20,
+                "kind": "prop",
+                "target": {
+                  "line": 47,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 47, "col": 32, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 48,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 48,
+              "col": 14,
+              "kind": "string",
+              "value": "m.pure ${r}"
+            },
+            "target": {
+              "line": 48,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 51,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 51,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 51,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 51,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "m"
+                },
+                "name": "get",
+                "args": [
+                  { "line": 51, "col": 24, "kind": "string", "value": "a" }
+                ]
+              },
+              "right": {
+                "line": 51,
+                "col": 39,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 51,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 52,
+              "col": 14,
+              "kind": "string",
+              "value": "alias.method ${r}"
+            },
+            "target": {
+              "line": 52,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 53,
+              "col": 18,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 53,
+                "col": 18,
+                "kind": "call",
+                "name": "map_get",
+                "args": [
+                  { "line": 53, "col": 26, "kind": "var", "name": "m" },
+                  { "line": 53, "col": 29, "kind": "string", "value": "a" }
+                ]
+              },
+              "right": {
+                "line": 53,
+                "col": 44,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 53,
+                  "col": 45,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 54,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 54,
+              "col": 14,
+              "kind": "string",
+              "value": "alias.builtin ${r}"
+            },
+            "target": {
+              "line": 54,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "assign",
+            "target": "mm",
+            "value": {
+              "line": 57,
+              "col": 19,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "x",
+                  "value": {
+                    "line": 57,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 58,
+            "col": 12,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 58, "col": 9, "kind": "var", "name": "mm" },
+            "name": "set",
+            "args": [
+              { "line": 58, "col": 16, "kind": "string", "value": "y" },
+              {
+                "line": 58,
+                "col": 21,
+                "kind": "number",
+                "value": 2,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 59,
+            "col": 12,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 59, "col": 9, "kind": "var", "name": "mm" },
+            "name": "set",
+            "args": [
+              { "line": 59, "col": 16, "kind": "string", "value": "x" },
+              {
+                "line": 59,
+                "col": 21,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 60,
+            "col": 12,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 60, "col": 9, "kind": "var", "name": "mm" },
+            "name": "delete",
+            "args": [
+              { "line": 60, "col": 19, "kind": "string", "value": "y" }
+            ]
+          },
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 61,
+              "col": 26,
+              "kind": "method_call",
+              "receiver": {
+                "line": 61,
+                "col": 21,
+                "kind": "prop",
+                "target": {
+                  "line": 61,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "mm"
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 61, "col": 33, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 62,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 62,
+              "col": 14,
+              "kind": "string",
+              "value": "mm.after ${r}"
+            },
+            "target": {
+              "line": 62,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 63,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 63,
+                "col": 21,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 63,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "mm"
+                },
+                "name": "get",
+                "args": [
+                  { "line": 63, "col": 25, "kind": "string", "value": "x" }
+                ]
+              },
+              "right": {
+                "line": 63,
+                "col": 40,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 64,
+              "col": 14,
+              "kind": "string",
+              "value": "mm.x ${r}"
+            },
+            "target": {
+              "line": 64,
+              "col": 29,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 65,
+            "col": 12,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 65, "col": 9, "kind": "var", "name": "mm" },
+            "name": "clear",
+            "args": []
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 66,
+              "col": 14,
+              "kind": "string",
+              "value": "mm.cleared ${mm.is_empty}"
+            },
+            "target": {
+              "line": 66,
+              "col": 45,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 67,
+              "col": 14,
+              "kind": "string",
+              "value": "mm.size ${mm.size}"
+            },
+            "target": {
+              "line": 67,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "assign",
+            "target": "p1",
+            "value": {
+              "line": 69,
+              "col": 19,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "a",
+                  "value": {
+                    "line": 69,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "assign",
+            "target": "p2",
+            "value": {
+              "line": 70,
+              "col": 19,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "b",
+                  "value": {
+                    "line": 70,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "a",
+                  "value": {
+                    "line": 70,
+                    "col": 34,
+                    "kind": "number",
+                    "value": 9,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 71,
+            "col": 12,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 71, "col": 9, "kind": "var", "name": "p1" },
+            "name": "put_all",
+            "args": [
+              { "line": 71, "col": 20, "kind": "var", "name": "p2" }
+            ]
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 72,
+              "col": 14,
+              "kind": "string",
+              "value": "p1.size ${p1.size}"
+            },
+            "target": {
+              "line": 72,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 73,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 73,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 73,
+                "col": 21,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 73,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "p1"
+                },
+                "name": "get",
+                "args": [
+                  { "line": 73, "col": 25, "kind": "string", "value": "a" }
+                ]
+              },
+              "right": {
+                "line": 73,
+                "col": 40,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 74,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 74,
+              "col": 14,
+              "kind": "string",
+              "value": "p1.a ${r}"
+            },
+            "target": {
+              "line": 74,
+              "col": 29,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 78,
+      "col": 1,
+      "names": [ "list_ops" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 80,
+            "col": 9,
+            "kind": "assign",
+            "target": "l",
+            "value": {
+              "line": 80,
+              "col": 18,
+              "kind": "list",
+              "items": [
+                {
+                  "line": 80,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                },
+                {
+                  "line": 80,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 80,
+                  "col": 25,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 83,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 83,
+              "col": 14,
+              "kind": "string",
+              "value": "l.size ${l.size}"
+            },
+            "target": {
+              "line": 83,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 84,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 84,
+              "col": 14,
+              "kind": "string",
+              "value": "l.is_empty ${l.is_empty}"
+            },
+            "target": {
+              "line": 84,
+              "col": 44,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 85,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 85,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 85,
+                "col": 14,
+                "kind": "string",
+                "value": "l.first "
+              },
+              "right": {
+                "line": 85,
+                "col": 14,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 85,
+                  "col": 14,
+                  "kind": "prop",
+                  "target": {
+                    "line": 85,
+                    "col": 14,
+                    "kind": "var",
+                    "name": "l"
+                  },
+                  "name": "first"
+                },
+                "right": {
+                  "line": 85,
+                  "col": 14,
+                  "kind": "unary",
+                  "op": "NEGATE",
+                  "operand": {
+                    "line": 85,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              }
+            },
+            "target": {
+              "line": 85,
+              "col": 51,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 86,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 86,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 86,
+                "col": 14,
+                "kind": "string",
+                "value": "l.last "
+              },
+              "right": {
+                "line": 86,
+                "col": 14,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 86,
+                  "col": 14,
+                  "kind": "prop",
+                  "target": {
+                    "line": 86,
+                    "col": 14,
+                    "kind": "var",
+                    "name": "l"
+                  },
+                  "name": "last"
+                },
+                "right": {
+                  "line": 86,
+                  "col": 14,
+                  "kind": "unary",
+                  "op": "NEGATE",
+                  "operand": {
+                    "line": 86,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              }
+            },
+            "target": {
+              "line": 86,
+              "col": 49,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 87,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 87,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 87,
+                "col": 18,
+                "kind": "var",
+                "name": "l"
+              },
+              "name": "contains",
+              "args": [
+                {
+                  "line": 87,
+                  "col": 29,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 88,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 88,
+              "col": 14,
+              "kind": "string",
+              "value": "l.contains.true ${r}"
+            },
+            "target": {
+              "line": 88,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 89,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 89,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 89,
+                "col": 18,
+                "kind": "var",
+                "name": "l"
+              },
+              "name": "contains",
+              "args": [
+                {
+                  "line": 89,
+                  "col": 29,
+                  "kind": "number",
+                  "value": 9,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 90,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 90,
+              "col": 14,
+              "kind": "string",
+              "value": "l.contains.false ${r}"
+            },
+            "target": {
+              "line": 90,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 91,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 91,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 91,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 91,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "index_of",
+                "args": [
+                  {
+                    "line": 91,
+                    "col": 29,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 91,
+                "col": 42,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 91,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 92,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 92,
+              "col": 14,
+              "kind": "string",
+              "value": "l.index_of.hit ${r}"
+            },
+            "target": {
+              "line": 92,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 93,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 93,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 93,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 93,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "index_of",
+                "args": [
+                  {
+                    "line": 93,
+                    "col": 29,
+                    "kind": "number",
+                    "value": 9,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 93,
+                "col": 42,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 93,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 94,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 94,
+              "col": 14,
+              "kind": "string",
+              "value": "l.index_of.miss ${r}"
+            },
+            "target": {
+              "line": 94,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 95,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 95,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 95,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 95,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "get",
+                "args": [
+                  {
+                    "line": 95,
+                    "col": 24,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 95,
+                "col": 37,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 95,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 96,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 96,
+              "col": 14,
+              "kind": "string",
+              "value": "l.get.hit ${r}"
+            },
+            "target": {
+              "line": 96,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 97,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 97,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 97,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 97,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "get",
+                "args": [
+                  {
+                    "line": 97,
+                    "col": 24,
+                    "kind": "number",
+                    "value": 5,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 97,
+                "col": 37,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 97,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 98,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 98,
+              "col": 14,
+              "kind": "string",
+              "value": "l.get.oob ${r}"
+            },
+            "target": {
+              "line": 98,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 99,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 99,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 99,
+                "col": 14,
+                "kind": "string",
+                "value": "l.count "
+              },
+              "right": {
+                "line": 99,
+                "col": 14,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 99,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "count",
+                "args": [
+                  {
+                    "line": 99,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 99,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 100,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 100,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 100,
+                "col": 18,
+                "kind": "var",
+                "name": "l"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 100, "col": 27, "kind": "string", "value": "-" }
+              ]
+            }
+          },
+          {
+            "line": 101,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 101,
+              "col": 14,
+              "kind": "string",
+              "value": "l.joined ${r}"
+            },
+            "target": {
+              "line": 101,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 102,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 102,
+              "col": 29,
+              "kind": "method_call",
+              "receiver": {
+                "line": 102,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 102,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "sorted",
+                "args": []
+              },
+              "name": "joined",
+              "args": [
+                { "line": 102, "col": 36, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 103,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 103,
+              "col": 14,
+              "kind": "string",
+              "value": "l.sorted ${r}"
+            },
+            "target": {
+              "line": 103,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 104,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 104,
+              "col": 52,
+              "kind": "method_call",
+              "receiver": {
+                "line": 104,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 104,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "sorted_by",
+                "args": [
+                  {
+                    "line": 104,
+                    "col": 30,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 104, "col": 39, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 104,
+                        "col": 42,
+                        "kind": "return",
+                        "value": {
+                          "line": 104,
+                          "col": 49,
+                          "kind": "var",
+                          "name": "x"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 104, "col": 59, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 105,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 105,
+              "col": 14,
+              "kind": "string",
+              "value": "l.sortby ${r}"
+            },
+            "target": {
+              "line": 105,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 106,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 106,
+              "col": 57,
+              "kind": "method_call",
+              "receiver": {
+                "line": 106,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 106,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "sorted_by_desc",
+                "args": [
+                  {
+                    "line": 106,
+                    "col": 35,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 106, "col": 44, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 106,
+                        "col": 47,
+                        "kind": "return",
+                        "value": {
+                          "line": 106,
+                          "col": 54,
+                          "kind": "var",
+                          "name": "x"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 106, "col": 64, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 107,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 107,
+              "col": 14,
+              "kind": "string",
+              "value": "l.sortby_desc ${r}"
+            },
+            "target": {
+              "line": 107,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 108,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 108,
+              "col": 31,
+              "kind": "method_call",
+              "receiver": {
+                "line": 108,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 108,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "reversed",
+                "args": []
+              },
+              "name": "joined",
+              "args": [
+                { "line": 108, "col": 38, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 109,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 109,
+              "col": 14,
+              "kind": "string",
+              "value": "l.reversed ${r}"
+            },
+            "target": {
+              "line": 109,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 110,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 110,
+              "col": 55,
+              "kind": "method_call",
+              "receiver": {
+                "line": 110,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 110,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "filtered",
+                "args": [
+                  {
+                    "line": 110,
+                    "col": 29,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 110, "col": 38, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 110,
+                        "col": 41,
+                        "kind": "return",
+                        "value": {
+                          "line": 110,
+                          "col": 48,
+                          "kind": "binary",
+                          "op": "GREATER_THAN",
+                          "left": {
+                            "line": 110,
+                            "col": 48,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "right": {
+                            "line": 110,
+                            "col": 52,
+                            "kind": "number",
+                            "value": 1,
+                            "integer": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 110, "col": 62, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 111,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 111,
+              "col": 14,
+              "kind": "string",
+              "value": "l.filtered ${r}"
+            },
+            "target": {
+              "line": 111,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 112,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 112,
+              "col": 54,
+              "kind": "method_call",
+              "receiver": {
+                "line": 112,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 112,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "mapped",
+                "args": [
+                  {
+                    "line": 112,
+                    "col": 27,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 112, "col": 36, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 112,
+                        "col": 39,
+                        "kind": "return",
+                        "value": {
+                          "line": 112,
+                          "col": 46,
+                          "kind": "binary",
+                          "op": "MULTIPLY",
+                          "left": {
+                            "line": 112,
+                            "col": 46,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "right": {
+                            "line": 112,
+                            "col": 50,
+                            "kind": "number",
+                            "value": 10,
+                            "integer": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 112, "col": 61, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 113,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 113,
+              "col": 14,
+              "kind": "string",
+              "value": "l.mapped ${r}"
+            },
+            "target": {
+              "line": 113,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 114,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 114,
+              "col": 29,
+              "kind": "method_call",
+              "receiver": {
+                "line": 114,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 114,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "taken",
+                "args": [
+                  {
+                    "line": 114,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 114, "col": 36, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 115,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 115,
+              "col": 14,
+              "kind": "string",
+              "value": "l.taken ${r}"
+            },
+            "target": {
+              "line": 115,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 116,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 116,
+              "col": 31,
+              "kind": "method_call",
+              "receiver": {
+                "line": 116,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 116,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "dropped",
+                "args": [
+                  {
+                    "line": 116,
+                    "col": 28,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 116, "col": 38, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 117,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 117,
+              "col": 14,
+              "kind": "string",
+              "value": "l.dropped ${r}"
+            },
+            "target": {
+              "line": 117,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 118,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 118,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 118,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 118,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "min_by",
+                "args": [
+                  {
+                    "line": 118,
+                    "col": 27,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 118, "col": 36, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 118,
+                        "col": 39,
+                        "kind": "return",
+                        "value": {
+                          "line": 118,
+                          "col": 46,
+                          "kind": "var",
+                          "name": "x"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 118,
+                "col": 59,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 118,
+                  "col": 60,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 119,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 119,
+              "col": 14,
+              "kind": "string",
+              "value": "l.min_by ${r}"
+            },
+            "target": {
+              "line": 119,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 120,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 120,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 120,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 120,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "l"
+                },
+                "name": "max_by",
+                "args": [
+                  {
+                    "line": 120,
+                    "col": 27,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 120, "col": 36, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 120,
+                        "col": 39,
+                        "kind": "return",
+                        "value": {
+                          "line": 120,
+                          "col": 46,
+                          "kind": "var",
+                          "name": "x"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 120,
+                "col": 59,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 120,
+                  "col": 60,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 121,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 121,
+              "col": 14,
+              "kind": "string",
+              "value": "l.max_by ${r}"
+            },
+            "target": {
+              "line": 121,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 124,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 124,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 124,
+                "col": 18,
+                "kind": "var",
+                "name": "l"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 124, "col": 27, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 125,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 125,
+              "col": 14,
+              "kind": "string",
+              "value": "l.pure ${r}"
+            },
+            "target": {
+              "line": 125,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 128,
+            "col": 9,
+            "kind": "assign",
+            "target": "a",
+            "value": {
+              "line": 128,
+              "col": 18,
+              "kind": "list",
+              "items": [
+                {
+                  "line": 128,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 128,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                {
+                  "line": 128,
+                  "col": 25,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 129,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": { "line": 129, "col": 18, "kind": "var", "name": "a" }
+          },
+          {
+            "line": 130,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 130, "col": 9, "kind": "var", "name": "a" },
+            "name": "add",
+            "args": [
+              {
+                "line": 130,
+                "col": 15,
+                "kind": "number",
+                "value": 4,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 131,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 131, "col": 9, "kind": "var", "name": "a" },
+            "name": "insert",
+            "args": [
+              {
+                "line": 131,
+                "col": 18,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              },
+              {
+                "line": 131,
+                "col": 21,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 132,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 132, "col": 9, "kind": "var", "name": "a" },
+            "name": "remove",
+            "args": [
+              {
+                "line": 132,
+                "col": 18,
+                "kind": "number",
+                "value": 2,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 133,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 133, "col": 9, "kind": "var", "name": "a" },
+            "name": "remove_at",
+            "args": [
+              {
+                "line": 133,
+                "col": 21,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 134,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 134,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 134,
+                "col": 18,
+                "kind": "var",
+                "name": "a"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 134, "col": 27, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 135,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 135,
+              "col": 14,
+              "kind": "string",
+              "value": "a.live ${r}"
+            },
+            "target": {
+              "line": 135,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 136,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 136,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 136,
+                "col": 18,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 136, "col": 27, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 137,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 137,
+              "col": 14,
+              "kind": "string",
+              "value": "b.alias ${r}"
+            },
+            "target": {
+              "line": 137,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 138,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 138,
+              "col": 14,
+              "kind": "string",
+              "value": "b.alias.size ${b.size}"
+            },
+            "target": {
+              "line": 138,
+              "col": 42,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 140,
+            "col": 9,
+            "kind": "assign",
+            "target": "c",
+            "value": {
+              "line": 140,
+              "col": 18,
+              "kind": "list",
+              "items": [
+                {
+                  "line": 140,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 141,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 141, "col": 9, "kind": "var", "name": "c" },
+            "name": "add_all",
+            "args": [
+              {
+                "line": 141,
+                "col": 19,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 141,
+                    "col": 20,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  },
+                  {
+                    "line": 141,
+                    "col": 23,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "line": 142,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 142,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 142,
+                "col": 18,
+                "kind": "var",
+                "name": "c"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 142, "col": 27, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 143,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 143,
+              "col": 14,
+              "kind": "string",
+              "value": "c.add_all ${r}"
+            },
+            "target": {
+              "line": 143,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 144,
+            "col": 11,
+            "kind": "method_call_stmt",
+            "receiver": { "line": 144, "col": 9, "kind": "var", "name": "a" },
+            "name": "clear",
+            "args": []
+          },
+          {
+            "line": 145,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 145,
+              "col": 14,
+              "kind": "string",
+              "value": "a.cleared ${a.is_empty}"
+            },
+            "target": {
+              "line": 145,
+              "col": 43,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 149,
+      "col": 1,
+      "names": [ "string_ops" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 151,
+            "col": 9,
+            "kind": "assign",
+            "target": "s",
+            "value": {
+              "line": 151,
+              "col": 18,
+              "kind": "string",
+              "value": "Hello World"
+            }
+          },
+          {
+            "line": 153,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 153,
+              "col": 14,
+              "kind": "string",
+              "value": "s.length.prop ${s.length}"
+            },
+            "target": {
+              "line": 153,
+              "col": 45,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 154,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 154,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 154,
+                "col": 14,
+                "kind": "string",
+                "value": "s.length.method "
+              },
+              "right": {
+                "line": 154,
+                "col": 14,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 154,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "s"
+                },
+                "name": "length",
+                "args": []
+              }
+            },
+            "target": {
+              "line": 154,
+              "col": 49,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 155,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 155,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 155,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "upper",
+              "args": []
+            }
+          },
+          {
+            "line": 156,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 156,
+              "col": 14,
+              "kind": "string",
+              "value": "s.upper ${r}"
+            },
+            "target": {
+              "line": 156,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 157,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 157,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 157,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "lower",
+              "args": []
+            }
+          },
+          {
+            "line": 158,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 158,
+              "col": 14,
+              "kind": "string",
+              "value": "s.lower ${r}"
+            },
+            "target": {
+              "line": 158,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 159,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 159,
+              "col": 27,
+              "kind": "method_call",
+              "receiver": {
+                "line": 159,
+                "col": 18,
+                "kind": "string",
+                "value": "  hi  "
+              },
+              "name": "trimmed",
+              "args": []
+            }
+          },
+          {
+            "line": 160,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 160,
+              "col": 14,
+              "kind": "string",
+              "value": "s.trimmed [${r}]"
+            },
+            "target": {
+              "line": 160,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 161,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 161,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 161,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "contains",
+              "args": [
+                {
+                  "line": 161,
+                  "col": 29,
+                  "kind": "string",
+                  "value": "World"
+                }
+              ]
+            }
+          },
+          {
+            "line": 162,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 162,
+              "col": 14,
+              "kind": "string",
+              "value": "s.contains.true ${r}"
+            },
+            "target": {
+              "line": 162,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 163,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 163,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 163,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "contains",
+              "args": [
+                { "line": 163, "col": 29, "kind": "string", "value": "xyz" }
+              ]
+            }
+          },
+          {
+            "line": 164,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 164,
+              "col": 14,
+              "kind": "string",
+              "value": "s.contains.false ${r}"
+            },
+            "target": {
+              "line": 164,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 165,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 165,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 165,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "starts_with",
+              "args": [
+                {
+                  "line": 165,
+                  "col": 32,
+                  "kind": "string",
+                  "value": "Hello"
+                }
+              ]
+            }
+          },
+          {
+            "line": 166,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 166,
+              "col": 14,
+              "kind": "string",
+              "value": "s.starts ${r}"
+            },
+            "target": {
+              "line": 166,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 167,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 167,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 167,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "ends_with",
+              "args": [
+                {
+                  "line": 167,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "World"
+                }
+              ]
+            }
+          },
+          {
+            "line": 168,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 168,
+              "col": 14,
+              "kind": "string",
+              "value": "s.ends ${r}"
+            },
+            "target": {
+              "line": 168,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 169,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 169,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 169,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "replace",
+              "args": [
+                {
+                  "line": 169,
+                  "col": 28,
+                  "kind": "string",
+                  "value": "World"
+                },
+                {
+                  "line": 169,
+                  "col": 37,
+                  "kind": "string",
+                  "value": "There"
+                }
+              ]
+            }
+          },
+          {
+            "line": 170,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 170,
+              "col": 14,
+              "kind": "string",
+              "value": "s.replace ${r}"
+            },
+            "target": {
+              "line": 170,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 171,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 171,
+              "col": 31,
+              "kind": "method_call",
+              "receiver": {
+                "line": 171,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 171,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "s"
+                },
+                "name": "split",
+                "args": [
+                  { "line": 171, "col": 26, "kind": "string", "value": " " }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 171, "col": 38, "kind": "string", "value": "|" }
+              ]
+            }
+          },
+          {
+            "line": 172,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 172,
+              "col": 14,
+              "kind": "string",
+              "value": "s.split ${r}"
+            },
+            "target": {
+              "line": 172,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 173,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 173,
+              "col": 36,
+              "kind": "method_call",
+              "receiver": {
+                "line": 173,
+                "col": 25,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 173,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "a,,b"
+                },
+                "name": "split",
+                "args": [
+                  { "line": 173, "col": 31, "kind": "string", "value": "," }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 173, "col": 43, "kind": "string", "value": "|" }
+              ]
+            }
+          },
+          {
+            "line": 174,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 174,
+              "col": 14,
+              "kind": "string",
+              "value": "s.split.empty.mid ${r}"
+            },
+            "target": {
+              "line": 174,
+              "col": 42,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 175,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 175,
+              "col": 32,
+              "kind": "prop",
+              "target": {
+                "line": 175,
+                "col": 21,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 175,
+                  "col": 18,
+                  "kind": "string",
+                  "value": ""
+                },
+                "name": "split",
+                "args": [
+                  { "line": 175, "col": 27, "kind": "string", "value": "," }
+                ]
+              },
+              "name": "size"
+            }
+          },
+          {
+            "line": 176,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 176,
+              "col": 14,
+              "kind": "string",
+              "value": "s.split.emptystr.size ${r}"
+            },
+            "target": {
+              "line": 176,
+              "col": 46,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 177,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 177,
+              "col": 34,
+              "kind": "method_call",
+              "receiver": {
+                "line": 177,
+                "col": 24,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 177,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "abc"
+                },
+                "name": "split",
+                "args": [
+                  { "line": 177, "col": 30, "kind": "string", "value": "" }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 177, "col": 41, "kind": "string", "value": "|" }
+              ]
+            }
+          },
+          {
+            "line": 178,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 178,
+              "col": 14,
+              "kind": "string",
+              "value": "s.split.chars ${r}"
+            },
+            "target": {
+              "line": 178,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 179,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 179,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 179,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "substring",
+              "args": [
+                {
+                  "line": 179,
+                  "col": 30,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 179,
+                  "col": 33,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 180,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 180,
+              "col": 14,
+              "kind": "string",
+              "value": "s.substring ${r}"
+            },
+            "target": {
+              "line": 180,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 181,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 181,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 181,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "substring",
+              "args": [
+                {
+                  "line": 181,
+                  "col": 30,
+                  "kind": "number",
+                  "value": 6,
+                  "integer": true
+                },
+                {
+                  "line": 181,
+                  "col": 33,
+                  "kind": "number",
+                  "value": 100,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 182,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 182,
+              "col": 14,
+              "kind": "string",
+              "value": "s.substring.oob ${r}"
+            },
+            "target": {
+              "line": 182,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 183,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 183,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 183,
+                "col": 18,
+                "kind": "var",
+                "name": "s"
+              },
+              "name": "substring",
+              "args": [
+                {
+                  "line": 183,
+                  "col": 30,
+                  "kind": "number",
+                  "value": 20,
+                  "integer": true
+                },
+                {
+                  "line": 183,
+                  "col": 34,
+                  "kind": "number",
+                  "value": 25,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 184,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 184,
+              "col": 14,
+              "kind": "string",
+              "value": "s.substring.past [${r}]"
+            },
+            "target": {
+              "line": 184,
+              "col": 43,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 185,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 185,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 185,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 185,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "s"
+                },
+                "name": "index_of",
+                "args": [
+                  {
+                    "line": 185,
+                    "col": 29,
+                    "kind": "string",
+                    "value": "World"
+                  }
+                ]
+              },
+              "right": {
+                "line": 185,
+                "col": 48,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 185,
+                  "col": 49,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 186,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 186,
+              "col": 14,
+              "kind": "string",
+              "value": "s.index_of.hit ${r}"
+            },
+            "target": {
+              "line": 186,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 187,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 187,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 187,
+                "col": 20,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 187,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "s"
+                },
+                "name": "index_of",
+                "args": [
+                  {
+                    "line": 187,
+                    "col": 29,
+                    "kind": "string",
+                    "value": "zzz"
+                  }
+                ]
+              },
+              "right": {
+                "line": 187,
+                "col": 46,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 187,
+                  "col": 47,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 188,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 188,
+              "col": 14,
+              "kind": "string",
+              "value": "s.index_of.miss ${r}"
+            },
+            "target": {
+              "line": 188,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 189,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 189,
+              "col": 23,
+              "kind": "method_call",
+              "receiver": {
+                "line": 189,
+                "col": 18,
+                "kind": "string",
+                "value": "ab"
+              },
+              "name": "repeated",
+              "args": [
+                {
+                  "line": 189,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 190,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 190,
+              "col": 14,
+              "kind": "string",
+              "value": "s.repeated ${r}"
+            },
+            "target": {
+              "line": 190,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 191,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 191,
+              "col": 24,
+              "kind": "method_call",
+              "receiver": {
+                "line": 191,
+                "col": 18,
+                "kind": "string",
+                "value": "abc"
+              },
+              "name": "reversed",
+              "args": []
+            }
+          },
+          {
+            "line": 192,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 192,
+              "col": 14,
+              "kind": "string",
+              "value": "s.reversed ${r}"
+            },
+            "target": {
+              "line": 192,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 193,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 193,
+              "col": 22,
+              "kind": "method_call",
+              "receiver": {
+                "line": 193,
+                "col": 18,
+                "kind": "string",
+                "value": "5"
+              },
+              "name": "padded_left",
+              "args": [
+                {
+                  "line": 193,
+                  "col": 34,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                },
+                { "line": 193, "col": 37, "kind": "string", "value": "0" }
+              ]
+            }
+          },
+          {
+            "line": 194,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 194,
+              "col": 14,
+              "kind": "string",
+              "value": "s.pad_left ${r}"
+            },
+            "target": {
+              "line": 194,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 195,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 195,
+              "col": 22,
+              "kind": "method_call",
+              "receiver": {
+                "line": 195,
+                "col": 18,
+                "kind": "string",
+                "value": "5"
+              },
+              "name": "padded_right",
+              "args": [
+                {
+                  "line": 195,
+                  "col": 35,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                },
+                { "line": 195, "col": 38, "kind": "string", "value": "0" }
+              ]
+            }
+          },
+          {
+            "line": 196,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 196,
+              "col": 14,
+              "kind": "string",
+              "value": "s.pad_right ${r}"
+            },
+            "target": {
+              "line": 196,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 200,
+      "col": 1,
+      "names": [ "nested_and_stable" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 204,
+            "col": 9,
+            "kind": "assign",
+            "target": "nested",
+            "value": {
+              "line": 204,
+              "col": 23,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": 1,
+                  "value": {
+                    "line": 204,
+                    "col": 28,
+                    "kind": "list",
+                    "items": [
+                      {
+                        "line": 204,
+                        "col": 29,
+                        "kind": "string",
+                        "value": "a"
+                      },
+                      {
+                        "line": 204,
+                        "col": 34,
+                        "kind": "string",
+                        "value": "b"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "key": 2,
+                  "value": {
+                    "line": 204,
+                    "col": 43,
+                    "kind": "list",
+                    "items": [
+                      {
+                        "line": 204,
+                        "col": 44,
+                        "kind": "string",
+                        "value": "c"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 205,
+            "col": 9,
+            "kind": "assign",
+            "target": "lst",
+            "value": {
+              "line": 205,
+              "col": 27,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 205,
+                "col": 27,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 205,
+                  "col": 20,
+                  "kind": "var",
+                  "name": "nested"
+                },
+                "name": "get",
+                "args": [
+                  {
+                    "line": 205,
+                    "col": 31,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 205,
+                "col": 44,
+                "kind": "list",
+                "items": []
+              }
+            }
+          },
+          {
+            "line": 206,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 206,
+              "col": 14,
+              "kind": "string",
+              "value": "nested.size ${lst.size}"
+            },
+            "target": {
+              "line": 206,
+              "col": 43,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 207,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 207,
+              "col": 22,
+              "kind": "method_call",
+              "receiver": {
+                "line": 207,
+                "col": 18,
+                "kind": "var",
+                "name": "lst"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 207, "col": 29, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 208,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 208,
+              "col": 14,
+              "kind": "string",
+              "value": "nested.joined ${r}"
+            },
+            "target": {
+              "line": 208,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 209,
+            "col": 9,
+            "kind": "assign",
+            "target": "lst2",
+            "value": {
+              "line": 209,
+              "col": 28,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 209,
+                "col": 28,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 209,
+                  "col": 21,
+                  "kind": "var",
+                  "name": "nested"
+                },
+                "name": "get",
+                "args": [
+                  {
+                    "line": 209,
+                    "col": 32,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 209,
+                "col": 45,
+                "kind": "list",
+                "items": []
+              }
+            }
+          },
+          {
+            "line": 210,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 210,
+              "col": 23,
+              "kind": "method_call",
+              "receiver": {
+                "line": 210,
+                "col": 18,
+                "kind": "var",
+                "name": "lst2"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 210, "col": 30, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 211,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 211,
+              "col": 14,
+              "kind": "string",
+              "value": "nested.get2 ${r}"
+            },
+            "target": {
+              "line": 211,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 212,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 212,
+              "col": 14,
+              "kind": "string",
+              "value": "nested.values.size ${nested.values.size}"
+            },
+            "target": {
+              "line": 212,
+              "col": 60,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 215,
+            "col": 9,
+            "kind": "assign",
+            "target": "names",
+            "value": {
+              "line": 215,
+              "col": 22,
+              "kind": "list",
+              "items": [
+                { "line": 215, "col": 23, "kind": "string", "value": "bb" },
+                { "line": 215, "col": 29, "kind": "string", "value": "aa" },
+                { "line": 215, "col": 35, "kind": "string", "value": "c" }
+              ]
+            }
+          },
+          {
+            "line": 216,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 216,
+              "col": 63,
+              "kind": "method_call",
+              "receiver": {
+                "line": 216,
+                "col": 24,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 216,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "names"
+                },
+                "name": "sorted_by",
+                "args": [
+                  {
+                    "line": 216,
+                    "col": 34,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 216, "col": 43, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 216,
+                        "col": 46,
+                        "kind": "return",
+                        "value": {
+                          "line": 216,
+                          "col": 55,
+                          "kind": "prop",
+                          "target": {
+                            "line": 216,
+                            "col": 53,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "name": "length"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 216, "col": 70, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 217,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 217,
+              "col": 14,
+              "kind": "string",
+              "value": "stable.asc ${r}"
+            },
+            "target": {
+              "line": 217,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 218,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 218,
+              "col": 68,
+              "kind": "method_call",
+              "receiver": {
+                "line": 218,
+                "col": 24,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 218,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "names"
+                },
+                "name": "sorted_by_desc",
+                "args": [
+                  {
+                    "line": 218,
+                    "col": 39,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 218, "col": 48, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 218,
+                        "col": 51,
+                        "kind": "return",
+                        "value": {
+                          "line": 218,
+                          "col": 60,
+                          "kind": "prop",
+                          "target": {
+                            "line": 218,
+                            "col": 58,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "name": "length"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "joined",
+              "args": [
+                { "line": 218, "col": 75, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 219,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 219,
+              "col": 14,
+              "kind": "string",
+              "value": "stable.desc ${r}"
+            },
+            "target": {
+              "line": 219,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 222,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 222,
+              "col": 24,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 222,
+                "col": 24,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 222,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "names"
+                },
+                "name": "max_by",
+                "args": [
+                  {
+                    "line": 222,
+                    "col": 31,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 222, "col": 40, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 222,
+                        "col": 43,
+                        "kind": "return",
+                        "value": {
+                          "line": 222,
+                          "col": 52,
+                          "kind": "prop",
+                          "target": {
+                            "line": 222,
+                            "col": 50,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "name": "length"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 222,
+                "col": 70,
+                "kind": "string",
+                "value": "?"
+              }
+            }
+          },
+          {
+            "line": 223,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 223,
+              "col": 14,
+              "kind": "string",
+              "value": "stable.max ${r}"
+            },
+            "target": {
+              "line": 223,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 224,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 224,
+              "col": 24,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 224,
+                "col": 24,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 224,
+                  "col": 18,
+                  "kind": "var",
+                  "name": "names"
+                },
+                "name": "min_by",
+                "args": [
+                  {
+                    "line": 224,
+                    "col": 31,
+                    "kind": "lambda",
+                    "async": false,
+                    "params": [
+                      { "line": 224, "col": 40, "name": "x", "type": null }
+                    ],
+                    "body": [
+                      {
+                        "line": 224,
+                        "col": 43,
+                        "kind": "return",
+                        "value": {
+                          "line": 224,
+                          "col": 52,
+                          "kind": "prop",
+                          "target": {
+                            "line": 224,
+                            "col": 50,
+                            "kind": "var",
+                            "name": "x"
+                          },
+                          "name": "length"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 224,
+                "col": 70,
+                "kind": "string",
+                "value": "?"
+              }
+            }
+          },
+          {
+            "line": 225,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 225,
+              "col": 14,
+              "kind": "string",
+              "value": "stable.min ${r}"
+            },
+            "target": {
+              "line": 225,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 228,
+            "col": 9,
+            "kind": "assign",
+            "target": "tie",
+            "value": {
+              "line": 228,
+              "col": 20,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "b",
+                  "value": {
+                    "line": 228,
+                    "col": 27,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "a",
+                  "value": {
+                    "line": 228,
+                    "col": 35,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "c",
+                  "value": {
+                    "line": 228,
+                    "col": 43,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 229,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 229,
+              "col": 45,
+              "kind": "method_call",
+              "receiver": {
+                "line": 229,
+                "col": 40,
+                "kind": "prop",
+                "target": {
+                  "line": 229,
+                  "col": 22,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 229,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "tie"
+                  },
+                  "name": "sorted_by_value",
+                  "args": []
+                },
+                "name": "keys"
+              },
+              "name": "joined",
+              "args": [
+                { "line": 229, "col": 52, "kind": "string", "value": "," }
+              ]
+            }
+          },
+          {
+            "line": 230,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 230,
+              "col": 14,
+              "kind": "string",
+              "value": "map.stable ${r}"
+            },
+            "target": {
+              "line": 230,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

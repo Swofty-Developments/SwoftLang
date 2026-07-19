@@ -279,6 +279,19 @@ public final class ExecutionContext {
     }
 
     /**
+     * Dispatch a collection/string method call {@code receiver.name(args)} by
+     * the receiver's runtime type (map / list / String). This is a second
+     * entry point onto the same runtime the free builtins use (map ops, sort,
+     * random, string ops); mutating list/map methods mutate the live value in
+     * place, pure methods return new values. Used by both the expression node
+     * (result flows out) and the statement node (result discarded).
+     */
+    public Object callMethod(Expression receiver, String name, List<Expression> args) {
+        Object value = evaluate(receiver);
+        return Builtins.callMethod(this, value, name, args);
+    }
+
+    /**
      * Resolve a declared function from this context: the current module's
      * own functions (exported and private) first, then the merged global
      * registry (flat scripts, entry functions, all modules' exports)

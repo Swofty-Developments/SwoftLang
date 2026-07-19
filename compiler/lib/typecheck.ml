@@ -53,6 +53,9 @@ let collect_sched_names (script : Ast.script) : string list =
       we b
     | EUnary (_, a) -> we a
     | ECall (_, args) -> List.iter we args
+    | EMethod (recv, _, args) ->
+      we recv;
+      List.iter we args
     | EList items -> List.iter we items
     | EProp (t, _) -> we t
     | EPersistGet (_, s) -> Option.iter we s
@@ -118,6 +121,9 @@ let collect_sched_names (script : Ast.script) : string list =
       we t;
       we v
     | SCall (_, args) | SSpawn (_, args) -> List.iter we args
+    | SMethodCall (recv, _, args) ->
+      we recv;
+      List.iter we args
     | SReturn v -> Option.iter we v
     | SWait (e, _) -> we e
     | SOpenGui go | SReplaceGui go -> wgo go
@@ -425,6 +431,9 @@ let check_initializer_calls ctx own_fns (mv : module_var) =
            read module variables that are not initialized yet at this point; inline the value \
            or reorder the declarations"
           mv.mv_name name;
+      List.iter walk args
+    | EMethod (recv, _, args) ->
+      walk recv;
       List.iter walk args
     | EBinary (_, a, b) ->
       walk a;

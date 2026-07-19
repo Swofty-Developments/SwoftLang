@@ -139,6 +139,48 @@ let expect_ident_like st what =
   | None ->
     error st (Printf.sprintf "Expected %s, found %s" what (Token.describe (peek_tok st)))
 
+(* a member name after '.' (property or method) may be any keyword-shaped word:
+   a collection method or accessor (contains/set/values/is_empty/...) can
+   collide with a reserved word, and in member position there is no ambiguity
+   with the keyword's grammar role. Includes every English-word token. *)
+let member_word = function
+  | Token.IDENT s -> Some s
+  | Token.COMMAND -> Some "command"
+  | Token.EVENT -> Some "event"
+  | Token.IF -> Some "if"
+  | Token.ELSE -> Some "else"
+  | Token.HALT -> Some "halt"
+  | Token.SEND -> Some "send"
+  | Token.TELEPORT -> Some "teleport"
+  | Token.TO -> Some "to"
+  | Token.IS -> Some "is"
+  | Token.NOT -> Some "not"
+  | Token.EITHER -> Some "either"
+  | Token.CANCEL -> Some "cancel"
+  | Token.SET -> Some "set"
+  | Token.CONTAINS -> Some "contains"
+  | Token.AND -> Some "and"
+  | Token.OR -> Some "or"
+  | Token.FUNCTION -> Some "function"
+  | Token.RETURN -> Some "return"
+  | Token.LOOP -> Some "loop"
+  | Token.WHILE -> Some "while"
+  | Token.TIMES -> Some "times"
+  | Token.AS -> Some "as"
+  | Token.BROADCAST -> Some "broadcast"
+  | Token.CALL -> Some "call"
+  | Token.ALL -> Some "all"
+  | Token.PLAYERS -> Some "players"
+  | _ -> None
+
+let expect_member_word st what =
+  match member_word (peek_tok st) with
+  | Some s ->
+    ignore (advance st);
+    s
+  | None ->
+    error st (Printf.sprintf "Expected %s, found %s" what (Token.describe (peek_tok st)))
+
 let parse_int_number st what =
   match peek st with
   | Token.NUMBER raw, _, _ ->

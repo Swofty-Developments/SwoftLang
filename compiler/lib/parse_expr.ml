@@ -20,6 +20,8 @@ let rec reposition p e =
     | EBinary (op, l, r) -> EBinary (op, reposition p l, reposition p r)
     | EUnary (op, x) -> EUnary (op, reposition p x)
     | ECall (name, args) -> ECall (name, List.map (reposition p) args)
+    | EMethod (recv, name, args) ->
+      EMethod (reposition p recv, name, List.map (reposition p) args)
     | EList items -> EList (List.map (reposition p) items)
     | EProp (target, name) -> EProp (reposition p target, name)
     | EPersistGet (name, subject) -> EPersistGet (name, Option.map (reposition p) subject)
@@ -192,8 +194,15 @@ and parse_postfix st =
     | Token.DOT ->
       ignore (advance st);
       let hpos = pos_here st in
-      let name = expect_ident_like st "property name after '.'" in
-      e := mke hpos (EProp (!e, name))
+      let name = expect_member_word st "property or method name after '.'" in
+      (* `.name(args)` is a method call; `.name` (no parens) stays a property
+         access — the zero-arg accessors (.size/.keys/.first/...) keep prop
+         form (W-collections) *)
+      if peek_tok st = Token.LPAREN then begin
+        ignore (advance st);
+        e := mke hpos (EMethod (!e, name, parse_call_args st))
+      end
+      else e := mke hpos (EProp (!e, name))
     | Token.LBRACKET ->
       (* map index read m[k] (phase 10): sugar for map_get(m, k), so it yields
          optional<V> and integrates the exists/otherwise discipline *)
@@ -452,7 +461,7 @@ let parse_lvalue st =
   while peek_tok st = Token.DOT do
     ignore (advance st);
     let hpos = pos_here st in
-    let name = expect_ident_like st "property name after '.'" in
+    let name = expect_member_word st "property name after '.'" in
     e := mke hpos (EProp (!e, name))
   done;
   !e
