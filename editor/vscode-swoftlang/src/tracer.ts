@@ -58,10 +58,22 @@ export interface ReloadMsg {
 }
 export type ServerMsg = HelloMsg | TraceMsg | HandlerMsg | ReloadMsg;
 
-// ---- decoration fade configuration ----
-const FLASH_MS = 700; // time for the just-executed line's flash to fade out
-const TRAIL_MS = 2500; // how long a recently-executed line keeps a faint tint
-const TRAIL_STEPS = 6; // number of distinct trail intensities
+// ---- decoration animation ----
+// A line eases in, then BREATHES on a slow shared sine while it keeps firing —
+// so a scoreboard/tablist update loop settles into one long phase-in/out rather
+// than re-flashing on every hit — and fades once it stops. Rows are phase-offset
+// by line number so lines lit in the same burst cascade top→bottom.
+const ATTACK_MS = 130; // ease-in when a line first lights up
+const SUSTAIN_MS = 1500; // after its last hit, how long a line stays lit before fading out
+const BREATHE_MS = 1700; // period of the slow in/out breathing cycle
+const STAGGER_MS = 55; // per-row phase offset so simultaneous lines cascade downward
+const BREATHE_FLOOR = 0.5; // breathing dips only to this fraction (never fully dark while active)
+const PEAK_ALPHA = 0.5; // brightest background alpha
+const STEPS = 16; // ladder resolution — higher = smoother fade
+
+function easeOutQuad(t: number): number {
+  return 1 - (1 - t) * (1 - t);
+}
 
 /**
  * A tint layer used for the fade. We pre-build a ladder of decoration types
@@ -107,7 +119,8 @@ function makeHandlerMarker(context: vscode.ExtensionContext): vscode.TextEditorD
 interface ActiveLine {
   editorKey: string; // uri string
   line: number; // 0-based
-  born: number; // Date.now() when the trace arrived
+  firstSeen: number; // Date.now() when the line first lit up (drives the ease-in)
+  lastSeen: number; // Date.now() of the most recent hit (drives sustain/fade)
 }
 
 export interface TracerHost {
@@ -116,6 +129,7 @@ export interface TracerHost {
   scriptsDir(): string | undefined;
   setScriptsDirFromHello(dir: string): void;
   autoReveal(): boolean;
+  followExecution(): boolean;
 }
 
 export class DebugTracer implements vscode.Disposable {
@@ -123,7 +137,6 @@ export class DebugTracer implements vscode.Disposable {
   private status: vscode.StatusBarItem;
   private output: vscode.OutputChannel;
   private layers: Layer[] = [];
-  private flashLayer: Layer;
   private handlerMarker: vscode.TextEditorDecorationType;
   private active: ActiveLine[] = [];
   private tickTimer: NodeJS.Timeout | undefined;
@@ -147,12 +160,13 @@ export class DebugTracer implements vscode.Disposable {
     this.updateStatus();
     this.status.show();
 
-    // ladder of trail layers, faintest last; index 0 is the freshest trail step.
-    for (let i = 0; i < TRAIL_STEPS; i++) {
-      const alpha = 0.22 * (1 - i / TRAIL_STEPS);
-      this.layers.push(makeLayer(Math.max(0.02, alpha), false));
+    // ladder of glow layers from faintest (index 0) to brightest (STEPS-1);
+    // the brightest ~30% carry the emerald left-border so the glow fades too.
+    for (let i = 0; i < STEPS; i++) {
+      const frac = (i + 1) / STEPS; // (0, 1]
+      const alpha = Math.max(0.02, PEAK_ALPHA * frac);
+      this.layers.push(makeLayer(alpha, frac >= 0.7));
     }
-    this.flashLayer = makeLayer(0.42, true);
     this.handlerMarker = makeHandlerMarker(context);
 
     context.subscriptions.push(this.status, this.output, this);
@@ -303,17 +317,33 @@ export class DebugTracer implements vscode.Disposable {
     }
     if (!editor) return;
 
-    // reveal the line and push it onto the active-trail list
-    editor.revealRange(
-      new vscode.Range(line0, 0, line0, 0),
-      vscode.TextEditorRevealType.InCenterIfOutsideViewport,
+    // Follow-execution (scrolling to the line) is OFF by default so the tracer
+    // never hijacks your scroll while a loop keeps firing. Opt in with
+    // swoftlang.debug.followExecution.
+    if (this.host.followExecution()) {
+      editor.revealRange(
+        new vscode.Range(line0, 0, line0, 0),
+        vscode.TextEditorRevealType.InCenterIfOutsideViewport,
+      );
+    }
+    const nowMs = Date.now();
+    const existing = this.active.find(
+      (a) => a.editorKey === uri.toString() && a.line === line0,
     );
-    this.active = this.active.filter(
-      (a) => !(a.editorKey === uri.toString() && a.line === line0),
-    );
-    this.active.unshift({ editorKey: uri.toString(), line: line0, born: Date.now() });
-    // cap the trail so we never leak decorations
-    if (this.active.length > 200) this.active.length = 200;
+    if (existing) {
+      // already lit — just refresh its "last hit" so a constant loop keeps
+      // breathing as one long steady pulse instead of re-flashing every tick.
+      existing.lastSeen = nowMs;
+    } else {
+      this.active.unshift({
+        editorKey: uri.toString(),
+        line: line0,
+        firstSeen: nowMs,
+        lastSeen: nowMs,
+      });
+      // cap the trail so we never leak decorations
+      if (this.active.length > 200) this.active.length = 200;
+    }
     this.render();
     this.startTicker();
   }
@@ -376,28 +406,29 @@ export class DebugTracer implements vscode.Disposable {
 
   private render(): void {
     const now = Date.now();
-    // group active lines per editor and per layer bucket
+    // group active lines per editor into ladder buckets by pulse intensity
     const perEditor = new Map<string, vscode.Range[][]>();
-    const flashPerEditor = new Map<string, vscode.Range[]>();
 
     for (const a of this.active) {
-      const age = now - a.born;
-      if (age > TRAIL_MS) continue;
-      const range = new vscode.Range(a.line, 0, a.line, 0);
-      if (age <= FLASH_MS) {
-        const arr = flashPerEditor.get(a.editorKey) || [];
-        arr.push(range);
-        flashPerEditor.set(a.editorKey, arr);
-      }
-      // trail bucket 0..TRAIL_STEPS-1 based on age fraction
-      const frac = age / TRAIL_MS;
-      const bucket = Math.min(TRAIL_STEPS - 1, Math.floor(frac * TRAIL_STEPS));
+      const sinceLast = now - a.lastSeen;
+      if (sinceLast > SUSTAIN_MS) continue; // fully faded
+      // ease-in when the line first appears
+      const appear = easeOutQuad(Math.min(1, (now - a.firstSeen) / ATTACK_MS));
+      // sustain = 1 while firing, eases to 0 over SUSTAIN_MS after the last hit
+      const sustain = easeOutQuad(Math.max(0, 1 - sinceLast / SUSTAIN_MS));
+      // slow shared breathing, phase-shifted per row so bursts cascade downward
+      const phase = (now - a.line * STAGGER_MS) / BREATHE_MS;
+      const breathe = 0.5 - 0.5 * Math.cos(phase * 2 * Math.PI); // 0..1
+      const level = BREATHE_FLOOR + (1 - BREATHE_FLOOR) * breathe; // FLOOR..1
+      const env = appear * sustain * level;
+      if (env <= 0.001) continue;
+      const bucket = Math.min(STEPS - 1, Math.max(0, Math.round(env * (STEPS - 1))));
       let buckets = perEditor.get(a.editorKey);
       if (!buckets) {
         buckets = this.layers.map(() => []);
         perEditor.set(a.editorKey, buckets);
       }
-      buckets[bucket].push(range);
+      buckets[bucket].push(new vscode.Range(a.line, 0, a.line, 0));
     }
 
     for (const editor of vscode.window.visibleTextEditors) {
@@ -406,7 +437,6 @@ export class DebugTracer implements vscode.Disposable {
       for (let i = 0; i < this.layers.length; i++) {
         editor.setDecorations(this.layers[i].type, buckets ? buckets[i] : []);
       }
-      editor.setDecorations(this.flashLayer.type, flashPerEditor.get(key) || []);
     }
   }
 
@@ -414,7 +444,7 @@ export class DebugTracer implements vscode.Disposable {
     if (this.tickTimer) return;
     this.tickTimer = setInterval(() => {
       const now = Date.now();
-      this.active = this.active.filter((a) => now - a.born <= TRAIL_MS);
+      this.active = this.active.filter((a) => now - a.lastSeen <= SUSTAIN_MS);
       this.render();
       if (this.active.length === 0) {
         if (this.tickTimer) {
@@ -422,7 +452,7 @@ export class DebugTracer implements vscode.Disposable {
           this.tickTimer = undefined;
         }
       }
-    }, 60);
+    }, 40);
   }
 
   private clearAll(): void {
@@ -430,7 +460,6 @@ export class DebugTracer implements vscode.Disposable {
     this.handlerLines.clear();
     for (const editor of vscode.window.visibleTextEditors) {
       for (const l of this.layers) editor.setDecorations(l.type, []);
-      editor.setDecorations(this.flashLayer.type, []);
       editor.setDecorations(this.handlerMarker, []);
     }
     if (this.tickTimer) {
@@ -462,7 +491,6 @@ export class DebugTracer implements vscode.Disposable {
     this.disposed = true;
     this.disconnect();
     for (const l of this.layers) l.type.dispose();
-    this.flashLayer.type.dispose();
     this.handlerMarker.dispose();
   }
 }

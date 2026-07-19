@@ -73,7 +73,12 @@
         "swoftlang.debug.autoReveal": {
           "type": "boolean",
           "default": true,
-          "description": "When a trace arrives for a file that is not open, open and reveal it so the flash is visible."
+          "description": "When a trace arrives for a file that is not open, open it (without stealing focus) so the pulse is visible."
+        },
+        "swoftlang.debug.followExecution": {
+          "type": "boolean",
+          "default": false,
+          "description": "Scroll the editor to follow each executing line. Off by default so the tracer never hijacks your scroll while a loop keeps firing."
         }
       }
     }

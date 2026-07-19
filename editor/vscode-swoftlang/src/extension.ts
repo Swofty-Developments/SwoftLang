@@ -56,6 +56,9 @@ export function activate(context: vscode.ExtensionContext): void {
     autoReveal(): boolean {
       return cfg().get<boolean>('debug.autoReveal', true);
     },
+    followExecution(): boolean {
+      return cfg().get<boolean>('debug.followExecution', false);
+    },
   };
 
   tracer = new DebugTracer(
