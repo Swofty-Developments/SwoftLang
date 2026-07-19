@@ -1,0 +1,30 @@
+# Gradle / Java
+.gradle/
+build/
+java/build/
+**/build/
+*.class
+
+# OCaml / dune
+compiler/_build/
+_build/
+*.install
+
+# Node / VitePress docs
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# IDE / editor
+.idea/
+.vscode/
+*.iml
+
+# Demo runtime state
+demo/data/
+
+# OS
+.DS_Store
+Thumbs.db
+native/build/
+java/src/main/resources/Debug/
