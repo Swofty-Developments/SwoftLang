@@ -1,0 +1,31 @@
+command /rules:
+	trigger:
+		rules(player, "rules")
+	
+	
+function rules(p: player, type: text):
+	if {_type} is "rules":
+		
+		set metadata tag "rules" of {_p} to chest inventory with 5 rows named "&c&lRules"
+		set slot (numbers between 0 and 44) of metadata tag "rules" of {_p} to gray stained glass pane named " "
+		open (metadata tag "rules" of {_p}) to {_p}
+			
+		set slot 4 of metadata tag "rules" of {_p} to shiny redstone block named "&c&l! ! !" with lore "&7If you see someone breaking any" and "&7of these rules, report them in the discord!" and "&9/discord"
+		set slot 10 of metadata tag "rules" of {_p} to book named "&e&l[1] &fBe respectful to everyone!" with lore "&7- If someone is being toxic, " with lore "&7you can report them in /discord"
+		set slot 11 of metadata tag "rules" of {_p} to book named "&e&l[2] &fNo Naked Killing!" with lore "&7- A player without armor on," and "&7who is not in OP gens area" and "&7is considered naked!"
+		set slot 12 of metadata tag "rules" of {_p} to book named "&e&l[3] &fNo Combat Logging!" with lore "&7- This is not bannable, but" and "&7if you are in combat while logging" and "&7out you will be killed."
+		set slot 13 of metadata tag "rules" of {_p} to book named "&e&l[4] &fNo Excessive Swearing!" with lore "&7- Any more than 2 or 3 times" and "&7in a short period of time is " and "&7considered excessive swearing!"
+		set slot 14 of metadata tag "rules" of {_p} to book named "&e&l[5] &fNo Scamming!" with lore "&7- This is telling a player" and "&7they will receive something for" and "&7something in return, but lying!"
+		set slot 15 of metadata tag "rules" of {_p} to book named "&e&l[6] &fNo Advertising!" with lore "&7- Advertising a server not" and "&7partnered with mostlygens," and "&7or any website!"
+		set slot 16 of metadata tag "rules" of {_p} to book named "&e&l[7] &fNo Abusing Bugs!" with lore "&7- This is abusing a feature" and "&7in the game, that is not meant" and "&7to be in the game!" and "&f- Instead, report it in the" and "&fdiscord! &9/discord"
+		set slot 19 of metadata tag "rules" of {_p} to book named "&e&l[8] &fNo Slurs, or Discrimination!" with lore "&7- This is any slur or" and "&7way of discrimination!"
+		set slot 20 of metadata tag "rules" of {_p} to book named "&e&l[9] &fDo not disrespect a staff member!" with lore "&7- Be respectful to every" and "&7staff member, and be patient!"
+		set slot 21 of metadata tag "rules" of {_p} to book named "&e&l[10] &fNo Hacking!" with lore "&7- No form of hacking is allowed," and "&7and there is no excuse." and "&7Having a unfair advantage, by using" and "&7mods or hacks, is bannable." and "&f- If you see someone hacking, report them" and "&fin the discord! &9/discord"
+		set slot 22 of metadata tag "rules" of {_p} to book named "&e&l[11] &fNo Spamming Chat!" with lore "&7- This is saying the same message" and "&7in a short amount of time, or spamming" and "&7messages in chat."
+		set slot 40 of metadata tag "rules" of {_p} to barrier named "&c&lClose Menu"
+			
+on inventory click:
+	if event-inventory = (metadata tag "rules" of player):
+		cancel event
+		if index of event-slot is 40:
+			close inventory of player

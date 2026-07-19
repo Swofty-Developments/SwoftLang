@@ -1,0 +1,318 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "swoftlang",
+  "scopeName": "source.swoftlang",
+  "fileTypes": [
+    "sw"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#declarations"
+    },
+    {
+      "include": "#property-keys"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#operator-words"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#function-calls"
+    },
+    {
+      "include": "#variables"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.swoftlang",
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.swoftlang"
+            }
+          },
+          "end": "$"
+        },
+        {
+          "name": "comment.block.swoftlang",
+          "begin": "/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.begin.swoftlang"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.end.swoftlang"
+            }
+          }
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.swoftlang",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.swoftlang"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.swoftlang"
+        }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.swoftlang",
+          "match": "\\\\."
+        },
+        {
+          "name": "constant.other.color.minimessage.swoftlang",
+          "match": "</?[a-zA-Z_#][a-zA-Z0-9_#:]*>"
+        },
+        {
+          "name": "meta.template.expression.swoftlang",
+          "begin": "\\$\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.template-expression.begin.swoftlang"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.template-expression.end.swoftlang"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#interpolation-expression"
+            }
+          ]
+        }
+      ]
+    },
+    "interpolation-expression": {
+      "patterns": [
+        {
+          "include": "#operator-words"
+        },
+        {
+          "include": "#constants"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#function-calls"
+        },
+        {
+          "include": "#variables"
+        },
+        {
+          "include": "#punctuation"
+        }
+      ]
+    },
+    "declarations": {
+      "patterns": [
+        {
+          "match": "\\b(event)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "storage.type.declaration.swoftlang"
+            },
+            "2": {
+              "name": "entity.name.class.event.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "\\b(async\\s+function|function)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "storage.type.declaration.swoftlang"
+            },
+            "2": {
+              "name": "entity.name.function.swoftlang"
+            }
+          }
+        },
+        {
+          "name": "storage.type.declaration.swoftlang",
+          "match": "\\b(command|event|event_type|function|gui|scoreboard|tablist|bossbar|server|async|mob|item|storage|persistent|fishing_loot|import|export|hologram|npc)\\b(?!\\s*\\.)"
+        }
+      ]
+    },
+    "property-keys": {
+      "match": "^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(:)(?!:)",
+      "captures": {
+        "1": {
+          "name": "entity.other.attribute-name.property.swoftlang"
+        },
+        "2": {
+          "name": "punctuation.separator.key-value.swoftlang"
+        }
+      }
+    },
+    "types": {
+      "patterns": [
+        {
+          "match": "\\b(either|optional|list|map)\\s*(<)",
+          "captures": {
+            "1": {
+              "name": "support.type.constructor.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.definition.typeparameters.begin.swoftlang"
+            }
+          }
+        },
+        {
+          "name": "support.type.primitive.swoftlang",
+          "match": "\\b(String|Integer|Double|Boolean|Player|Location|Item|World|Number|int|bool|Entity|Mob|Vec|OfflinePlayer|Skin|Schedule|Canvas)\\b"
+        }
+      ]
+    },
+    "operator-words": {
+      "patterns": [
+        {
+          "name": "keyword.operator.word.swoftlang",
+          "match": "\\b(is\\s+not\\s+an?\\b|is\\s+an?\\b|is\\s+not\\b|is\\s+missing\\b|is\\b|contains\\b|and\\b|or\\b|not\\b|exists\\b|otherwise\\b|missing\\b)"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.swoftlang",
+          "match": "\\b(if|else|halt|loop|while|times|as|return|wait|spawn|call|go\\s+back|go|back|repeat|stop|is|otherwise|exists)\\b"
+        },
+        {
+          "name": "keyword.other.statement.swoftlang",
+          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|emit)\\b"
+        },
+        {
+          "name": "keyword.other.connective.swoftlang",
+          "match": "\\b(to|at|with|for|every|manual)\\b"
+        },
+        {
+          "name": "keyword.other.block.swoftlang",
+          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|billboard|look_at_players|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
+        },
+        {
+          "name": "constant.language.unit.swoftlang",
+          "match": "\\b(ticks|seconds|millis)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.swoftlang",
+          "match": "\\b(true|false|none)\\b"
+        },
+        {
+          "name": "constant.language.target.swoftlang",
+          "match": "\\b(all|sender)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.swoftlang",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.comparison.swoftlang",
+          "match": "==|!=|<=|>=|<(?![a-zA-Z<])|>"
+        },
+        {
+          "name": "keyword.operator.logical.swoftlang",
+          "match": "&&|\\|\\||!"
+        },
+        {
+          "name": "keyword.operator.range.swoftlang",
+          "match": "\\.\\."
+        },
+        {
+          "name": "keyword.operator.arithmetic.swoftlang",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.assignment.swoftlang",
+          "match": "="
+        }
+      ]
+    },
+    "function-calls": {
+      "match": "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()",
+      "captures": {
+        "1": {
+          "name": "entity.name.function.call.swoftlang"
+        }
+      }
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.language.swoftlang",
+          "match": "\\b(event|args|state|player|mob|killer|victim|run|item|index|old_item|new_item|reason|click_type)\\b(?=\\.|\\b)"
+        },
+        {
+          "name": "variable.other.swoftlang",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.accessor.swoftlang",
+          "match": "\\."
+        },
+        {
+          "name": "punctuation.separator.swoftlang",
+          "match": "[,|]"
+        },
+        {
+          "name": "punctuation.section.block.swoftlang",
+          "match": "[{}\\[\\]()]"
+        }
+      ]
+    }
+  }
+}

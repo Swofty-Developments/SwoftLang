@@ -1,0 +1,101 @@
+{
+  "name": "vscode-swoftlang",
+  "displayName": "SwoftLang",
+  "description": "Language support and a live execution tracer for the SwoftLang (.sw) scripting language.",
+  "version": "0.1.0",
+  "publisher": "swofty",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Debuggers"
+  ],
+  "main": "./out/src/extension.js",
+  "activationEvents": [
+    "onLanguage:swoftlang"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "swoftlang",
+        "aliases": [
+          "SwoftLang",
+          "swoftlang"
+        ],
+        "extensions": [
+          ".sw"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "swoftlang",
+        "scopeName": "source.swoftlang",
+        "path": "./syntaxes/swoftlang.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "swoftlang.debug.connect",
+        "title": "SwoftLang: Connect to Debug Server"
+      },
+      {
+        "command": "swoftlang.debug.disconnect",
+        "title": "SwoftLang: Disconnect from Debug Server"
+      }
+    ],
+    "configuration": {
+      "title": "SwoftLang",
+      "properties": {
+        "swoftlang.swoftcPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Absolute path to the `swoftc` compiler binary. If empty, resolution falls back to the `SWOFTC` environment variable, then `swoftc` on `PATH`, then `<workspaceFolder>/compiler/_build/default/bin/main.exe`."
+        },
+        "swoftlang.debugPort": {
+          "type": "number",
+          "default": 25580,
+          "description": "TCP port of the SwoftLang debug WebSocket server (server must be started with --debug)."
+        },
+        "swoftlang.scriptsDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Directory the debug server's `scripts/…` paths are relative to. If empty, the server's `hello.scriptsDir` is used, falling back to `<workspaceFolder>/scripts`."
+        },
+        "swoftlang.debug.autoConnect": {
+          "type": "boolean",
+          "default": false,
+          "description": "Connect to the debug server automatically when a SwoftLang file is opened."
+        },
+        "swoftlang.debug.autoReveal": {
+          "type": "boolean",
+          "default": true,
+          "description": "When a trace arrives for a file that is not open, open and reveal it so the flash is visible."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "gen-symbols": "node scripts/gen-symbols.js",
+    "mock": "node ./out/test/mock-debug-server.js",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package -o vscode-swoftlang.vsix"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.4.0"
+  }
+}

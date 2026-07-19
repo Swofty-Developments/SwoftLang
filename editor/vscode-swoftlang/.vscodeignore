@@ -1,0 +1,10 @@
+.vscode/**
+.gitignore
+.vscodeignore
+tsconfig.json
+src/**
+test/**
+scripts/gen-symbols.js
+data/property-table.raw.json
+**/*.ts
+**/*.map

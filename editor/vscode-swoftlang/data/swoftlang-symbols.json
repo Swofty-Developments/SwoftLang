@@ -1,0 +1,2755 @@
+{
+  "generatedBy": "scripts/gen-symbols.js",
+  "note": "Derived from the SwoftLang TextMate grammar + compiler/lib/registry.ml + swoftc --property-table.",
+  "symbols": [
+    {
+      "name": "if",
+      "kind": "keyword"
+    },
+    {
+      "name": "else",
+      "kind": "keyword"
+    },
+    {
+      "name": "halt",
+      "kind": "keyword"
+    },
+    {
+      "name": "loop",
+      "kind": "keyword"
+    },
+    {
+      "name": "while",
+      "kind": "keyword"
+    },
+    {
+      "name": "times",
+      "kind": "keyword"
+    },
+    {
+      "name": "as",
+      "kind": "keyword"
+    },
+    {
+      "name": "return",
+      "kind": "keyword"
+    },
+    {
+      "name": "wait",
+      "kind": "keyword"
+    },
+    {
+      "name": "spawn",
+      "kind": "keyword"
+    },
+    {
+      "name": "call",
+      "kind": "keyword"
+    },
+    {
+      "name": "go back",
+      "kind": "keyword"
+    },
+    {
+      "name": "go",
+      "kind": "keyword"
+    },
+    {
+      "name": "back",
+      "kind": "keyword"
+    },
+    {
+      "name": "send",
+      "kind": "keyword"
+    },
+    {
+      "name": "teleport",
+      "kind": "keyword"
+    },
+    {
+      "name": "set",
+      "kind": "keyword"
+    },
+    {
+      "name": "cancel",
+      "kind": "keyword"
+    },
+    {
+      "name": "broadcast",
+      "kind": "keyword"
+    },
+    {
+      "name": "open",
+      "kind": "keyword"
+    },
+    {
+      "name": "close",
+      "kind": "keyword"
+    },
+    {
+      "name": "replace",
+      "kind": "keyword"
+    },
+    {
+      "name": "show",
+      "kind": "keyword"
+    },
+    {
+      "name": "hide",
+      "kind": "keyword"
+    },
+    {
+      "name": "update",
+      "kind": "keyword"
+    },
+    {
+      "name": "title",
+      "kind": "keyword"
+    },
+    {
+      "name": "subtitle",
+      "kind": "keyword"
+    },
+    {
+      "name": "actionbar",
+      "kind": "keyword"
+    },
+    {
+      "name": "clear",
+      "kind": "keyword"
+    },
+    {
+      "name": "line",
+      "kind": "keyword"
+    },
+    {
+      "name": "blank",
+      "kind": "keyword"
+    },
+    {
+      "name": "entry",
+      "kind": "keyword"
+    },
+    {
+      "name": "fill",
+      "kind": "keyword"
+    },
+    {
+      "name": "give",
+      "kind": "keyword"
+    },
+    {
+      "name": "to",
+      "kind": "keyword"
+    },
+    {
+      "name": "with",
+      "kind": "keyword"
+    },
+    {
+      "name": "for",
+      "kind": "keyword"
+    },
+    {
+      "name": "every",
+      "kind": "keyword"
+    },
+    {
+      "name": "manual",
+      "kind": "keyword"
+    },
+    {
+      "name": "execute",
+      "kind": "keyword"
+    },
+    {
+      "name": "arguments",
+      "kind": "keyword"
+    },
+    {
+      "name": "slot",
+      "kind": "keyword"
+    },
+    {
+      "name": "slots",
+      "kind": "keyword"
+    },
+    {
+      "name": "editable",
+      "kind": "keyword"
+    },
+    {
+      "name": "paginate",
+      "kind": "keyword"
+    },
+    {
+      "name": "state",
+      "kind": "keyword"
+    },
+    {
+      "name": "render",
+      "kind": "keyword"
+    },
+    {
+      "name": "lines",
+      "kind": "keyword"
+    },
+    {
+      "name": "column",
+      "kind": "keyword"
+    },
+    {
+      "name": "on_click",
+      "kind": "keyword"
+    },
+    {
+      "name": "on_open",
+      "kind": "keyword"
+    },
+    {
+      "name": "on_close",
+      "kind": "keyword"
+    },
+    {
+      "name": "on_change",
+      "kind": "keyword"
+    },
+    {
+      "name": "on_click_fallback",
+      "kind": "keyword"
+    },
+    {
+      "name": "source",
+      "kind": "keyword"
+    },
+    {
+      "name": "refresh",
+      "kind": "keyword"
+    },
+    {
+      "name": "border",
+      "kind": "keyword"
+    },
+    {
+      "name": "prev_slot",
+      "kind": "keyword"
+    },
+    {
+      "name": "next_slot",
+      "kind": "keyword"
+    },
+    {
+      "name": "ticks",
+      "kind": "keyword"
+    },
+    {
+      "name": "seconds",
+      "kind": "keyword"
+    },
+    {
+      "name": "millis",
+      "kind": "keyword"
+    },
+    {
+      "name": "command",
+      "kind": "declaration"
+    },
+    {
+      "name": "event",
+      "kind": "declaration"
+    },
+    {
+      "name": "function",
+      "kind": "declaration"
+    },
+    {
+      "name": "async function",
+      "kind": "declaration"
+    },
+    {
+      "name": "async",
+      "kind": "declaration"
+    },
+    {
+      "name": "gui",
+      "kind": "declaration"
+    },
+    {
+      "name": "scoreboard",
+      "kind": "declaration"
+    },
+    {
+      "name": "tablist",
+      "kind": "declaration"
+    },
+    {
+      "name": "bossbar",
+      "kind": "declaration"
+    },
+    {
+      "name": "server",
+      "kind": "declaration"
+    },
+    {
+      "name": "mob",
+      "kind": "declaration"
+    },
+    {
+      "name": "item",
+      "kind": "declaration"
+    },
+    {
+      "name": "is",
+      "kind": "operator"
+    },
+    {
+      "name": "is not",
+      "kind": "operator"
+    },
+    {
+      "name": "is a",
+      "kind": "operator"
+    },
+    {
+      "name": "is an",
+      "kind": "operator"
+    },
+    {
+      "name": "is not a",
+      "kind": "operator"
+    },
+    {
+      "name": "is not an",
+      "kind": "operator"
+    },
+    {
+      "name": "is missing",
+      "kind": "operator"
+    },
+    {
+      "name": "contains",
+      "kind": "operator"
+    },
+    {
+      "name": "and",
+      "kind": "operator"
+    },
+    {
+      "name": "or",
+      "kind": "operator"
+    },
+    {
+      "name": "not",
+      "kind": "operator"
+    },
+    {
+      "name": "exists",
+      "kind": "operator"
+    },
+    {
+      "name": "otherwise",
+      "kind": "operator"
+    },
+    {
+      "name": "missing",
+      "kind": "operator"
+    },
+    {
+      "name": "String",
+      "kind": "type"
+    },
+    {
+      "name": "Integer",
+      "kind": "type"
+    },
+    {
+      "name": "Double",
+      "kind": "type"
+    },
+    {
+      "name": "Boolean",
+      "kind": "type"
+    },
+    {
+      "name": "Number",
+      "kind": "type"
+    },
+    {
+      "name": "int",
+      "kind": "type"
+    },
+    {
+      "name": "bool",
+      "kind": "type"
+    },
+    {
+      "name": "Player",
+      "kind": "type"
+    },
+    {
+      "name": "OfflinePlayer",
+      "kind": "type"
+    },
+    {
+      "name": "Location",
+      "kind": "type"
+    },
+    {
+      "name": "Item",
+      "kind": "type"
+    },
+    {
+      "name": "World",
+      "kind": "type"
+    },
+    {
+      "name": "Mob",
+      "kind": "type"
+    },
+    {
+      "name": "Entity",
+      "kind": "type"
+    },
+    {
+      "name": "Vec",
+      "kind": "type"
+    },
+    {
+      "name": "Skin",
+      "kind": "type"
+    },
+    {
+      "name": "Canvas",
+      "kind": "type"
+    },
+    {
+      "name": "Song",
+      "kind": "type"
+    },
+    {
+      "name": "Display",
+      "kind": "type"
+    },
+    {
+      "name": "Server",
+      "kind": "type"
+    },
+    {
+      "name": "Schedule",
+      "kind": "type"
+    },
+    {
+      "name": "either",
+      "kind": "type"
+    },
+    {
+      "name": "optional",
+      "kind": "type"
+    },
+    {
+      "name": "list",
+      "kind": "type"
+    },
+    {
+      "name": "map",
+      "kind": "type"
+    },
+    {
+      "name": "true",
+      "kind": "constant"
+    },
+    {
+      "name": "false",
+      "kind": "constant"
+    },
+    {
+      "name": "none",
+      "kind": "constant"
+    },
+    {
+      "name": "all",
+      "kind": "constant"
+    },
+    {
+      "name": "sender",
+      "kind": "constant"
+    },
+    {
+      "name": "random",
+      "kind": "builtin",
+      "signature": "random(min: Number, max: Number): Integer",
+      "signatures": [
+        "random(min: Number, max: Number): Integer"
+      ],
+      "doc": "Random integer in [min, max]."
+    },
+    {
+      "name": "round",
+      "kind": "builtin",
+      "signature": "round(n: Number): Integer",
+      "signatures": [
+        "round(n: Number): Integer"
+      ],
+      "doc": "Round to the nearest integer."
+    },
+    {
+      "name": "floor",
+      "kind": "builtin",
+      "signature": "floor(n: Number): Integer",
+      "signatures": [
+        "floor(n: Number): Integer"
+      ],
+      "doc": "Round down to an integer."
+    },
+    {
+      "name": "ceil",
+      "kind": "builtin",
+      "signature": "ceil(n: Number): Integer",
+      "signatures": [
+        "ceil(n: Number): Integer"
+      ],
+      "doc": "Round up to an integer."
+    },
+    {
+      "name": "abs",
+      "kind": "builtin",
+      "signature": "abs(n: Number): Number",
+      "signatures": [
+        "abs(n: Number): Number"
+      ],
+      "doc": "Absolute value (keeps Integer/Double)."
+    },
+    {
+      "name": "uppercase",
+      "kind": "builtin",
+      "signature": "uppercase(s: String): String",
+      "signatures": [
+        "uppercase(s: String): String"
+      ],
+      "doc": "Uppercase a string."
+    },
+    {
+      "name": "lowercase",
+      "kind": "builtin",
+      "signature": "lowercase(s: String): String",
+      "signatures": [
+        "lowercase(s: String): String"
+      ],
+      "doc": "Lowercase a string."
+    },
+    {
+      "name": "length",
+      "kind": "builtin",
+      "signature": "length(x: String|list): Integer",
+      "signatures": [
+        "length(x: String|list): Integer"
+      ],
+      "doc": "Length of a string or list."
+    },
+    {
+      "name": "location",
+      "kind": "builtin",
+      "signature": "location(x, y, z): Location",
+      "signatures": [
+        "location(x, y, z): Location",
+        "location(x, y, z, yaw, pitch): Location"
+      ],
+      "doc": "Build a Location."
+    },
+    {
+      "name": "item",
+      "kind": "builtin",
+      "signature": "item(material: String): Item",
+      "signatures": [
+        "item(material: String): Item",
+        "item(material: String, amount: Number): Item"
+      ],
+      "doc": "Build an Item stack."
+    },
+    {
+      "name": "player",
+      "kind": "builtin",
+      "signature": "player(name: String): optional<Player>",
+      "signatures": [
+        "player(name: String): optional<Player>"
+      ],
+      "doc": "Look up an online player by name."
+    },
+    {
+      "name": "all_players",
+      "kind": "builtin",
+      "signature": "all_players(): list<Player>",
+      "signatures": [
+        "all_players(): list<Player>"
+      ],
+      "doc": "Every online player."
+    },
+    {
+      "name": "world",
+      "kind": "builtin",
+      "signature": "world(name: String): optional<World>",
+      "signatures": [
+        "world(name: String): optional<World>"
+      ],
+      "doc": "Look up a loaded world by name."
+    },
+    {
+      "name": "centered",
+      "kind": "builtin",
+      "signature": "centered(s: String): String",
+      "signatures": [
+        "centered(s: String): String"
+      ],
+      "doc": "Center a chat string."
+    },
+    {
+      "name": "prompt_input",
+      "kind": "builtin",
+      "signature": "prompt_input(p: Player, msg: String): String",
+      "signatures": [
+        "prompt_input(p: Player, msg: String): String"
+      ],
+      "doc": "async only: prompt a player for chat input."
+    },
+    {
+      "name": "min",
+      "kind": "builtin",
+      "signature": "min(a: Number, b: Number): Number",
+      "signatures": [
+        "min(a: Number, b: Number): Number"
+      ],
+      "doc": "Smaller of two numbers."
+    },
+    {
+      "name": "max",
+      "kind": "builtin",
+      "signature": "max(a: Number, b: Number): Number",
+      "signatures": [
+        "max(a: Number, b: Number): Number"
+      ],
+      "doc": "Larger of two numbers."
+    },
+    {
+      "name": "clamp",
+      "kind": "builtin",
+      "signature": "clamp(n, lo, hi): Number",
+      "signatures": [
+        "clamp(n, lo, hi): Number"
+      ],
+      "doc": "Clamp n into [lo, hi]."
+    },
+    {
+      "name": "format_number",
+      "kind": "builtin",
+      "signature": "format_number(n: Number): String",
+      "signatures": [
+        "format_number(n: Number): String"
+      ],
+      "doc": "Group-separated number string."
+    },
+    {
+      "name": "custom_item",
+      "kind": "builtin",
+      "signature": "custom_item(id: String): Item",
+      "signatures": [
+        "custom_item(id: String): Item"
+      ],
+      "doc": "Instantiate a registered custom item."
+    },
+    {
+      "name": "custom_id",
+      "kind": "builtin",
+      "signature": "custom_id(i: Item): optional<String>",
+      "signatures": [
+        "custom_id(i: Item): optional<String>"
+      ],
+      "doc": "Custom-item id of a stack, if any."
+    },
+    {
+      "name": "all_mobs",
+      "kind": "builtin",
+      "signature": "all_mobs(): list<Mob>",
+      "signatures": [
+        "all_mobs(): list<Mob>",
+        "all_mobs(type: String): list<Mob>"
+      ],
+      "doc": "Every mob (optionally by type)."
+    },
+    {
+      "name": "velocity",
+      "kind": "builtin",
+      "signature": "velocity(x, y, z): Vec",
+      "signatures": [
+        "velocity(x, y, z): Vec"
+      ],
+      "doc": "Build a velocity vector (blocks/tick)."
+    },
+    {
+      "name": "all_entities",
+      "kind": "builtin",
+      "signature": "all_entities(): list<Entity>",
+      "signatures": [
+        "all_entities(): list<Entity>",
+        "all_entities(type: String): list<Entity>"
+      ],
+      "doc": "Every live entity (optionally by type)."
+    },
+    {
+      "name": "spawn_text_display",
+      "kind": "builtin",
+      "signature": "spawn_text_display(text: String, at: Location): Display",
+      "signatures": [
+        "spawn_text_display(text: String, at: Location): Display"
+      ],
+      "doc": "Spawn a text display entity."
+    },
+    {
+      "name": "spawn_item_display",
+      "kind": "builtin",
+      "signature": "spawn_item_display(item: String, at: Location): Display",
+      "signatures": [
+        "spawn_item_display(item: String, at: Location): Display"
+      ],
+      "doc": "Spawn an item display entity."
+    },
+    {
+      "name": "spawn_block_display",
+      "kind": "builtin",
+      "signature": "spawn_block_display(block: String, at: Location): Display",
+      "signatures": [
+        "spawn_block_display(block: String, at: Location): Display"
+      ],
+      "doc": "Spawn a block display entity."
+    },
+    {
+      "name": "song",
+      "kind": "builtin",
+      "signature": "song(file: String): Song",
+      "signatures": [
+        "song(file: String): Song"
+      ],
+      "doc": "Load NBS song metadata."
+    },
+    {
+      "name": "tps_string",
+      "kind": "builtin",
+      "signature": "tps_string(): String",
+      "signatures": [
+        "tps_string(): String"
+      ],
+      "doc": "Colored current TPS string."
+    },
+    {
+      "name": "average_tps_string",
+      "kind": "builtin",
+      "signature": "average_tps_string(): String",
+      "signatures": [
+        "average_tps_string(): String"
+      ],
+      "doc": "Colored average TPS string."
+    },
+    {
+      "name": "tps_at",
+      "kind": "builtin",
+      "signature": "tps_at(secondsAgo: Number): Double",
+      "signatures": [
+        "tps_at(secondsAgo: Number): Double"
+      ],
+      "doc": "TPS sample from N seconds ago."
+    },
+    {
+      "name": "anvil_loader",
+      "kind": "builtin",
+      "signature": "anvil_loader(path: String): WorldLoader",
+      "signatures": [
+        "anvil_loader(path: String): WorldLoader"
+      ],
+      "doc": "An Anvil-format world loader."
+    },
+    {
+      "name": "polar_loader",
+      "kind": "builtin",
+      "signature": "polar_loader(path: String): WorldLoader",
+      "signatures": [
+        "polar_loader(path: String): WorldLoader"
+      ],
+      "doc": "A Polar-format world loader."
+    },
+    {
+      "name": "world_exists",
+      "kind": "builtin",
+      "signature": "world_exists(name: String, loader): Boolean",
+      "signatures": [
+        "world_exists(name: String, loader): Boolean"
+      ],
+      "doc": "Whether a world exists for a loader."
+    },
+    {
+      "name": "all_worlds",
+      "kind": "builtin",
+      "signature": "all_worlds(loader): list<String>",
+      "signatures": [
+        "all_worlds(loader): list<String>"
+      ],
+      "doc": "World names known to a loader."
+    },
+    {
+      "name": "block_at",
+      "kind": "builtin",
+      "signature": "block_at(loc: Location): String",
+      "signatures": [
+        "block_at(loc: Location): String"
+      ],
+      "doc": "Block id at a location."
+    },
+    {
+      "name": "skin",
+      "kind": "builtin",
+      "signature": "skin(texture: String, signature: String): Skin",
+      "signatures": [
+        "skin(texture: String, signature: String): Skin"
+      ],
+      "doc": "Build a Skin from texture+signature."
+    },
+    {
+      "name": "fetch_skin",
+      "kind": "builtin",
+      "signature": "fetch_skin(name: String): optional<Skin>",
+      "signatures": [
+        "fetch_skin(name: String): optional<Skin>"
+      ],
+      "doc": "async only: fetch a skin from Mojang."
+    },
+    {
+      "name": "map_canvas",
+      "kind": "builtin",
+      "signature": "map_canvas(): Canvas",
+      "signatures": [
+        "map_canvas(): Canvas"
+      ],
+      "doc": "Allocate a 128x128 map canvas."
+    },
+    {
+      "name": "has_permission",
+      "kind": "builtin",
+      "signature": "has_permission(p: Player, node: String): Boolean",
+      "signatures": [
+        "has_permission(p: Player, node: String): Boolean"
+      ],
+      "doc": "Permission check."
+    },
+    {
+      "name": "offline_player",
+      "kind": "builtin",
+      "signature": "offline_player(name: String): optional<OfflinePlayer>",
+      "signatures": [
+        "offline_player(name: String): optional<OfflinePlayer>"
+      ],
+      "doc": "Seen-store lookup by name."
+    },
+    {
+      "name": "offline_player_uuid",
+      "kind": "builtin",
+      "signature": "offline_player_uuid(uuid: String): OfflinePlayer",
+      "signatures": [
+        "offline_player_uuid(uuid: String): OfflinePlayer"
+      ],
+      "doc": "Construct an OfflinePlayer identity."
+    },
+    {
+      "name": "fetch_offline_player",
+      "kind": "builtin",
+      "signature": "fetch_offline_player(name: String): optional<OfflinePlayer>",
+      "signatures": [
+        "fetch_offline_player(name: String): optional<OfflinePlayer>"
+      ],
+      "doc": "async only: resolve name->uuid via Mojang."
+    },
+    {
+      "name": "all_seen_players",
+      "kind": "builtin",
+      "signature": "all_seen_players(): list<OfflinePlayer>",
+      "signatures": [
+        "all_seen_players(): list<OfflinePlayer>"
+      ],
+      "doc": "Every seen-store player."
+    },
+    {
+      "name": "new_map",
+      "kind": "builtin",
+      "signature": "new_map(): map",
+      "signatures": [
+        "new_map(): map"
+      ],
+      "doc": "Create an empty map (typed by context)."
+    },
+    {
+      "name": "map_get",
+      "kind": "builtin",
+      "signature": "map_get(m, key): optional",
+      "signatures": [
+        "map_get(m, key): optional",
+        "map_get syntax: m[key]"
+      ],
+      "doc": "Read a map value."
+    },
+    {
+      "name": "map_set",
+      "kind": "builtin",
+      "signature": "map_set(m, key, value)",
+      "signatures": [
+        "map_set(m, key, value)"
+      ],
+      "doc": "Write a map value."
+    },
+    {
+      "name": "map_has",
+      "kind": "builtin",
+      "signature": "map_has(m, key): Boolean",
+      "signatures": [
+        "map_has(m, key): Boolean"
+      ],
+      "doc": "Whether a key exists."
+    },
+    {
+      "name": "map_delete",
+      "kind": "builtin",
+      "signature": "map_delete(m, key)",
+      "signatures": [
+        "map_delete(m, key)"
+      ],
+      "doc": "Remove a key."
+    },
+    {
+      "name": "map_keys",
+      "kind": "builtin",
+      "signature": "map_keys(m): list",
+      "signatures": [
+        "map_keys(m): list"
+      ],
+      "doc": "Keys of a map."
+    },
+    {
+      "name": "map_size",
+      "kind": "builtin",
+      "signature": "map_size(m): Integer",
+      "signatures": [
+        "map_size(m): Integer"
+      ],
+      "doc": "Entry count of a map."
+    },
+    {
+      "name": "random_float",
+      "kind": "builtin",
+      "signature": "random_float(min, max): Double",
+      "signatures": [
+        "random_float(min, max): Double"
+      ],
+      "doc": "Random double in [min, max]."
+    },
+    {
+      "name": "random_chance",
+      "kind": "builtin",
+      "signature": "random_chance(p: Number): Boolean",
+      "signatures": [
+        "random_chance(p: Number): Boolean"
+      ],
+      "doc": "True with probability p (0..1)."
+    },
+    {
+      "name": "random_bool",
+      "kind": "builtin",
+      "signature": "random_bool(): Boolean",
+      "signatures": [
+        "random_bool(): Boolean"
+      ],
+      "doc": "Random coin flip."
+    },
+    {
+      "name": "random_in",
+      "kind": "builtin",
+      "signature": "random_in(coll): optional",
+      "signatures": [
+        "random_in(coll): optional"
+      ],
+      "doc": "Random element of a list/string."
+    },
+    {
+      "name": "shuffle",
+      "kind": "builtin",
+      "signature": "shuffle(coll): list",
+      "signatures": [
+        "shuffle(coll): list"
+      ],
+      "doc": "Shuffled copy of a collection."
+    },
+    {
+      "name": "sort",
+      "kind": "builtin",
+      "signature": "sort(coll): list",
+      "signatures": [
+        "sort(coll): list"
+      ],
+      "doc": "Sorted copy (natural order)."
+    },
+    {
+      "name": "sort_by",
+      "kind": "builtin",
+      "signature": "sort_by(coll, keyLambda): list",
+      "signatures": [
+        "sort_by(coll, keyLambda): list"
+      ],
+      "doc": "Sort ascending by a key."
+    },
+    {
+      "name": "sort_by_desc",
+      "kind": "builtin",
+      "signature": "sort_by_desc(coll, keyLambda): list",
+      "signatures": [
+        "sort_by_desc(coll, keyLambda): list"
+      ],
+      "doc": "Sort descending by a key."
+    },
+    {
+      "name": "reverse",
+      "kind": "builtin",
+      "signature": "reverse(coll): list",
+      "signatures": [
+        "reverse(coll): list"
+      ],
+      "doc": "Reversed copy."
+    },
+    {
+      "name": "min_by",
+      "kind": "builtin",
+      "signature": "min_by(coll, keyLambda): optional",
+      "signatures": [
+        "min_by(coll, keyLambda): optional"
+      ],
+      "doc": "Element with the smallest key."
+    },
+    {
+      "name": "max_by",
+      "kind": "builtin",
+      "signature": "max_by(coll, keyLambda): optional",
+      "signatures": [
+        "max_by(coll, keyLambda): optional"
+      ],
+      "doc": "Element with the largest key."
+    },
+    {
+      "name": "sort_by_key",
+      "kind": "builtin",
+      "signature": "sort_by_key(m): map",
+      "signatures": [
+        "sort_by_key(m): map"
+      ],
+      "doc": "Sort a map ascending by key."
+    },
+    {
+      "name": "sort_by_key_desc",
+      "kind": "builtin",
+      "signature": "sort_by_key_desc(m): map",
+      "signatures": [
+        "sort_by_key_desc(m): map"
+      ],
+      "doc": "Sort a map descending by key."
+    },
+    {
+      "name": "sort_by_value",
+      "kind": "builtin",
+      "signature": "sort_by_value(m): map",
+      "signatures": [
+        "sort_by_value(m): map"
+      ],
+      "doc": "Sort a map ascending by value."
+    },
+    {
+      "name": "sort_by_value_desc",
+      "kind": "builtin",
+      "signature": "sort_by_value_desc(m): map",
+      "signatures": [
+        "sort_by_value_desc(m): map"
+      ],
+      "doc": "Sort a map descending by value."
+    },
+    {
+      "name": "sort_map_by",
+      "kind": "builtin",
+      "signature": "sort_map_by(m, keyLambda): map",
+      "signatures": [
+        "sort_map_by(m, keyLambda): map"
+      ],
+      "doc": "Sort a map by a derived key."
+    },
+    {
+      "name": "sort_map_by_desc",
+      "kind": "builtin",
+      "signature": "sort_map_by_desc(m, keyLambda): map",
+      "signatures": [
+        "sort_map_by_desc(m, keyLambda): map"
+      ],
+      "doc": "Sort a map descending by a derived key."
+    },
+    {
+      "name": "to_nbt",
+      "kind": "builtin",
+      "signature": "to_nbt(i: Item): String",
+      "signatures": [
+        "to_nbt(i: Item): String"
+      ],
+      "doc": "Serialize an item stack to NBT."
+    },
+    {
+      "name": "from_nbt",
+      "kind": "builtin",
+      "signature": "from_nbt(s: String): optional<Item>",
+      "signatures": [
+        "from_nbt(s: String): optional<Item>"
+      ],
+      "doc": "Parse an item stack from NBT."
+    },
+    {
+      "name": "PlayerChat",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, message, cancelled."
+    },
+    {
+      "name": "PlayerJoin",
+      "kind": "event",
+      "doc": "Event handler target. Fields: player, first_spawn, world."
+    },
+    {
+      "name": "PlayerUseItem",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, item, custom_id, cancelled."
+    },
+    {
+      "name": "MobSpawn",
+      "kind": "event",
+      "doc": "Event handler target. Fields: mob."
+    },
+    {
+      "name": "MobDeath",
+      "kind": "event",
+      "doc": "Event handler target. Fields: mob, killer."
+    },
+    {
+      "name": "MobDamage",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: mob, damage, cancelled."
+    },
+    {
+      "name": "TpsChange",
+      "kind": "event",
+      "doc": "Event handler target. Fields: past, current."
+    },
+    {
+      "name": "BlockBreak",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, block, location, cancelled."
+    },
+    {
+      "name": "BlockPlace",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, block, location, cancelled."
+    },
+    {
+      "name": "ServerPing",
+      "kind": "event",
+      "doc": "Event handler target. Fields: motd, online, max."
+    },
+    {
+      "name": "PlayerCommand",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, command, cancelled."
+    },
+    {
+      "name": "PlayerCastRod",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, cancelled."
+    },
+    {
+      "name": "FishBite",
+      "kind": "event",
+      "doc": "Event handler target. Fields: player, hook_location."
+    },
+    {
+      "name": "PlayerCatchFish",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: player, caught_item, caught_mob, cancelled."
+    },
+    {
+      "name": "PlayerReelIn",
+      "kind": "event",
+      "doc": "Event handler target. Fields: player."
+    },
+    {
+      "name": "BlockDispense",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: location, block, item, direction, cancelled."
+    },
+    {
+      "name": "name",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": false,
+      "doc": "Player.name: String (read-only)"
+    },
+    {
+      "name": "uuid",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": false,
+      "doc": "Player.uuid: String (read-only)"
+    },
+    {
+      "name": "health",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.health: Double"
+    },
+    {
+      "name": "max_health",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.max_health: Double"
+    },
+    {
+      "name": "food",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": true,
+      "doc": "Player.food: Integer"
+    },
+    {
+      "name": "food_saturation",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.food_saturation: Double"
+    },
+    {
+      "name": "level",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": true,
+      "doc": "Player.level: Integer"
+    },
+    {
+      "name": "exp",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.exp: Double"
+    },
+    {
+      "name": "gamemode",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": true,
+      "doc": "Player.gamemode: String"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Location",
+      "writable": true,
+      "doc": "Player.location: Location"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "Player",
+      "type": "World",
+      "writable": true,
+      "doc": "Player.world: World"
+    },
+    {
+      "name": "held_item",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Item",
+      "writable": true,
+      "doc": "Player.held_item: Item"
+    },
+    {
+      "name": "held_slot",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": true,
+      "doc": "Player.held_slot: Integer"
+    },
+    {
+      "name": "latency",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Player.latency: Integer (read-only)"
+    },
+    {
+      "name": "display_name",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": true,
+      "doc": "Player.display_name: String"
+    },
+    {
+      "name": "flying",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Player.flying: Boolean"
+    },
+    {
+      "name": "allow_flying",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Player.allow_flying: Boolean"
+    },
+    {
+      "name": "flying_speed",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.flying_speed: Double"
+    },
+    {
+      "name": "online",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Player.online: Boolean (read-only)"
+    },
+    {
+      "name": "skin",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Skin",
+      "writable": true,
+      "doc": "Player.skin: Skin"
+    },
+    {
+      "name": "x",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Double",
+      "writable": true,
+      "doc": "Location.x: Double"
+    },
+    {
+      "name": "y",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Double",
+      "writable": true,
+      "doc": "Location.y: Double"
+    },
+    {
+      "name": "z",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Double",
+      "writable": true,
+      "doc": "Location.z: Double"
+    },
+    {
+      "name": "yaw",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Double",
+      "writable": true,
+      "doc": "Location.yaw: Double"
+    },
+    {
+      "name": "pitch",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Double",
+      "writable": true,
+      "doc": "Location.pitch: Double"
+    },
+    {
+      "name": "block_x",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Location.block_x: Integer (read-only)"
+    },
+    {
+      "name": "block_y",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Location.block_y: Integer (read-only)"
+    },
+    {
+      "name": "block_z",
+      "kind": "property",
+      "owner": "Location",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Location.block_z: Integer (read-only)"
+    },
+    {
+      "name": "material",
+      "kind": "property",
+      "owner": "Item",
+      "type": "String",
+      "writable": true,
+      "doc": "Item.material: String"
+    },
+    {
+      "name": "amount",
+      "kind": "property",
+      "owner": "Item",
+      "type": "Integer",
+      "writable": true,
+      "doc": "Item.amount: Integer"
+    },
+    {
+      "name": "name",
+      "kind": "property",
+      "owner": "Item",
+      "type": "String",
+      "writable": true,
+      "doc": "Item.name: String"
+    },
+    {
+      "name": "lore",
+      "kind": "property",
+      "owner": "Item",
+      "type": "list<String>",
+      "writable": true,
+      "doc": "Item.lore: list<String>"
+    },
+    {
+      "name": "tags",
+      "kind": "property",
+      "owner": "Item",
+      "type": "ItemTags",
+      "writable": false,
+      "doc": "Item.tags: ItemTags (read-only)"
+    },
+    {
+      "name": "health",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.health: Double"
+    },
+    {
+      "name": "max_health",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": false,
+      "doc": "Mob.max_health: Double (read-only)"
+    },
+    {
+      "name": "name",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": true,
+      "doc": "Mob.name: String"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Location",
+      "writable": true,
+      "doc": "Mob.location: Location"
+    },
+    {
+      "name": "type",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": false,
+      "doc": "Mob.type: String (read-only)"
+    },
+    {
+      "name": "custom_id",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": false,
+      "doc": "Mob.custom_id: String (read-only)"
+    },
+    {
+      "name": "time",
+      "kind": "property",
+      "owner": "World",
+      "type": "Integer",
+      "writable": true,
+      "doc": "World.time: Integer"
+    },
+    {
+      "name": "time_rate",
+      "kind": "property",
+      "owner": "World",
+      "type": "Integer",
+      "writable": true,
+      "doc": "World.time_rate: Integer"
+    },
+    {
+      "name": "weather",
+      "kind": "property",
+      "owner": "World",
+      "type": "String",
+      "writable": true,
+      "doc": "World.weather: String"
+    },
+    {
+      "name": "raining",
+      "kind": "property",
+      "owner": "World",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "World.raining: Boolean (read-only)"
+    },
+    {
+      "name": "thundering",
+      "kind": "property",
+      "owner": "World",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "World.thundering: Boolean (read-only)"
+    },
+    {
+      "name": "text",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.text: String"
+    },
+    {
+      "name": "item",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.item: String"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.block: String"
+    },
+    {
+      "name": "scale",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Double",
+      "writable": true,
+      "doc": "Display.scale: Double"
+    },
+    {
+      "name": "translation",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Location",
+      "writable": true,
+      "doc": "Display.translation: Location"
+    },
+    {
+      "name": "rotation",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Location",
+      "writable": true,
+      "doc": "Display.rotation: Location"
+    },
+    {
+      "name": "billboard",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.billboard: String"
+    },
+    {
+      "name": "glow_color",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.glow_color: String"
+    },
+    {
+      "name": "background",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.background: String"
+    },
+    {
+      "name": "alignment",
+      "kind": "property",
+      "owner": "Display",
+      "type": "String",
+      "writable": true,
+      "doc": "Display.alignment: String"
+    },
+    {
+      "name": "line_width",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Integer",
+      "writable": true,
+      "doc": "Display.line_width: Integer"
+    },
+    {
+      "name": "see_through",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Display.see_through: Boolean"
+    },
+    {
+      "name": "view_range",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Double",
+      "writable": true,
+      "doc": "Display.view_range: Double"
+    },
+    {
+      "name": "method",
+      "kind": "property",
+      "owner": "Request",
+      "type": "String",
+      "writable": false,
+      "doc": "Request.method: String (read-only)"
+    },
+    {
+      "name": "path",
+      "kind": "property",
+      "owner": "Request",
+      "type": "String",
+      "writable": false,
+      "doc": "Request.path: String (read-only)"
+    },
+    {
+      "name": "query",
+      "kind": "property",
+      "owner": "Request",
+      "type": "String",
+      "writable": false,
+      "doc": "Request.query: String (read-only)"
+    },
+    {
+      "name": "body",
+      "kind": "property",
+      "owner": "Request",
+      "type": "String",
+      "writable": false,
+      "doc": "Request.body: String (read-only)"
+    },
+    {
+      "name": "params",
+      "kind": "property",
+      "owner": "Request",
+      "type": "RequestParams",
+      "writable": false,
+      "doc": "Request.params: RequestParams (read-only)"
+    },
+    {
+      "name": "title",
+      "kind": "property",
+      "owner": "Song",
+      "type": "String",
+      "writable": false,
+      "doc": "Song.title: String (read-only)"
+    },
+    {
+      "name": "author",
+      "kind": "property",
+      "owner": "Song",
+      "type": "String",
+      "writable": false,
+      "doc": "Song.author: String (read-only)"
+    },
+    {
+      "name": "length",
+      "kind": "property",
+      "owner": "Song",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Song.length: Integer (read-only)"
+    },
+    {
+      "name": "speed",
+      "kind": "property",
+      "owner": "Song",
+      "type": "Double",
+      "writable": false,
+      "doc": "Song.speed: Double (read-only)"
+    },
+    {
+      "name": "tps",
+      "kind": "property",
+      "owner": "Server",
+      "type": "Double",
+      "writable": false,
+      "doc": "Server.tps: Double (read-only)"
+    },
+    {
+      "name": "average_tps",
+      "kind": "property",
+      "owner": "Server",
+      "type": "Double",
+      "writable": false,
+      "doc": "Server.average_tps: Double (read-only)"
+    },
+    {
+      "name": "mspt",
+      "kind": "property",
+      "owner": "Server",
+      "type": "Double",
+      "writable": false,
+      "doc": "Server.mspt: Double (read-only)"
+    },
+    {
+      "name": "motd",
+      "kind": "property",
+      "owner": "Server",
+      "type": "String",
+      "writable": true,
+      "doc": "Server.motd: String"
+    },
+    {
+      "name": "texture",
+      "kind": "property",
+      "owner": "Skin",
+      "type": "String",
+      "writable": false,
+      "doc": "Skin.texture: String (read-only)"
+    },
+    {
+      "name": "signature",
+      "kind": "property",
+      "owner": "Skin",
+      "type": "String",
+      "writable": false,
+      "doc": "Skin.signature: String (read-only)"
+    },
+    {
+      "name": "width",
+      "kind": "property",
+      "owner": "Canvas",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Canvas.width: Integer (read-only)"
+    },
+    {
+      "name": "height",
+      "kind": "property",
+      "owner": "Canvas",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Canvas.height: Integer (read-only)"
+    },
+    {
+      "name": "type",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "String",
+      "writable": false,
+      "doc": "Entity.type: String (read-only)"
+    },
+    {
+      "name": "uuid",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "String",
+      "writable": false,
+      "doc": "Entity.uuid: String (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Location",
+      "writable": true,
+      "doc": "Entity.location: Location"
+    },
+    {
+      "name": "velocity",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Vec",
+      "writable": true,
+      "doc": "Entity.velocity: Vec"
+    },
+    {
+      "name": "custom_name",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "String",
+      "writable": true,
+      "doc": "Entity.custom_name: String"
+    },
+    {
+      "name": "name_visible",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.name_visible: Boolean"
+    },
+    {
+      "name": "glowing",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.glowing: Boolean"
+    },
+    {
+      "name": "invisible",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.invisible: Boolean"
+    },
+    {
+      "name": "gravity",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.gravity: Boolean"
+    },
+    {
+      "name": "on_fire",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.on_fire: Boolean"
+    },
+    {
+      "name": "silent",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.silent: Boolean"
+    },
+    {
+      "name": "pose",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "String",
+      "writable": true,
+      "doc": "Entity.pose: String"
+    },
+    {
+      "name": "sneaking",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Entity.sneaking: Boolean"
+    },
+    {
+      "name": "passengers",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "list<Entity>",
+      "writable": false,
+      "doc": "Entity.passengers: list<Entity> (read-only)"
+    },
+    {
+      "name": "vehicle",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "Entity.vehicle: optional<Entity> (read-only)"
+    },
+    {
+      "name": "shooter",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "Entity.shooter: optional<Entity> (read-only)"
+    },
+    {
+      "name": "alive",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Entity.alive: Boolean (read-only)"
+    },
+    {
+      "name": "removed",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Entity.removed: Boolean (read-only)"
+    },
+    {
+      "name": "x",
+      "kind": "property",
+      "owner": "Vec",
+      "type": "Double",
+      "writable": true,
+      "doc": "Vec.x: Double"
+    },
+    {
+      "name": "y",
+      "kind": "property",
+      "owner": "Vec",
+      "type": "Double",
+      "writable": true,
+      "doc": "Vec.y: Double"
+    },
+    {
+      "name": "z",
+      "kind": "property",
+      "owner": "Vec",
+      "type": "Double",
+      "writable": true,
+      "doc": "Vec.z: Double"
+    },
+    {
+      "name": "name",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "String",
+      "writable": false,
+      "doc": "OfflinePlayer.name: String (read-only)"
+    },
+    {
+      "name": "uuid",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "String",
+      "writable": false,
+      "doc": "OfflinePlayer.uuid: String (read-only)"
+    },
+    {
+      "name": "online",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "OfflinePlayer.online: Boolean (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "optional<Player>",
+      "writable": false,
+      "doc": "OfflinePlayer.player: optional<Player> (read-only)"
+    },
+    {
+      "name": "first_seen",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "String",
+      "writable": false,
+      "doc": "OfflinePlayer.first_seen: String (read-only)"
+    },
+    {
+      "name": "last_seen",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "String",
+      "writable": false,
+      "doc": "OfflinePlayer.last_seen: String (read-only)"
+    },
+    {
+      "name": "has_played_before",
+      "kind": "property",
+      "owner": "OfflinePlayer",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "OfflinePlayer.has_played_before: Boolean (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerChat",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerChat.player: Player (read-only)"
+    },
+    {
+      "name": "message",
+      "kind": "property",
+      "owner": "event:PlayerChat",
+      "type": "String",
+      "writable": true,
+      "doc": "event:PlayerChat.message: String"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerChat",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerChat.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerJoin",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerJoin.player: Player (read-only)"
+    },
+    {
+      "name": "first_spawn",
+      "kind": "property",
+      "owner": "event:PlayerJoin",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "event:PlayerJoin.first_spawn: Boolean (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerJoin",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerJoin.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerUseItem",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerUseItem.player: Player (read-only)"
+    },
+    {
+      "name": "item",
+      "kind": "property",
+      "owner": "event:PlayerUseItem",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PlayerUseItem.item: Item (read-only)"
+    },
+    {
+      "name": "custom_id",
+      "kind": "property",
+      "owner": "event:PlayerUseItem",
+      "type": "optional<String>",
+      "writable": false,
+      "doc": "event:PlayerUseItem.custom_id: optional<String> (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerUseItem",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerUseItem.cancelled: Boolean"
+    },
+    {
+      "name": "mob",
+      "kind": "property",
+      "owner": "event:MobSpawn",
+      "type": "Mob",
+      "writable": false,
+      "doc": "event:MobSpawn.mob: Mob (read-only)"
+    },
+    {
+      "name": "mob",
+      "kind": "property",
+      "owner": "event:MobDeath",
+      "type": "Mob",
+      "writable": false,
+      "doc": "event:MobDeath.mob: Mob (read-only)"
+    },
+    {
+      "name": "killer",
+      "kind": "property",
+      "owner": "event:MobDeath",
+      "type": "optional<Player>",
+      "writable": false,
+      "doc": "event:MobDeath.killer: optional<Player> (read-only)"
+    },
+    {
+      "name": "mob",
+      "kind": "property",
+      "owner": "event:MobDamage",
+      "type": "Mob",
+      "writable": false,
+      "doc": "event:MobDamage.mob: Mob (read-only)"
+    },
+    {
+      "name": "damage",
+      "kind": "property",
+      "owner": "event:MobDamage",
+      "type": "Double",
+      "writable": true,
+      "doc": "event:MobDamage.damage: Double"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:MobDamage",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:MobDamage.cancelled: Boolean"
+    },
+    {
+      "name": "past",
+      "kind": "property",
+      "owner": "event:TpsChange",
+      "type": "Double",
+      "writable": false,
+      "doc": "event:TpsChange.past: Double (read-only)"
+    },
+    {
+      "name": "current",
+      "kind": "property",
+      "owner": "event:TpsChange",
+      "type": "Double",
+      "writable": false,
+      "doc": "event:TpsChange.current: Double (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:BlockBreak.player: Player (read-only)"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockBreak.block: String (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:BlockBreak.location: Location (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:BlockBreak.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:BlockPlace.player: Player (read-only)"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockPlace.block: String (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:BlockPlace.location: Location (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:BlockPlace.cancelled: Boolean"
+    },
+    {
+      "name": "motd",
+      "kind": "property",
+      "owner": "event:ServerPing",
+      "type": "String",
+      "writable": true,
+      "doc": "event:ServerPing.motd: String"
+    },
+    {
+      "name": "online",
+      "kind": "property",
+      "owner": "event:ServerPing",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:ServerPing.online: Integer"
+    },
+    {
+      "name": "max",
+      "kind": "property",
+      "owner": "event:ServerPing",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:ServerPing.max: Integer"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerCommand",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerCommand.player: Player (read-only)"
+    },
+    {
+      "name": "command",
+      "kind": "property",
+      "owner": "event:PlayerCommand",
+      "type": "String",
+      "writable": true,
+      "doc": "event:PlayerCommand.command: String"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerCommand",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerCommand.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerCastRod",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerCastRod.player: Player (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerCastRod",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerCastRod.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:FishBite",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:FishBite.player: Player (read-only)"
+    },
+    {
+      "name": "hook_location",
+      "kind": "property",
+      "owner": "event:FishBite",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:FishBite.hook_location: Location (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerCatchFish",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerCatchFish.player: Player (read-only)"
+    },
+    {
+      "name": "caught_item",
+      "kind": "property",
+      "owner": "event:PlayerCatchFish",
+      "type": "optional<Item>",
+      "writable": true,
+      "doc": "event:PlayerCatchFish.caught_item: optional<Item>"
+    },
+    {
+      "name": "caught_mob",
+      "kind": "property",
+      "owner": "event:PlayerCatchFish",
+      "type": "optional<Mob>",
+      "writable": false,
+      "doc": "event:PlayerCatchFish.caught_mob: optional<Mob> (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerCatchFish",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerCatchFish.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerReelIn",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerReelIn.player: Player (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:BlockDispense",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:BlockDispense.location: Location (read-only)"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "event:BlockDispense",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockDispense.block: String (read-only)"
+    },
+    {
+      "name": "item",
+      "kind": "property",
+      "owner": "event:BlockDispense",
+      "type": "optional<Item>",
+      "writable": true,
+      "doc": "event:BlockDispense.item: optional<Item>"
+    },
+    {
+      "name": "direction",
+      "kind": "property",
+      "owner": "event:BlockDispense",
+      "type": "Vec",
+      "writable": false,
+      "doc": "event:BlockDispense.direction: Vec (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:BlockDispense",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:BlockDispense.cancelled: Boolean"
+    },
+    {
+      "name": "survival",
+      "kind": "enum",
+      "owner": "gamemode"
+    },
+    {
+      "name": "creative",
+      "kind": "enum",
+      "owner": "gamemode"
+    },
+    {
+      "name": "adventure",
+      "kind": "enum",
+      "owner": "gamemode"
+    },
+    {
+      "name": "spectator",
+      "kind": "enum",
+      "owner": "gamemode"
+    },
+    {
+      "name": "clear",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "rain",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "thunder",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "common",
+      "kind": "enum",
+      "owner": "rarity"
+    },
+    {
+      "name": "uncommon",
+      "kind": "enum",
+      "owner": "rarity"
+    },
+    {
+      "name": "rare",
+      "kind": "enum",
+      "owner": "rarity"
+    },
+    {
+      "name": "epic",
+      "kind": "enum",
+      "owner": "rarity"
+    },
+    {
+      "name": "pink",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "blue",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "red",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "green",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "yellow",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "purple",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "white",
+      "kind": "enum",
+      "owner": "bossbar_color"
+    },
+    {
+      "name": "progress",
+      "kind": "enum",
+      "owner": "bossbar_style"
+    },
+    {
+      "name": "notched_6",
+      "kind": "enum",
+      "owner": "bossbar_style"
+    },
+    {
+      "name": "notched_10",
+      "kind": "enum",
+      "owner": "bossbar_style"
+    },
+    {
+      "name": "notched_12",
+      "kind": "enum",
+      "owner": "bossbar_style"
+    },
+    {
+      "name": "notched_20",
+      "kind": "enum",
+      "owner": "bossbar_style"
+    },
+    {
+      "name": "melee",
+      "kind": "enum",
+      "owner": "mob_ai"
+    },
+    {
+      "name": "passive",
+      "kind": "enum",
+      "owner": "mob_ai"
+    },
+    {
+      "name": "none",
+      "kind": "enum",
+      "owner": "mob_ai"
+    },
+    {
+      "name": "black",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_blue",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_green",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_aqua",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_red",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_purple",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "gold",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "gray",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "dark_gray",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "blue",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "green",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "aqua",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "red",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "light_purple",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "yellow",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "white",
+      "kind": "enum",
+      "owner": "nametag_color"
+    },
+    {
+      "name": "standing",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "fall_flying",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "sleeping",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "swimming",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "spin_attack",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "sneaking",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "long_jumping",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "dying",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "croaking",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "using_tongue",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "sitting",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "roaring",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "sniffing",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "emerging",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "digging",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "sliding",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "shooting",
+      "kind": "enum",
+      "owner": "entity_pose"
+    },
+    {
+      "name": "inhaling",
+      "kind": "enum",
+      "owner": "entity_pose"
+    }
+  ],
+  "enums": {
+    "gamemode": [
+      "survival",
+      "creative",
+      "adventure",
+      "spectator"
+    ],
+    "weather": [
+      "clear",
+      "rain",
+      "thunder"
+    ],
+    "rarity": [
+      "common",
+      "uncommon",
+      "rare",
+      "epic"
+    ],
+    "bossbar_color": [
+      "pink",
+      "blue",
+      "red",
+      "green",
+      "yellow",
+      "purple",
+      "white"
+    ],
+    "bossbar_style": [
+      "progress",
+      "notched_6",
+      "notched_10",
+      "notched_12",
+      "notched_20"
+    ],
+    "mob_ai": [
+      "melee",
+      "passive",
+      "none"
+    ],
+    "nametag_color": [
+      "black",
+      "dark_blue",
+      "dark_green",
+      "dark_aqua",
+      "dark_red",
+      "dark_purple",
+      "gold",
+      "gray",
+      "dark_gray",
+      "blue",
+      "green",
+      "aqua",
+      "red",
+      "light_purple",
+      "yellow",
+      "white"
+    ],
+    "entity_pose": [
+      "standing",
+      "fall_flying",
+      "sleeping",
+      "swimming",
+      "spin_attack",
+      "sneaking",
+      "long_jumping",
+      "dying",
+      "croaking",
+      "using_tongue",
+      "sitting",
+      "roaring",
+      "sniffing",
+      "emerging",
+      "digging",
+      "sliding",
+      "shooting",
+      "inhaling"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "swoftlang-docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.2.10",
+    "@fontsource-variable/red-hat-mono": "^5.2.8",
+    "@fontsource-variable/schibsted-grotesk": "^5.2.8",
+    "vitepress": "^1.6.4"
+  }
+}

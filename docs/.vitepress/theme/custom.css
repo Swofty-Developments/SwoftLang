@@ -1,0 +1,646 @@
+/* ------------------------------------------------------------------ */
+/*  SwoftLang docs — design tokens                                     */
+/*  Dark-first. OKLCH neutrals tinted toward the emerald brand hue.    */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* type */
+  --sw-font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque',
+    ui-sans-serif, system-ui, sans-serif;
+  --sw-font-body: 'Schibsted Grotesk Variable', 'Schibsted Grotesk',
+    ui-sans-serif, system-ui, sans-serif;
+  --sw-font-code: 'Red Hat Mono Variable', 'Red Hat Mono', ui-monospace,
+    'SFMono-Regular', Menlo, monospace;
+
+  /* modular scale, 1.25 ratio on a 16px base */
+  --sw-fs-xs: 0.8rem;      /* 12.8 */
+  --sw-fs-sm: 0.875rem;    /* 14   */
+  --sw-fs-base: 1rem;      /* 16   */
+  --sw-fs-md: 1.25rem;     /* 20   */
+  --sw-fs-lg: 1.5625rem;   /* 25   */
+  --sw-fs-xl: 1.953rem;    /* 31.3 */
+  --sw-fs-2xl: 2.441rem;   /* 39   */
+  --sw-fs-3xl: 3.052rem;   /* 48.8 */
+
+  /* 4pt spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+
+  /* layout */
+  --sw-topbar-h: 56px;
+  --sw-content-max: 1240px;
+  --sw-page-max: 1520px;
+  --sw-prose-max: 70ch;
+  --sw-sidebar-w: 248px;
+  --sw-radius: 8px;
+  --sw-radius-lg: 12px;
+
+  /* motion */
+  --sw-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ------------- dark palette (default) ------------- */
+  --sw-hue: 168;
+
+  --sw-bg: oklch(17.5% 0.011 var(--sw-hue));
+  --sw-bg-raise: oklch(20.5% 0.014 var(--sw-hue));
+  --sw-bg-code: oklch(14.8% 0.01 var(--sw-hue));
+  --sw-bg-chip: oklch(25% 0.018 var(--sw-hue));
+  --sw-bg-topbar: oklch(17.5% 0.011 var(--sw-hue));
+
+  --sw-line: oklch(32% 0.02 var(--sw-hue) / 0.55);
+  --sw-line-strong: oklch(40% 0.024 var(--sw-hue) / 0.7);
+
+  --sw-text-1: oklch(92.5% 0.008 var(--sw-hue));
+  --sw-text-2: oklch(75% 0.014 var(--sw-hue));
+  --sw-text-3: oklch(58% 0.018 var(--sw-hue));
+
+  --sw-brand: oklch(77% 0.132 var(--sw-hue));
+  --sw-brand-hi: oklch(86% 0.13 var(--sw-hue));
+  --sw-brand-soft: oklch(77% 0.132 var(--sw-hue) / 0.11);
+  --sw-brand-line: oklch(77% 0.132 var(--sw-hue) / 0.34);
+
+  --sw-amber: oklch(80% 0.126 80);
+  --sw-amber-soft: oklch(80% 0.126 80 / 0.1);
+  --sw-red: oklch(71% 0.16 25);
+  --sw-red-soft: oklch(71% 0.16 25 / 0.1);
+
+  --sw-shadow: 0 12px 32px oklch(10% 0.01 var(--sw-hue) / 0.5);
+
+  color-scheme: dark;
+
+  /* compat aliases for VitePress core pieces we reuse
+     (local search box, code groups) */
+  --vp-c-divider: var(--sw-line);
+  --vp-c-brand-1: var(--sw-brand);
+  --vp-c-bg-soft: var(--sw-bg-raise);
+  --vp-c-text-1: var(--sw-text-1);
+  --vp-c-text-2: var(--sw-text-2);
+  --vp-c-text-3: var(--sw-text-3);
+  --vp-code-block-bg: var(--sw-bg-code);
+  --vp-backdrop-bg-color: oklch(10% 0.01 var(--sw-hue) / 0.65);
+  --vp-local-search-bg: var(--sw-bg-raise);
+  --vp-local-search-result-bg: var(--sw-bg);
+  --vp-local-search-result-border: var(--sw-line);
+  --vp-local-search-result-selected-bg: var(--sw-bg);
+  --vp-local-search-result-selected-border: var(--sw-brand);
+  --vp-local-search-highlight-bg: var(--sw-brand);
+  --vp-local-search-highlight-text: oklch(18% 0.02 var(--sw-hue));
+  --vp-z-index-backdrop: 60;
+}
+
+html:not(.dark) {
+  /* ------------- light palette ------------- */
+  --sw-bg: oklch(98.6% 0.003 var(--sw-hue));
+  --sw-bg-raise: oklch(96.5% 0.005 var(--sw-hue));
+  --sw-bg-code: oklch(95.2% 0.006 var(--sw-hue));
+  --sw-bg-chip: oklch(93% 0.008 var(--sw-hue));
+  --sw-bg-topbar: oklch(98.6% 0.003 var(--sw-hue));
+
+  --sw-line: oklch(85% 0.012 var(--sw-hue));
+  --sw-line-strong: oklch(76% 0.016 var(--sw-hue));
+
+  --sw-text-1: oklch(26% 0.015 var(--sw-hue));
+  --sw-text-2: oklch(42% 0.018 var(--sw-hue));
+  --sw-text-3: oklch(58% 0.02 var(--sw-hue));
+
+  --sw-brand: oklch(56% 0.125 var(--sw-hue));
+  --sw-brand-hi: oklch(46% 0.12 var(--sw-hue));
+  --sw-brand-soft: oklch(56% 0.125 var(--sw-hue) / 0.09);
+  --sw-brand-line: oklch(56% 0.125 var(--sw-hue) / 0.32);
+
+  --sw-amber: oklch(60% 0.13 70);
+  --sw-amber-soft: oklch(60% 0.13 70 / 0.09);
+  --sw-red: oklch(54% 0.19 27);
+  --sw-red-soft: oklch(54% 0.19 27 / 0.08);
+
+  --sw-shadow: 0 12px 32px oklch(40% 0.02 var(--sw-hue) / 0.16);
+
+  color-scheme: light;
+
+  --vp-backdrop-bg-color: oklch(35% 0.02 var(--sw-hue) / 0.4);
+  --vp-local-search-highlight-text: oklch(99% 0.003 var(--sw-hue));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--sw-topbar-h) + 24px);
+}
+
+body {
+  margin: 0;
+  font-family: var(--sw-font-body);
+  font-size: var(--sw-fs-base);
+  line-height: 1.7;
+  color: var(--sw-text-1);
+  background: var(--sw-bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--sw-brand-line);
+}
+
+a {
+  color: var(--sw-brand);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--sw-brand-hi);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sw-brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.sw-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--sw-bg-raise);
+  border-radius: var(--sw-radius);
+}
+
+.sw-skip:focus {
+  left: var(--sp-4);
+  top: var(--sp-4);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Prose (the markdown body). Prose is capped; code escapes the cap.  */
+/* ------------------------------------------------------------------ */
+
+.sw-doc {
+  font-size: var(--sw-fs-base);
+}
+
+/* <Content> renders the page component inside one anonymous div,
+   so the markdown's block elements live at .sw-doc > div > * */
+.sw-doc > div > * {
+  max-width: var(--sw-prose-max);
+}
+
+/* code and wide components own the full content column */
+.sw-doc > div > div[class*='language-'],
+.sw-doc > div > .vp-code-group,
+.sw-doc > div > .mc,
+.sw-doc > div > .sc,
+.sw-doc > div > .sw-diag,
+.sw-doc > div > .et,
+.sw-doc > div > .step-head,
+.sw-doc > div > .sw-hub,
+.sw-doc > div > .sw-hub-sec,
+.sw-doc > div > .sw-lead,
+.sw-doc > div > table {
+  max-width: none;
+}
+
+.sw-doc h1,
+.sw-doc h2,
+.sw-doc h3,
+.sw-doc h4 {
+  font-family: var(--sw-font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--sw-text-1);
+  letter-spacing: -0.015em;
+}
+
+.sw-doc h1 {
+  font-size: var(--sw-fs-2xl);
+  margin: 0 0 var(--sp-5);
+}
+
+.sw-doc h2 {
+  font-size: var(--sw-fs-lg);
+  margin: var(--sp-8) 0 var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--sw-line);
+}
+
+.sw-doc h3 {
+  font-size: var(--sw-fs-md);
+  margin: var(--sp-6) 0 var(--sp-3);
+}
+
+.sw-doc h4 {
+  font-size: var(--sw-fs-base);
+  margin: var(--sp-5) 0 var(--sp-2);
+}
+
+.sw-doc p,
+.sw-doc ul,
+.sw-doc ol {
+  margin: var(--sp-4) 0;
+  color: var(--sw-text-2);
+}
+
+.sw-doc li {
+  margin: var(--sp-1) 0;
+}
+
+.sw-doc li::marker {
+  color: var(--sw-text-3);
+}
+
+.sw-doc strong {
+  color: var(--sw-text-1);
+  font-weight: 650;
+}
+
+.sw-doc blockquote {
+  margin: var(--sp-4) 0;
+  padding: var(--sp-1) var(--sp-4);
+  border-left: 1px solid var(--sw-line-strong);
+  color: var(--sw-text-3);
+}
+
+.sw-doc hr {
+  border: none;
+  border-top: 1px solid var(--sw-line);
+  margin: var(--sp-7) 0;
+}
+
+.sw-doc a {
+  text-decoration: underline;
+  text-decoration-color: var(--sw-brand-line);
+  text-underline-offset: 3px;
+}
+
+.sw-doc a:hover {
+  text-decoration-color: var(--sw-brand);
+}
+
+/* heading anchors */
+.header-anchor {
+  float: left;
+  margin-left: -0.9em;
+  width: 0.9em;
+  opacity: 0;
+  text-decoration: none !important;
+  color: var(--sw-brand);
+  transition: opacity 0.15s;
+  font-weight: 400;
+}
+
+h1:hover .header-anchor,
+h2:hover .header-anchor,
+h3:hover .header-anchor,
+h4:hover .header-anchor,
+.header-anchor:focus-visible {
+  opacity: 1;
+}
+
+/* tables */
+.sw-doc table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  margin: var(--sp-5) 0;
+  font-size: var(--sw-fs-sm);
+}
+
+.sw-doc th,
+.sw-doc td {
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--sw-line);
+  text-align: left;
+}
+
+.sw-doc th {
+  font-family: var(--sw-font-display);
+  font-weight: 600;
+  font-size: var(--sw-fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sw-text-3);
+  background: var(--sw-bg-raise);
+}
+
+.sw-doc td {
+  color: var(--sw-text-2);
+}
+
+.sw-doc td code,
+.sw-doc th code {
+  white-space: nowrap;
+}
+
+/* inline code */
+.sw-doc :not(pre) > code {
+  font-family: var(--sw-font-code);
+  font-size: 0.86em;
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  background: var(--sw-bg-chip);
+  color: var(--sw-text-1);
+}
+
+.sw-doc a > code {
+  color: var(--sw-brand);
+}
+
+/* custom containers (::: tip etc.) */
+.custom-block {
+  margin: var(--sp-5) 0;
+  padding: var(--sp-4) var(--sp-5);
+  border: 1px solid var(--sw-line);
+  border-radius: var(--sw-radius);
+  background: var(--sw-bg-raise);
+  font-size: var(--sw-fs-sm);
+}
+
+.custom-block.tip {
+  border-color: var(--sw-brand-line);
+}
+
+.custom-block.warning {
+  border-color: var(--sw-amber);
+  background: var(--sw-amber-soft);
+}
+
+.custom-block.danger {
+  border-color: var(--sw-red);
+  background: var(--sw-red-soft);
+}
+
+.custom-block-title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--sw-font-display);
+  font-weight: 600;
+  font-size: var(--sw-fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sw-text-1);
+}
+
+.custom-block.tip .custom-block-title {
+  color: var(--sw-brand);
+}
+
+.custom-block.warning .custom-block-title {
+  color: var(--sw-amber);
+}
+
+.custom-block.danger .custom-block-title {
+  color: var(--sw-red);
+}
+
+.custom-block p {
+  margin: var(--sp-2) 0 0;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Code blocks — full width, generous, calm                           */
+/* ------------------------------------------------------------------ */
+
+div[class*='language-'] {
+  position: relative;
+  margin: var(--sp-5) 0;
+  border: 1px solid var(--sw-line);
+  border-radius: var(--sw-radius);
+  background: var(--sw-bg-code);
+  overflow: hidden;
+}
+
+div[class*='language-'] pre {
+  margin: 0;
+  padding: var(--sp-5) 0;
+  overflow-x: auto;
+  background: transparent;
+}
+
+div[class*='language-'] code {
+  display: block;
+  width: fit-content;
+  min-width: 100%;
+  padding: 0 var(--sp-5);
+  font-family: var(--sw-font-code);
+  font-size: 14px;
+  line-height: 1.6;
+  font-variant-ligatures: none;
+}
+
+.vp-code span {
+  color: var(--shiki-light, inherit);
+}
+
+.dark .vp-code span {
+  color: var(--shiki-dark, inherit);
+}
+
+/* language chip */
+div[class*='language-'] > .lang {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-3);
+  z-index: 2;
+  font-family: var(--sw-font-code);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--sw-text-3);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--sw-bg-chip);
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+div[class*='language-'].language-swoftlang > .lang {
+  color: var(--sw-brand);
+  background: var(--sw-brand-soft);
+}
+
+div[class*='language-'].language-skript > .lang {
+  color: var(--sw-amber);
+  background: var(--sw-amber-soft);
+}
+
+/* copy button (behavior wired by vitepress core) */
+div[class*='language-'] > button.copy {
+  position: absolute;
+  top: 6px;
+  right: var(--sp-3);
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--sw-line);
+  border-radius: 6px;
+  background-color: var(--sw-bg-raise);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23808f8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+div[class*='language-']:hover > button.copy,
+div[class*='language-'] > button.copy:focus-visible {
+  opacity: 1;
+}
+
+div[class*='language-']:hover > .lang {
+  opacity: 0;
+}
+
+div[class*='language-'] > button.copy.copied {
+  border-color: var(--sw-brand-line);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2334d399' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+
+/* line-level annotations from the shiki transformers */
+.vp-code .line {
+  display: inline-block;
+  width: calc(100% + 2 * var(--sp-5));
+  margin: 0 calc(-1 * var(--sp-5));
+  padding: 0 var(--sp-5);
+}
+
+.vp-code .line.highlighted {
+  background: var(--sw-brand-soft);
+}
+
+.vp-code .line.highlighted.error {
+  background: var(--sw-red-soft);
+  box-shadow: inset 1px 0 var(--sw-red);
+}
+
+.vp-code .line.diff.add {
+  background: var(--sw-brand-soft);
+}
+
+.vp-code .line.diff.remove {
+  background: var(--sw-red-soft);
+  opacity: 0.7;
+}
+
+/* code groups */
+.vp-code-group {
+  margin: var(--sp-5) 0;
+}
+
+.vp-code-group .tabs {
+  display: flex;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--sw-line);
+  border-bottom: none;
+  border-radius: var(--sw-radius) var(--sw-radius) 0 0;
+  background: var(--sw-bg-raise);
+  overflow-x: auto;
+}
+
+.vp-code-group .tabs input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vp-code-group .tabs label {
+  padding: var(--sp-2) var(--sp-3);
+  font-family: var(--sw-font-code);
+  font-size: 12px;
+  color: var(--sw-text-3);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.vp-code-group .tabs label:hover {
+  color: var(--sw-text-2);
+}
+
+.vp-code-group .tabs input:checked + label {
+  color: var(--sw-brand);
+  border-bottom-color: var(--sw-brand);
+}
+
+.vp-code-group div[class*='language-'] {
+  display: none;
+  margin: 0;
+  border-radius: 0 0 var(--sw-radius) var(--sw-radius);
+}
+
+.vp-code-group div[class*='language-'].active {
+  display: block;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Compiler diagnostic panel (real swoftc output)                     */
+/* ------------------------------------------------------------------ */
+
+.sw-diag {
+  margin: var(--sp-5) 0;
+  border: 1px solid var(--sw-red);
+  border-radius: var(--sw-radius);
+  background: var(--sw-bg-code);
+  overflow: hidden;
+}
+
+.sw-diag-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  font-family: var(--sw-font-code);
+  font-size: 12px;
+  color: var(--sw-red);
+  background: var(--sw-red-soft);
+}
+
+.sw-diag div[class*='language-'] {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.sw-diag .lang,
+.sw-diag button.copy {
+  display: none;
+}
+
+.sw-diag-ok {
+  border-color: var(--sw-brand-line);
+}
+
+.sw-diag-ok .sw-diag-title {
+  color: var(--sw-brand);
+  background: var(--sw-brand-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduced motion                                                     */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

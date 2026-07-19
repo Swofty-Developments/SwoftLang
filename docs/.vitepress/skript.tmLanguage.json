@@ -1,0 +1,168 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "skript",
+  "scopeName": "source.skript",
+  "fileTypes": ["sk"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#command-def" },
+    { "include": "#event-def" },
+    { "include": "#function-def" },
+    { "include": "#sections" },
+    { "include": "#variables" },
+    { "include": "#control" },
+    { "include": "#effects" },
+    { "include": "#condition-words" },
+    { "include": "#builtins" },
+    { "include": "#units" },
+    { "include": "#constants" },
+    { "include": "#numbers" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "name": "comment.line.number-sign.skript",
+      "match": "#.*$"
+    },
+    "strings": {
+      "name": "string.quoted.double.skript",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.skript" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.skript" }
+      },
+      "patterns": [
+        {
+          "name": "constant.other.color.skript",
+          "match": "(&[0-9a-fk-orx]|<[a-z _]+>)"
+        },
+        {
+          "name": "meta.template.expression.skript",
+          "begin": "%",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.template-expression.begin.skript" }
+          },
+          "end": "%",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.template-expression.end.skript" }
+          },
+          "patterns": [
+            { "include": "#variables" },
+            { "include": "#condition-words" },
+            { "include": "#constants" },
+            { "include": "#numbers" },
+            {
+              "name": "variable.other.expression.skript",
+              "match": "[A-Za-z_'-]+"
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+      "name": "variable.other.skript",
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.variable.begin.skript" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.variable.end.skript" }
+      },
+      "patterns": [
+        {
+          "name": "punctuation.separator.namespace.skript",
+          "match": "::"
+        },
+        {
+          "name": "meta.template.expression.skript",
+          "begin": "%",
+          "end": "%",
+          "patterns": [
+            {
+              "name": "variable.other.expression.skript",
+              "match": "[A-Za-z_' -]+"
+            }
+          ]
+        },
+        {
+          "name": "variable.other.member.skript",
+          "match": "[A-Za-z0-9_.'-]+"
+        }
+      ]
+    },
+    "command-def": {
+      "match": "^(command)\\s+(/[\\w-]+)",
+      "captures": {
+        "1": { "name": "storage.type.declaration.skript" },
+        "2": { "name": "entity.name.function.command.skript" }
+      }
+    },
+    "event-def": {
+      "match": "^(on)\\s+([a-z][a-z ]*?)(:)",
+      "captures": {
+        "1": { "name": "storage.type.declaration.skript" },
+        "2": { "name": "entity.name.class.event.skript" },
+        "3": { "name": "punctuation.section.skript" }
+      }
+    },
+    "function-def": {
+      "match": "^(function)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "storage.type.declaration.skript" },
+        "2": { "name": "entity.name.function.skript" }
+      }
+    },
+    "sections": {
+      "match": "^\\s*(trigger|permission message|permission|description|usage|aliases|executable by|cooldown|cooldown message|options|prefix)\\s*(:)",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.section.skript" },
+        "2": { "name": "punctuation.separator.key-value.skript" }
+      }
+    },
+    "control": {
+      "name": "keyword.control.skript",
+      "match": "\\b(if|else if|else|loop|while|do|stop|exit|return|wait|parse|continue)\\b"
+    },
+    "effects": {
+      "name": "keyword.other.effect.skript",
+      "match": "\\b(send|broadcast|message|set|delete|clear|add|remove|give|teleport|cancel|kill|spawn|open|close|make|force|execute|play|show|hide|heal|apply)\\b"
+    },
+    "condition-words": {
+      "name": "keyword.operator.word.skript",
+      "match": "\\b(is(n't)? set|is not set|is greater than( or equal to)?|is less than( or equal to)?|is not|isn't|is|contains|does(n't)? contain|and|or|not|to|of|from|with|in|named)\\b"
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "name": "variable.language.skript",
+          "match": "\\b(player|event-player|attacker|victim|sender|arg(ument)?s?(-\\d+)?|loop-(value|player|number|index)|chat message|message|command sender|console|uuid)\\b"
+        },
+        {
+          "name": "support.type.skript",
+          "match": "\\b(text|string|integer|number|boolean|location|world|item(type)?|object|timespan|players?)\\b(?=\\s*[)=,:])"
+        }
+      ]
+    },
+    "units": {
+      "name": "constant.language.unit.skript",
+      "match": "\\b(ticks?|seconds?|minutes?|hours?|days?)\\b"
+    },
+    "constants": {
+      "name": "constant.language.skript",
+      "match": "\\b(true|false|now|all players|the player)\\b"
+    },
+    "numbers": {
+      "name": "constant.numeric.skript",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "operators": {
+      "name": "keyword.operator.skript",
+      "match": "(::|[+\\-*/%]|>=|<=|=|>|<)"
+    }
+  }
+}
