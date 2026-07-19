@@ -1,0 +1,1 @@
+cancel_in_async.sw:5:13: error: 'cancel event' must run before the handler goes async

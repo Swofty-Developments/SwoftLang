@@ -1,0 +1,477 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 10,
+      "col": 1,
+      "names": [ "countdown" ],
+      "permission": null,
+      "description": "async command handler",
+      "arguments": [],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "assign",
+            "target": "i",
+            "value": {
+              "line": 14,
+              "col": 18,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "while",
+            "condition": {
+              "line": 15,
+              "col": 15,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": { "line": 15, "col": 15, "kind": "var", "name": "i" },
+              "right": {
+                "line": 15,
+                "col": 19,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            },
+            "body": {
+              "line": 15,
+              "col": 21,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 16,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 16,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${i}..."
+                  },
+                  "target": {
+                    "line": 16,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                },
+                {
+                  "line": 17,
+                  "col": 13,
+                  "kind": "wait",
+                  "amount": {
+                    "line": 17,
+                    "col": 18,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  },
+                  "unit": "seconds"
+                },
+                {
+                  "line": 18,
+                  "col": 13,
+                  "kind": "assign",
+                  "target": "i",
+                  "value": {
+                    "line": 18,
+                    "col": 22,
+                    "kind": "binary",
+                    "op": "SUBTRACT",
+                    "left": {
+                      "line": 18,
+                      "col": 22,
+                      "kind": "var",
+                      "name": "i"
+                    },
+                    "right": {
+                      "line": 18,
+                      "col": 26,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "wait",
+            "amount": {
+              "line": 20,
+              "col": 14,
+              "kind": "number",
+              "value": 500,
+              "integer": true
+            },
+            "unit": "millis"
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "wait",
+            "amount": {
+              "line": 21,
+              "col": 14,
+              "kind": "number",
+              "value": 20,
+              "integer": true
+            },
+            "unit": "ticks"
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 22,
+              "col": 14,
+              "kind": "string",
+              "value": "Go!"
+            },
+            "target": {
+              "line": 22,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "call",
+            "name": "greet_later",
+            "args": [
+              { "line": 23, "col": 21, "kind": "var", "name": "sender" },
+              {
+                "line": 23,
+                "col": 29,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "spawn",
+            "call": {
+              "name": "greet_later",
+              "args": [
+                { "line": 24, "col": 27, "kind": "var", "name": "sender" },
+                {
+                  "line": 24,
+                  "col": 35,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "assign",
+            "target": "answer",
+            "value": {
+              "line": 25,
+              "col": 23,
+              "kind": "call",
+              "name": "prompt_input",
+              "args": [
+                { "line": 25, "col": 36, "kind": "var", "name": "sender" },
+                {
+                  "line": 25,
+                  "col": 44,
+                  "kind": "string",
+                  "value": "type something"
+                }
+              ]
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 26,
+              "col": 14,
+              "kind": "string",
+              "value": "you typed ${answer}"
+            },
+            "target": {
+              "line": 26,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "assign",
+            "target": "m",
+            "value": {
+              "line": 27,
+              "col": 18,
+              "kind": "call",
+              "name": "plain",
+              "args": [
+                {
+                  "line": 27,
+                  "col": 24,
+                  "kind": "number",
+                  "value": 41,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 28,
+              "col": 14,
+              "kind": "string",
+              "value": "m = ${m}"
+            },
+            "target": {
+              "line": 28,
+              "col": 28,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 32,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 34,
+              "col": 14,
+              "kind": "string",
+              "value": "<green>Welcome ${event.player.name}!"
+            },
+            "target": {
+              "line": 34,
+              "col": 56,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "spawn",
+            "call": {
+              "name": "greet_later",
+              "args": [
+                {
+                  "line": 35,
+                  "col": 33,
+                  "kind": "prop",
+                  "target": {
+                    "line": 35,
+                    "col": 27,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "player"
+                },
+                {
+                  "line": 35,
+                  "col": 41,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "async_block",
+            "body": [
+              {
+                "line": 37,
+                "col": 13,
+                "kind": "wait",
+                "amount": {
+                  "line": 37,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 40,
+                  "integer": true
+                },
+                "unit": "ticks"
+              },
+              {
+                "line": 38,
+                "col": 30,
+                "kind": "set_prop",
+                "target": {
+                  "line": 38,
+                  "col": 23,
+                  "kind": "prop",
+                  "target": {
+                    "line": 38,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "player"
+                },
+                "name": "health",
+                "value": {
+                  "line": 38,
+                  "col": 53,
+                  "kind": "prop",
+                  "target": {
+                    "line": 38,
+                    "col": 46,
+                    "kind": "prop",
+                    "target": {
+                      "line": 38,
+                      "col": 40,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "player"
+                  },
+                  "name": "max_health"
+                }
+              },
+              {
+                "line": 39,
+                "col": 13,
+                "kind": "send",
+                "message": {
+                  "line": 39,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "healed!"
+                },
+                "target": {
+                  "line": 39,
+                  "col": 37,
+                  "kind": "prop",
+                  "target": {
+                    "line": 39,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "player"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "line": 1,
+      "col": 7,
+      "name": "greet_later",
+      "async": true,
+      "params": [
+        { "line": 1, "col": 28, "name": "p", "type": { "base": "PLAYER" } },
+        {
+          "line": 1,
+          "col": 39,
+          "name": "delay",
+          "type": { "base": "INTEGER" }
+        }
+      ],
+      "body": [
+        {
+          "line": 2,
+          "col": 5,
+          "kind": "wait",
+          "amount": { "line": 2, "col": 10, "kind": "var", "name": "delay" },
+          "unit": "seconds"
+        },
+        {
+          "line": 3,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 3,
+            "col": 10,
+            "kind": "string",
+            "value": "<gold>Hello ${p.name}!"
+          },
+          "target": { "line": 3, "col": 38, "kind": "var", "name": "p" }
+        }
+      ]
+    },
+    {
+      "line": 6,
+      "col": 1,
+      "name": "plain",
+      "async": false,
+      "params": [
+        { "line": 6, "col": 16, "name": "n", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 7,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 7,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": { "line": 7, "col": 12, "kind": "var", "name": "n" },
+            "right": {
+              "line": 7,
+              "col": 16,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

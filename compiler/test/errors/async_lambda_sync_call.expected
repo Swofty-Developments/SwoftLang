@@ -1,0 +1,1 @@
+errors/async_lambda_sync_call.sw:4:9: error: 'task' is an async function; call it with 'spawn task(...)'

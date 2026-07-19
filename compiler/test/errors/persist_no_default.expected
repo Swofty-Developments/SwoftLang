@@ -1,0 +1,1 @@
+persist_no_default.sw:3:1: error: persistent declarations require a default value

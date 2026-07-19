@@ -1,0 +1,1 @@
+mount_non_entity.sw:3:15: error: the mounted entity must be an entity (got String)

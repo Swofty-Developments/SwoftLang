@@ -1,0 +1,371 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 21,
+      "col": 1,
+      "names": [ "kills" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "kills",
+            "subject": {
+              "line": 23,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": {
+              "line": 23,
+              "col": 33,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 23,
+                "col": 33,
+                "kind": "persist_get",
+                "name": "kills",
+                "subject": {
+                  "line": 23,
+                  "col": 43,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              "right": {
+                "line": 23,
+                "col": 52,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 24,
+              "col": 12,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 24,
+                "col": 12,
+                "kind": "persist_get",
+                "name": "kills",
+                "subject": {
+                  "line": 24,
+                  "col": 22,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              "right": {
+                "line": 24,
+                "col": 31,
+                "kind": "number",
+                "value": 10,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 24,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 25,
+                  "col": 13,
+                  "kind": "persist_set",
+                  "name": "hardcore",
+                  "subject": {
+                    "line": 25,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "value": {
+                    "line": 25,
+                    "col": 40,
+                    "kind": "boolean",
+                    "value": true
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 27,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 27,
+                  "col": 14,
+                  "kind": "binary",
+                  "op": "CONCATENATE",
+                  "left": {
+                    "line": 27,
+                    "col": 14,
+                    "kind": "string",
+                    "value": "You have "
+                  },
+                  "right": {
+                    "line": 27,
+                    "col": 14,
+                    "kind": "persist_get",
+                    "name": "kills",
+                    "subject": {
+                      "line": 27,
+                      "col": 14,
+                      "kind": "var",
+                      "name": "sender"
+                    }
+                  }
+                },
+                "right": {
+                  "line": 27,
+                  "col": 14,
+                  "kind": "string",
+                  "value": " kill(s), ratio "
+                }
+              },
+              "right": {
+                "line": 27,
+                "col": 14,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 27,
+                  "col": 14,
+                  "kind": "persist_get",
+                  "name": "spawn_ratio",
+                  "subject": null
+                },
+                "right": {
+                  "line": 27,
+                  "col": 14,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              }
+            },
+            "target": {
+              "line": 27,
+              "col": 82,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 13,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "total_joins",
+            "subject": null,
+            "value": {
+              "line": 15,
+              "col": 28,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 15,
+                "col": 28,
+                "kind": "persist_get",
+                "name": "total_joins",
+                "subject": null
+              },
+              "right": {
+                "line": 15,
+                "col": 42,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "last_seen",
+            "subject": {
+              "line": 16,
+              "col": 27,
+              "kind": "var",
+              "name": "player"
+            },
+            "value": {
+              "line": 16,
+              "col": 37,
+              "kind": "string",
+              "value": "today"
+            }
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 17,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 17,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 17,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "Join #"
+                },
+                "right": {
+                  "line": 17,
+                  "col": 14,
+                  "kind": "persist_get",
+                  "name": "total_joins",
+                  "subject": null
+                }
+              },
+              "right": {
+                "line": 17,
+                "col": 14,
+                "kind": "persist_get",
+                "name": "motd_extra",
+                "subject": null
+              }
+            },
+            "target": {
+              "line": 17,
+              "col": 53,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 1,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 6,
+      "col": 1,
+      "name": "total_joins",
+      "subject": null,
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 6,
+        "col": 35,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    },
+    {
+      "line": 7,
+      "col": 1,
+      "name": "spawn_ratio",
+      "subject": null,
+      "type": { "base": "DOUBLE" },
+      "default": {
+        "line": 7,
+        "col": 34,
+        "kind": "number",
+        "value": 1.5,
+        "integer": false
+      }
+    },
+    {
+      "line": 8,
+      "col": 1,
+      "name": "motd_extra",
+      "subject": null,
+      "type": { "base": "STRING" },
+      "default": { "line": 8, "col": 33, "kind": "string", "value": "" }
+    },
+    {
+      "line": 9,
+      "col": 1,
+      "name": "kills",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 9,
+        "col": 40,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    },
+    {
+      "line": 10,
+      "col": 1,
+      "name": "last_seen",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "STRING" },
+      "default": {
+        "line": 10,
+        "col": 43,
+        "kind": "string",
+        "value": "never"
+      }
+    },
+    {
+      "line": 11,
+      "col": 1,
+      "name": "hardcore",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "BOOLEAN" },
+      "default": { "line": 11, "col": 43, "kind": "boolean", "value": false }
+    }
+  ]
+}

@@ -1,0 +1,446 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 54,
+      "col": 1,
+      "names": [ "kit" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 56,
+            "col": 9,
+            "kind": "give_item",
+            "id": {
+              "line": 56,
+              "col": 19,
+              "kind": "string",
+              "value": "aspect_of_the_end"
+            },
+            "target": {
+              "line": 56,
+              "col": 42,
+              "kind": "var",
+              "name": "sender"
+            },
+            "amount": null
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "give_item",
+            "id": {
+              "line": 57,
+              "col": 19,
+              "kind": "string",
+              "value": "grappling_hook"
+            },
+            "target": {
+              "line": 57,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            },
+            "amount": {
+              "line": 57,
+              "col": 53,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            }
+          },
+          {
+            "line": 58,
+            "col": 20,
+            "kind": "set_prop",
+            "target": {
+              "line": 58,
+              "col": 13,
+              "kind": "var",
+              "name": "sender"
+            },
+            "name": "held_item",
+            "value": {
+              "line": 58,
+              "col": 33,
+              "kind": "call",
+              "name": "custom_item",
+              "args": [
+                {
+                  "line": 58,
+                  "col": 45,
+                  "kind": "string",
+                  "value": "aspect_of_the_end"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 62,
+      "col": 1,
+      "name": "PlayerUseItem",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 64,
+              "col": 12,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 64,
+                "col": 12,
+                "kind": "call",
+                "name": "custom_id",
+                "args": [
+                  {
+                    "line": 64,
+                    "col": 28,
+                    "kind": "prop",
+                    "target": {
+                      "line": 64,
+                      "col": 22,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "item"
+                  }
+                ]
+              },
+              "right": {
+                "line": 64,
+                "col": 44,
+                "kind": "binary",
+                "op": "EQUALS",
+                "left": {
+                  "line": 64,
+                  "col": 44,
+                  "kind": "string",
+                  "value": ""
+                },
+                "right": {
+                  "line": 64,
+                  "col": 50,
+                  "kind": "string",
+                  "value": "aspect_of_the_end"
+                }
+              }
+            },
+            "then": {
+              "line": 64,
+              "col": 70,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 65,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 65,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<gray>You used the Aspect!"
+                  },
+                  "target": {
+                    "line": 65,
+                    "col": 56,
+                    "kind": "prop",
+                    "target": {
+                      "line": 65,
+                      "col": 50,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "player"
+                  }
+                },
+                { "line": 66, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "items": [
+    {
+      "line": 5,
+      "col": 1,
+      "id": "aspect_of_the_end",
+      "material": "DIAMOND_SWORD",
+      "skull": null,
+      "name": {
+        "line": 7,
+        "col": 11,
+        "kind": "string",
+        "value": "<blue>Aspect of the End"
+      },
+      "rarity": "rare",
+      "glint": { "line": 9, "col": 12, "kind": "boolean", "value": true },
+      "amount": {
+        "line": 10,
+        "col": 13,
+        "kind": "number",
+        "value": 1,
+        "integer": true
+      },
+      "lore": [
+        {
+          "line": 13,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 13,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>Teleport 8 blocks ahead"
+          }
+        },
+        { "line": 14, "col": 9, "kind": "blank" },
+        {
+          "line": 15,
+          "col": 9,
+          "kind": "if",
+          "condition": {
+            "line": 15,
+            "col": 12,
+            "kind": "boolean",
+            "value": true
+          },
+          "then": {
+            "line": 15,
+            "col": 17,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 16,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 16,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<gray>and gain a burst of speed."
+                }
+              }
+            ]
+          },
+          "else": null
+        },
+        {
+          "line": 18,
+          "col": 9,
+          "kind": "loop",
+          "count": {
+            "line": 18,
+            "col": 14,
+            "kind": "number",
+            "value": 2,
+            "integer": true
+          },
+          "var": null,
+          "body": {
+            "line": 18,
+            "col": 22,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 19,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 19,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<dark_gray>* * *"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "attributes": {
+        "speed": {
+          "line": 24,
+          "col": 16,
+          "kind": "number",
+          "value": 0.05,
+          "integer": false
+        },
+        "max_health": {
+          "line": 25,
+          "col": 21,
+          "kind": "number",
+          "value": 10,
+          "integer": true
+        }
+      },
+      "tags": {
+        "soulbound": {
+          "line": 29,
+          "col": 20,
+          "kind": "boolean",
+          "value": true
+        },
+        "tier": {
+          "line": 30,
+          "col": 15,
+          "kind": "number",
+          "value": 3,
+          "integer": true
+        },
+        "meta": {
+          "line": 31,
+          "col": 15,
+          "kind": "map",
+          "entries": {
+            "origin": {
+              "line": 32,
+              "col": 21,
+              "kind": "string",
+              "value": "the_end"
+            },
+            "keywords": {
+              "line": 33,
+              "col": 23,
+              "kind": "list",
+              "items": [
+                {
+                  "line": 33,
+                  "col": 24,
+                  "kind": "string",
+                  "value": "teleport"
+                },
+                { "line": 33, "col": 36, "kind": "string", "value": "speed" }
+              ]
+            }
+          }
+        }
+      },
+      "on_click": [
+        {
+          "filter": "right",
+          "body": [
+            {
+              "line": 38,
+              "col": 9,
+              "kind": "send",
+              "message": {
+                "line": 38,
+                "col": 14,
+                "kind": "string",
+                "value": "<green>Whoosh!"
+              },
+              "target": {
+                "line": 38,
+                "col": 34,
+                "kind": "var",
+                "name": "player"
+              }
+            },
+            {
+              "line": 39,
+              "col": 9,
+              "kind": "if",
+              "condition": {
+                "line": 39,
+                "col": 22,
+                "kind": "unary",
+                "op": "EXISTS",
+                "operand": {
+                  "line": 39,
+                  "col": 22,
+                  "kind": "prop",
+                  "target": {
+                    "line": 39,
+                    "col": 17,
+                    "kind": "prop",
+                    "target": {
+                      "line": 39,
+                      "col": 12,
+                      "kind": "var",
+                      "name": "item"
+                    },
+                    "name": "tags"
+                  },
+                  "name": "tier"
+                }
+              },
+              "then": {
+                "line": 39,
+                "col": 34,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 40,
+                    "col": 13,
+                    "kind": "send",
+                    "message": {
+                      "line": 40,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "<gray>Tier ${item.tags.tier}"
+                    },
+                    "target": {
+                      "line": 40,
+                      "col": 52,
+                      "kind": "var",
+                      "name": "player"
+                    }
+                  }
+                ]
+              },
+              "else": null
+            },
+            { "line": 42, "col": 9, "kind": "cancel_event" }
+          ]
+        }
+      ]
+    },
+    {
+      "line": 46,
+      "col": 1,
+      "id": "grappling_hook",
+      "material": null,
+      "skull": "abc123texturehash",
+      "name": null,
+      "rarity": "epic",
+      "glint": null,
+      "amount": null,
+      "lore": null,
+      "attributes": {},
+      "tags": {
+        "uses": {
+          "line": 50,
+          "col": 15,
+          "kind": "number",
+          "value": 0,
+          "integer": true
+        }
+      },
+      "on_click": []
+    }
+  ]
+}

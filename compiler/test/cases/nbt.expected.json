@@ -1,0 +1,454 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 17,
+      "col": 1,
+      "names": [ "enchant" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "assign",
+            "target": "blade",
+            "value": {
+              "line": 19,
+              "col": 22,
+              "kind": "call",
+              "name": "custom_item",
+              "args": [
+                {
+                  "line": 19,
+                  "col": 34,
+                  "kind": "string",
+                  "value": "mystic_blade"
+                }
+              ]
+            }
+          },
+          {
+            "line": 22,
+            "col": 24,
+            "kind": "set_prop",
+            "target": {
+              "line": 22,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 22,
+                "col": 13,
+                "kind": "var",
+                "name": "blade"
+              },
+              "name": "tags"
+            },
+            "name": "tier",
+            "value": {
+              "line": 22,
+              "col": 32,
+              "kind": "number",
+              "value": 5,
+              "integer": true
+            }
+          },
+          {
+            "line": 25,
+            "col": 24,
+            "kind": "set_prop",
+            "target": {
+              "line": 25,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 25,
+                "col": 13,
+                "kind": "var",
+                "name": "blade"
+              },
+              "name": "tags"
+            },
+            "name": "charges",
+            "value": {
+              "line": 25,
+              "col": 47,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 25,
+                "col": 47,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 25,
+                  "col": 47,
+                  "kind": "prop",
+                  "target": {
+                    "line": 25,
+                    "col": 42,
+                    "kind": "prop",
+                    "target": {
+                      "line": 25,
+                      "col": 36,
+                      "kind": "var",
+                      "name": "blade"
+                    },
+                    "name": "tags"
+                  },
+                  "name": "charges"
+                },
+                "right": {
+                  "line": 25,
+                  "col": 65,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 25,
+                "col": 70,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 26,
+              "col": 23,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 26,
+                "col": 23,
+                "kind": "prop",
+                "target": {
+                  "line": 26,
+                  "col": 18,
+                  "kind": "prop",
+                  "target": {
+                    "line": 26,
+                    "col": 12,
+                    "kind": "var",
+                    "name": "blade"
+                  },
+                  "name": "tags"
+                },
+                "name": "tier"
+              }
+            },
+            "then": {
+              "line": 26,
+              "col": 35,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 27,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 27,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<green>Tier ${blade.tags.tier}"
+                  },
+                  "target": {
+                    "line": 27,
+                    "col": 54,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 31,
+            "col": 29,
+            "kind": "set_prop",
+            "target": {
+              "line": 31,
+              "col": 24,
+              "kind": "prop",
+              "target": {
+                "line": 31,
+                "col": 19,
+                "kind": "prop",
+                "target": {
+                  "line": 31,
+                  "col": 13,
+                  "kind": "var",
+                  "name": "blade"
+                },
+                "name": "tags"
+              },
+              "name": "meta"
+            },
+            "name": "level",
+            "value": {
+              "line": 31,
+              "col": 38,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            }
+          },
+          {
+            "line": 34,
+            "col": 24,
+            "kind": "set_prop",
+            "target": {
+              "line": 34,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 34,
+                "col": 13,
+                "kind": "var",
+                "name": "blade"
+              },
+              "name": "tags"
+            },
+            "name": "tier",
+            "value": { "line": 34, "col": 32, "kind": "none" }
+          },
+          {
+            "line": 36,
+            "col": 20,
+            "kind": "set_prop",
+            "target": {
+              "line": 36,
+              "col": 13,
+              "kind": "var",
+              "name": "sender"
+            },
+            "name": "held_item",
+            "value": {
+              "line": 36,
+              "col": 33,
+              "kind": "var",
+              "name": "blade"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 40,
+      "col": 1,
+      "name": "PlayerUseItem",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 43,
+              "col": 28,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 43,
+                "col": 28,
+                "kind": "prop",
+                "target": {
+                  "line": 43,
+                  "col": 23,
+                  "kind": "prop",
+                  "target": {
+                    "line": 43,
+                    "col": 18,
+                    "kind": "prop",
+                    "target": {
+                      "line": 43,
+                      "col": 12,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "item"
+                  },
+                  "name": "tags"
+                },
+                "name": "soulbound"
+              }
+            },
+            "then": {
+              "line": 43,
+              "col": 45,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 44,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 44,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<gray>Soulbound."
+                  },
+                  "target": {
+                    "line": 44,
+                    "col": 46,
+                    "kind": "prop",
+                    "target": {
+                      "line": 44,
+                      "col": 40,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "player"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 46,
+            "col": 29,
+            "kind": "set_prop",
+            "target": {
+              "line": 46,
+              "col": 24,
+              "kind": "prop",
+              "target": {
+                "line": 46,
+                "col": 19,
+                "kind": "prop",
+                "target": {
+                  "line": 46,
+                  "col": 13,
+                  "kind": "var",
+                  "name": "event"
+                },
+                "name": "item"
+              },
+              "name": "tags"
+            },
+            "name": "uses",
+            "value": {
+              "line": 46,
+              "col": 54,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 46,
+                "col": 54,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 46,
+                  "col": 54,
+                  "kind": "prop",
+                  "target": {
+                    "line": 46,
+                    "col": 49,
+                    "kind": "prop",
+                    "target": {
+                      "line": 46,
+                      "col": 44,
+                      "kind": "prop",
+                      "target": {
+                        "line": 46,
+                        "col": 38,
+                        "kind": "var",
+                        "name": "event"
+                      },
+                      "name": "item"
+                    },
+                    "name": "tags"
+                  },
+                  "name": "uses"
+                },
+                "right": {
+                  "line": 46,
+                  "col": 69,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 46,
+                "col": 74,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "items": [
+    {
+      "line": 6,
+      "col": 1,
+      "id": "mystic_blade",
+      "material": "DIAMOND_SWORD",
+      "skull": null,
+      "name": null,
+      "rarity": null,
+      "glint": null,
+      "amount": null,
+      "lore": null,
+      "attributes": {},
+      "tags": {
+        "tier": {
+          "line": 9,
+          "col": 15,
+          "kind": "number",
+          "value": 1,
+          "integer": true
+        },
+        "meta": {
+          "line": 10,
+          "col": 15,
+          "kind": "map",
+          "entries": {
+            "origin": {
+              "line": 11,
+              "col": 21,
+              "kind": "string",
+              "value": "vault"
+            },
+            "flags": {
+              "line": 12,
+              "col": 20,
+              "kind": "list",
+              "items": [
+                { "line": 12, "col": 21, "kind": "string", "value": "glow" },
+                { "line": 12, "col": 29, "kind": "string", "value": "bound" }
+              ]
+            }
+          }
+        }
+      },
+      "on_click": []
+    }
+  ]
+}

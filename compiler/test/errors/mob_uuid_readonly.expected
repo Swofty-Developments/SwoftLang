@@ -1,0 +1,1 @@
+property 'uuid' on Mob is read-only

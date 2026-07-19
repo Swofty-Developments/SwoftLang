@@ -1,0 +1,242 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 10,
+      "col": 1,
+      "names": [ "remind" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "handle",
+            "value": {
+              "line": 12,
+              "col": 23,
+              "kind": "schedule",
+              "after_ticks": 100,
+              "every_ticks": null,
+              "body": [
+                {
+                  "line": 13,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 13,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "5 seconds passed"
+                  },
+                  "target": {
+                    "line": 13,
+                    "col": 40,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "assign",
+            "target": "repeating",
+            "value": {
+              "line": 15,
+              "col": 26,
+              "kind": "schedule",
+              "after_ticks": 20,
+              "every_ticks": 40,
+              "body": [
+                {
+                  "line": 16,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 16,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "tick"
+                  },
+                  "target": {
+                    "line": 16,
+                    "col": 28,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "assign",
+            "target": "immediate",
+            "value": {
+              "line": 18,
+              "col": 26,
+              "kind": "schedule",
+              "after_ticks": null,
+              "every_ticks": null,
+              "body": [
+                {
+                  "line": 19,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 19,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "ran once on the async runtime"
+                  },
+                  "target": {
+                    "line": 19,
+                    "col": 53,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "cancel_schedule",
+            "schedule": {
+              "line": 21,
+              "col": 25,
+              "kind": "var",
+              "name": "handle"
+            }
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "cancel_schedule",
+            "schedule": {
+              "line": 22,
+              "col": 25,
+              "kind": "var",
+              "name": "repeating"
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "cancel_schedule",
+            "schedule": {
+              "line": 23,
+              "col": 25,
+              "kind": "var",
+              "name": "immediate"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "schedulers": [
+    {
+      "line": 3,
+      "col": 1,
+      "every_ticks": 1200,
+      "body": [
+        {
+          "line": 4,
+          "col": 5,
+          "kind": "broadcast",
+          "message": {
+            "line": 4,
+            "col": 15,
+            "kind": "string",
+            "value": "Server heartbeat"
+          }
+        },
+        {
+          "line": 5,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 5,
+            "col": 15,
+            "kind": "binary",
+            "op": "LESS_THAN",
+            "left": {
+              "line": 5,
+              "col": 15,
+              "kind": "prop",
+              "target": {
+                "line": 5,
+                "col": 8,
+                "kind": "var",
+                "name": "server"
+              },
+              "name": "tps"
+            },
+            "right": {
+              "line": 5,
+              "col": 21,
+              "kind": "number",
+              "value": 15.0,
+              "integer": false
+            }
+          },
+          "then": {
+            "line": 5,
+            "col": 26,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 5,
+                "col": 26,
+                "kind": "broadcast",
+                "message": {
+                  "line": 5,
+                  "col": 36,
+                  "kind": "string",
+                  "value": "<red>Server is lagging!"
+                }
+              }
+            ]
+          },
+          "else": null
+        }
+      ]
+    },
+    {
+      "line": 8,
+      "col": 1,
+      "every_ticks": 10,
+      "body": [
+        {
+          "line": 8,
+          "col": 16,
+          "kind": "broadcast",
+          "message": {
+            "line": 8,
+            "col": 26,
+            "kind": "string",
+            "value": "fast tick group"
+          }
+        }
+      ]
+    }
+  ]
+}

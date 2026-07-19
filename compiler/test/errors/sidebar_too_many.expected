@@ -1,0 +1,1 @@
+sidebar_too_many.sw:1:1: error: scoreboard 'big' can emit 16 lines on a static path; the sidebar limit is 15

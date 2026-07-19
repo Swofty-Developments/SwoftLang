@@ -1,0 +1,1495 @@
+[
+  { "owner": "Player", "name": "name", "type": "String", "writable": false },
+  { "owner": "Player", "name": "uuid", "type": "String", "writable": false },
+  { "owner": "Player", "name": "health", "type": "Double", "writable": true },
+  {
+    "owner": "Player",
+    "name": "max_health",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Player", "name": "food", "type": "Integer", "writable": true },
+  {
+    "owner": "Player",
+    "name": "food_saturation",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Player", "name": "level", "type": "Integer", "writable": true },
+  { "owner": "Player", "name": "exp", "type": "Double", "writable": true },
+  {
+    "owner": "Player",
+    "name": "gamemode",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "location",
+    "type": "Location",
+    "writable": true
+  },
+  { "owner": "Player", "name": "world", "type": "World", "writable": true },
+  {
+    "owner": "Player",
+    "name": "held_item",
+    "type": "Item",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "held_slot",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "latency",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "display_name",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "flying",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "allow_flying",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "flying_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "online",
+    "type": "Boolean",
+    "writable": false
+  },
+  { "owner": "Player", "name": "skin", "type": "Skin", "writable": true },
+  { "owner": "Location", "name": "x", "type": "Double", "writable": true },
+  { "owner": "Location", "name": "y", "type": "Double", "writable": true },
+  { "owner": "Location", "name": "z", "type": "Double", "writable": true },
+  { "owner": "Location", "name": "yaw", "type": "Double", "writable": true },
+  {
+    "owner": "Location",
+    "name": "pitch",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Location",
+    "name": "block_x",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "block_y",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "block_z",
+    "type": "Integer",
+    "writable": false
+  },
+  { "owner": "Item", "name": "material", "type": "String", "writable": true },
+  { "owner": "Item", "name": "amount", "type": "Integer", "writable": true },
+  { "owner": "Item", "name": "name", "type": "String", "writable": true },
+  {
+    "owner": "Item",
+    "name": "lore",
+    "type": "list<String>",
+    "writable": true
+  },
+  { "owner": "Item", "name": "tags", "type": "ItemTags", "writable": false },
+  { "owner": "Mob", "name": "health", "type": "Double", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "max_health",
+    "type": "Double",
+    "writable": false
+  },
+  { "owner": "Mob", "name": "name", "type": "String", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "location",
+    "type": "Location",
+    "writable": true
+  },
+  { "owner": "Mob", "name": "type", "type": "String", "writable": false },
+  {
+    "owner": "Mob",
+    "name": "custom_id",
+    "type": "String",
+    "writable": false
+  },
+  { "owner": "Mob", "name": "uuid", "type": "String", "writable": false },
+  { "owner": "Mob", "name": "velocity", "type": "Vec", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "custom_name",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "name_visible",
+    "type": "Boolean",
+    "writable": true
+  },
+  { "owner": "Mob", "name": "glowing", "type": "Boolean", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "invisible",
+    "type": "Boolean",
+    "writable": true
+  },
+  { "owner": "Mob", "name": "gravity", "type": "Boolean", "writable": true },
+  { "owner": "Mob", "name": "on_fire", "type": "Boolean", "writable": true },
+  { "owner": "Mob", "name": "silent", "type": "Boolean", "writable": true },
+  { "owner": "Mob", "name": "pose", "type": "String", "writable": true },
+  { "owner": "Mob", "name": "sneaking", "type": "Boolean", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "passengers",
+    "type": "list<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "vehicle",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "shooter",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  { "owner": "Mob", "name": "alive", "type": "Boolean", "writable": false },
+  { "owner": "Mob", "name": "removed", "type": "Boolean", "writable": false },
+  { "owner": "Mob", "name": "tags", "type": "EntityTags", "writable": false },
+  { "owner": "World", "name": "time", "type": "Integer", "writable": true },
+  {
+    "owner": "World",
+    "name": "time_rate",
+    "type": "Integer",
+    "writable": true
+  },
+  { "owner": "World", "name": "weather", "type": "String", "writable": true },
+  {
+    "owner": "World",
+    "name": "raining",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "World",
+    "name": "thundering",
+    "type": "Boolean",
+    "writable": false
+  },
+  { "owner": "Display", "name": "text", "type": "String", "writable": true },
+  { "owner": "Display", "name": "item", "type": "String", "writable": true },
+  { "owner": "Display", "name": "block", "type": "String", "writable": true },
+  { "owner": "Display", "name": "scale", "type": "Double", "writable": true },
+  {
+    "owner": "Display",
+    "name": "translation",
+    "type": "Location",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "rotation",
+    "type": "Location",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "billboard",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "glow_color",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "background",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "alignment",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "line_width",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "see_through",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "view_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Request",
+    "name": "method",
+    "type": "String",
+    "writable": false
+  },
+  { "owner": "Request", "name": "path", "type": "String", "writable": false },
+  {
+    "owner": "Request",
+    "name": "query",
+    "type": "String",
+    "writable": false
+  },
+  { "owner": "Request", "name": "body", "type": "String", "writable": false },
+  {
+    "owner": "Request",
+    "name": "params",
+    "type": "RequestParams",
+    "writable": false
+  },
+  { "owner": "Song", "name": "title", "type": "String", "writable": false },
+  { "owner": "Song", "name": "author", "type": "String", "writable": false },
+  { "owner": "Song", "name": "length", "type": "Integer", "writable": false },
+  { "owner": "Song", "name": "speed", "type": "Double", "writable": false },
+  { "owner": "Server", "name": "tps", "type": "Double", "writable": false },
+  {
+    "owner": "Server",
+    "name": "average_tps",
+    "type": "Double",
+    "writable": false
+  },
+  { "owner": "Server", "name": "mspt", "type": "Double", "writable": false },
+  { "owner": "Server", "name": "motd", "type": "String", "writable": true },
+  { "owner": "Skin", "name": "texture", "type": "String", "writable": false },
+  {
+    "owner": "Skin",
+    "name": "signature",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "Canvas",
+    "name": "width",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Canvas",
+    "name": "height",
+    "type": "Integer",
+    "writable": false
+  },
+  { "owner": "Entity", "name": "type", "type": "String", "writable": false },
+  { "owner": "Entity", "name": "uuid", "type": "String", "writable": false },
+  {
+    "owner": "Entity",
+    "name": "location",
+    "type": "Location",
+    "writable": true
+  },
+  { "owner": "Entity", "name": "velocity", "type": "Vec", "writable": true },
+  {
+    "owner": "Entity",
+    "name": "custom_name",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "name_visible",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "glowing",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "invisible",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "gravity",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "on_fire",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "silent",
+    "type": "Boolean",
+    "writable": true
+  },
+  { "owner": "Entity", "name": "pose", "type": "String", "writable": true },
+  {
+    "owner": "Entity",
+    "name": "sneaking",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "passengers",
+    "type": "list<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "vehicle",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "shooter",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "alive",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "removed",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "tags",
+    "type": "EntityTags",
+    "writable": false
+  },
+  { "owner": "Vec", "name": "x", "type": "Double", "writable": true },
+  { "owner": "Vec", "name": "y", "type": "Double", "writable": true },
+  { "owner": "Vec", "name": "z", "type": "Double", "writable": true },
+  {
+    "owner": "OfflinePlayer",
+    "name": "name",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "uuid",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "online",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "player",
+    "type": "optional<Player>",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "first_seen",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "last_seen",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "has_played_before",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "message",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "raw_message",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "recipients",
+    "type": "list<Player>",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "first_spawn",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "item",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "custom_id",
+    "type": "optional<String>",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:MobSpawn",
+    "name": "mob",
+    "type": "Mob",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDeath",
+    "name": "mob",
+    "type": "Mob",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDeath",
+    "name": "killer",
+    "type": "optional<Player>",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "mob",
+    "type": "Mob",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "damage",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "attacker",
+    "type": "optional<Player>",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:TpsChange",
+    "name": "past",
+    "type": "Double",
+    "writable": false
+  },
+  {
+    "owner": "event:TpsChange",
+    "name": "current",
+    "type": "Double",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "block",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "block_face",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "result_block",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "block",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "block_face",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "cursor_position",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "motd",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "online",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "max",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "command",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCastRod",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCastRod",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:FishBite",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:FishBite",
+    "name": "hook_location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "caught_item",
+    "type": "optional<Item>",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "caught_mob",
+    "type": "optional<Mob>",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerReelIn",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "block",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "item",
+    "type": "optional<Item>",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "direction",
+    "type": "Vec",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "damage",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "attacker",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "source_entity",
+    "type": "optional<Entity>",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "damage_type",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "death_text",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "chat_message",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "respawn_position",
+    "type": "Location",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "new_position",
+    "type": "Location",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "on_ground",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "block",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "block_face",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "cursor_position",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "slot",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "clicked_item",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "from_client",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "item_stack",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "item_stack",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "item_entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "new_game_mode",
+    "type": "String",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "item_stack",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "block_face",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "cursor_position",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDeath",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDeath",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "target",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "new_position",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "projectile",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "to",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "power",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "spread",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "entity",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "velocity",
+    "type": "Vec",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "target",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "target",
+    "type": "Entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "interact_position",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "new_slot",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "old_slot",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "item_in_new_slot",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "item_in_old_slot",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "experience_count",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "item_stack",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "item_use_duration",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "animation",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "main_hand_item",
+    "type": "Item",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "off_hand_item",
+    "type": "Item",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "block",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "location",
+    "type": "Location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "block_face",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "slot",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "click_type",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "clicked_item",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "cursor_item",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "world",
+    "type": "World",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "player",
+    "type": "Player",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "item_stack",
+    "type": "Item",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "hand",
+    "type": "String",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "item_use_time",
+    "type": "Integer",
+    "writable": true
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "cancelled",
+    "type": "Boolean",
+    "writable": true
+  }
+]

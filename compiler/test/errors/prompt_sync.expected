@@ -1,0 +1,1 @@
+prompt_sync.sw:3:23: error: 'prompt_input' can only be called in async contexts

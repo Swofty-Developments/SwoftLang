@@ -1,0 +1,1 @@
+arity_mismatch.sw:7:18: error: function 'add' expects 2 argument(s), got 1

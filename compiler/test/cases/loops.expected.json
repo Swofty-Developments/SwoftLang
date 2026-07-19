@@ -1,0 +1,151 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "loops" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 3,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 3,
+              "col": 14,
+              "kind": "number",
+              "value": 5,
+              "integer": true
+            },
+            "var": null,
+            "body": {
+              "line": 3,
+              "col": 22,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 4,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 4,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "x"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 6,
+              "col": 14,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 6,
+                "col": 14,
+                "kind": "number",
+                "value": 2,
+                "integer": true
+              },
+              "right": {
+                "line": 6,
+                "col": 18,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            },
+            "var": "i",
+            "body": {
+              "line": 6,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 7,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 7,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${i}"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "foreach",
+            "var": "p",
+            "limit": null,
+            "iterable": { "line": 9, "col": 14, "kind": "all_players" },
+            "body": {
+              "line": 9,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 10,
+                  "col": 13,
+                  "kind": "teleport",
+                  "entity": {
+                    "line": 10,
+                    "col": 22,
+                    "kind": "var",
+                    "name": "p"
+                  },
+                  "target": {
+                    "line": 10,
+                    "col": 27,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "while",
+            "condition": {
+              "line": 12,
+              "col": 15,
+              "kind": "boolean",
+              "value": true
+            },
+            "body": {
+              "line": 12,
+              "col": 20,
+              "kind": "block",
+              "statements": [ { "line": 13, "col": 13, "kind": "halt" } ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

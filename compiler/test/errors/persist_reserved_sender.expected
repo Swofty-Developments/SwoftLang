@@ -1,0 +1,1 @@
+persist_reserved_sender.sw:1:1: error: persistent 'sender' collides with the built-in 'sender' binding — pick another name

@@ -1,0 +1,496 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 13,
+      "col": 1,
+      "names": [ "lambdas" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "assign",
+            "target": "double",
+            "value": {
+              "line": 16,
+              "col": 23,
+              "kind": "lambda",
+              "async": false,
+              "params": [
+                {
+                  "line": 16,
+                  "col": 32,
+                  "name": "x",
+                  "type": { "base": "INTEGER" }
+                }
+              ],
+              "body": [
+                {
+                  "line": 16,
+                  "col": 44,
+                  "kind": "return",
+                  "value": {
+                    "line": 16,
+                    "col": 51,
+                    "kind": "binary",
+                    "op": "MULTIPLY",
+                    "left": {
+                      "line": 16,
+                      "col": 51,
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    "right": {
+                      "line": 16,
+                      "col": 55,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 17,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 17,
+                "col": 14,
+                "kind": "string",
+                "value": "double(4) = "
+              },
+              "right": {
+                "line": 17,
+                "col": 14,
+                "kind": "call",
+                "name": "double",
+                "args": [
+                  {
+                    "line": 17,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 4,
+                    "integer": true
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 17,
+              "col": 44,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "assign",
+            "target": "shout",
+            "value": {
+              "line": 20,
+              "col": 22,
+              "kind": "lambda",
+              "async": false,
+              "params": [
+                {
+                  "line": 20,
+                  "col": 31,
+                  "name": "s",
+                  "type": { "base": "STRING" }
+                }
+              ],
+              "body": [
+                {
+                  "line": 21,
+                  "col": 13,
+                  "kind": "return",
+                  "value": {
+                    "line": 21,
+                    "col": 20,
+                    "kind": "call",
+                    "name": "uppercase",
+                    "args": [
+                      { "line": 21, "col": 30, "kind": "var", "name": "s" }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 23,
+              "col": 14,
+              "kind": "call",
+              "name": "shout",
+              "args": [
+                { "line": 23, "col": 20, "kind": "string", "value": "hey" }
+              ]
+            },
+            "target": {
+              "line": 23,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "assign",
+            "target": "count",
+            "value": {
+              "line": 26,
+              "col": 22,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "assign",
+            "target": "inc",
+            "value": {
+              "line": 27,
+              "col": 20,
+              "kind": "lambda",
+              "async": false,
+              "params": [],
+              "body": [
+                {
+                  "line": 27,
+                  "col": 31,
+                  "kind": "assign",
+                  "target": "count",
+                  "value": {
+                    "line": 27,
+                    "col": 44,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 27,
+                      "col": 44,
+                      "kind": "var",
+                      "name": "count"
+                    },
+                    "right": {
+                      "line": 27,
+                      "col": 52,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          { "line": 28, "col": 9, "kind": "call", "name": "inc", "args": [] },
+          { "line": 29, "col": 9, "kind": "call", "name": "inc", "args": [] },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 30,
+              "col": 14,
+              "kind": "string",
+              "value": "count = ${count}"
+            },
+            "target": {
+              "line": 30,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 33,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 33,
+                "col": 14,
+                "kind": "string",
+                "value": "apply(double, 10) = "
+              },
+              "right": {
+                "line": 33,
+                "col": 14,
+                "kind": "call",
+                "name": "apply",
+                "args": [
+                  { "line": 33, "col": 14, "kind": "var", "name": "double" },
+                  {
+                    "line": 33,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 10,
+                    "integer": true
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 33,
+              "col": 60,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "assign",
+            "target": "add5",
+            "value": {
+              "line": 34,
+              "col": 21,
+              "kind": "call",
+              "name": "make_adder",
+              "args": [
+                {
+                  "line": 34,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 35,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 35,
+                "col": 14,
+                "kind": "string",
+                "value": "add5(3) = "
+              },
+              "right": {
+                "line": 35,
+                "col": 14,
+                "kind": "call",
+                "name": "add5",
+                "args": [
+                  {
+                    "line": 35,
+                    "col": 14,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 35,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "assign",
+            "target": "task",
+            "value": {
+              "line": 38,
+              "col": 21,
+              "kind": "lambda",
+              "async": true,
+              "params": [
+                {
+                  "line": 38,
+                  "col": 36,
+                  "name": "msg",
+                  "type": { "base": "STRING" }
+                }
+              ],
+              "body": [
+                {
+                  "line": 39,
+                  "col": 13,
+                  "kind": "wait",
+                  "amount": {
+                    "line": 39,
+                    "col": 18,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  },
+                  "unit": "ticks"
+                },
+                {
+                  "line": 40,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 40,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "later: ${msg}"
+                  },
+                  "target": {
+                    "line": 40,
+                    "col": 37,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "spawn",
+            "call": {
+              "name": "task",
+              "args": [
+                { "line": 42, "col": 20, "kind": "string", "value": "hello" }
+              ]
+            }
+          },
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 45,
+              "col": 14,
+              "kind": "string",
+              "value": "value: ${double}"
+            },
+            "target": {
+              "line": 45,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 4,
+      "col": 1,
+      "name": "make_adder",
+      "async": false,
+      "params": [
+        { "line": 4, "col": 21, "name": "n", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 5,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 5,
+            "col": 12,
+            "kind": "lambda",
+            "async": false,
+            "params": [
+              {
+                "line": 5,
+                "col": 21,
+                "name": "x",
+                "type": { "base": "INTEGER" }
+              }
+            ],
+            "body": [
+              {
+                "line": 5,
+                "col": 33,
+                "kind": "return",
+                "value": {
+                  "line": 5,
+                  "col": 40,
+                  "kind": "binary",
+                  "op": "ADD",
+                  "left": {
+                    "line": 5,
+                    "col": 40,
+                    "kind": "var",
+                    "name": "x"
+                  },
+                  "right": {
+                    "line": 5,
+                    "col": 44,
+                    "kind": "var",
+                    "name": "n"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "line": 9,
+      "col": 1,
+      "name": "apply",
+      "async": false,
+      "params": [
+        { "line": 9, "col": 16, "name": "f", "type": null },
+        { "line": 9, "col": 19, "name": "v", "type": null }
+      ],
+      "body": [
+        {
+          "line": 10,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 10,
+            "col": 12,
+            "kind": "call",
+            "name": "f",
+            "args": [ { "line": 10, "col": 14, "kind": "var", "name": "v" } ]
+          }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

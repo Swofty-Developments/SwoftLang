@@ -1,0 +1,1 @@
+maybe_unassigned.sw:7:18: error: variable 'x' may not be assigned on all paths

@@ -1,0 +1,1727 @@
+{
+  "_meta": {
+    "generator": "compiler/data/GenMinestomCatalogs.java (same command as events.json)",
+    "minestomCommit": "2026.07.12-26.2",
+    "jarSha256": "fa707c722f36c1b37db7386fc2453994a95f8d4714ca7a621ba499f9a97dca77"
+  },
+  "classes": {
+    "net.minestom.server.entity.Entity": {
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType"
+          ],
+          "signature": "Entity(net.minestom.server.entity.EntityType)"
+        },
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType",
+            "java.util.UUID"
+          ],
+          "signature": "Entity(net.minestom.server.entity.EntityType, java.util.UUID)"
+        }
+      ],
+      "methods": {
+        "addPassenger": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity"
+            ],
+            "signature": "void addPassenger(net.minestom.server.entity.Entity)"
+          }
+        ],
+        "editEntityMeta": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "java.lang.Class<TMeta>",
+              "java.util.function.Consumer<TMeta>"
+            ],
+            "signature": "void editEntityMeta(java.lang.Class<TMeta>, java.util.function.Consumer<TMeta>)"
+          }
+        ],
+        "getBoundingBox": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.collision.BoundingBox",
+            "params": [],
+            "signature": "net.minestom.server.collision.BoundingBox getBoundingBox()"
+          }
+        ],
+        "getCustomName": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.kyori.adventure.text.Component",
+            "params": [],
+            "signature": "net.kyori.adventure.text.Component getCustomName()"
+          }
+        ],
+        "getEntityId": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "int",
+            "params": [],
+            "signature": "int getEntityId()"
+          }
+        ],
+        "getEntityMeta": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.entity.metadata.EntityMeta",
+            "params": [],
+            "signature": "net.minestom.server.entity.metadata.EntityMeta getEntityMeta()"
+          }
+        ],
+        "getEntityType": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.entity.EntityType",
+            "params": [],
+            "signature": "net.minestom.server.entity.EntityType getEntityType()"
+          }
+        ],
+        "getEyeHeight": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "double",
+            "params": [],
+            "signature": "double getEyeHeight()"
+          }
+        ],
+        "getInstance": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.instance.Instance",
+            "params": [],
+            "signature": "net.minestom.server.instance.Instance getInstance()"
+          }
+        ],
+        "getPassengers": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.List<net.minestom.server.entity.Entity>",
+            "params": [],
+            "signature": "java.util.List<net.minestom.server.entity.Entity> getPassengers()"
+          }
+        ],
+        "getPose": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.entity.EntityPose",
+            "params": [],
+            "signature": "net.minestom.server.entity.EntityPose getPose()"
+          }
+        ],
+        "getPosition": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [],
+            "signature": "net.minestom.server.coordinate.Pos getPosition()"
+          }
+        ],
+        "getUuid": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.UUID",
+            "params": [],
+            "signature": "java.util.UUID getUuid()"
+          }
+        ],
+        "getVehicle": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.entity.Entity",
+            "params": [],
+            "signature": "net.minestom.server.entity.Entity getVehicle()"
+          }
+        ],
+        "getVelocity": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [],
+            "signature": "net.minestom.server.coordinate.Vec getVelocity()"
+          }
+        ],
+        "getViewers": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.Set<? extends net.minestom.server.entity.Player>",
+            "params": [],
+            "signature": "java.util.Set<? extends net.minestom.server.entity.Player> getViewers()"
+          }
+        ],
+        "hasNoGravity": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean hasNoGravity()"
+          }
+        ],
+        "hasPassenger": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean hasPassenger()"
+          }
+        ],
+        "hasVelocity": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean hasVelocity()"
+          }
+        ],
+        "isActive": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isActive()"
+          }
+        ],
+        "isCustomNameVisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isCustomNameVisible()"
+          }
+        ],
+        "isGlowing": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isGlowing()"
+          }
+        ],
+        "isInvisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isInvisible()"
+          }
+        ],
+        "isOnFire": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isOnFire()"
+          }
+        ],
+        "isRemoved": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isRemoved()"
+          }
+        ],
+        "isSilent": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isSilent()"
+          }
+        ],
+        "lookAt": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "void lookAt(net.minestom.server.coordinate.Point)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity"
+            ],
+            "signature": "void lookAt(net.minestom.server.entity.Entity)"
+          }
+        ],
+        "remove": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void remove()"
+          }
+        ],
+        "removePassenger": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity"
+            ],
+            "signature": "void removePassenger(net.minestom.server.entity.Entity)"
+          }
+        ],
+        "setCustomName": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.kyori.adventure.text.Component"
+            ],
+            "signature": "void setCustomName(net.kyori.adventure.text.Component)"
+          }
+        ],
+        "setCustomNameVisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setCustomNameVisible(boolean)"
+          }
+        ],
+        "setGlowing": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setGlowing(boolean)"
+          }
+        ],
+        "setInstance": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.instance.Instance"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> setInstance(net.minestom.server.instance.Instance)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.instance.Instance",
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> setInstance(net.minestom.server.instance.Instance, net.minestom.server.coordinate.Point)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.instance.Instance",
+              "net.minestom.server.coordinate.Pos"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> setInstance(net.minestom.server.instance.Instance, net.minestom.server.coordinate.Pos)"
+          }
+        ],
+        "setInvisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setInvisible(boolean)"
+          }
+        ],
+        "setNoGravity": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setNoGravity(boolean)"
+          }
+        ],
+        "setPose": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.EntityPose"
+            ],
+            "signature": "void setPose(net.minestom.server.entity.EntityPose)"
+          }
+        ],
+        "setSilent": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setSilent(boolean)"
+          }
+        ],
+        "setVelocity": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.coordinate.Vec"
+            ],
+            "signature": "void setVelocity(net.minestom.server.coordinate.Vec)"
+          }
+        ],
+        "takeKnockback": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "float",
+              "double",
+              "double"
+            ],
+            "signature": "void takeKnockback(float, double, double)"
+          }
+        ],
+        "teleport": [
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos",
+              "long[]",
+              "int"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos, long[], int)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos",
+              "long[]",
+              "int",
+              "boolean"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos, long[], int, boolean)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos",
+              "net.minestom.server.coordinate.Vec"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos, net.minestom.server.coordinate.Vec)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos",
+              "net.minestom.server.coordinate.Vec",
+              "long[]",
+              "int"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos, net.minestom.server.coordinate.Vec, long[], int)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.Entity",
+            "static": false,
+            "returns": "java.util.concurrent.CompletableFuture<java.lang.Void>",
+            "params": [
+              "net.minestom.server.coordinate.Pos",
+              "net.minestom.server.coordinate.Vec",
+              "long[]",
+              "int",
+              "boolean"
+            ],
+            "signature": "java.util.concurrent.CompletableFuture<java.lang.Void> teleport(net.minestom.server.coordinate.Pos, net.minestom.server.coordinate.Vec, long[], int, boolean)"
+          }
+        ]
+      },
+      "missingLookups": [
+        "setOnFire"
+      ]
+    },
+    "net.minestom.server.entity.LivingEntity": {
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType"
+          ],
+          "signature": "LivingEntity(net.minestom.server.entity.EntityType)"
+        },
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType",
+            "java.util.UUID"
+          ],
+          "signature": "LivingEntity(net.minestom.server.entity.EntityType, java.util.UUID)"
+        }
+      ],
+      "methods": {
+        "damage": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "boolean",
+            "params": [
+              "net.minestom.server.entity.damage.Damage"
+            ],
+            "signature": "boolean damage(net.minestom.server.entity.damage.Damage)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "boolean",
+            "params": [
+              "net.minestom.server.registry.RegistryKey<net.minestom.server.entity.damage.DamageType>",
+              "float"
+            ],
+            "signature": "boolean damage(net.minestom.server.registry.RegistryKey<net.minestom.server.entity.damage.DamageType>, float)"
+          }
+        ],
+        "getAttribute": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "net.minestom.server.entity.attribute.AttributeInstance",
+            "params": [
+              "net.minestom.server.entity.attribute.Attribute"
+            ],
+            "signature": "net.minestom.server.entity.attribute.AttributeInstance getAttribute(net.minestom.server.entity.attribute.Attribute)"
+          }
+        ],
+        "getAttributeValue": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "double",
+            "params": [
+              "net.minestom.server.entity.attribute.Attribute"
+            ],
+            "signature": "double getAttributeValue(net.minestom.server.entity.attribute.Attribute)"
+          }
+        ],
+        "getEquipment": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "net.minestom.server.item.ItemStack",
+            "params": [
+              "net.minestom.server.entity.EquipmentSlot"
+            ],
+            "signature": "net.minestom.server.item.ItemStack getEquipment(net.minestom.server.entity.EquipmentSlot)"
+          }
+        ],
+        "getFireTicks": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "int",
+            "params": [],
+            "signature": "int getFireTicks()"
+          }
+        ],
+        "getHealth": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "float",
+            "params": [],
+            "signature": "float getHealth()"
+          }
+        ],
+        "heal": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void heal()"
+          }
+        ],
+        "isDead": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isDead()"
+          }
+        ],
+        "isInvulnerable": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isInvulnerable()"
+          }
+        ],
+        "kill": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void kill()"
+          }
+        ],
+        "setEquipment": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.EquipmentSlot",
+              "net.minestom.server.item.ItemStack"
+            ],
+            "signature": "void setEquipment(net.minestom.server.entity.EquipmentSlot, net.minestom.server.item.ItemStack)"
+          }
+        ],
+        "setFireTicks": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "int"
+            ],
+            "signature": "void setFireTicks(int)"
+          }
+        ],
+        "setHealth": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "float"
+            ],
+            "signature": "void setHealth(float)"
+          }
+        ],
+        "setInvulnerable": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setInvulnerable(boolean)"
+          }
+        ],
+        "swingMainHand": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void swingMainHand()"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void swingMainHand(boolean)"
+          }
+        ],
+        "swingOffHand": [
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void swingOffHand()"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.LivingEntity",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void swingOffHand(boolean)"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.entity.EntityCreature": {
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType"
+          ],
+          "signature": "EntityCreature(net.minestom.server.entity.EntityType)"
+        },
+        {
+          "params": [
+            "net.minestom.server.entity.EntityType",
+            "java.util.UUID"
+          ],
+          "signature": "EntityCreature(net.minestom.server.entity.EntityType, java.util.UUID)"
+        }
+      ],
+      "methods": {
+        "attack": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity"
+            ],
+            "signature": "void attack(net.minestom.server.entity.Entity)"
+          },
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity",
+              "boolean"
+            ],
+            "signature": "void attack(net.minestom.server.entity.Entity, boolean)"
+          }
+        ],
+        "getAIGroups": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "java.util.Collection<net.minestom.server.entity.ai.EntityAIGroup>",
+            "params": [],
+            "signature": "java.util.Collection<net.minestom.server.entity.ai.EntityAIGroup> getAIGroups()"
+          }
+        ],
+        "getNavigator": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "net.minestom.server.entity.pathfinding.Navigator",
+            "params": [],
+            "signature": "net.minestom.server.entity.pathfinding.Navigator getNavigator()"
+          }
+        ],
+        "getTarget": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "net.minestom.server.entity.Entity",
+            "params": [],
+            "signature": "net.minestom.server.entity.Entity getTarget()"
+          }
+        ],
+        "kill": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "void",
+            "params": [],
+            "signature": "void kill()"
+          }
+        ],
+        "setTarget": [
+          {
+            "declaredIn": "net.minestom.server.entity.EntityCreature",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.Entity"
+            ],
+            "signature": "void setTarget(net.minestom.server.entity.Entity)"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.entity.EntityProjectile": {
+      "superclass": "net.minestom.server.entity.Entity",
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.entity.Entity",
+            "net.minestom.server.entity.EntityType"
+          ],
+          "signature": "EntityProjectile(net.minestom.server.entity.Entity, net.minestom.server.entity.EntityType)"
+        }
+      ],
+      "declaredPublicMethods": [
+        {
+          "declaredIn": "net.minestom.server.entity.EntityProjectile",
+          "static": false,
+          "returns": "net.minestom.server.thread.Acquirable<? extends net.minestom.server.entity.EntityProjectile>",
+          "params": [],
+          "signature": "net.minestom.server.thread.Acquirable<? extends net.minestom.server.entity.EntityProjectile> acquirable()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.EntityProjectile",
+          "static": false,
+          "returns": "net.minestom.server.entity.Entity",
+          "params": [],
+          "signature": "net.minestom.server.entity.Entity getShooter()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.EntityProjectile",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Point",
+            "double",
+            "double"
+          ],
+          "signature": "void shoot(net.minestom.server.coordinate.Point, double, double)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.EntityProjectile",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "long"
+          ],
+          "signature": "void tick(long)"
+        }
+      ]
+    },
+    "net.minestom.server.entity.ItemEntity": {
+      "superclass": "net.minestom.server.entity.Entity",
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.item.ItemStack"
+          ],
+          "signature": "ItemEntity(net.minestom.server.item.ItemStack)"
+        }
+      ],
+      "declaredPublicMethods": [
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "net.minestom.server.thread.Acquirable<? extends net.minestom.server.entity.ItemEntity>",
+          "params": [],
+          "signature": "net.minestom.server.thread.Acquirable<? extends net.minestom.server.entity.ItemEntity> acquirable()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "net.minestom.server.entity.metadata.item.ItemEntityMeta",
+          "params": [],
+          "signature": "net.minestom.server.entity.metadata.item.ItemEntityMeta getEntityMeta()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "net.minestom.server.item.ItemStack",
+          "params": [],
+          "signature": "net.minestom.server.item.ItemStack getItemStack()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": true,
+          "returns": "java.time.Duration",
+          "params": [],
+          "signature": "java.time.Duration getMergeDelay()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "float",
+          "params": [],
+          "signature": "float getMergeRange()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "long",
+          "params": [],
+          "signature": "long getPickupDelay()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "long",
+          "params": [],
+          "signature": "long getTimeSinceSpawn()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isMergeable()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isPickable()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [],
+          "signature": "void movementTick()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.item.ItemStack"
+          ],
+          "signature": "void setItemStack(net.minestom.server.item.ItemStack)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": true,
+          "returns": "void",
+          "params": [
+            "java.time.Duration"
+          ],
+          "signature": "void setMergeDelay(java.time.Duration)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "float"
+          ],
+          "signature": "void setMergeRange(float)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setMergeable(boolean)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setPickable(boolean)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "java.time.Duration"
+          ],
+          "signature": "void setPickupDelay(java.time.Duration)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "long",
+            "java.time.temporal.TemporalUnit"
+          ],
+          "signature": "void setPickupDelay(long, java.time.temporal.TemporalUnit)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [],
+          "signature": "void spawn()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.ItemEntity",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "long"
+          ],
+          "signature": "void update(long)"
+        }
+      ]
+    },
+    "net.minestom.server.entity.metadata.other.ArmorStandMeta": {
+      "superclass": "net.minestom.server.entity.metadata.LivingEntityMeta",
+      "constructors": [
+        {
+          "params": [
+            "net.minestom.server.entity.Entity",
+            "net.minestom.server.entity.MetadataHolder"
+          ],
+          "signature": "ArmorStandMeta(net.minestom.server.entity.Entity, net.minestom.server.entity.MetadataHolder)"
+        }
+      ],
+      "declaredPublicMethods": [
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getBodyRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getHeadRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getLeftArmRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getLeftLegRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getRightArmRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "net.minestom.server.coordinate.Vec",
+          "params": [],
+          "signature": "net.minestom.server.coordinate.Vec getRightLegRotation()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isHasArms()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isHasNoBasePlate()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isMarker()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "boolean",
+          "params": [],
+          "signature": "boolean isSmall()"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setBodyRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setHasArms(boolean)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setHasNoBasePlate(boolean)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setHeadRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setLeftArmRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setLeftLegRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setMarker(boolean)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setRightArmRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "net.minestom.server.coordinate.Vec"
+          ],
+          "signature": "void setRightLegRotation(net.minestom.server.coordinate.Vec)"
+        },
+        {
+          "declaredIn": "net.minestom.server.entity.metadata.other.ArmorStandMeta",
+          "static": false,
+          "returns": "void",
+          "params": [
+            "boolean"
+          ],
+          "signature": "void setSmall(boolean)"
+        }
+      ]
+    },
+    "net.minestom.server.entity.metadata.EntityMeta": {
+      "methods": {
+        "getCustomName": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "net.kyori.adventure.text.Component",
+            "params": [],
+            "signature": "net.kyori.adventure.text.Component getCustomName()"
+          }
+        ],
+        "getPose": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "net.minestom.server.entity.EntityPose",
+            "params": [],
+            "signature": "net.minestom.server.entity.EntityPose getPose()"
+          }
+        ],
+        "isCustomNameVisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isCustomNameVisible()"
+          }
+        ],
+        "isHasGlowingEffect": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isHasGlowingEffect()"
+          }
+        ],
+        "isHasNoGravity": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isHasNoGravity()"
+          }
+        ],
+        "isInvisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isInvisible()"
+          }
+        ],
+        "isOnFire": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isOnFire()"
+          }
+        ],
+        "isSilent": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "boolean",
+            "params": [],
+            "signature": "boolean isSilent()"
+          }
+        ],
+        "setCustomName": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.kyori.adventure.text.Component"
+            ],
+            "signature": "void setCustomName(net.kyori.adventure.text.Component)"
+          }
+        ],
+        "setCustomNameVisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setCustomNameVisible(boolean)"
+          }
+        ],
+        "setHasGlowingEffect": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setHasGlowingEffect(boolean)"
+          }
+        ],
+        "setHasNoGravity": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setHasNoGravity(boolean)"
+          }
+        ],
+        "setInvisible": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setInvisible(boolean)"
+          }
+        ],
+        "setOnFire": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setOnFire(boolean)"
+          }
+        ],
+        "setPose": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "net.minestom.server.entity.EntityPose"
+            ],
+            "signature": "void setPose(net.minestom.server.entity.EntityPose)"
+          }
+        ],
+        "setSilent": [
+          {
+            "declaredIn": "net.minestom.server.entity.metadata.EntityMeta",
+            "static": false,
+            "returns": "void",
+            "params": [
+              "boolean"
+            ],
+            "signature": "void setSilent(boolean)"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.coordinate.Pos": {
+      "methods": {
+        "add": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos add(double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "double",
+              "double",
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos add(double, double, double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos add(net.minestom.server.coordinate.Point)"
+          }
+        ],
+        "asVec": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Point",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [],
+            "signature": "net.minestom.server.coordinate.Vec asVec()"
+          }
+        ],
+        "direction": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [],
+            "signature": "net.minestom.server.coordinate.Vec direction()"
+          }
+        ],
+        "withDirection": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos withDirection(net.minestom.server.coordinate.Point)"
+          }
+        ],
+        "withPitch": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "float"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos withPitch(float)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "java.util.function.DoubleUnaryOperator"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos withPitch(java.util.function.DoubleUnaryOperator)"
+          }
+        ],
+        "withYaw": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "float"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos withYaw(float)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Pos",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Pos",
+            "params": [
+              "java.util.function.DoubleUnaryOperator"
+            ],
+            "signature": "net.minestom.server.coordinate.Pos withYaw(java.util.function.DoubleUnaryOperator)"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.coordinate.Vec": {
+      "methods": {
+        "add": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec add(double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "double",
+              "double",
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec add(double, double, double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec add(net.minestom.server.coordinate.Point)"
+          }
+        ],
+        "length": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Point",
+            "static": false,
+            "returns": "double",
+            "params": [],
+            "signature": "double length()"
+          }
+        ],
+        "mul": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec mul(double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "double",
+              "double",
+              "double"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec mul(double, double, double)"
+          },
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [
+              "net.minestom.server.coordinate.Point"
+            ],
+            "signature": "net.minestom.server.coordinate.Vec mul(net.minestom.server.coordinate.Point)"
+          }
+        ],
+        "normalize": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "net.minestom.server.coordinate.Vec",
+            "params": [],
+            "signature": "net.minestom.server.coordinate.Vec normalize()"
+          }
+        ],
+        "x": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "double",
+            "params": [],
+            "signature": "double x()"
+          }
+        ],
+        "y": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "double",
+            "params": [],
+            "signature": "double y()"
+          }
+        ],
+        "z": [
+          {
+            "declaredIn": "net.minestom.server.coordinate.Vec",
+            "static": false,
+            "returns": "double",
+            "params": [],
+            "signature": "double z()"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.instance.Instance": {
+      "methods": {
+        "getEntities": [
+          {
+            "declaredIn": "net.minestom.server.instance.Instance",
+            "static": false,
+            "returns": "java.util.Set<net.minestom.server.entity.Entity>",
+            "params": [],
+            "signature": "java.util.Set<net.minestom.server.entity.Entity> getEntities()"
+          }
+        ],
+        "getNearbyEntities": [
+          {
+            "declaredIn": "net.minestom.server.instance.Instance",
+            "static": false,
+            "returns": "java.util.Collection<net.minestom.server.entity.Entity>",
+            "params": [
+              "net.minestom.server.coordinate.Point",
+              "double"
+            ],
+            "signature": "java.util.Collection<net.minestom.server.entity.Entity> getNearbyEntities(net.minestom.server.coordinate.Point, double)"
+          }
+        ]
+      }
+    },
+    "net.minestom.server.instance.InstanceManager": {
+      "methods": {
+        "getInstances": [
+          {
+            "declaredIn": "net.minestom.server.instance.InstanceManager",
+            "static": false,
+            "returns": "java.util.Set<net.minestom.server.instance.Instance>",
+            "params": [],
+            "signature": "java.util.Set<net.minestom.server.instance.Instance> getInstances()"
+          }
+        ]
+      }
+    }
+  },
+  "contract": [
+    {
+      "capability": "type ro",
+      "status": "ok",
+      "resolved": "net.minestom.server.entity.EntityType Entity.getEntityType()"
+    },
+    {
+      "capability": "uuid ro",
+      "status": "ok",
+      "resolved": "java.util.UUID Entity.getUuid()"
+    },
+    {
+      "capability": "location rw",
+      "status": "ok",
+      "resolved": "net.minestom.server.coordinate.Pos Entity.getPosition(); java.util.concurrent.CompletableFuture<Void> Entity.teleport(Pos)"
+    },
+    {
+      "capability": "velocity rw",
+      "status": "ok",
+      "resolved": "net.minestom.server.coordinate.Vec Entity.getVelocity(); void Entity.setVelocity(net.minestom.server.coordinate.Vec)"
+    },
+    {
+      "capability": "custom_name rw",
+      "status": "ok",
+      "resolved": "net.kyori.adventure.text.Component Entity.getCustomName(); void Entity.setCustomName(Component)"
+    },
+    {
+      "capability": "name_visible rw",
+      "status": "ok",
+      "resolved": "boolean Entity.isCustomNameVisible(); void Entity.setCustomNameVisible(boolean)"
+    },
+    {
+      "capability": "glowing rw",
+      "status": "ok",
+      "resolved": "boolean Entity.isGlowing(); void Entity.setGlowing(boolean)"
+    },
+    {
+      "capability": "invisible rw",
+      "status": "ok",
+      "resolved": "boolean Entity.isInvisible(); void Entity.setInvisible(boolean)"
+    },
+    {
+      "capability": "gravity rw",
+      "status": "ok",
+      "resolved": "boolean Entity.hasNoGravity(); void Entity.setNoGravity(boolean)",
+      "note": "sense is inverted: gravity = !hasNoGravity(); set via setNoGravity(!value)"
+    },
+    {
+      "capability": "on_fire rw",
+      "status": "partial",
+      "resolved": "boolean Entity.isOnFire() (read side only)",
+      "note": "Entity has NO public setOnFire(boolean) in this snapshot. Closest: Entity.editEntityMeta(EntityMeta.class, m -> m.setOnFire(bool)) toggles the visual flame flag (EntityMeta.setOnFire(boolean)); LivingEntity.setFireTicks(int) drives actual burn ticks for living entities"
+    },
+    {
+      "capability": "silent rw",
+      "status": "ok",
+      "resolved": "boolean Entity.isSilent(); void Entity.setSilent(boolean)"
+    },
+    {
+      "capability": "passengers ro",
+      "status": "ok",
+      "resolved": "java.util.Set<Entity> Entity.getPassengers()"
+    },
+    {
+      "capability": "vehicle ro",
+      "status": "ok",
+      "resolved": "Entity Entity.getVehicle()",
+      "note": "returns null when not riding — map to optional"
+    },
+    {
+      "capability": "alive/removed",
+      "status": "ok",
+      "resolved": "boolean Entity.isRemoved(); boolean Entity.isActive(); boolean LivingEntity.isDead()",
+      "note": "Entity-level alive = !isRemoved(); isDead() only exists on LivingEntity"
+    },
+    {
+      "capability": "spawn entity",
+      "status": "ok",
+      "resolved": "new Entity(EntityType) / new Entity(EntityType, UUID); CompletableFuture<Void> Entity.setInstance(Instance, Pos|Point)"
+    },
+    {
+      "capability": "remove entity",
+      "status": "ok",
+      "resolved": "void Entity.remove()"
+    },
+    {
+      "capability": "mount / dismount",
+      "status": "ok",
+      "resolved": "void Entity.addPassenger(Entity); void Entity.removePassenger(Entity); boolean Entity.hasPassenger(); Entity Entity.getVehicle()"
+    },
+    {
+      "capability": "launch projectile",
+      "status": "ok",
+      "resolved": "new EntityProjectile(Entity shooter, EntityType); void EntityProjectile.shoot(net.minestom.server.coordinate.Point to, double power, double spread); Entity EntityProjectile.getShooter()",
+      "note": "shoot() aims at a target Point (not a velocity): spawn at shooter eye pos (getPosition().add(0, getEyeHeight(), 0)), then shoot(eyePos.add(position.direction()), speed, spread). There is no shoot(from,to,...) or shootFrom overload in this snapshot; an explicit `with velocity <v>` maps to Entity.setVelocity(Vec) after spawn instead"
+    },
+    {
+      "capability": "all_entities([type])",
+      "status": "ok",
+      "resolved": "java.util.Set<Entity> Instance.getEntities(); java.util.Set<Instance> InstanceManager.getInstances()",
+      "note": "aggregate over MinecraftServer.getInstanceManager().getInstances(); filter by getEntityType() for the optional type argument"
+    },
+    {
+      "capability": "item entity",
+      "status": "ok",
+      "resolved": "new ItemEntity(ItemStack); ItemStack ItemEntity.getItemStack(); void ItemEntity.setItemStack(ItemStack); void ItemEntity.setPickupDelay(java.time.Duration)"
+    },
+    {
+      "capability": "armor stand",
+      "status": "ok",
+      "resolved": "spawn Entity(EntityType.ARMOR_STAND) then editEntityMeta(ArmorStandMeta.class, ...): setSmall/setHasArms/setHasNoBasePlate/setMarker/setHeadRotation(Vec)/... (see class dump)",
+      "note": "no dedicated ArmorStand entity class — it is Entity + ArmorStandMeta"
+    },
+    {
+      "capability": "display IS-A entity",
+      "status": "ok",
+      "resolved": "display/hologram entities are plain Entity instances with Display*Meta — mount/teleport unification holds with no extra API"
+    }
+  ]
+}

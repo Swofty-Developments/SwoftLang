@@ -1,0 +1,1 @@
+persist_shadow_loop.sw:5:9: error: loop variable 'kills' shadows the persistent variable 'kills' — rename one of them

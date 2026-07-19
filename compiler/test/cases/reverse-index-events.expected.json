@@ -1,0 +1,131 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 7,
+      "col": 1,
+      "name": "BlockBreak",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 9,
+              "col": 14,
+              "kind": "string",
+              "value": "broke ${event.block} at ${event.location.block_x}"
+            },
+            "target": {
+              "line": 9,
+              "col": 75,
+              "kind": "prop",
+              "target": {
+                "line": 9,
+                "col": 69,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          { "line": 10, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 15,
+      "col": 1,
+      "name": "BlockPlace",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 17,
+              "col": 14,
+              "kind": "string",
+              "value": "placed ${event.block}"
+            },
+            "target": {
+              "line": 17,
+              "col": 47,
+              "kind": "prop",
+              "target": {
+                "line": 17,
+                "col": 41,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          { "line": 18, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 23,
+      "col": 1,
+      "name": "ServerPing",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 25,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 25,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "motd",
+            "value": {
+              "line": 25,
+              "col": 27,
+              "kind": "string",
+              "value": "typed motd"
+            }
+          },
+          {
+            "line": 26,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 26,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "max",
+            "value": {
+              "line": 26,
+              "col": 26,
+              "kind": "number",
+              "value": 100,
+              "integer": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,217 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 4,
+      "col": 1,
+      "names": [ "downcast" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "foreach",
+            "var": "e",
+            "limit": null,
+            "iterable": {
+              "line": 6,
+              "col": 14,
+              "kind": "call",
+              "name": "all_entities",
+              "args": []
+            },
+            "body": {
+              "line": 6,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 7,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 7,
+                    "col": 16,
+                    "kind": "binary",
+                    "op": "IS_TYPE",
+                    "left": {
+                      "line": 7,
+                      "col": 16,
+                      "kind": "var",
+                      "name": "e"
+                    },
+                    "right": {
+                      "line": 7,
+                      "col": 23,
+                      "kind": "type",
+                      "name": "Player"
+                    }
+                  },
+                  "then": {
+                    "line": 7,
+                    "col": 30,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 8,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 8,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "hello player"
+                        },
+                        "target": {
+                          "line": 8,
+                          "col": 40,
+                          "kind": "var",
+                          "name": "e"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 10,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 10,
+                    "col": 16,
+                    "kind": "binary",
+                    "op": "IS_TYPE",
+                    "left": {
+                      "line": 10,
+                      "col": 16,
+                      "kind": "var",
+                      "name": "e"
+                    },
+                    "right": {
+                      "line": 10,
+                      "col": 23,
+                      "kind": "type",
+                      "name": "Mob"
+                    }
+                  },
+                  "then": {
+                    "line": 10,
+                    "col": 27,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 11,
+                        "col": 23,
+                        "kind": "set_prop",
+                        "target": {
+                          "line": 11,
+                          "col": 21,
+                          "kind": "var",
+                          "name": "e"
+                        },
+                        "name": "health",
+                        "value": {
+                          "line": 11,
+                          "col": 33,
+                          "kind": "number",
+                          "value": 5.0,
+                          "integer": false
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 13,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 13,
+                    "col": 16,
+                    "kind": "binary",
+                    "op": "IS_NOT_TYPE",
+                    "left": {
+                      "line": 13,
+                      "col": 16,
+                      "kind": "var",
+                      "name": "e"
+                    },
+                    "right": {
+                      "line": 13,
+                      "col": 27,
+                      "kind": "type",
+                      "name": "Player"
+                    }
+                  },
+                  "then": {
+                    "line": 13,
+                    "col": 34,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 15,
+                        "col": 23,
+                        "kind": "set_prop",
+                        "target": {
+                          "line": 15,
+                          "col": 21,
+                          "kind": "var",
+                          "name": "e"
+                        },
+                        "name": "glowing",
+                        "value": {
+                          "line": 15,
+                          "col": 34,
+                          "kind": "boolean",
+                          "value": true
+                        }
+                      }
+                    ]
+                  },
+                  "else": {
+                    "line": 16,
+                    "col": 20,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 17,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 17,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "still a player"
+                        },
+                        "target": {
+                          "line": 17,
+                          "col": 42,
+                          "kind": "var",
+                          "name": "e"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,3509 @@
+{
+  "_meta": {
+    "generator": "compiler/data/GenMinestomCatalogs.java — javac -d /tmp/gencat compiler/data/GenMinestomCatalogs.java && java -cp \"/tmp/gencat:$CP\" GenMinestomCatalogs <minestom-jar> compiler/data (CP = runtime classpath of the :java module: pinned minestom jar + transitive deps)",
+    "minestomCommit": "2026.07.12-26.2",
+    "jarSha256": "fa707c722f36c1b37db7386fc2453994a95f8d4714ca7a621ba499f9a97dca77",
+    "scope": "every concrete public class under net.minestom.server.event.** that implements net.minestom.server.event.Event; concrete public non-Event helper classes in the package tree are listed in nonEventConcretePublicClasses and are NOT events",
+    "propertyRules": "public non-static zero-arg getters getX()/isX() from the whole hierarchy (Object excluded, bridge/synthetic excluded, getClass excluded) plus record components; name = snake_case of the suffix; settable = a public non-static single-arg set<Suffix>(..) exists; javaType = generic return type",
+    "nonEventConcretePublicClasses": [
+      "net.minestom.server.event.EventBinding$FilteredBuilder",
+      "net.minestom.server.event.EventDispatcher",
+      "net.minestom.server.event.EventListener$Builder",
+      "net.minestom.server.event.GlobalEventHandler"
+    ],
+    "loadErrors": []
+  },
+  "events": [
+    {
+      "className": "net.minestom.server.event.book.EditBookEvent",
+      "shortName": "EditBook",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "pages",
+          "javaType": "java.util.List<java.lang.String>",
+          "settable": false,
+          "accessor": "getPages"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "signed",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isSigned"
+        },
+        {
+          "name": "title",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getTitle"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityAttackEvent",
+      "shortName": "EntityAttack",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityDamageEvent",
+      "shortName": "EntityDamage",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "damage",
+          "javaType": "net.minestom.server.entity.damage.Damage",
+          "settable": false,
+          "accessor": "getDamage"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.LivingEntity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "sound",
+          "javaType": "net.minestom.server.sound.SoundEvent",
+          "settable": true,
+          "accessor": "getSound"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityDeathEvent",
+      "shortName": "EntityDeath",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityDespawnEvent",
+      "shortName": "EntityDespawn",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityFireExtinguishEvent",
+      "shortName": "EntityFireExtinguish",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "natural",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isNatural"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityItemMergeEvent",
+      "shortName": "EntityItemMerge",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.ItemEntity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "merged",
+          "javaType": "net.minestom.server.entity.ItemEntity",
+          "settable": false,
+          "accessor": "getMerged"
+        },
+        {
+          "name": "result",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": true,
+          "accessor": "getResult"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityPotionAddEvent",
+      "shortName": "EntityPotionAdd",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "potion",
+          "javaType": "net.minestom.server.potion.Potion",
+          "settable": false,
+          "accessor": "getPotion"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityPotionRemoveEvent",
+      "shortName": "EntityPotionRemove",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "potion",
+          "javaType": "net.minestom.server.potion.Potion",
+          "settable": false,
+          "accessor": "getPotion"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntitySetFireEvent",
+      "shortName": "EntitySetFire",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "fire_ticks",
+          "javaType": "int",
+          "settable": true,
+          "accessor": "getFireTicks"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityShootEvent",
+      "shortName": "EntityShoot",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "power",
+          "javaType": "double",
+          "settable": true,
+          "accessor": "getPower"
+        },
+        {
+          "name": "projectile",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getProjectile"
+        },
+        {
+          "name": "spread",
+          "javaType": "double",
+          "settable": true,
+          "accessor": "getSpread"
+        },
+        {
+          "name": "to",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getTo"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntitySpawnEvent",
+      "shortName": "EntitySpawn",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "spawn_instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getSpawnInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityTeleportEvent",
+      "shortName": "EntityTeleport",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "new_position",
+          "javaType": "net.minestom.server.coordinate.Pos",
+          "settable": false,
+          "accessor": "getNewPosition"
+        },
+        {
+          "name": "relative_flags",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getRelativeFlags"
+        },
+        {
+          "name": "teleport_position",
+          "javaType": "net.minestom.server.coordinate.Pos",
+          "settable": false,
+          "accessor": "getTeleportPosition"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityTickEvent",
+      "shortName": "EntityTick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.EntityVelocityEvent",
+      "shortName": "EntityVelocity",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "velocity",
+          "javaType": "net.minestom.server.coordinate.Vec",
+          "settable": true,
+          "accessor": "getVelocity"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.projectile.ProjectileCollideWithBlockEvent",
+      "shortName": "ProjectileCollideWithBlock",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.projectile.ProjectileCollideWithEntityEvent",
+      "shortName": "ProjectileCollideWithEntity",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.entity.projectile.ProjectileUncollideEvent",
+      "shortName": "ProjectileUncollide",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.AddEntityToInstanceEvent",
+      "shortName": "AddEntityToInstance",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceBlockUpdateEvent",
+      "shortName": "InstanceBlockUpdate",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceChunkLoadEvent",
+      "shortName": "InstanceChunkLoad",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "chunk",
+          "javaType": "net.minestom.server.instance.Chunk",
+          "settable": false,
+          "accessor": "getChunk"
+        },
+        {
+          "name": "chunk_x",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkX"
+        },
+        {
+          "name": "chunk_z",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkZ"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceChunkUnloadEvent",
+      "shortName": "InstanceChunkUnload",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "chunk",
+          "javaType": "net.minestom.server.instance.Chunk",
+          "settable": false,
+          "accessor": "getChunk"
+        },
+        {
+          "name": "chunk_x",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkX"
+        },
+        {
+          "name": "chunk_z",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkZ"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceRegisterEvent",
+      "shortName": "InstanceRegister",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceSectionInvalidateEvent",
+      "shortName": "InstanceSectionInvalidate",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceTickEvent",
+      "shortName": "InstanceTick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "duration",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getDuration"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.InstanceUnregisterEvent",
+      "shortName": "InstanceUnregister",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.instance.RemoveEntityFromInstanceEvent",
+      "shortName": "RemoveEntityFromInstance",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.CreativeInventoryActionEvent",
+      "shortName": "CreativeInventoryAction",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "clicked_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": true,
+          "accessor": "getClickedItem"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "slot",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryBundleItemSelectEvent",
+      "shortName": "InventoryBundleItemSelect",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "selected_item_index",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSelectedItemIndex"
+        },
+        {
+          "name": "slot",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryButtonClickEvent",
+      "shortName": "InventoryButtonClick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "button_id",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getButtonId"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryClickEvent",
+      "shortName": "InventoryClick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "click_type",
+          "javaType": "net.minestom.server.inventory.click.ClickType",
+          "settable": false,
+          "accessor": "getClickType"
+        },
+        {
+          "name": "clicked_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getClickedItem"
+        },
+        {
+          "name": "cursor_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getCursorItem"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "slot",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryCloseEvent",
+      "shortName": "InventoryClose",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "from_client",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isFromClient"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "new_inventory",
+          "javaType": "net.minestom.server.inventory.Inventory",
+          "settable": true,
+          "accessor": "getNewInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryItemChangeEvent",
+      "shortName": "InventoryItemChange",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "new_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getNewItem"
+        },
+        {
+          "name": "previous_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getPreviousItem"
+        },
+        {
+          "name": "slot",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryOpenEvent",
+      "shortName": "InventoryOpen",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": true,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.inventory.InventoryPreClickEvent",
+      "shortName": "InventoryPreClick",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "click",
+          "javaType": "net.minestom.server.inventory.click.Click",
+          "settable": true,
+          "accessor": "getClick"
+        },
+        {
+          "name": "clicked_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getClickedItem"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.AbstractInventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "slot",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.EntityEquipEvent",
+      "shortName": "EntityEquip",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "equipped_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": true,
+          "accessor": "getEquippedItem"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "slot",
+          "javaType": "net.minestom.server.entity.EquipmentSlot",
+          "settable": false,
+          "accessor": "getSlot"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.ItemDropEvent",
+      "shortName": "ItemDrop",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.PickupExperienceEvent",
+      "shortName": "PickupExperience",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "experience_count",
+          "javaType": "short",
+          "settable": true,
+          "accessor": "getExperienceCount"
+        },
+        {
+          "name": "experience_orb",
+          "javaType": "net.minestom.server.entity.ExperienceOrb",
+          "settable": false,
+          "accessor": "getExperienceOrb"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.PickupItemEvent",
+      "shortName": "PickupItem",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_entity",
+          "javaType": "net.minestom.server.entity.ItemEntity",
+          "settable": false,
+          "accessor": "getItemEntity"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "living_entity",
+          "javaType": "net.minestom.server.entity.LivingEntity",
+          "settable": false,
+          "accessor": "getLivingEntity"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.PlayerBeginItemUseEvent",
+      "shortName": "PlayerBeginItemUse",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "animation",
+          "javaType": "net.minestom.server.item.ItemAnimation",
+          "settable": false,
+          "accessor": "getAnimation"
+        },
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "item_use_duration",
+          "javaType": "long",
+          "settable": true,
+          "accessor": "getItemUseDuration"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.PlayerCancelItemUseEvent",
+      "shortName": "PlayerCancelItemUse",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "riptide_spin_attack",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isRiptideSpinAttack"
+        },
+        {
+          "name": "use_duration",
+          "javaType": "long",
+          "settable": false,
+          "accessor": "getUseDuration"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.item.PlayerFinishItemUseEvent",
+      "shortName": "PlayerFinishItemUse",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "riptide_spin_attack",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isRiptideSpinAttack"
+        },
+        {
+          "name": "use_duration",
+          "javaType": "long",
+          "settable": false,
+          "accessor": "getUseDuration"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.AdvancementTabEvent",
+      "shortName": "AdvancementTab",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "action",
+          "javaType": "net.minestom.server.advancements.AdvancementAction",
+          "settable": false,
+          "accessor": "getAction"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "tab_id",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getTabId"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.AsyncPlayerConfigurationEvent",
+      "shortName": "AsyncPlayerConfiguration",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "feature_flags",
+          "javaType": "java.util.Set<net.minestom.server.FeatureFlag>",
+          "settable": false,
+          "accessor": "getFeatureFlags"
+        },
+        {
+          "name": "first_config",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isFirstConfig"
+        },
+        {
+          "name": "hardcore",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isHardcore"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "spawning_instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": true,
+          "accessor": "getSpawningInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.AsyncPlayerPreLoginEvent",
+      "shortName": "AsyncPlayerPreLogin",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "connection",
+          "javaType": "net.minestom.server.network.player.PlayerConnection",
+          "settable": false,
+          "accessor": "getConnection"
+        },
+        {
+          "name": "game_profile",
+          "javaType": "net.minestom.server.network.player.GameProfile",
+          "settable": true,
+          "accessor": "getGameProfile"
+        },
+        {
+          "name": "player_uuid",
+          "javaType": "java.util.UUID",
+          "settable": false,
+          "accessor": "getPlayerUuid"
+        },
+        {
+          "name": "username",
+          "javaType": "java.lang.String",
+          "settable": true,
+          "accessor": "getUsername"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.OutgoingTransferEvent",
+      "shortName": "OutgoingTransfer",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "host",
+          "javaType": "java.lang.String",
+          "settable": true,
+          "accessor": "getHost"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "port",
+          "javaType": "int",
+          "settable": true,
+          "accessor": "getPort"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerAnvilInputEvent",
+      "shortName": "PlayerAnvilInput",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "input",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getInput"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "inventory",
+          "javaType": "net.minestom.server.inventory.Inventory",
+          "settable": false,
+          "accessor": "getInventory"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerBlockBreakEvent",
+      "shortName": "PlayerBlockBreak",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_face",
+          "javaType": "net.minestom.server.instance.block.BlockFace",
+          "settable": false,
+          "accessor": "getBlockFace"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "result_block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": true,
+          "accessor": "getResultBlock"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerBlockInteractEvent",
+      "shortName": "PlayerBlockInteract",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_face",
+          "javaType": "net.minestom.server.instance.block.BlockFace",
+          "settable": false,
+          "accessor": "getBlockFace"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "blocking_item_use",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isBlockingItemUse"
+        },
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "cursor_position",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getCursorPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerBlockPlaceEvent",
+      "shortName": "PlayerBlockPlace",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": true,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_face",
+          "javaType": "net.minestom.server.instance.block.BlockFace",
+          "settable": false,
+          "accessor": "getBlockFace"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "cursor_position",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getCursorPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerCancelDiggingEvent",
+      "shortName": "PlayerCancelDigging",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerChangeHeldSlotEvent",
+      "shortName": "PlayerChangeHeldSlot",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_in_new_slot",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemInNewSlot"
+        },
+        {
+          "name": "item_in_old_slot",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemInOldSlot"
+        },
+        {
+          "name": "new_slot",
+          "javaType": "byte",
+          "settable": true,
+          "accessor": "getNewSlot"
+        },
+        {
+          "name": "old_slot",
+          "javaType": "byte",
+          "settable": false,
+          "accessor": "getOldSlot"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerChatEvent",
+      "shortName": "PlayerChat",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "formatted_message",
+          "javaType": "net.kyori.adventure.text.Component",
+          "settable": true,
+          "accessor": "getFormattedMessage"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "raw_message",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getRawMessage"
+        },
+        {
+          "name": "recipients",
+          "javaType": "java.util.Collection<net.minestom.server.entity.Player>",
+          "settable": false,
+          "accessor": "getRecipients"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerChunkLoadEvent",
+      "shortName": "PlayerChunkLoad",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "chunk_x",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkX"
+        },
+        {
+          "name": "chunk_z",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkZ"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerChunkUnloadEvent",
+      "shortName": "PlayerChunkUnload",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "chunk_x",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkX"
+        },
+        {
+          "name": "chunk_z",
+          "javaType": "int",
+          "settable": false,
+          "accessor": "getChunkZ"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerCommandEvent",
+      "shortName": "PlayerCommand",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "command",
+          "javaType": "java.lang.String",
+          "settable": true,
+          "accessor": "getCommand"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerConfigCustomClickEvent",
+      "shortName": "PlayerConfigCustomClick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "key",
+          "javaType": "net.kyori.adventure.key.Key",
+          "settable": false,
+          "accessor": "getKey"
+        },
+        {
+          "name": "payload",
+          "javaType": "net.kyori.adventure.nbt.BinaryTag",
+          "settable": false,
+          "accessor": "getPayload"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerCustomClickEvent",
+      "shortName": "PlayerCustomClick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "key",
+          "javaType": "net.kyori.adventure.key.Key",
+          "settable": false,
+          "accessor": "getKey"
+        },
+        {
+          "name": "payload",
+          "javaType": "net.kyori.adventure.nbt.BinaryTag",
+          "settable": false,
+          "accessor": "getPayload"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerDeathEvent",
+      "shortName": "PlayerDeath",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "chat_message",
+          "javaType": "net.kyori.adventure.text.Component",
+          "settable": true,
+          "accessor": "getChatMessage"
+        },
+        {
+          "name": "death_text",
+          "javaType": "net.kyori.adventure.text.Component",
+          "settable": true,
+          "accessor": "getDeathText"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerDebugSubscriptionsRequestEvent",
+      "shortName": "PlayerDebugSubscriptionsRequest",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "subscriptions",
+          "javaType": "java.util.Set<net.minestom.server.network.debug.DebugSubscription<?>>",
+          "settable": false,
+          "accessor": "getSubscriptions"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerDisconnectEvent",
+      "shortName": "PlayerDisconnect",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerEditSignEvent",
+      "shortName": "PlayerEditSign",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "front_text",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isFrontText"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "lines",
+          "javaType": "java.util.List<java.lang.String>",
+          "settable": false,
+          "accessor": "getLines"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerEntityInteractEvent",
+      "shortName": "PlayerEntityInteract",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "interact_position",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getInteractPosition"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerFinishDiggingEvent",
+      "shortName": "PlayerFinishDigging",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": true,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerGameModeChangeEvent",
+      "shortName": "PlayerGameModeChange",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "new_game_mode",
+          "javaType": "net.minestom.server.entity.GameMode",
+          "settable": true,
+          "accessor": "getNewGameMode"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerGameModeRequestEvent",
+      "shortName": "PlayerGameModeRequest",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "requested_game_mode",
+          "javaType": "net.minestom.server.entity.GameMode",
+          "settable": false,
+          "accessor": "getRequestedGameMode"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerGameRulesRequestEvent",
+      "shortName": "PlayerGameRulesRequest",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerHandAnimationEvent",
+      "shortName": "PlayerHandAnimation",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerInputEvent",
+      "shortName": "PlayerInput",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "holding_backward_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingBackwardKey"
+        },
+        {
+          "name": "holding_forward_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingForwardKey"
+        },
+        {
+          "name": "holding_jump_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingJumpKey"
+        },
+        {
+          "name": "holding_left_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingLeftKey"
+        },
+        {
+          "name": "holding_right_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingRightKey"
+        },
+        {
+          "name": "holding_shift_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingShiftKey"
+        },
+        {
+          "name": "holding_sprint_key",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isHoldingSprintKey"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerLeaveBedEvent",
+      "shortName": "PlayerLeaveBed",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerLoadedEvent",
+      "shortName": "PlayerLoaded",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerMoveEvent",
+      "shortName": "PlayerMove",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "new_position",
+          "javaType": "net.minestom.server.coordinate.Pos",
+          "settable": true,
+          "accessor": "getNewPosition"
+        },
+        {
+          "name": "on_ground",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isOnGround"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerPacketEvent",
+      "shortName": "PlayerPacket",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "packet",
+          "javaType": "net.minestom.server.network.packet.client.ClientPacket",
+          "settable": false,
+          "accessor": "getPacket"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerPacketOutEvent",
+      "shortName": "PlayerPacketOut",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "packet",
+          "javaType": "net.minestom.server.network.packet.server.ServerPacket",
+          "settable": false,
+          "accessor": "getPacket"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerPickBlockEvent",
+      "shortName": "PlayerPickBlock",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "include_data",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isIncludeData"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerPickEntityEvent",
+      "shortName": "PlayerPickEntity",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "include_data",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isIncludeData"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerPluginMessageEvent",
+      "shortName": "PlayerPluginMessage",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "identifier",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getIdentifier"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "message",
+          "javaType": "byte[]",
+          "settable": false,
+          "accessor": "getMessage"
+        },
+        {
+          "name": "message_string",
+          "javaType": "java.lang.String",
+          "settable": false,
+          "accessor": "getMessageString"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerResourcePackStatusEvent",
+      "shortName": "PlayerResourcePackStatus",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "pack_uuid",
+          "javaType": "java.util.UUID",
+          "settable": false,
+          "accessor": "getPackUuid"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "status",
+          "javaType": "net.kyori.adventure.resource.ResourcePackStatus",
+          "settable": false,
+          "accessor": "getStatus"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerRespawnEvent",
+      "shortName": "PlayerRespawn",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "respawn_position",
+          "javaType": "net.minestom.server.coordinate.Pos",
+          "settable": true,
+          "accessor": "getRespawnPosition"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSetGameRulesEvent",
+      "shortName": "PlayerSetGameRules",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "requested_rules",
+          "javaType": "java.util.List<net.minestom.server.network.packet.client.play.ClientSetGameRulesPacket$Entry>",
+          "settable": false,
+          "accessor": "getRequestedRules"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSettingsChangeEvent",
+      "shortName": "PlayerSettingsChange",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSkinInitEvent",
+      "shortName": "PlayerSkinInit",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "skin",
+          "javaType": "net.minestom.server.entity.PlayerSkin",
+          "settable": true,
+          "accessor": "getSkin"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSpawnEvent",
+      "shortName": "PlayerSpawn",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "first_spawn",
+          "javaType": "boolean",
+          "settable": false,
+          "accessor": "isFirstSpawn"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "spawn_instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getSpawnInstance"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSpectateEntityEvent",
+      "shortName": "PlayerSpectateEntity",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStabEvent",
+      "shortName": "PlayerStab",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStartDiggingEvent",
+      "shortName": "PlayerStartDigging",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "block",
+          "javaType": "net.minestom.server.instance.block.Block",
+          "settable": false,
+          "accessor": "getBlock"
+        },
+        {
+          "name": "block_face",
+          "javaType": "net.minestom.server.instance.block.BlockFace",
+          "settable": false,
+          "accessor": "getBlockFace"
+        },
+        {
+          "name": "block_position",
+          "javaType": "net.minestom.server.coordinate.BlockVec",
+          "settable": false,
+          "accessor": "getBlockPosition"
+        },
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStartFlyingEvent",
+      "shortName": "PlayerStartFlying",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStartFlyingWithElytraEvent",
+      "shortName": "PlayerStartFlyingWithElytra",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStartSprintingEvent",
+      "shortName": "PlayerStartSprinting",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStopFlyingEvent",
+      "shortName": "PlayerStopFlying",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStopFlyingWithElytraEvent",
+      "shortName": "PlayerStopFlyingWithElytra",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerStopSprintingEvent",
+      "shortName": "PlayerStopSprinting",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerSwapItemEvent",
+      "shortName": "PlayerSwapItem",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "main_hand_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": true,
+          "accessor": "getMainHandItem"
+        },
+        {
+          "name": "off_hand_item",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": true,
+          "accessor": "getOffHandItem"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerTeleportToEntityEvent",
+      "shortName": "PlayerTeleportToEntity",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "target",
+          "javaType": "net.minestom.server.entity.Entity",
+          "settable": false,
+          "accessor": "getTarget"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerTickEndEvent",
+      "shortName": "PlayerTickEnd",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerTickEvent",
+      "shortName": "PlayerTick",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerUseItemEvent",
+      "shortName": "PlayerUseItem",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "item_use_time",
+          "javaType": "long",
+          "settable": true,
+          "accessor": "getItemUseTime"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.player.PlayerUseItemOnBlockEvent",
+      "shortName": "PlayerUseItemOnBlock",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "block_face",
+          "javaType": "net.minestom.server.instance.block.BlockFace",
+          "settable": false,
+          "accessor": "getBlockFace"
+        },
+        {
+          "name": "cursor_position",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getCursorPosition"
+        },
+        {
+          "name": "entity",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getEntity"
+        },
+        {
+          "name": "hand",
+          "javaType": "net.minestom.server.entity.PlayerHand",
+          "settable": false,
+          "accessor": "getHand"
+        },
+        {
+          "name": "instance",
+          "javaType": "net.minestom.server.instance.Instance",
+          "settable": false,
+          "accessor": "getInstance"
+        },
+        {
+          "name": "item_stack",
+          "javaType": "net.minestom.server.item.ItemStack",
+          "settable": false,
+          "accessor": "getItemStack"
+        },
+        {
+          "name": "player",
+          "javaType": "net.minestom.server.entity.Player",
+          "settable": false,
+          "accessor": "getPlayer"
+        },
+        {
+          "name": "position",
+          "javaType": "net.minestom.server.coordinate.Point",
+          "settable": false,
+          "accessor": "getPosition"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.server.ClientPingServerEvent",
+      "shortName": "ClientPingServer",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "connection",
+          "javaType": "net.minestom.server.network.player.PlayerConnection",
+          "settable": false,
+          "accessor": "getConnection"
+        },
+        {
+          "name": "delay",
+          "javaType": "java.time.Duration",
+          "settable": true,
+          "accessor": "getDelay"
+        },
+        {
+          "name": "payload",
+          "javaType": "long",
+          "settable": true,
+          "accessor": "getPayload"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.server.ServerListPingEvent",
+      "shortName": "ServerListPing",
+      "cancellable": true,
+      "properties": [
+        {
+          "name": "cancelled",
+          "javaType": "boolean",
+          "settable": true,
+          "accessor": "isCancelled"
+        },
+        {
+          "name": "connection",
+          "javaType": "net.minestom.server.network.player.PlayerConnection",
+          "settable": false,
+          "accessor": "getConnection"
+        },
+        {
+          "name": "ping_type",
+          "javaType": "net.minestom.server.ping.ServerListPingType",
+          "settable": false,
+          "accessor": "getPingType"
+        },
+        {
+          "name": "status",
+          "javaType": "net.minestom.server.ping.Status",
+          "settable": true,
+          "accessor": "getStatus"
+        }
+      ]
+    },
+    {
+      "className": "net.minestom.server.event.server.ServerTickMonitorEvent",
+      "shortName": "ServerTickMonitor",
+      "cancellable": false,
+      "properties": [
+        {
+          "name": "tick_monitor",
+          "javaType": "net.minestom.server.monitoring.TickMonitor",
+          "settable": false,
+          "accessor": "getTickMonitor"
+        }
+      ]
+    }
+  ]
+}

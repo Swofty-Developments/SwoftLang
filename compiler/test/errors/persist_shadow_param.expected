@@ -1,0 +1,1 @@
+persist_shadow_param.sw:3:15: error: parameter 'score' shadows the persistent variable 'score' — rename one of them

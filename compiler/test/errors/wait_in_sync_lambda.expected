@@ -1,0 +1,1 @@
+errors/wait_in_sync_lambda.sw:3:29: error: 'wait' is only allowed in async functions

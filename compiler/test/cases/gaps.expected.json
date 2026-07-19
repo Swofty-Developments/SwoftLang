@@ -1,0 +1,347 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 17,
+      "col": 1,
+      "names": [ "gaps" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "spawn_entity",
+            "type": {
+              "line": 20,
+              "col": 22,
+              "kind": "string",
+              "value": "ARMOR_STAND"
+            },
+            "at": {
+              "line": 20,
+              "col": 39,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 20,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 20,
+                  "col": 51,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 20,
+                  "col": 55,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "as": "stand"
+          },
+          {
+            "line": 21,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 21,
+              "col": 13,
+              "kind": "var",
+              "name": "stand"
+            },
+            "name": "pose",
+            "value": {
+              "line": 21,
+              "col": 27,
+              "kind": "string",
+              "value": "sneaking"
+            }
+          },
+          {
+            "line": 22,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 22,
+              "col": 13,
+              "kind": "var",
+              "name": "stand"
+            },
+            "name": "sneaking",
+            "value": {
+              "line": 22,
+              "col": 31,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "assign",
+            "target": "w",
+            "value": {
+              "line": 26,
+              "col": 25,
+              "kind": "prop",
+              "target": {
+                "line": 26,
+                "col": 18,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "world"
+            }
+          },
+          {
+            "line": 27,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 27, "col": 13, "kind": "var", "name": "w" },
+            "name": "weather",
+            "value": {
+              "line": 27,
+              "col": 26,
+              "kind": "string",
+              "value": "thunder"
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 28,
+              "col": 14,
+              "kind": "prop",
+              "target": { "line": 28, "col": 12, "kind": "var", "name": "w" },
+              "name": "raining"
+            },
+            "then": {
+              "line": 28,
+              "col": 22,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 29,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 29,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "it is raining"
+                  },
+                  "target": {
+                    "line": 29,
+                    "col": 37,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "assign",
+            "target": "snapshot",
+            "value": {
+              "line": 34,
+              "col": 25,
+              "kind": "call",
+              "name": "to_nbt",
+              "args": [
+                {
+                  "line": 34,
+                  "col": 39,
+                  "kind": "prop",
+                  "target": {
+                    "line": 34,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "held_item"
+                }
+              ]
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "assign",
+            "target": "restored",
+            "value": {
+              "line": 35,
+              "col": 25,
+              "kind": "call",
+              "name": "from_nbt",
+              "args": [
+                { "line": 35, "col": 34, "kind": "var", "name": "snapshot" }
+              ]
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 36,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 36,
+                "col": 12,
+                "kind": "var",
+                "name": "restored"
+              }
+            },
+            "then": {
+              "line": 36,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 37,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 37,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "restored an item from nbt"
+                  },
+                  "target": {
+                    "line": 37,
+                    "col": 49,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 6,
+      "col": 1,
+      "name": "PlayerCommand",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 8,
+              "col": 12,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": {
+                "line": 8,
+                "col": 12,
+                "kind": "var",
+                "name": "command"
+              },
+              "right": {
+                "line": 8,
+                "col": 29,
+                "kind": "string",
+                "value": "stop"
+              }
+            },
+            "then": {
+              "line": 8,
+              "col": 36,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 9,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 9,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "that command is blocked"
+                  },
+                  "target": {
+                    "line": 9,
+                    "col": 47,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                },
+                { "line": 10, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 13,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 13,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "command",
+            "value": {
+              "line": 13,
+              "col": 30,
+              "kind": "call",
+              "name": "lowercase",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 46,
+                  "kind": "prop",
+                  "target": {
+                    "line": 13,
+                    "col": 40,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "command"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,365 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 4,
+      "col": 1,
+      "names": [ "random" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "assign",
+            "target": "f",
+            "value": {
+              "line": 6,
+              "col": 18,
+              "kind": "call",
+              "name": "random_float",
+              "args": [
+                {
+                  "line": 6,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                },
+                {
+                  "line": 6,
+                  "col": 36,
+                  "kind": "number",
+                  "value": 1.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 7,
+              "col": 14,
+              "kind": "string",
+              "value": "f ${f}"
+            },
+            "target": {
+              "line": 7,
+              "col": 26,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 10,
+              "col": 12,
+              "kind": "call",
+              "name": "random_chance",
+              "args": [
+                {
+                  "line": 10,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 0.1,
+                  "integer": false
+                }
+              ]
+            },
+            "then": {
+              "line": 10,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 11,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 11,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "lucky"
+                  },
+                  "target": {
+                    "line": 11,
+                    "col": 29,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 14,
+              "col": 12,
+              "kind": "call",
+              "name": "random_bool",
+              "args": []
+            },
+            "then": {
+              "line": 14,
+              "col": 26,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 15,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 15,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "heads"
+                  },
+                  "target": {
+                    "line": 15,
+                    "col": 29,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "assign",
+            "target": "loot",
+            "value": {
+              "line": 19,
+              "col": 21,
+              "kind": "list",
+              "items": [
+                { "line": 19, "col": 22, "kind": "string", "value": "sword" },
+                {
+                  "line": 19,
+                  "col": 31,
+                  "kind": "string",
+                  "value": "shield"
+                },
+                {
+                  "line": 19,
+                  "col": 41,
+                  "kind": "string",
+                  "value": "potion"
+                }
+              ]
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "assign",
+            "target": "drop",
+            "value": {
+              "line": 20,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 20,
+                "col": 21,
+                "kind": "call",
+                "name": "random_in",
+                "args": [
+                  { "line": 20, "col": 31, "kind": "var", "name": "loot" }
+                ]
+              },
+              "right": {
+                "line": 20,
+                "col": 47,
+                "kind": "string",
+                "value": "nothing"
+              }
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 21,
+              "col": 14,
+              "kind": "string",
+              "value": "drop ${drop}"
+            },
+            "target": {
+              "line": 21,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "assign",
+            "target": "shuffled",
+            "value": {
+              "line": 24,
+              "col": 25,
+              "kind": "call",
+              "name": "shuffle",
+              "args": [
+                { "line": 24, "col": 33, "kind": "var", "name": "loot" }
+              ]
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "foreach",
+            "var": "item",
+            "limit": null,
+            "iterable": {
+              "line": 25,
+              "col": 14,
+              "kind": "var",
+              "name": "shuffled"
+            },
+            "body": {
+              "line": 25,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 26,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 26,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${item}"
+                  },
+                  "target": {
+                    "line": 26,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "assign",
+            "target": "weights",
+            "value": {
+              "line": 30,
+              "col": 24,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "common",
+                  "value": {
+                    "line": 30,
+                    "col": 36,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "rare",
+                  "value": {
+                    "line": 30,
+                    "col": 47,
+                    "kind": "number",
+                    "value": 5,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "assign",
+            "target": "pick",
+            "value": {
+              "line": 31,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 31,
+                "col": 21,
+                "kind": "call",
+                "name": "random_in",
+                "args": [
+                  {
+                    "line": 31,
+                    "col": 31,
+                    "kind": "call",
+                    "name": "map_keys",
+                    "args": [
+                      {
+                        "line": 31,
+                        "col": 40,
+                        "kind": "var",
+                        "name": "weights"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 31,
+                "col": 60,
+                "kind": "string",
+                "value": "?"
+              }
+            }
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 32,
+              "col": 14,
+              "kind": "string",
+              "value": "pick ${pick}"
+            },
+            "target": {
+              "line": 32,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,1 @@
+async_call_sync.sw:7:9: error: 'slow' is an async function; call it with 'spawn slow(...)'

@@ -1,0 +1,1 @@
+'wait' is only allowed in async functions, 'execute async', or 'async { }' blocks

@@ -1,0 +1,1 @@
+persist_reserved_prefix.sw:1:1: error: persistent '__seen_players' uses the reserved '__' name prefix (internal stores such as __seen_players live there) — pick another name

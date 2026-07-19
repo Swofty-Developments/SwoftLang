@@ -1,0 +1,1 @@
+persist_name_collision.sw:5:1: error: persistent 'stats' collides with function 'stats'

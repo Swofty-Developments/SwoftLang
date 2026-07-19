@@ -1,0 +1,1 @@
+column_too_many.sw:2:5: error: tablist column can emit 21 entries on a static path; the client limit is 20 per column

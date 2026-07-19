@@ -1,0 +1,406 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "prec" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 3,
+            "col": 9,
+            "kind": "assign",
+            "target": "p",
+            "value": {
+              "line": 3,
+              "col": 18,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 4,
+            "col": 9,
+            "kind": "assign",
+            "target": "q",
+            "value": {
+              "line": 4,
+              "col": 18,
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "line": 5,
+            "col": 9,
+            "kind": "assign",
+            "target": "x",
+            "value": {
+              "line": 5,
+              "col": 18,
+              "kind": "number",
+              "value": 4,
+              "integer": true
+            }
+          },
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "assign",
+            "target": "done",
+            "value": {
+              "line": 6,
+              "col": 21,
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "assign",
+            "target": "items",
+            "value": {
+              "line": 7,
+              "col": 22,
+              "kind": "string",
+              "value": "abc"
+            }
+          },
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "assign",
+            "target": "prefix",
+            "value": { "line": 8, "col": 23, "kind": "string", "value": "a" }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "assign",
+            "target": "suffix",
+            "value": { "line": 9, "col": 23, "kind": "string", "value": "b" }
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "assign",
+            "target": "a",
+            "value": {
+              "line": 10,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 10,
+                "col": 18,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              },
+              "right": {
+                "line": 10,
+                "col": 22,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 10,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                "right": {
+                  "line": 10,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 11,
+              "col": 18,
+              "kind": "binary",
+              "op": "AND",
+              "left": {
+                "line": 11,
+                "col": 18,
+                "kind": "unary",
+                "op": "NOT",
+                "operand": {
+                  "line": 11,
+                  "col": 22,
+                  "kind": "var",
+                  "name": "p"
+                }
+              },
+              "right": { "line": 11, "col": 28, "kind": "var", "name": "q" }
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "c",
+            "value": {
+              "line": 12,
+              "col": 18,
+              "kind": "binary",
+              "op": "OR",
+              "left": {
+                "line": 12,
+                "col": 18,
+                "kind": "binary",
+                "op": "LESS_THAN",
+                "left": {
+                  "line": 12,
+                  "col": 18,
+                  "kind": "binary",
+                  "op": "ADD",
+                  "left": {
+                    "line": 12,
+                    "col": 18,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  },
+                  "right": {
+                    "line": 12,
+                    "col": 22,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                },
+                "right": {
+                  "line": 12,
+                  "col": 26,
+                  "kind": "binary",
+                  "op": "MULTIPLY",
+                  "left": {
+                    "line": 12,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  },
+                  "right": {
+                    "line": 12,
+                    "col": 30,
+                    "kind": "number",
+                    "value": 4,
+                    "integer": true
+                  }
+                }
+              },
+              "right": {
+                "line": 12,
+                "col": 35,
+                "kind": "binary",
+                "op": "AND",
+                "left": {
+                  "line": 12,
+                  "col": 35,
+                  "kind": "binary",
+                  "op": "EQUALS",
+                  "left": {
+                    "line": 12,
+                    "col": 35,
+                    "kind": "binary",
+                    "op": "MODULO",
+                    "left": {
+                      "line": 12,
+                      "col": 35,
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    "right": {
+                      "line": 12,
+                      "col": 39,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    }
+                  },
+                  "right": {
+                    "line": 12,
+                    "col": 44,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                },
+                "right": {
+                  "line": 12,
+                  "col": 50,
+                  "kind": "unary",
+                  "op": "NOT",
+                  "operand": {
+                    "line": 12,
+                    "col": 54,
+                    "kind": "var",
+                    "name": "done"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "assign",
+            "target": "d",
+            "value": {
+              "line": 13,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 13,
+                "col": 18,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 13,
+                  "col": 18,
+                  "kind": "unary",
+                  "op": "NEGATE",
+                  "operand": {
+                    "line": 13,
+                    "col": 19,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                },
+                "right": {
+                  "line": 13,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 13,
+                "col": 27,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "assign",
+            "target": "e",
+            "value": {
+              "line": 14,
+              "col": 18,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": {
+                "line": 14,
+                "col": 18,
+                "kind": "var",
+                "name": "items"
+              },
+              "right": {
+                "line": 14,
+                "col": 33,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 14,
+                  "col": 33,
+                  "kind": "var",
+                  "name": "prefix"
+                },
+                "right": {
+                  "line": 14,
+                  "col": 42,
+                  "kind": "var",
+                  "name": "suffix"
+                }
+              }
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "assign",
+            "target": "f",
+            "value": {
+              "line": 15,
+              "col": 18,
+              "kind": "binary",
+              "op": "NOT_EQUALS",
+              "left": { "line": 15, "col": 18, "kind": "var", "name": "a" },
+              "right": {
+                "line": 15,
+                "col": 27,
+                "kind": "binary",
+                "op": "ADD",
+                "left": { "line": 15, "col": 27, "kind": "var", "name": "b" },
+                "right": {
+                  "line": 15,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "assign",
+            "target": "g",
+            "value": {
+              "line": 16,
+              "col": 18,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 16,
+                "col": 22,
+                "kind": "binary",
+                "op": "CONTAINS",
+                "left": { "line": 16, "col": 22, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 16,
+                  "col": 33,
+                  "kind": "string",
+                  "value": "y"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

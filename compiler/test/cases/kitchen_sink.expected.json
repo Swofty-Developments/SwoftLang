@@ -1,0 +1,1464 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 21,
+      "col": 1,
+      "names": [ "sink", "s" ],
+      "permission": "swoftlang.sink",
+      "description": "Exercises everything",
+      "arguments": [
+        {
+          "line": 26,
+          "col": 9,
+          "name": "who",
+          "type": { "base": "PLAYER" },
+          "default": "sender"
+        },
+        {
+          "line": 27,
+          "col": 9,
+          "name": "where",
+          "type": {
+            "base": "EITHER",
+            "subtypes": [ { "base": "PLAYER" }, { "base": "LOCATION" } ]
+          },
+          "default": null
+        },
+        {
+          "line": 28,
+          "col": 9,
+          "name": "depth",
+          "type": {
+            "base": "EITHER",
+            "subtypes": [
+              {
+                "base": "EITHER",
+                "subtypes": [ { "base": "INTEGER" }, { "base": "DOUBLE" } ]
+              },
+              { "base": "STRING" }
+            ]
+          },
+          "default": "3"
+        },
+        {
+          "line": 29,
+          "col": 9,
+          "name": "note",
+          "type": { "base": "STRING" },
+          "default": "none"
+        },
+        {
+          "line": 30,
+          "col": 9,
+          "name": "flag",
+          "type": { "base": "BOOLEAN" },
+          "default": "true"
+        },
+        {
+          "line": 31,
+          "col": 9,
+          "name": "mystery",
+          "type": { "base": "UNKNOWN" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "assign",
+            "target": "x",
+            "value": {
+              "line": 35,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 35,
+                "col": 18,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              },
+              "right": {
+                "line": 35,
+                "col": 22,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 35,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                "right": {
+                  "line": 35,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "assign",
+            "target": "y",
+            "value": {
+              "line": 36,
+              "col": 19,
+              "kind": "binary",
+              "op": "MULTIPLY",
+              "left": {
+                "line": 36,
+                "col": 19,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 36,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                "right": {
+                  "line": 36,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 36,
+                "col": 28,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "assign",
+            "target": "z",
+            "value": {
+              "line": 37,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 37,
+                "col": 18,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 37,
+                  "col": 19,
+                  "kind": "var",
+                  "name": "x"
+                }
+              },
+              "right": {
+                "line": 37,
+                "col": 23,
+                "kind": "binary",
+                "op": "MODULO",
+                "left": {
+                  "line": 37,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 4.5,
+                  "integer": false
+                },
+                "right": {
+                  "line": 37,
+                  "col": 29,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "assign",
+            "target": "w",
+            "value": {
+              "line": 38,
+              "col": 18,
+              "kind": "binary",
+              "op": "SUBTRACT",
+              "left": {
+                "line": 38,
+                "col": 18,
+                "kind": "binary",
+                "op": "DIVIDE",
+                "left": {
+                  "line": 38,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                },
+                "right": {
+                  "line": 38,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 38,
+                "col": 27,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "assign",
+            "target": "neg",
+            "value": {
+              "line": 39,
+              "col": 20,
+              "kind": "unary",
+              "op": "NEGATE",
+              "operand": {
+                "line": 39,
+                "col": 22,
+                "kind": "binary",
+                "op": "ADD",
+                "left": { "line": 39, "col": 22, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 39,
+                  "col": 26,
+                  "kind": "var",
+                  "name": "y"
+                }
+              }
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "assign",
+            "target": "dneg",
+            "value": {
+              "line": 40,
+              "col": 21,
+              "kind": "unary",
+              "op": "NEGATE",
+              "operand": {
+                "line": 40,
+                "col": 23,
+                "kind": "unary",
+                "op": "NEGATE",
+                "operand": {
+                  "line": 40,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "x"
+                }
+              }
+            }
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "assign",
+            "target": "dnot",
+            "value": {
+              "line": 41,
+              "col": 21,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 41,
+                "col": 25,
+                "kind": "unary",
+                "op": "NOT",
+                "operand": {
+                  "line": 41,
+                  "col": 29,
+                  "kind": "var",
+                  "name": "flag"
+                }
+              }
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "assign",
+            "target": "a",
+            "value": {
+              "line": 42,
+              "col": 18,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 43,
+              "col": 18,
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "assign",
+            "target": "c",
+            "value": {
+              "line": 44,
+              "col": 18,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "assign",
+            "target": "both",
+            "value": {
+              "line": 45,
+              "col": 21,
+              "kind": "binary",
+              "op": "AND",
+              "left": {
+                "line": 45,
+                "col": 21,
+                "kind": "unary",
+                "op": "NOT",
+                "operand": {
+                  "line": 45,
+                  "col": 25,
+                  "kind": "var",
+                  "name": "a"
+                }
+              },
+              "right": { "line": 45, "col": 31, "kind": "var", "name": "b" }
+            }
+          },
+          {
+            "line": 46,
+            "col": 9,
+            "kind": "assign",
+            "target": "either_way",
+            "value": {
+              "line": 46,
+              "col": 27,
+              "kind": "binary",
+              "op": "OR",
+              "left": { "line": 46, "col": 27, "kind": "var", "name": "a" },
+              "right": {
+                "line": 46,
+                "col": 32,
+                "kind": "binary",
+                "op": "AND",
+                "left": { "line": 46, "col": 32, "kind": "var", "name": "b" },
+                "right": {
+                  "line": 46,
+                  "col": 38,
+                  "kind": "unary",
+                  "op": "NOT",
+                  "operand": {
+                    "line": 46,
+                    "col": 42,
+                    "kind": "var",
+                    "name": "c"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "line": 47,
+            "col": 9,
+            "kind": "assign",
+            "target": "sym",
+            "value": {
+              "line": 47,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR",
+              "left": {
+                "line": 47,
+                "col": 20,
+                "kind": "binary",
+                "op": "AND",
+                "left": { "line": 47, "col": 20, "kind": "var", "name": "a" },
+                "right": {
+                  "line": 47,
+                  "col": 25,
+                  "kind": "var",
+                  "name": "b"
+                }
+              },
+              "right": { "line": 47, "col": 30, "kind": "var", "name": "c" }
+            }
+          },
+          {
+            "line": 48,
+            "col": 9,
+            "kind": "assign",
+            "target": "cmp",
+            "value": {
+              "line": 48,
+              "col": 20,
+              "kind": "binary",
+              "op": "AND",
+              "left": {
+                "line": 48,
+                "col": 20,
+                "kind": "binary",
+                "op": "AND",
+                "left": {
+                  "line": 48,
+                  "col": 20,
+                  "kind": "binary",
+                  "op": "AND",
+                  "left": {
+                    "line": 48,
+                    "col": 20,
+                    "kind": "binary",
+                    "op": "LESS_THAN",
+                    "left": {
+                      "line": 48,
+                      "col": 20,
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    "right": {
+                      "line": 48,
+                      "col": 24,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    }
+                  },
+                  "right": {
+                    "line": 48,
+                    "col": 30,
+                    "kind": "binary",
+                    "op": "GREATER_THAN",
+                    "left": {
+                      "line": 48,
+                      "col": 30,
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    "right": {
+                      "line": 48,
+                      "col": 34,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                },
+                "right": {
+                  "line": 48,
+                  "col": 40,
+                  "kind": "binary",
+                  "op": "LESS_EQUALS",
+                  "left": {
+                    "line": 48,
+                    "col": 40,
+                    "kind": "var",
+                    "name": "x"
+                  },
+                  "right": {
+                    "line": 48,
+                    "col": 45,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                }
+              },
+              "right": {
+                "line": 48,
+                "col": 51,
+                "kind": "binary",
+                "op": "GREATER_EQUALS",
+                "left": { "line": 48, "col": 51, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 48,
+                  "col": 56,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 49,
+            "col": 9,
+            "kind": "assign",
+            "target": "eqs",
+            "value": {
+              "line": 49,
+              "col": 20,
+              "kind": "binary",
+              "op": "OR",
+              "left": {
+                "line": 49,
+                "col": 20,
+                "kind": "binary",
+                "op": "OR",
+                "left": {
+                  "line": 49,
+                  "col": 20,
+                  "kind": "binary",
+                  "op": "EQUALS",
+                  "left": {
+                    "line": 49,
+                    "col": 20,
+                    "kind": "var",
+                    "name": "x"
+                  },
+                  "right": {
+                    "line": 49,
+                    "col": 25,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                "right": {
+                  "line": 49,
+                  "col": 30,
+                  "kind": "binary",
+                  "op": "EQUALS",
+                  "left": {
+                    "line": 49,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "x"
+                  },
+                  "right": {
+                    "line": 49,
+                    "col": 34,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                }
+              },
+              "right": {
+                "line": 49,
+                "col": 39,
+                "kind": "binary",
+                "op": "NOT_EQUALS",
+                "left": { "line": 49, "col": 39, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 49,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 50,
+            "col": 9,
+            "kind": "assign",
+            "target": "iseq",
+            "value": {
+              "line": 50,
+              "col": 26,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": {
+                "line": 50,
+                "col": 26,
+                "kind": "prop",
+                "target": {
+                  "line": 50,
+                  "col": 21,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "depth"
+              },
+              "right": {
+                "line": 50,
+                "col": 35,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 51,
+            "col": 9,
+            "kind": "assign",
+            "target": "isneq",
+            "value": {
+              "line": 51,
+              "col": 27,
+              "kind": "binary",
+              "op": "NOT_EQUALS",
+              "left": {
+                "line": 51,
+                "col": 27,
+                "kind": "prop",
+                "target": {
+                  "line": 51,
+                  "col": 22,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "depth"
+              },
+              "right": {
+                "line": 51,
+                "col": 40,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "check",
+            "value": {
+              "line": 52,
+              "col": 27,
+              "kind": "binary",
+              "op": "IS_TYPE",
+              "left": {
+                "line": 52,
+                "col": 27,
+                "kind": "prop",
+                "target": {
+                  "line": 52,
+                  "col": 22,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "who"
+              },
+              "right": {
+                "line": 52,
+                "col": 36,
+                "kind": "type",
+                "name": "Player"
+              }
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "assign",
+            "target": "check2",
+            "value": {
+              "line": 53,
+              "col": 28,
+              "kind": "binary",
+              "op": "IS_TYPE",
+              "left": {
+                "line": 53,
+                "col": 28,
+                "kind": "prop",
+                "target": {
+                  "line": 53,
+                  "col": 23,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "where"
+              },
+              "right": {
+                "line": 53,
+                "col": 40,
+                "kind": "type",
+                "name": "Entity"
+              }
+            }
+          },
+          {
+            "line": 54,
+            "col": 9,
+            "kind": "assign",
+            "target": "nocheck",
+            "value": {
+              "line": 54,
+              "col": 29,
+              "kind": "binary",
+              "op": "IS_NOT_TYPE",
+              "left": {
+                "line": 54,
+                "col": 29,
+                "kind": "prop",
+                "target": {
+                  "line": 54,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "who"
+              },
+              "right": {
+                "line": 54,
+                "col": 43,
+                "kind": "type",
+                "name": "Entity"
+              }
+            }
+          },
+          {
+            "line": 55,
+            "col": 9,
+            "kind": "assign",
+            "target": "msg",
+            "value": {
+              "line": 55,
+              "col": 20,
+              "kind": "string",
+              "value": "so bad"
+            }
+          },
+          {
+            "line": 56,
+            "col": 9,
+            "kind": "assign",
+            "target": "within",
+            "value": {
+              "line": 56,
+              "col": 23,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": { "line": 56, "col": 23, "kind": "var", "name": "msg" },
+              "right": {
+                "line": 56,
+                "col": 36,
+                "kind": "string",
+                "value": "bad"
+              }
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "assign",
+            "target": "truth",
+            "value": {
+              "line": 57,
+              "col": 22,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 58,
+            "col": 9,
+            "kind": "assign",
+            "target": "lie",
+            "value": {
+              "line": 58,
+              "col": 20,
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "line": 59,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 59,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": { "line": 59, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 59,
+                "col": 16,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 59,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 60,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 60,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "one"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 61,
+              "col": 16,
+              "kind": "if",
+              "condition": {
+                "line": 61,
+                "col": 19,
+                "kind": "binary",
+                "op": "EQUALS",
+                "left": { "line": 61, "col": 19, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 61,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              },
+              "then": {
+                "line": 61,
+                "col": 25,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 62,
+                    "col": 13,
+                    "kind": "send",
+                    "message": {
+                      "line": 62,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "two"
+                    },
+                    "target": {
+                      "line": 62,
+                      "col": 27,
+                      "kind": "var",
+                      "name": "sender"
+                    }
+                  }
+                ]
+              },
+              "else": {
+                "line": 63,
+                "col": 16,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 64,
+                    "col": 13,
+                    "kind": "send",
+                    "message": {
+                      "line": 64,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "many"
+                    },
+                    "target": {
+                      "line": 64,
+                      "col": 28,
+                      "kind": "string",
+                      "value": "all"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 67,
+                "col": 13,
+                "kind": "assign",
+                "target": "inner",
+                "value": {
+                  "line": 67,
+                  "col": 26,
+                  "kind": "boolean",
+                  "value": true
+                }
+              }
+            ]
+          },
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 69,
+              "col": 14,
+              "kind": "string",
+              "value": "everyone"
+            },
+            "target": { "line": 69, "col": 28, "kind": "all_players" }
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "broadcast",
+            "message": {
+              "line": 70,
+              "col": 19,
+              "kind": "string",
+              "value": "big news"
+            }
+          },
+          {
+            "line": 71,
+            "col": 9,
+            "kind": "teleport",
+            "entity": {
+              "line": 71,
+              "col": 23,
+              "kind": "prop",
+              "target": {
+                "line": 71,
+                "col": 18,
+                "kind": "var",
+                "name": "args"
+              },
+              "name": "who"
+            },
+            "target": {
+              "line": 71,
+              "col": 35,
+              "kind": "prop",
+              "target": {
+                "line": 71,
+                "col": 30,
+                "kind": "var",
+                "name": "args"
+              },
+              "name": "where"
+            }
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 72,
+              "col": 14,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            },
+            "var": null,
+            "body": {
+              "line": 72,
+              "col": 22,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 73,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 73,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "tick"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 75,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 75,
+              "col": 14,
+              "kind": "binary",
+              "op": "ADD",
+              "left": { "line": 75, "col": 14, "kind": "var", "name": "x" },
+              "right": {
+                "line": 75,
+                "col": 18,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            },
+            "var": "i",
+            "body": {
+              "line": 75,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 76,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 76,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "i = ${i}"
+                  },
+                  "target": {
+                    "line": 76,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 78,
+            "col": 9,
+            "kind": "foreach",
+            "var": "p",
+            "limit": null,
+            "iterable": { "line": 78, "col": 14, "kind": "all_players" },
+            "body": {
+              "line": 78,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 79,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 79,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "hello"
+                  },
+                  "target": {
+                    "line": 79,
+                    "col": 29,
+                    "kind": "var",
+                    "name": "p"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 81,
+            "col": 9,
+            "kind": "while",
+            "condition": {
+              "line": 81,
+              "col": 15,
+              "kind": "binary",
+              "op": "LESS_THAN",
+              "left": { "line": 81, "col": 15, "kind": "var", "name": "x" },
+              "right": {
+                "line": 81,
+                "col": 19,
+                "kind": "number",
+                "value": 10,
+                "integer": true
+              }
+            },
+            "body": {
+              "line": 81,
+              "col": 22,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 82,
+                  "col": 13,
+                  "kind": "assign",
+                  "target": "x",
+                  "value": {
+                    "line": 82,
+                    "col": 22,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 82,
+                      "col": 22,
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    "right": {
+                      "line": 82,
+                      "col": 26,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 84,
+            "col": 9,
+            "kind": "call",
+            "name": "greet",
+            "args": [
+              { "line": 84, "col": 15, "kind": "var", "name": "sender" }
+            ]
+          },
+          {
+            "line": 85,
+            "col": 9,
+            "kind": "call",
+            "name": "greet",
+            "args": [
+              {
+                "line": 85,
+                "col": 25,
+                "kind": "prop",
+                "target": {
+                  "line": 85,
+                  "col": 20,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "who"
+              }
+            ]
+          },
+          {
+            "line": 86,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 86,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 86,
+                "col": 18,
+                "kind": "call",
+                "name": "add",
+                "args": [
+                  {
+                    "line": 86,
+                    "col": 22,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  },
+                  {
+                    "line": 86,
+                    "col": 25,
+                    "kind": "number",
+                    "value": 2,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 86,
+                "col": 30,
+                "kind": "call",
+                "name": "fact",
+                "args": [
+                  {
+                    "line": 86,
+                    "col": 35,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 87,
+            "col": 9,
+            "kind": "assign",
+            "target": "n",
+            "value": {
+              "line": 87,
+              "col": 18,
+              "kind": "call",
+              "name": "length",
+              "args": [
+                { "line": 87, "col": 25, "kind": "string", "value": "abc" }
+              ]
+            }
+          },
+          {
+            "line": 88,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 88,
+              "col": 12,
+              "kind": "boolean",
+              "value": false
+            },
+            "then": {
+              "line": 88,
+              "col": 18,
+              "kind": "block",
+              "statements": [ { "line": 89, "col": 13, "kind": "halt" } ]
+            },
+            "else": null
+          },
+          { "line": 91, "col": 9, "kind": "halt" }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 95,
+      "col": 1,
+      "name": "PlayerChat",
+      "priority": 2,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 99,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 99,
+              "col": 18,
+              "kind": "binary",
+              "op": "AND",
+              "left": {
+                "line": 99,
+                "col": 18,
+                "kind": "binary",
+                "op": "CONTAINS",
+                "left": {
+                  "line": 99,
+                  "col": 18,
+                  "kind": "prop",
+                  "target": {
+                    "line": 99,
+                    "col": 12,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "message"
+                },
+                "right": {
+                  "line": 99,
+                  "col": 35,
+                  "kind": "string",
+                  "value": "badword"
+                }
+              },
+              "right": {
+                "line": 99,
+                "col": 49,
+                "kind": "unary",
+                "op": "NOT",
+                "operand": {
+                  "line": 99,
+                  "col": 59,
+                  "kind": "prop",
+                  "target": {
+                    "line": 99,
+                    "col": 53,
+                    "kind": "var",
+                    "name": "event"
+                  },
+                  "name": "cancelled"
+                }
+              }
+            },
+            "then": {
+              "line": 99,
+              "col": 69,
+              "kind": "block",
+              "statements": [
+                { "line": 100, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          },
+          { "line": 102, "col": 9, "kind": "return", "value": null }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "line": 5,
+      "col": 1,
+      "name": "add",
+      "async": false,
+      "params": [
+        { "line": 5, "col": 14, "name": "a", "type": { "base": "INTEGER" } },
+        { "line": 5, "col": 26, "name": "b", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 6,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 6,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": { "line": 6, "col": 12, "kind": "var", "name": "a" },
+            "right": { "line": 6, "col": 16, "kind": "var", "name": "b" }
+          }
+        }
+      ]
+    },
+    {
+      "line": 9,
+      "col": 1,
+      "name": "fact",
+      "async": false,
+      "params": [
+        { "line": 9, "col": 15, "name": "n", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 10,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 10,
+            "col": 8,
+            "kind": "binary",
+            "op": "LESS_EQUALS",
+            "left": { "line": 10, "col": 8, "kind": "var", "name": "n" },
+            "right": {
+              "line": 10,
+              "col": 13,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          },
+          "then": {
+            "line": 10,
+            "col": 15,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 11,
+                "col": 9,
+                "kind": "return",
+                "value": {
+                  "line": 11,
+                  "col": 16,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            ]
+          },
+          "else": null
+        },
+        {
+          "line": 13,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 13,
+            "col": 12,
+            "kind": "binary",
+            "op": "MULTIPLY",
+            "left": { "line": 13, "col": 12, "kind": "var", "name": "n" },
+            "right": {
+              "line": 13,
+              "col": 16,
+              "kind": "call",
+              "name": "fact",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 21,
+                  "kind": "binary",
+                  "op": "SUBTRACT",
+                  "left": {
+                    "line": 13,
+                    "col": 21,
+                    "kind": "var",
+                    "name": "n"
+                  },
+                  "right": {
+                    "line": 13,
+                    "col": 25,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "line": 16,
+      "col": 1,
+      "name": "greet",
+      "async": false,
+      "params": [ { "line": 16, "col": 16, "name": "p", "type": null } ],
+      "body": [
+        {
+          "line": 17,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 17,
+            "col": 10,
+            "kind": "string",
+            "value": "Hi ${p}"
+          },
+          "target": { "line": 17, "col": 23, "kind": "var", "name": "p" }
+        },
+        { "line": 18, "col": 5, "kind": "return", "value": null }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

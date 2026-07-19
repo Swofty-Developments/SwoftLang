@@ -1,0 +1,1 @@
+bad_projectile_type.sw:3:27: error: unknown entity type 'SNOWBAL' in 'launch projectile'; did you mean 'SNOWBALL'?

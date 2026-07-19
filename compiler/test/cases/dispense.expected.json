@@ -1,0 +1,196 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 5,
+      "col": 1,
+      "names": [ "fire" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "dispense_from",
+            "from": {
+              "line": 7,
+              "col": 23,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 7,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                },
+                {
+                  "line": 7,
+                  "col": 36,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 7,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 20,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "dispense_from",
+            "from": {
+              "line": 8,
+              "col": 30,
+              "kind": "prop",
+              "target": {
+                "line": 8,
+                "col": 23,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "location"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 12,
+      "col": 1,
+      "name": "BlockDispense",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "assign",
+            "target": "facing",
+            "value": {
+              "line": 14,
+              "col": 23,
+              "kind": "var",
+              "name": "direction"
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 16,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": {
+                "line": 16,
+                "col": 12,
+                "kind": "var",
+                "name": "block"
+              },
+              "right": {
+                "line": 16,
+                "col": 21,
+                "kind": "string",
+                "value": "minecraft:dropper"
+              }
+            },
+            "then": {
+              "line": 16,
+              "col": 41,
+              "kind": "block",
+              "statements": [
+                { "line": 17, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 20,
+              "col": 18,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 20,
+                "col": 18,
+                "kind": "prop",
+                "target": {
+                  "line": 20,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "event"
+                },
+                "name": "item"
+              }
+            },
+            "then": {
+              "line": 20,
+              "col": 30,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 21,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 21,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "dispensed ${event.item.name} at ${location.block_x}, ${location.block_z}"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 23,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 23,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "item",
+            "value": {
+              "line": 23,
+              "col": 27,
+              "kind": "call",
+              "name": "item",
+              "args": [
+                { "line": 23, "col": 32, "kind": "string", "value": "ARROW" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,231 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "counterstate",
+      "path": "cases/mod/counterstate.sw",
+      "entry": false,
+      "module_vars": [
+        {
+          "line": 3,
+          "col": 1,
+          "name": "base",
+          "value": {
+            "line": 3,
+            "col": 12,
+            "kind": "number",
+            "value": 5,
+            "integer": true
+          }
+        },
+        {
+          "line": 4,
+          "col": 1,
+          "name": "step",
+          "value": {
+            "line": 4,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": { "line": 4, "col": 12, "kind": "var", "name": "base" },
+            "right": {
+              "line": 4,
+              "col": 19,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          }
+        },
+        {
+          "line": 5,
+          "col": 1,
+          "name": "owner",
+          "value": {
+            "line": 5,
+            "col": 13,
+            "kind": "string",
+            "value": "nobody"
+          }
+        }
+      ],
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 7,
+          "col": 8,
+          "name": "advance",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 8,
+              "col": 5,
+              "kind": "assign",
+              "target": "base",
+              "value": {
+                "line": 8,
+                "col": 17,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 8,
+                  "col": 17,
+                  "kind": "var",
+                  "name": "base"
+                },
+                "right": {
+                  "line": 8,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "step"
+                }
+              }
+            },
+            {
+              "line": 9,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 9,
+                "col": 12,
+                "kind": "var",
+                "name": "base"
+              }
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 12,
+          "col": 8,
+          "name": "claim",
+          "async": false,
+          "params": [
+            {
+              "line": 12,
+              "col": 23,
+              "name": "name",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 13,
+              "col": 5,
+              "kind": "assign",
+              "target": "owner",
+              "value": {
+                "line": 13,
+                "col": 18,
+                "kind": "var",
+                "name": "name"
+              }
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 16,
+          "col": 8,
+          "name": "describe",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 17,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 17,
+                "col": 12,
+                "kind": "string",
+                "value": "base=${base} owner=${owner}"
+              }
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "module_vars",
+      "path": "cases/module_vars.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 3,
+          "col": 1,
+          "names": [ "counter" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 5,
+                "col": 9,
+                "kind": "call",
+                "name": "claim",
+                "args": [
+                  {
+                    "line": 5,
+                    "col": 22,
+                    "kind": "prop",
+                    "target": {
+                      "line": 5,
+                      "col": 15,
+                      "kind": "var",
+                      "name": "sender"
+                    },
+                    "name": "name"
+                  }
+                ]
+              },
+              {
+                "line": 6,
+                "col": 9,
+                "kind": "call",
+                "name": "advance",
+                "args": []
+              },
+              {
+                "line": 7,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 7,
+                  "col": 14,
+                  "kind": "call",
+                  "name": "describe",
+                  "args": []
+                },
+                "target": {
+                  "line": 7,
+                  "col": 28,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "events": [],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    }
+  ]
+}

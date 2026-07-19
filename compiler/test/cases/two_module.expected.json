@@ -1,0 +1,272 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "greeter",
+      "path": "cases/mod/greeter.sw",
+      "entry": false,
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 4,
+          "col": 1,
+          "name": "decorate",
+          "async": false,
+          "params": [
+            {
+              "line": 4,
+              "col": 19,
+              "name": "name",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 5,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 5,
+                "col": 12,
+                "kind": "string",
+                "value": "[${name}]"
+              }
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 8,
+          "col": 8,
+          "name": "greet",
+          "async": false,
+          "params": [
+            {
+              "line": 8,
+              "col": 23,
+              "name": "name",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 9,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 9,
+                "col": 12,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 9,
+                  "col": 12,
+                  "kind": "string",
+                  "value": "hello "
+                },
+                "right": {
+                  "line": 9,
+                  "col": 12,
+                  "kind": "call",
+                  "name": "decorate",
+                  "args": [
+                    { "line": 9, "col": 12, "kind": "var", "name": "name" }
+                  ]
+                }
+              }
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 12,
+          "col": 8,
+          "name": "find_greeting",
+          "async": false,
+          "params": [
+            {
+              "line": 12,
+              "col": 31,
+              "name": "name",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 13,
+              "col": 5,
+              "kind": "if",
+              "condition": {
+                "line": 13,
+                "col": 8,
+                "kind": "binary",
+                "op": "EQUALS",
+                "left": {
+                  "line": 13,
+                  "col": 8,
+                  "kind": "var",
+                  "name": "name"
+                },
+                "right": {
+                  "line": 13,
+                  "col": 16,
+                  "kind": "string",
+                  "value": "steve"
+                }
+              },
+              "then": {
+                "line": 13,
+                "col": 24,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 14,
+                    "col": 9,
+                    "kind": "return",
+                    "value": {
+                      "line": 14,
+                      "col": 16,
+                      "kind": "call",
+                      "name": "greet",
+                      "args": [
+                        {
+                          "line": 14,
+                          "col": 22,
+                          "kind": "var",
+                          "name": "name"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "else": null
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "two_module",
+      "path": "cases/two_module.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 3,
+          "col": 1,
+          "names": [ "greet" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 5,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 5,
+                  "col": 14,
+                  "kind": "call",
+                  "name": "greet",
+                  "args": [
+                    {
+                      "line": 5,
+                      "col": 20,
+                      "kind": "string",
+                      "value": "alex"
+                    }
+                  ]
+                },
+                "target": {
+                  "line": 5,
+                  "col": 31,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              {
+                "line": 6,
+                "col": 9,
+                "kind": "assign",
+                "target": "g",
+                "value": {
+                  "line": 6,
+                  "col": 18,
+                  "kind": "call",
+                  "name": "find_greeting",
+                  "args": [
+                    {
+                      "line": 6,
+                      "col": 32,
+                      "kind": "string",
+                      "value": "steve"
+                    }
+                  ]
+                }
+              },
+              {
+                "line": 7,
+                "col": 9,
+                "kind": "if",
+                "condition": {
+                  "line": 7,
+                  "col": 12,
+                  "kind": "unary",
+                  "op": "EXISTS",
+                  "operand": {
+                    "line": 7,
+                    "col": 12,
+                    "kind": "var",
+                    "name": "g"
+                  }
+                },
+                "then": {
+                  "line": 7,
+                  "col": 21,
+                  "kind": "block",
+                  "statements": [
+                    {
+                      "line": 8,
+                      "col": 13,
+                      "kind": "send",
+                      "message": {
+                        "line": 8,
+                        "col": 18,
+                        "kind": "var",
+                        "name": "g"
+                      },
+                      "target": {
+                        "line": 8,
+                        "col": 23,
+                        "kind": "var",
+                        "name": "sender"
+                      }
+                    }
+                  ]
+                },
+                "else": null
+              }
+            ]
+          }
+        }
+      ],
+      "events": [],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    }
+  ]
+}

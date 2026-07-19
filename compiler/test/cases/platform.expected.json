@@ -1,0 +1,1850 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 43,
+      "col": 1,
+      "names": [ "hologram" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "assign",
+            "target": "d",
+            "value": {
+              "line": 45,
+              "col": 18,
+              "kind": "call",
+              "name": "spawn_text_display",
+              "args": [
+                {
+                  "line": 45,
+                  "col": 37,
+                  "kind": "string",
+                  "value": "<gold>Welcome!"
+                },
+                {
+                  "line": 45,
+                  "col": 55,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 45,
+                      "col": 64,
+                      "kind": "number",
+                      "value": 0,
+                      "integer": true
+                    },
+                    {
+                      "line": 45,
+                      "col": 67,
+                      "kind": "number",
+                      "value": 80,
+                      "integer": true
+                    },
+                    {
+                      "line": 45,
+                      "col": 71,
+                      "kind": "number",
+                      "value": 0,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 46,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 46, "col": 13, "kind": "var", "name": "d" },
+            "name": "text",
+            "value": {
+              "line": 46,
+              "col": 23,
+              "kind": "string",
+              "value": "<gold>Welcome, ${sender.name}!"
+            }
+          },
+          {
+            "line": 47,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 47, "col": 13, "kind": "var", "name": "d" },
+            "name": "scale",
+            "value": {
+              "line": 47,
+              "col": 24,
+              "kind": "number",
+              "value": 2.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 48,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 48, "col": 13, "kind": "var", "name": "d" },
+            "name": "translation",
+            "value": {
+              "line": 48,
+              "col": 30,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 48,
+                  "col": 39,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 48,
+                  "col": 42,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 48,
+                  "col": 45,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 49,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 49, "col": 13, "kind": "var", "name": "d" },
+            "name": "rotation",
+            "value": {
+              "line": 49,
+              "col": 27,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 49,
+                  "col": 36,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 49,
+                  "col": 39,
+                  "kind": "number",
+                  "value": 45,
+                  "integer": true
+                },
+                {
+                  "line": 49,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 50,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 50, "col": 13, "kind": "var", "name": "d" },
+            "name": "billboard",
+            "value": {
+              "line": 50,
+              "col": 28,
+              "kind": "string",
+              "value": "center"
+            }
+          },
+          {
+            "line": 51,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 51, "col": 13, "kind": "var", "name": "d" },
+            "name": "alignment",
+            "value": {
+              "line": 51,
+              "col": 28,
+              "kind": "string",
+              "value": "center"
+            }
+          },
+          {
+            "line": 52,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 52, "col": 13, "kind": "var", "name": "d" },
+            "name": "line_width",
+            "value": {
+              "line": 52,
+              "col": 29,
+              "kind": "number",
+              "value": 200,
+              "integer": true
+            }
+          },
+          {
+            "line": 53,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 53, "col": 13, "kind": "var", "name": "d" },
+            "name": "see_through",
+            "value": {
+              "line": 53,
+              "col": 30,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 54,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 54, "col": 13, "kind": "var", "name": "d" },
+            "name": "background",
+            "value": {
+              "line": 54,
+              "col": 29,
+              "kind": "string",
+              "value": "#40000000"
+            }
+          },
+          {
+            "line": 55,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 55, "col": 13, "kind": "var", "name": "d" },
+            "name": "glow_color",
+            "value": {
+              "line": 55,
+              "col": 29,
+              "kind": "string",
+              "value": "gold"
+            }
+          },
+          {
+            "line": 56,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 56, "col": 13, "kind": "var", "name": "d" },
+            "name": "view_range",
+            "value": {
+              "line": 56,
+              "col": 29,
+              "kind": "number",
+              "value": 64.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "show_display",
+            "display": { "line": 57, "col": 22, "kind": "var", "name": "d" },
+            "target": { "line": 57, "col": 27, "kind": "all_players" }
+          },
+          {
+            "line": 58,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 58,
+              "col": 18,
+              "kind": "call",
+              "name": "spawn_block_display",
+              "args": [
+                { "line": 58, "col": 38, "kind": "string", "value": "STONE" },
+                {
+                  "line": 58,
+                  "col": 47,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 58,
+                      "col": 56,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    },
+                    {
+                      "line": 58,
+                      "col": 59,
+                      "kind": "number",
+                      "value": 80,
+                      "integer": true
+                    },
+                    {
+                      "line": 58,
+                      "col": 63,
+                      "kind": "number",
+                      "value": 0,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 59,
+            "col": 9,
+            "kind": "assign",
+            "target": "i",
+            "value": {
+              "line": 59,
+              "col": 18,
+              "kind": "call",
+              "name": "spawn_item_display",
+              "args": [
+                {
+                  "line": 59,
+                  "col": 37,
+                  "kind": "string",
+                  "value": "DIAMOND_SWORD"
+                },
+                {
+                  "line": 59,
+                  "col": 54,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 59,
+                      "col": 63,
+                      "kind": "number",
+                      "value": 4,
+                      "integer": true
+                    },
+                    {
+                      "line": 59,
+                      "col": 66,
+                      "kind": "number",
+                      "value": 80,
+                      "integer": true
+                    },
+                    {
+                      "line": 59,
+                      "col": 70,
+                      "kind": "number",
+                      "value": 0,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "mount_display",
+            "display": { "line": 60, "col": 23, "kind": "var", "name": "i" },
+            "entity": {
+              "line": 60,
+              "col": 28,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "teleport_display",
+            "display": { "line": 61, "col": 26, "kind": "var", "name": "d" },
+            "to": {
+              "line": 61,
+              "col": 31,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 61,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 61,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 90,
+                  "integer": true
+                },
+                {
+                  "line": 61,
+                  "col": 47,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 62,
+            "col": 9,
+            "kind": "hide_display",
+            "display": { "line": 62, "col": 22, "kind": "var", "name": "d" },
+            "target": {
+              "line": 62,
+              "col": 29,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "destroy_display",
+            "display": { "line": 63, "col": 25, "kind": "var", "name": "b" }
+          }
+        ]
+      }
+    },
+    {
+      "line": 67,
+      "col": 1,
+      "names": [ "music" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "play_song",
+            "song": {
+              "line": 69,
+              "col": 19,
+              "kind": "string",
+              "value": "megalovania.nbs"
+            },
+            "target": {
+              "line": 69,
+              "col": 40,
+              "kind": "var",
+              "name": "sender"
+            },
+            "tick": null,
+            "at": null,
+            "radius": null
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "play_song",
+            "song": {
+              "line": 70,
+              "col": 19,
+              "kind": "string",
+              "value": "megalovania.nbs"
+            },
+            "target": { "line": 70, "col": 40, "kind": "all_players" },
+            "tick": {
+              "line": 70,
+              "col": 60,
+              "kind": "number",
+              "value": 200,
+              "integer": true
+            },
+            "at": null,
+            "radius": null
+          },
+          {
+            "line": 71,
+            "col": 9,
+            "kind": "play_song",
+            "song": {
+              "line": 71,
+              "col": 19,
+              "kind": "string",
+              "value": "chill.nbs"
+            },
+            "target": null,
+            "tick": null,
+            "at": {
+              "line": 71,
+              "col": 34,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 71,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 71,
+                  "col": 46,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 71,
+                  "col": 50,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "radius": {
+              "line": 71,
+              "col": 60,
+              "kind": "number",
+              "value": 20.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "song_volume",
+            "target": {
+              "line": 72,
+              "col": 28,
+              "kind": "var",
+              "name": "sender"
+            },
+            "volume": {
+              "line": 72,
+              "col": 38,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            }
+          },
+          {
+            "line": 73,
+            "col": 9,
+            "kind": "fade_song",
+            "target": {
+              "line": 73,
+              "col": 22,
+              "kind": "var",
+              "name": "sender"
+            },
+            "volume": {
+              "line": 73,
+              "col": 32,
+              "kind": "number",
+              "value": 0.0,
+              "integer": false
+            },
+            "ticks": 60
+          },
+          {
+            "line": 74,
+            "col": 9,
+            "kind": "pause_song",
+            "target": {
+              "line": 74,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 75,
+            "col": 9,
+            "kind": "resume_song",
+            "target": {
+              "line": 75,
+              "col": 24,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 76,
+            "col": 9,
+            "kind": "stop_song",
+            "target": {
+              "line": 76,
+              "col": 22,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 77,
+            "col": 9,
+            "kind": "broadcast_song",
+            "song": {
+              "line": 77,
+              "col": 24,
+              "kind": "string",
+              "value": "anthem.nbs"
+            }
+          },
+          {
+            "line": 78,
+            "col": 9,
+            "kind": "assign",
+            "target": "meta",
+            "value": {
+              "line": 78,
+              "col": 21,
+              "kind": "call",
+              "name": "song",
+              "args": [
+                {
+                  "line": 78,
+                  "col": 26,
+                  "kind": "string",
+                  "value": "megalovania.nbs"
+                }
+              ]
+            }
+          },
+          {
+            "line": 79,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 79,
+              "col": 14,
+              "kind": "string",
+              "value": "Now playing ${meta.title} by ${meta.author}"
+            },
+            "target": {
+              "line": 79,
+              "col": 63,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 83,
+      "col": 1,
+      "names": [ "tps" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 85,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 85,
+              "col": 14,
+              "kind": "string",
+              "value": "TPS ${server.tps} avg ${server.average_tps} mspt ${server.mspt}"
+            },
+            "target": {
+              "line": 85,
+              "col": 83,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 86,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 86,
+              "col": 14,
+              "kind": "call",
+              "name": "tps_string",
+              "args": []
+            },
+            "target": {
+              "line": 86,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 87,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 87,
+              "col": 14,
+              "kind": "call",
+              "name": "average_tps_string",
+              "args": []
+            },
+            "target": {
+              "line": 87,
+              "col": 38,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 91,
+      "col": 1,
+      "names": [ "boom" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 93,
+            "col": 9,
+            "kind": "set_block",
+            "at": {
+              "line": 93,
+              "col": 22,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 93,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 93,
+                  "col": 34,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 93,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "block": {
+              "line": 93,
+              "col": 44,
+              "kind": "string",
+              "value": "TNT"
+            }
+          },
+          {
+            "line": 94,
+            "col": 9,
+            "kind": "fill_blocks",
+            "from": {
+              "line": 94,
+              "col": 26,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 94,
+                  "col": 35,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 94,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 63,
+                  "integer": true
+                },
+                {
+                  "line": 94,
+                  "col": 42,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "to": {
+              "line": 94,
+              "col": 48,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 94,
+                  "col": 57,
+                  "kind": "number",
+                  "value": 4,
+                  "integer": true
+                },
+                {
+                  "line": 94,
+                  "col": 60,
+                  "kind": "number",
+                  "value": 63,
+                  "integer": true
+                },
+                {
+                  "line": 94,
+                  "col": 64,
+                  "kind": "number",
+                  "value": 4,
+                  "integer": true
+                }
+              ]
+            },
+            "block": {
+              "line": 94,
+              "col": 72,
+              "kind": "string",
+              "value": "STONE"
+            }
+          },
+          {
+            "line": 95,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 95,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 95,
+                "col": 14,
+                "kind": "string",
+                "value": "under you: "
+              },
+              "right": {
+                "line": 95,
+                "col": 14,
+                "kind": "call",
+                "name": "block_at",
+                "args": [
+                  {
+                    "line": 95,
+                    "col": 14,
+                    "kind": "prop",
+                    "target": {
+                      "line": 95,
+                      "col": 14,
+                      "kind": "var",
+                      "name": "sender"
+                    },
+                    "name": "location"
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 95,
+              "col": 59,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 96,
+            "col": 9,
+            "kind": "play_sound",
+            "sound": {
+              "line": 96,
+              "col": 20,
+              "kind": "string",
+              "value": "minecraft:entity.generic.explode"
+            },
+            "target": { "line": 96, "col": 58, "kind": "all_players" },
+            "at": {
+              "line": 96,
+              "col": 73,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 96,
+                  "col": 82,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 96,
+                  "col": 85,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 96,
+                  "col": 89,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "volume": {
+              "line": 96,
+              "col": 99,
+              "kind": "number",
+              "value": 2.0,
+              "integer": false
+            },
+            "pitch": {
+              "line": 96,
+              "col": 109,
+              "kind": "number",
+              "value": 0.8,
+              "integer": false
+            }
+          },
+          {
+            "line": 97,
+            "col": 9,
+            "kind": "stop_sound",
+            "sound": {
+              "line": 97,
+              "col": 20,
+              "kind": "string",
+              "value": "minecraft:music_disc.cat"
+            },
+            "target": {
+              "line": 97,
+              "col": 51,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 98,
+            "col": 9,
+            "kind": "stop_sound",
+            "sound": null,
+            "target": {
+              "line": 98,
+              "col": 24,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 99,
+            "col": 9,
+            "kind": "spawn_particle",
+            "particle": {
+              "line": 99,
+              "col": 24,
+              "kind": "string",
+              "value": "FLAME"
+            },
+            "at": {
+              "line": 99,
+              "col": 35,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 99,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 99,
+                  "col": 47,
+                  "kind": "number",
+                  "value": 65,
+                  "integer": true
+                },
+                {
+                  "line": 99,
+                  "col": 51,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "count": {
+              "line": 99,
+              "col": 60,
+              "kind": "number",
+              "value": 40,
+              "integer": true
+            },
+            "offset_x": {
+              "line": 99,
+              "col": 70,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            },
+            "offset_y": {
+              "line": 99,
+              "col": 75,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            },
+            "offset_z": {
+              "line": 99,
+              "col": 80,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            },
+            "speed": {
+              "line": 99,
+              "col": 90,
+              "kind": "number",
+              "value": 0.01,
+              "integer": false
+            },
+            "viewer": { "line": 99, "col": 98, "kind": "all_players" }
+          },
+          {
+            "line": 100,
+            "col": 9,
+            "kind": "spawn_particle",
+            "particle": {
+              "line": 100,
+              "col": 24,
+              "kind": "string",
+              "value": "HEART"
+            },
+            "at": {
+              "line": 100,
+              "col": 35,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 100,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 100,
+                  "col": 47,
+                  "kind": "number",
+                  "value": 66,
+                  "integer": true
+                },
+                {
+                  "line": 100,
+                  "col": 51,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "count": null,
+            "offset_x": null,
+            "offset_y": null,
+            "offset_z": null,
+            "speed": null,
+            "viewer": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 104,
+      "col": 1,
+      "names": [ "day" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 106,
+            "col": 9,
+            "kind": "assign",
+            "target": "w",
+            "value": {
+              "line": 106,
+              "col": 25,
+              "kind": "prop",
+              "target": {
+                "line": 106,
+                "col": 18,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "world"
+            }
+          },
+          {
+            "line": 107,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 107, "col": 13, "kind": "var", "name": "w" },
+            "name": "time",
+            "value": {
+              "line": 107,
+              "col": 23,
+              "kind": "number",
+              "value": 1000,
+              "integer": true
+            }
+          },
+          {
+            "line": 108,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 108, "col": 13, "kind": "var", "name": "w" },
+            "name": "time_rate",
+            "value": {
+              "line": 108,
+              "col": 28,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            }
+          },
+          {
+            "line": 109,
+            "col": 9,
+            "kind": "set_server_motd",
+            "value": {
+              "line": 109,
+              "col": 28,
+              "kind": "string",
+              "value": "<blue>daytime!"
+            }
+          },
+          {
+            "line": 110,
+            "col": 20,
+            "kind": "set_prop",
+            "target": {
+              "line": 110,
+              "col": 13,
+              "kind": "var",
+              "name": "server"
+            },
+            "name": "motd",
+            "value": {
+              "line": 110,
+              "col": 28,
+              "kind": "string",
+              "value": "<blue>daytime (property form)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 114,
+      "col": 1,
+      "names": [ "disguise" ],
+      "permission": null,
+      "description": null,
+      "arguments": [
+        {
+          "line": 116,
+          "col": 9,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 119,
+            "col": 9,
+            "kind": "assign",
+            "target": "fetched",
+            "value": {
+              "line": 119,
+              "col": 24,
+              "kind": "call",
+              "name": "fetch_skin",
+              "args": [
+                {
+                  "line": 119,
+                  "col": 40,
+                  "kind": "prop",
+                  "target": {
+                    "line": 119,
+                    "col": 35,
+                    "kind": "var",
+                    "name": "args"
+                  },
+                  "name": "name"
+                }
+              ]
+            }
+          },
+          {
+            "line": 120,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 120,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 120,
+                "col": 12,
+                "kind": "var",
+                "name": "fetched"
+              }
+            },
+            "then": {
+              "line": 120,
+              "col": 27,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 121,
+                  "col": 24,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 121,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "skin",
+                  "value": {
+                    "line": 121,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "fetched"
+                  }
+                },
+                {
+                  "line": 122,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 122,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "skin texture: ${sender.skin.texture}"
+                  },
+                  "target": {
+                    "line": 122,
+                    "col": 60,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 123,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 124,
+                  "col": 24,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 124,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "skin",
+                  "value": {
+                    "line": 124,
+                    "col": 32,
+                    "kind": "call",
+                    "name": "skin",
+                    "args": [
+                      {
+                        "line": 124,
+                        "col": 37,
+                        "kind": "string",
+                        "value": "texture-base64"
+                      },
+                      {
+                        "line": 124,
+                        "col": 55,
+                        "kind": "string",
+                        "value": "signature-base64"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 129,
+      "col": 1,
+      "names": [ "quest" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 131,
+            "col": 9,
+            "kind": "show_toast",
+            "title": {
+              "line": 131,
+              "col": 20,
+              "kind": "string",
+              "value": "<gold>Quest Complete!"
+            },
+            "description": {
+              "line": 131,
+              "col": 56,
+              "kind": "string",
+              "value": "You finished the tutorial"
+            },
+            "icon": {
+              "line": 131,
+              "col": 89,
+              "kind": "string",
+              "value": "DIAMOND"
+            },
+            "frame": "challenge",
+            "target": {
+              "line": 131,
+              "col": 118,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 132,
+            "col": 9,
+            "kind": "show_toast",
+            "title": {
+              "line": 132,
+              "col": 20,
+              "kind": "string",
+              "value": "Hi there"
+            },
+            "description": null,
+            "icon": null,
+            "frame": null,
+            "target": {
+              "line": 132,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 133,
+            "col": 9,
+            "kind": "assign",
+            "target": "canvas",
+            "value": {
+              "line": 133,
+              "col": 23,
+              "kind": "call",
+              "name": "map_canvas",
+              "args": []
+            }
+          },
+          {
+            "line": 134,
+            "col": 9,
+            "kind": "draw_rect",
+            "canvas": {
+              "line": 134,
+              "col": 22,
+              "kind": "var",
+              "name": "canvas"
+            },
+            "x1": {
+              "line": 134,
+              "col": 34,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            },
+            "y1": {
+              "line": 134,
+              "col": 37,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            },
+            "x2": {
+              "line": 134,
+              "col": 42,
+              "kind": "number",
+              "value": 127,
+              "integer": true
+            },
+            "y2": {
+              "line": 134,
+              "col": 47,
+              "kind": "number",
+              "value": 127,
+              "integer": true
+            },
+            "color": {
+              "line": 134,
+              "col": 57,
+              "kind": "string",
+              "value": "white"
+            }
+          },
+          {
+            "line": 135,
+            "col": 9,
+            "kind": "draw_pixel",
+            "canvas": {
+              "line": 135,
+              "col": 23,
+              "kind": "var",
+              "name": "canvas"
+            },
+            "x": {
+              "line": 135,
+              "col": 33,
+              "kind": "number",
+              "value": 64,
+              "integer": true
+            },
+            "y": {
+              "line": 135,
+              "col": 37,
+              "kind": "number",
+              "value": 64,
+              "integer": true
+            },
+            "color": {
+              "line": 135,
+              "col": 46,
+              "kind": "number",
+              "value": 34,
+              "integer": true
+            }
+          },
+          {
+            "line": 136,
+            "col": 9,
+            "kind": "draw_text",
+            "canvas": {
+              "line": 136,
+              "col": 22,
+              "kind": "var",
+              "name": "canvas"
+            },
+            "x": {
+              "line": 136,
+              "col": 32,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            },
+            "y": {
+              "line": 136,
+              "col": 36,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            },
+            "text": {
+              "line": 136,
+              "col": 44,
+              "kind": "string",
+              "value": "Hello"
+            },
+            "color": {
+              "line": 136,
+              "col": 58,
+              "kind": "string",
+              "value": "black"
+            }
+          },
+          {
+            "line": 137,
+            "col": 9,
+            "kind": "give_map",
+            "canvas": {
+              "line": 137,
+              "col": 21,
+              "kind": "var",
+              "name": "canvas"
+            },
+            "target": {
+              "line": 137,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 138,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 138,
+              "col": 14,
+              "kind": "string",
+              "value": "canvas is ${canvas.width}x${canvas.height}"
+            },
+            "target": {
+              "line": 138,
+              "col": 62,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 142,
+      "col": 1,
+      "names": [ "admincheck" ],
+      "permission": "admin.panel",
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 145,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 145,
+              "col": 12,
+              "kind": "call",
+              "name": "has_permission",
+              "args": [
+                { "line": 145, "col": 27, "kind": "var", "name": "sender" },
+                {
+                  "line": 145,
+                  "col": 35,
+                  "kind": "string",
+                  "value": "admin.ban"
+                }
+              ]
+            },
+            "then": {
+              "line": 145,
+              "col": 48,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 145,
+                  "col": 48,
+                  "kind": "send",
+                  "message": {
+                    "line": 145,
+                    "col": 53,
+                    "kind": "string",
+                    "value": "you may ban"
+                  },
+                  "target": {
+                    "line": 145,
+                    "col": 70,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 14,
+      "col": 1,
+      "name": "ServerPing",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 16,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 16,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "motd",
+            "value": {
+              "line": 16,
+              "col": 27,
+              "kind": "string",
+              "value": "<green>dynamic motd"
+            }
+          },
+          {
+            "line": 17,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 17,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "online",
+            "value": {
+              "line": 17,
+              "col": 29,
+              "kind": "number",
+              "value": 999,
+              "integer": true
+            }
+          },
+          {
+            "line": 18,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 18,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "max",
+            "value": {
+              "line": 18,
+              "col": 26,
+              "kind": "number",
+              "value": 1000,
+              "integer": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 22,
+      "col": 1,
+      "name": "TpsChange",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "broadcast",
+            "message": {
+              "line": 24,
+              "col": 19,
+              "kind": "string",
+              "value": "TPS moved ${past} -> ${current}"
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 25,
+              "col": 12,
+              "kind": "binary",
+              "op": "LESS_THAN",
+              "left": {
+                "line": 25,
+                "col": 12,
+                "kind": "call",
+                "name": "tps_at",
+                "args": [
+                  {
+                    "line": 25,
+                    "col": 19,
+                    "kind": "number",
+                    "value": 60,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 25,
+                "col": 25,
+                "kind": "number",
+                "value": 15.0,
+                "integer": false
+              }
+            },
+            "then": {
+              "line": 25,
+              "col": 30,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 25,
+                  "col": 30,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 25,
+                    "col": 40,
+                    "kind": "string",
+                    "value": "<red>we were lagging a minute ago"
+                  }
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 29,
+      "col": 1,
+      "name": "BlockBreak",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 31,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": {
+                "line": 31,
+                "col": 12,
+                "kind": "var",
+                "name": "block"
+              },
+              "right": {
+                "line": 31,
+                "col": 21,
+                "kind": "string",
+                "value": "minecraft:bedrock"
+              }
+            },
+            "then": {
+              "line": 31,
+              "col": 41,
+              "kind": "block",
+              "statements": [
+                { "line": 31, "col": 41, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 32,
+              "col": 14,
+              "kind": "string",
+              "value": "you broke ${block}"
+            },
+            "target": {
+              "line": 32,
+              "col": 38,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 36,
+      "col": 1,
+      "name": "BlockPlace",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "set_block",
+            "at": {
+              "line": 38,
+              "col": 22,
+              "kind": "var",
+              "name": "location"
+            },
+            "block": {
+              "line": 38,
+              "col": 34,
+              "kind": "string",
+              "value": "AIR"
+            }
+          },
+          { "line": 39, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": {
+    "line": 4,
+    "col": 1,
+    "auth": { "kind": "offline", "secret": null },
+    "host": "0.0.0.0",
+    "port": 25565,
+    "brand": null,
+    "motd": "<gradient:gold:aqua>Swoft Platform",
+    "favicon": "icon.png",
+    "permissions": {
+      "swofty": [ "admin.*" ],
+      "steve": [ "mod.kick", "mod.mute" ]
+    },
+    "open_to_lan": true
+  }
+}

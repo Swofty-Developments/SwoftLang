@@ -1,0 +1,213 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": {
+    "line": 3,
+    "col": 1,
+    "auth": { "kind": "offline", "secret": null },
+    "host": "0.0.0.0",
+    "port": 25566,
+    "brand": null,
+    "motd": null,
+    "http": { "port": 8090, "bind": "127.0.0.1" }
+  },
+  "apis": [
+    {
+      "line": 8,
+      "col": 1,
+      "path": "/status",
+      "method": null,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "reply",
+            "code": null,
+            "body": {
+              "line": 10,
+              "col": 20,
+              "kind": "string",
+              "value": "ok ${server.tps}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 14,
+      "col": 1,
+      "path": "/give/:player",
+      "method": "POST",
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "assign",
+            "target": "target",
+            "value": {
+              "line": 17,
+              "col": 23,
+              "kind": "call",
+              "name": "player",
+              "args": [
+                {
+                  "line": 17,
+                  "col": 45,
+                  "kind": "prop",
+                  "target": {
+                    "line": 17,
+                    "col": 38,
+                    "kind": "prop",
+                    "target": {
+                      "line": 17,
+                      "col": 30,
+                      "kind": "var",
+                      "name": "request"
+                    },
+                    "name": "params"
+                  },
+                  "name": "player"
+                }
+              ]
+            }
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 18,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 18,
+                "col": 12,
+                "kind": "var",
+                "name": "target"
+              }
+            },
+            "then": {
+              "line": 18,
+              "col": 26,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 19,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 19,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<green>You got a gift from the web!"
+                  },
+                  "target": {
+                    "line": 19,
+                    "col": 59,
+                    "kind": "var",
+                    "name": "target"
+                  }
+                },
+                {
+                  "line": 20,
+                  "col": 13,
+                  "kind": "reply",
+                  "code": {
+                    "line": 20,
+                    "col": 24,
+                    "kind": "number",
+                    "value": 200,
+                    "integer": true
+                  },
+                  "body": {
+                    "line": 20,
+                    "col": 33,
+                    "kind": "string",
+                    "value": "delivered to ${request.params.player}"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 21,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 22,
+                  "col": 13,
+                  "kind": "reply",
+                  "code": {
+                    "line": 22,
+                    "col": 24,
+                    "kind": "number",
+                    "value": 404,
+                    "integer": true
+                  },
+                  "body": {
+                    "line": 22,
+                    "col": 33,
+                    "kind": "string",
+                    "value": "no such player: ${request.params.player}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 27,
+      "col": 1,
+      "path": "/motd",
+      "method": "PUT",
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "set_server_motd",
+            "value": {
+              "line": 30,
+              "col": 36,
+              "kind": "prop",
+              "target": {
+                "line": 30,
+                "col": 28,
+                "kind": "var",
+                "name": "request"
+              },
+              "name": "body"
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "reply",
+            "code": null,
+            "body": {
+              "line": 31,
+              "col": 20,
+              "kind": "string",
+              "value": "motd is now ${request.body} (method ${request.method} path ${request.path} query ${request.query})"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+persist_wrong_subject.sw:5:23: error: persistent 'kills' is keyed by Player, but the subject after 'for' is String

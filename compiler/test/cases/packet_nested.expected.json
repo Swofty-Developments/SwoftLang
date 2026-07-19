@@ -1,0 +1,157 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 4,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "send_packet",
+            "name": "PlayerInfoUpdatePacket",
+            "fields": {
+              "actions": {
+                "line": 7,
+                "col": 22,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 7,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "ADD_PLAYER"
+                  },
+                  {
+                    "line": 7,
+                    "col": 37,
+                    "kind": "string",
+                    "value": "UPDATE_LISTED"
+                  }
+                ]
+              },
+              "entries": {
+                "line": 8,
+                "col": 22,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 8,
+                    "col": 23,
+                    "kind": "map",
+                    "entries": {
+                      "uuid": {
+                        "line": 9,
+                        "col": 23,
+                        "kind": "string",
+                        "value": "a0000000-0000-4000-8000-000000000001"
+                      },
+                      "username": {
+                        "line": 10,
+                        "col": 27,
+                        "kind": "string",
+                        "value": "Steve"
+                      },
+                      "properties": {
+                        "line": 11,
+                        "col": 29,
+                        "kind": "list",
+                        "items": [
+                          {
+                            "line": 11,
+                            "col": 30,
+                            "kind": "map",
+                            "entries": {
+                              "name": {
+                                "line": 11,
+                                "col": 38,
+                                "kind": "string",
+                                "value": "textures"
+                              },
+                              "value": {
+                                "line": 11,
+                                "col": 57,
+                                "kind": "string",
+                                "value": "tex"
+                              },
+                              "signature": {
+                                "line": 11,
+                                "col": 75,
+                                "kind": "string",
+                                "value": "sig"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "listed": {
+                        "line": 12,
+                        "col": 25,
+                        "kind": "boolean",
+                        "value": true
+                      },
+                      "latency": {
+                        "line": 13,
+                        "col": 26,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      },
+                      "gameMode": {
+                        "line": 14,
+                        "col": 27,
+                        "kind": "string",
+                        "value": "SURVIVAL"
+                      },
+                      "displayName": {
+                        "line": 15,
+                        "col": 30,
+                        "kind": "none"
+                      },
+                      "chatSession": {
+                        "line": 16,
+                        "col": 30,
+                        "kind": "none"
+                      },
+                      "listOrder": {
+                        "line": 17,
+                        "col": 28,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 19,
+              "col": 20,
+              "kind": "prop",
+              "target": {
+                "line": 19,
+                "col": 14,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,1 @@
+unknown mob handler 'on_clicked'; valid handlers: on_hit, on_death, on_click, on_attack, on_target, on_spawn, on_tick; did you mean 'on_click'?

@@ -1,0 +1,217 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 21,
+      "col": 1,
+      "names": [ "use" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "call",
+            "name": "ping",
+            "args": [
+              { "line": 23, "col": 14, "kind": "var", "name": "sender" }
+            ]
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "call",
+            "name": "countdown",
+            "args": [
+              {
+                "line": 24,
+                "col": 24,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "assign",
+            "target": "total",
+            "value": {
+              "line": 25,
+              "col": 22,
+              "kind": "call",
+              "name": "sum",
+              "args": [
+                {
+                  "line": 25,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 25,
+                  "col": 29,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "call",
+            "name": "nothing",
+            "args": []
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "ping",
+      "async": false,
+      "params": [ { "line": 1, "col": 15, "name": "target", "type": null } ],
+      "body": [
+        {
+          "line": 2,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 2,
+            "col": 10,
+            "kind": "string",
+            "value": "ping"
+          },
+          "target": { "line": 2, "col": 20, "kind": "var", "name": "target" }
+        },
+        { "line": 3, "col": 5, "kind": "return", "value": null }
+      ]
+    },
+    {
+      "line": 6,
+      "col": 1,
+      "name": "sum",
+      "async": false,
+      "params": [
+        { "line": 6, "col": 14, "name": "a", "type": { "base": "INTEGER" } },
+        { "line": 6, "col": 26, "name": "b", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 7,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 7,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": { "line": 7, "col": 12, "kind": "var", "name": "a" },
+            "right": { "line": 7, "col": 16, "kind": "var", "name": "b" }
+          }
+        }
+      ]
+    },
+    {
+      "line": 10,
+      "col": 1,
+      "name": "countdown",
+      "async": false,
+      "params": [
+        { "line": 10, "col": 20, "name": "n", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 11,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 11,
+            "col": 8,
+            "kind": "binary",
+            "op": "GREATER_THAN",
+            "left": { "line": 11, "col": 8, "kind": "var", "name": "n" },
+            "right": {
+              "line": 11,
+              "col": 12,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            }
+          },
+          "then": {
+            "line": 11,
+            "col": 14,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 12,
+                "col": 9,
+                "kind": "broadcast",
+                "message": {
+                  "line": 12,
+                  "col": 19,
+                  "kind": "string",
+                  "value": "${n}"
+                }
+              },
+              {
+                "line": 13,
+                "col": 9,
+                "kind": "call",
+                "name": "countdown",
+                "args": [
+                  {
+                    "line": 13,
+                    "col": 19,
+                    "kind": "binary",
+                    "op": "SUBTRACT",
+                    "left": {
+                      "line": 13,
+                      "col": 19,
+                      "kind": "var",
+                      "name": "n"
+                    },
+                    "right": {
+                      "line": 13,
+                      "col": 23,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "else": null
+        }
+      ]
+    },
+    {
+      "line": 17,
+      "col": 1,
+      "name": "nothing",
+      "async": false,
+      "params": [],
+      "body": [ { "line": 18, "col": 5, "kind": "halt" } ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

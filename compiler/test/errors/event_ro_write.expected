@@ -1,0 +1,1 @@
+property 'damage_type' on event<EntityDamage> is read-only

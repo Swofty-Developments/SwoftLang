@@ -1,0 +1,61 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 7,
+      "col": 1,
+      "name": "PlayerUseItemEvent",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 9,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 9,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "item_use_time",
+            "value": {
+              "line": 9,
+              "col": 36,
+              "kind": "number",
+              "value": 100,
+              "integer": true
+            }
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 10,
+              "col": 14,
+              "kind": "string",
+              "value": "using ${event.item_stack} in hand ${event.hand}"
+            },
+            "target": {
+              "line": 10,
+              "col": 67,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          { "line": 11, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

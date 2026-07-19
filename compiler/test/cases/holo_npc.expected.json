@@ -1,0 +1,585 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 56,
+      "col": 1,
+      "names": [ "holo" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 58,
+            "col": 9,
+            "kind": "show_hologram",
+            "name": "spawn_info",
+            "target": {
+              "line": 58,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 59,
+            "col": 9,
+            "kind": "show_hologram",
+            "name": "rules",
+            "target": {
+              "line": 59,
+              "col": 34,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "hide_hologram",
+            "name": "spawn_info",
+            "target": {
+              "line": 60,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "set_hologram_line",
+            "name": "spawn_info",
+            "index": {
+              "line": 61,
+              "col": 40,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            },
+            "value": {
+              "line": 61,
+              "col": 45,
+              "kind": "string",
+              "value": "<green>updated line"
+            }
+          },
+          {
+            "line": 62,
+            "col": 9,
+            "kind": "move_hologram",
+            "name": "spawn_info",
+            "to": {
+              "line": 62,
+              "col": 39,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 62,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 62,
+                  "col": 51,
+                  "kind": "number",
+                  "value": 66,
+                  "integer": true
+                },
+                {
+                  "line": 62,
+                  "col": 55,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "remove_hologram",
+            "name": "rules"
+          },
+          {
+            "line": 65,
+            "col": 9,
+            "kind": "set_npc_skin",
+            "name": "guide",
+            "skin": {
+              "kind": "username",
+              "username": {
+                "line": 65,
+                "col": 30,
+                "kind": "string",
+                "value": "Herobrine"
+              }
+            }
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "set_npc_name",
+            "name": "guide",
+            "value": {
+              "line": 66,
+              "col": 30,
+              "kind": "string",
+              "value": "<red>Renamed Guide"
+            }
+          },
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "set_npc_location",
+            "name": "guide",
+            "value": {
+              "line": 67,
+              "col": 34,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 67,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 6,
+                  "integer": true
+                },
+                {
+                  "line": 67,
+                  "col": 46,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 67,
+                  "col": 50,
+                  "kind": "number",
+                  "value": 6,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 68,
+            "col": 9,
+            "kind": "set_npc_skin",
+            "name": "villager",
+            "skin": {
+              "kind": "texture",
+              "texture": {
+                "line": 68,
+                "col": 38,
+                "kind": "string",
+                "value": "newtexture"
+              },
+              "signature": {
+                "line": 68,
+                "col": 52,
+                "kind": "string",
+                "value": "newsig"
+              }
+            }
+          },
+          { "line": 69, "col": 9, "kind": "remove_npc", "name": "villager" }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "holograms": [
+    {
+      "line": 5,
+      "col": 1,
+      "name": "spawn_info",
+      "location": {
+        "line": 6,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 6,
+            "col": 24,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 6,
+            "col": 27,
+            "kind": "number",
+            "value": 65,
+            "integer": true
+          },
+          {
+            "line": 6,
+            "col": 31,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      },
+      "billboard": "center",
+      "scale": {
+        "line": 8,
+        "col": 12,
+        "kind": "number",
+        "value": 1.5,
+        "integer": false
+      },
+      "update": { "kind": "ticks", "value": 20 },
+      "per_viewer": true,
+      "lines": [
+        {
+          "line": 11,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 11,
+            "col": 14,
+            "kind": "string",
+            "value": "<gold><bold>Welcome!"
+          }
+        },
+        { "line": 12, "col": 9, "kind": "blank" },
+        {
+          "line": 13,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 13,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>Hi ${player.name}"
+          }
+        },
+        {
+          "line": 14,
+          "col": 9,
+          "kind": "if",
+          "condition": {
+            "line": 14,
+            "col": 19,
+            "kind": "binary",
+            "op": "GREATER_THAN",
+            "left": {
+              "line": 14,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 14,
+                "col": 12,
+                "kind": "var",
+                "name": "player"
+              },
+              "name": "health"
+            },
+            "right": {
+              "line": 14,
+              "col": 28,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            }
+          },
+          "then": {
+            "line": 14,
+            "col": 31,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 15,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 15,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<green>Healthy"
+                }
+              }
+            ]
+          },
+          "else": {
+            "line": 16,
+            "col": 16,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 17,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 17,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<red>Careful"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 19,
+          "col": 9,
+          "kind": "loop",
+          "count": {
+            "line": 19,
+            "col": 14,
+            "kind": "number",
+            "value": 2,
+            "integer": true
+          },
+          "var": null,
+          "body": {
+            "line": 19,
+            "col": 22,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 20,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 20,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<yellow>* star *"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "line": 26,
+      "col": 1,
+      "name": "rules",
+      "location": {
+        "line": 27,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 27,
+            "col": 24,
+            "kind": "number",
+            "value": 4,
+            "integer": true
+          },
+          {
+            "line": 27,
+            "col": 27,
+            "kind": "number",
+            "value": 70,
+            "integer": true
+          },
+          {
+            "line": 27,
+            "col": 31,
+            "kind": "number",
+            "value": 4,
+            "integer": true
+          }
+        ]
+      },
+      "billboard": "fixed",
+      "scale": null,
+      "update": { "kind": "manual" },
+      "per_viewer": false,
+      "lines": [
+        {
+          "line": 30,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 30,
+            "col": 14,
+            "kind": "string",
+            "value": "<aqua>Server Rules"
+          }
+        },
+        {
+          "line": 31,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 31,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>1. Be nice"
+          }
+        }
+      ]
+    }
+  ],
+  "npcs": [
+    {
+      "line": 37,
+      "col": 1,
+      "name": "guide",
+      "location": {
+        "line": 38,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 38,
+            "col": 24,
+            "kind": "number",
+            "value": 5,
+            "integer": true
+          },
+          {
+            "line": 38,
+            "col": 27,
+            "kind": "number",
+            "value": 64,
+            "integer": true
+          },
+          {
+            "line": 38,
+            "col": 31,
+            "kind": "number",
+            "value": 5,
+            "integer": true
+          }
+        ]
+      },
+      "display_name": {
+        "line": 39,
+        "col": 11,
+        "kind": "string",
+        "value": "<green>Village Guide (${player.name})"
+      },
+      "skin": {
+        "kind": "username",
+        "username": {
+          "line": 40,
+          "col": 11,
+          "kind": "string",
+          "value": "Notch"
+        }
+      },
+      "look_at_players": true,
+      "on_click": {
+        "param": "player",
+        "body": [
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 43,
+              "col": 14,
+              "kind": "string",
+              "value": "<yellow>Hello ${player.name}!"
+            },
+            "target": {
+              "line": 43,
+              "col": 49,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      },
+      "on_left_click": {
+        "param": "clicker",
+        "body": [
+          {
+            "line": 46,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 46,
+              "col": 14,
+              "kind": "string",
+              "value": "<red>Don't hit me!"
+            },
+            "target": {
+              "line": 46,
+              "col": 38,
+              "kind": "var",
+              "name": "clicker"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 51,
+      "col": 1,
+      "name": "villager",
+      "location": {
+        "line": 52,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 52,
+            "col": 24,
+            "kind": "number",
+            "value": 8,
+            "integer": true
+          },
+          {
+            "line": 52,
+            "col": 27,
+            "kind": "number",
+            "value": 64,
+            "integer": true
+          },
+          {
+            "line": 52,
+            "col": 31,
+            "kind": "number",
+            "value": 8,
+            "integer": true
+          }
+        ]
+      },
+      "display_name": null,
+      "skin": {
+        "kind": "texture",
+        "texture": {
+          "line": 53,
+          "col": 16,
+          "kind": "string",
+          "value": "ewogICJ0ZXh0dXJlcyI="
+        },
+        "signature": {
+          "line": 53,
+          "col": 40,
+          "kind": "string",
+          "value": "sig-bytes-here"
+        }
+      },
+      "look_at_players": false,
+      "on_click": null,
+      "on_left_click": null
+    }
+  ]
+}

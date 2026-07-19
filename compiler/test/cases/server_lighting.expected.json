@@ -1,0 +1,52 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 9,
+      "col": 1,
+      "names": [ "ping" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 11,
+              "col": 14,
+              "kind": "string",
+              "value": "pong"
+            },
+            "target": {
+              "line": 11,
+              "col": 24,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": {
+    "line": 3,
+    "col": 1,
+    "auth": { "kind": "offline", "secret": null },
+    "host": "0.0.0.0",
+    "port": 25565,
+    "brand": null,
+    "motd": "<green>No lighting",
+    "lighting": false
+  }
+}

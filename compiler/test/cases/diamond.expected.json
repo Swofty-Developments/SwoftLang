@@ -1,0 +1,210 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "dia_d",
+      "path": "cases/mod/dia_d.sw",
+      "entry": false,
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 1,
+          "col": 8,
+          "name": "base",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 2,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 2,
+                "col": 12,
+                "kind": "number",
+                "value": 10,
+                "integer": true
+              }
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "dia_b",
+      "path": "cases/mod/dia_b.sw",
+      "entry": false,
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 3,
+          "col": 8,
+          "name": "twice",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 4,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 4,
+                "col": 12,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 4,
+                  "col": 12,
+                  "kind": "call",
+                  "name": "base",
+                  "args": []
+                },
+                "right": {
+                  "line": 4,
+                  "col": 21,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              }
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "dia_c",
+      "path": "cases/mod/dia_c.sw",
+      "entry": false,
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 3,
+          "col": 8,
+          "name": "thrice",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 4,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 4,
+                "col": 12,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 4,
+                  "col": 12,
+                  "kind": "call",
+                  "name": "base",
+                  "args": []
+                },
+                "right": {
+                  "line": 4,
+                  "col": 21,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              }
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "diamond",
+      "path": "cases/diamond.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 4,
+          "col": 1,
+          "names": [ "diamond" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 6,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 6,
+                  "col": 14,
+                  "kind": "binary",
+                  "op": "CONCATENATE",
+                  "left": {
+                    "line": 6,
+                    "col": 14,
+                    "kind": "string",
+                    "value": "sum = "
+                  },
+                  "right": {
+                    "line": 6,
+                    "col": 14,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 6,
+                      "col": 14,
+                      "kind": "call",
+                      "name": "twice",
+                      "args": []
+                    },
+                    "right": {
+                      "line": 6,
+                      "col": 14,
+                      "kind": "call",
+                      "name": "thrice",
+                      "args": []
+                    }
+                  }
+                },
+                "target": {
+                  "line": 6,
+                  "col": 47,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "events": [],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    }
+  ]
+}

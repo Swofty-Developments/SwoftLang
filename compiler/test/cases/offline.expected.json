@@ -1,0 +1,793 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 8,
+      "col": 1,
+      "names": [ "seen" ],
+      "permission": null,
+      "description": null,
+      "arguments": [
+        {
+          "line": 10,
+          "col": 9,
+          "name": "who",
+          "type": { "base": "STRING" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "assign",
+            "target": "found",
+            "value": {
+              "line": 13,
+              "col": 22,
+              "kind": "call",
+              "name": "offline_player",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 42,
+                  "kind": "prop",
+                  "target": {
+                    "line": 13,
+                    "col": 37,
+                    "kind": "var",
+                    "name": "args"
+                  },
+                  "name": "who"
+                }
+              ]
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 14,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 14,
+                "col": 12,
+                "kind": "var",
+                "name": "found"
+              }
+            },
+            "then": {
+              "line": 14,
+              "col": 25,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 15,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 15,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${found.name} (${found.uuid})"
+                  },
+                  "target": {
+                    "line": 15,
+                    "col": 53,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                },
+                {
+                  "line": 16,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 16,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "first seen ${found.first_seen}, last seen ${found.last_seen}"
+                  },
+                  "target": {
+                    "line": 16,
+                    "col": 84,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                },
+                {
+                  "line": 17,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 17,
+                    "col": 22,
+                    "kind": "prop",
+                    "target": {
+                      "line": 17,
+                      "col": 16,
+                      "kind": "var",
+                      "name": "found"
+                    },
+                    "name": "online"
+                  },
+                  "then": {
+                    "line": 17,
+                    "col": 29,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 18,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 18,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "online right now"
+                        },
+                        "target": {
+                          "line": 18,
+                          "col": 44,
+                          "kind": "var",
+                          "name": "sender"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 20,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 20,
+                    "col": 22,
+                    "kind": "prop",
+                    "target": {
+                      "line": 20,
+                      "col": 16,
+                      "kind": "var",
+                      "name": "found"
+                    },
+                    "name": "has_played_before"
+                  },
+                  "then": {
+                    "line": 20,
+                    "col": 40,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 21,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 21,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "a returning player"
+                        },
+                        "target": {
+                          "line": 21,
+                          "col": 46,
+                          "kind": "var",
+                          "name": "sender"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 23,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 23,
+                    "col": 22,
+                    "kind": "unary",
+                    "op": "EXISTS",
+                    "operand": {
+                      "line": 23,
+                      "col": 22,
+                      "kind": "prop",
+                      "target": {
+                        "line": 23,
+                        "col": 16,
+                        "kind": "var",
+                        "name": "found"
+                      },
+                      "name": "player"
+                    }
+                  },
+                  "then": {
+                    "line": 23,
+                    "col": 36,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 24,
+                        "col": 17,
+                        "kind": "teleport",
+                        "entity": {
+                          "line": 24,
+                          "col": 26,
+                          "kind": "var",
+                          "name": "sender"
+                        },
+                        "target": {
+                          "line": 24,
+                          "col": 42,
+                          "kind": "prop",
+                          "target": {
+                            "line": 24,
+                            "col": 36,
+                            "kind": "var",
+                            "name": "found"
+                          },
+                          "name": "player"
+                        }
+                      },
+                      {
+                        "line": 25,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 25,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "warped to you!"
+                        },
+                        "target": {
+                          "line": 25,
+                          "col": 48,
+                          "kind": "prop",
+                          "target": {
+                            "line": 25,
+                            "col": 42,
+                            "kind": "var",
+                            "name": "found"
+                          },
+                          "name": "player"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 27,
+                  "col": 13,
+                  "kind": "persist_set",
+                  "name": "visits",
+                  "subject": {
+                    "line": 27,
+                    "col": 28,
+                    "kind": "var",
+                    "name": "found"
+                  },
+                  "value": {
+                    "line": 27,
+                    "col": 37,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 27,
+                      "col": 37,
+                      "kind": "persist_get",
+                      "name": "visits",
+                      "subject": {
+                        "line": 27,
+                        "col": 48,
+                        "kind": "var",
+                        "name": "found"
+                      }
+                    },
+                    "right": {
+                      "line": 27,
+                      "col": 56,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                },
+                {
+                  "line": 28,
+                  "col": 13,
+                  "kind": "persist_set",
+                  "name": "coins",
+                  "subject": {
+                    "line": 28,
+                    "col": 27,
+                    "kind": "var",
+                    "name": "found"
+                  },
+                  "value": {
+                    "line": 28,
+                    "col": 36,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 28,
+                      "col": 36,
+                      "kind": "persist_get",
+                      "name": "coins",
+                      "subject": {
+                        "line": 28,
+                        "col": 46,
+                        "kind": "var",
+                        "name": "found"
+                      }
+                    },
+                    "right": {
+                      "line": 28,
+                      "col": 54,
+                      "kind": "number",
+                      "value": 10,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 29,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 30,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 30,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "never seen ${args.who}"
+                  },
+                  "target": {
+                    "line": 30,
+                    "col": 46,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 35,
+      "col": 1,
+      "names": [ "seenall" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "foreach",
+            "var": "p",
+            "limit": null,
+            "iterable": {
+              "line": 37,
+              "col": 14,
+              "kind": "call",
+              "name": "all_seen_players",
+              "args": []
+            },
+            "body": {
+              "line": 37,
+              "col": 38,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 38,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 38,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${p.name}: ${p.uuid}"
+                  },
+                  "target": {
+                    "line": 38,
+                    "col": 44,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "assign",
+            "target": "fixed",
+            "value": {
+              "line": 40,
+              "col": 22,
+              "kind": "call",
+              "name": "offline_player_uuid",
+              "args": [
+                {
+                  "line": 40,
+                  "col": 42,
+                  "kind": "string",
+                  "value": "069a79f4-44e9-4726-a5be-fca90e38aaf5"
+                }
+              ]
+            }
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 41,
+              "col": 14,
+              "kind": "string",
+              "value": "record for ${fixed.name}"
+            },
+            "target": {
+              "line": 41,
+              "col": 44,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "coins",
+            "subject": {
+              "line": 42,
+              "col": 23,
+              "kind": "var",
+              "name": "fixed"
+            },
+            "value": {
+              "line": 42,
+              "col": 32,
+              "kind": "number",
+              "value": 5,
+              "integer": true
+            }
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "visits",
+            "subject": {
+              "line": 43,
+              "col": 24,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": {
+              "line": 43,
+              "col": 34,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 43,
+                "col": 34,
+                "kind": "persist_get",
+                "name": "visits",
+                "subject": {
+                  "line": 43,
+                  "col": 45,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              "right": {
+                "line": 43,
+                "col": 54,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 47,
+      "col": 1,
+      "names": [ "lookup" ],
+      "permission": null,
+      "description": null,
+      "arguments": [
+        {
+          "line": 49,
+          "col": 9,
+          "name": "who",
+          "type": { "base": "STRING" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "fetched",
+            "value": {
+              "line": 52,
+              "col": 24,
+              "kind": "call",
+              "name": "fetch_offline_player",
+              "args": [
+                {
+                  "line": 52,
+                  "col": 50,
+                  "kind": "prop",
+                  "target": {
+                    "line": 52,
+                    "col": 45,
+                    "kind": "var",
+                    "name": "args"
+                  },
+                  "name": "who"
+                }
+              ]
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 53,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 53,
+                "col": 12,
+                "kind": "var",
+                "name": "fetched"
+              }
+            },
+            "then": {
+              "line": 53,
+              "col": 27,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 54,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 54,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${fetched.name} = ${fetched.uuid}"
+                  },
+                  "target": {
+                    "line": 54,
+                    "col": 57,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 55,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 56,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 56,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "no Mojang account named ${args.who}"
+                  },
+                  "target": {
+                    "line": 56,
+                    "col": 59,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 67,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 69,
+              "col": 12,
+              "kind": "binary",
+              "op": "IS_TYPE",
+              "left": {
+                "line": 69,
+                "col": 12,
+                "kind": "var",
+                "name": "player"
+              },
+              "right": {
+                "line": 69,
+                "col": 24,
+                "kind": "type",
+                "name": "OfflinePlayer"
+              }
+            },
+            "then": {
+              "line": 69,
+              "col": 38,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 70,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 70,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "you are also a seen-store record"
+                  },
+                  "target": {
+                    "line": 70,
+                    "col": 56,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "call",
+            "name": "greet",
+            "args": [
+              { "line": 72, "col": 15, "kind": "var", "name": "player" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "line": 61,
+      "col": 1,
+      "name": "greet",
+      "async": false,
+      "params": [
+        {
+          "line": 61,
+          "col": 16,
+          "name": "target",
+          "type": { "base": "OFFLINE_PLAYER" }
+        }
+      ],
+      "body": [
+        {
+          "line": 62,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 62,
+            "col": 8,
+            "kind": "binary",
+            "op": "IS_TYPE",
+            "left": { "line": 62, "col": 8, "kind": "var", "name": "target" },
+            "right": {
+              "line": 62,
+              "col": 20,
+              "kind": "type",
+              "name": "Player"
+            }
+          },
+          "then": {
+            "line": 62,
+            "col": 27,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 63,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 63,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "welcome back!"
+                },
+                "target": {
+                  "line": 63,
+                  "col": 33,
+                  "kind": "var",
+                  "name": "target"
+                }
+              }
+            ]
+          },
+          "else": null
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": null,
+  "persistents": [
+    {
+      "line": 5,
+      "col": 1,
+      "name": "coins",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 5,
+        "col": 40,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    },
+    {
+      "line": 6,
+      "col": 1,
+      "name": "visits",
+      "subject": { "base": "OFFLINE_PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 6,
+        "col": 48,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    }
+  ]
+}

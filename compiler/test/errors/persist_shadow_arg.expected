@@ -1,0 +1,1 @@
+persist_shadow_arg.sw:5:9: error: argument 'total' shadows the persistent variable 'total' — rename one of them

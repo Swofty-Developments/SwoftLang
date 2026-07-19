@@ -1,0 +1,34 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "a", "b", "c" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [ { "line": 3, "col": 9, "kind": "halt" } ]
+      }
+    },
+    {
+      "line": 7,
+      "col": 1,
+      "names": [ "d" ],
+      "permission": null,
+      "description": "trailing comma, no execute",
+      "arguments": [],
+      "execute": null
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,1 @@
+errors/call_non_function.sw:4:9: error: 'x' is an Integer, not a function

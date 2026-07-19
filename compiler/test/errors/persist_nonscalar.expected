@@ -1,0 +1,1 @@
+persist_nonscalar.sw:1:1: error: persistent 'home' must have a scalar type (String, Integer, Double, or Boolean) or a map of scalars, got Location; store primitive fields instead

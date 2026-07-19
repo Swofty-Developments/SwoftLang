@@ -1,0 +1,1 @@
+unknown item 'not_a_real_item' in fishing_loot "mystery"; declare it with 'item "not_a_real_item" { }' or use an ALL_CAPS vanilla material name

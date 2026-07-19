@@ -1,0 +1,303 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 12,
+      "col": 1,
+      "names": [ "pmap" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "wins",
+            "subject": null,
+            "value": {
+              "line": 15,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 15,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "wins",
+                  "subject": null
+                },
+                { "line": 15, "col": 21, "kind": "var", "name": "sender" },
+                {
+                  "line": 15,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              {
+                "line": 16,
+                "col": 17,
+                "kind": "persist_get",
+                "name": "wins",
+                "subject": null
+              },
+              { "line": 16, "col": 23, "kind": "var", "name": "sender" },
+              {
+                "line": 16,
+                "col": 31,
+                "kind": "number",
+                "value": 20,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 18,
+              "col": 12,
+              "kind": "call",
+              "name": "map_has",
+              "args": [
+                {
+                  "line": 18,
+                  "col": 20,
+                  "kind": "persist_get",
+                  "name": "wins",
+                  "subject": null
+                },
+                { "line": 18, "col": 26, "kind": "var", "name": "sender" }
+              ]
+            },
+            "then": {
+              "line": 18,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 19,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 19,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "tracked"
+                  },
+                  "target": {
+                    "line": 19,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "assign",
+            "target": "mine",
+            "value": {
+              "line": 23,
+              "col": 25,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 23,
+                "col": 25,
+                "kind": "call",
+                "name": "map_get",
+                "args": [
+                  {
+                    "line": 23,
+                    "col": 21,
+                    "kind": "persist_get",
+                    "name": "wins",
+                    "subject": null
+                  },
+                  { "line": 23, "col": 26, "kind": "var", "name": "sender" }
+                ]
+              },
+              "right": {
+                "line": 23,
+                "col": 44,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "you have ${mine}"
+            },
+            "target": {
+              "line": 24,
+              "col": 36,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "foreach",
+            "var": "p",
+            "limit": null,
+            "iterable": {
+              "line": 27,
+              "col": 14,
+              "kind": "call",
+              "name": "map_keys",
+              "args": [
+                {
+                  "line": 27,
+                  "col": 23,
+                  "kind": "persist_get",
+                  "name": "wins",
+                  "subject": null
+                }
+              ]
+            },
+            "body": {
+              "line": 27,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 28,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 28,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "player ${p.name}"
+                  },
+                  "target": {
+                    "line": 28,
+                    "col": 40,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "foreach_map",
+            "key": "who",
+            "value": "pts",
+            "map": {
+              "line": 32,
+              "col": 14,
+              "kind": "persist_get",
+              "name": "wins",
+              "subject": null
+            },
+            "body": {
+              "line": 32,
+              "col": 33,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 33,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 33,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${who.name}: ${pts}"
+                  },
+                  "target": {
+                    "line": 33,
+                    "col": 43,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "call",
+            "name": "map_delete",
+            "args": [
+              {
+                "line": 36,
+                "col": 20,
+                "kind": "persist_get",
+                "name": "wins",
+                "subject": null
+              },
+              { "line": 36, "col": 26, "kind": "var", "name": "sender" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 4,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 10,
+      "col": 1,
+      "name": "wins",
+      "subject": null,
+      "type": {
+        "base": "MAP",
+        "key_type": { "base": "PLAYER" },
+        "subtypes": [ { "base": "INTEGER" } ]
+      },
+      "default": {
+        "line": 10,
+        "col": 41,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      }
+    }
+  ]
+}

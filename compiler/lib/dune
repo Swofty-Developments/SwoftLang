@@ -1,0 +1,15 @@
+(library
+ (name swoftlang)
+ (libraries yojson))
+
+(ocamllex
+ (modules lexer))
+
+; phase-7: the Minestom event catalog is generated from data/events.json
+; (source of truth) into data/events_data.ml by data/GenMinestomCatalogs.java;
+; embed that registry fragment into the library at build time.
+(rule
+ (targets events_data.ml)
+ (deps ../data/events_data.ml)
+ (action
+  (copy ../data/events_data.ml events_data.ml)))

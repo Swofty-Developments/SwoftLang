@@ -1,0 +1,1 @@
+duplicate_server.sw:5:1: error: duplicate 'server' block; only one server block is allowed per script

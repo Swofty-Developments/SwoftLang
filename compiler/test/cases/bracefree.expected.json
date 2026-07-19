@@ -1,0 +1,674 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 9,
+      "col": 1,
+      "names": [ "bracefree" ],
+      "permission": null,
+      "description": null,
+      "arguments": [
+        {
+          "line": 11,
+          "col": 9,
+          "name": "n",
+          "type": { "base": "INTEGER" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 14,
+            "col": 13,
+            "kind": "send",
+            "message": {
+              "line": 14,
+              "col": 18,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 14,
+                "col": 18,
+                "kind": "string",
+                "value": "double = "
+              },
+              "right": {
+                "line": 14,
+                "col": 18,
+                "kind": "call",
+                "name": "double",
+                "args": [
+                  {
+                    "line": 14,
+                    "col": 18,
+                    "kind": "prop",
+                    "target": {
+                      "line": 14,
+                      "col": 18,
+                      "kind": "var",
+                      "name": "args"
+                    },
+                    "name": "n"
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 14,
+              "col": 50,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 17,
+      "col": 1,
+      "names": [ "forms" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 20,
+              "col": 12,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 20,
+                "col": 12,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              },
+              "right": {
+                "line": 20,
+                "col": 16,
+                "kind": "number",
+                "value": 2,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 20,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 20,
+                  "col": 18,
+                  "kind": "send",
+                  "message": {
+                    "line": 20,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "impossible"
+                  },
+                  "target": {
+                    "line": 20,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 21,
+              "col": 14,
+              "kind": "if",
+              "condition": {
+                "line": 21,
+                "col": 17,
+                "kind": "binary",
+                "op": "GREATER_THAN",
+                "left": {
+                  "line": 21,
+                  "col": 17,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                "right": {
+                  "line": 21,
+                  "col": 21,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              },
+              "then": {
+                "line": 21,
+                "col": 23,
+                "kind": "block",
+                "statements": [ { "line": 21, "col": 23, "kind": "halt" } ]
+              },
+              "else": {
+                "line": 22,
+                "col": 14,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 22,
+                    "col": 14,
+                    "kind": "send",
+                    "message": {
+                      "line": 22,
+                      "col": 19,
+                      "kind": "string",
+                      "value": "sane"
+                    },
+                    "target": {
+                      "line": 22,
+                      "col": 29,
+                      "kind": "var",
+                      "name": "sender"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 25,
+              "col": 14,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            },
+            "var": "i",
+            "body": {
+              "line": 25,
+              "col": 27,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 25,
+                  "col": 27,
+                  "kind": "send",
+                  "message": {
+                    "line": 25,
+                    "col": 32,
+                    "kind": "string",
+                    "value": "i = ${i}"
+                  },
+                  "target": {
+                    "line": 25,
+                    "col": 46,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "assign",
+            "target": "n",
+            "value": {
+              "line": 26,
+              "col": 18,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "while",
+            "condition": {
+              "line": 27,
+              "col": 15,
+              "kind": "binary",
+              "op": "LESS_THAN",
+              "left": { "line": 27, "col": 15, "kind": "var", "name": "n" },
+              "right": {
+                "line": 27,
+                "col": 19,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            },
+            "body": {
+              "line": 27,
+              "col": 21,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 27,
+                  "col": 21,
+                  "kind": "assign",
+                  "target": "n",
+                  "value": {
+                    "line": 27,
+                    "col": 30,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 27,
+                      "col": 30,
+                      "kind": "var",
+                      "name": "n"
+                    },
+                    "right": {
+                      "line": 27,
+                      "col": 34,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "foreach",
+            "var": "item",
+            "limit": null,
+            "iterable": {
+              "line": 28,
+              "col": 14,
+              "kind": "list",
+              "items": [
+                {
+                  "line": 28,
+                  "col": 15,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 28,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                {
+                  "line": 28,
+                  "col": 21,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              ]
+            },
+            "body": {
+              "line": 28,
+              "col": 32,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 28,
+                  "col": 32,
+                  "kind": "send",
+                  "message": {
+                    "line": 28,
+                    "col": 37,
+                    "kind": "string",
+                    "value": "item = ${item}"
+                  },
+                  "target": {
+                    "line": 28,
+                    "col": 57,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "async_block",
+            "body": [
+              {
+                "line": 31,
+                "col": 15,
+                "kind": "send",
+                "message": {
+                  "line": 31,
+                  "col": 20,
+                  "kind": "string",
+                  "value": "from async"
+                },
+                "target": {
+                  "line": 31,
+                  "col": 36,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 35,
+              "col": 12,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 35,
+                "col": 12,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              },
+              "right": {
+                "line": 35,
+                "col": 16,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 35,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 35,
+                  "col": 18,
+                  "kind": "if",
+                  "condition": {
+                    "line": 35,
+                    "col": 21,
+                    "kind": "binary",
+                    "op": "GREATER_THAN",
+                    "left": {
+                      "line": 35,
+                      "col": 21,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    },
+                    "right": {
+                      "line": 35,
+                      "col": 25,
+                      "kind": "number",
+                      "value": 3,
+                      "integer": true
+                    }
+                  },
+                  "then": {
+                    "line": 35,
+                    "col": 27,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 35,
+                        "col": 27,
+                        "kind": "send",
+                        "message": {
+                          "line": 35,
+                          "col": 32,
+                          "kind": "string",
+                          "value": "inner then"
+                        },
+                        "target": {
+                          "line": 35,
+                          "col": 48,
+                          "kind": "var",
+                          "name": "sender"
+                        }
+                      }
+                    ]
+                  },
+                  "else": {
+                    "line": 36,
+                    "col": 14,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 36,
+                        "col": 14,
+                        "kind": "send",
+                        "message": {
+                          "line": 36,
+                          "col": 19,
+                          "kind": "string",
+                          "value": "inner else"
+                        },
+                        "target": {
+                          "line": 36,
+                          "col": 35,
+                          "kind": "var",
+                          "name": "sender"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 4,
+      "col": 1,
+      "name": "double",
+      "async": false,
+      "params": [
+        { "line": 4, "col": 17, "name": "x", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 4,
+          "col": 29,
+          "kind": "return",
+          "value": {
+            "line": 4,
+            "col": 36,
+            "kind": "binary",
+            "op": "MULTIPLY",
+            "left": { "line": 4, "col": 36, "kind": "var", "name": "x" },
+            "right": {
+              "line": 4,
+              "col": 40,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "line": 7,
+      "col": 7,
+      "name": "tick",
+      "async": true,
+      "params": [],
+      "body": [
+        {
+          "line": 7,
+          "col": 23,
+          "kind": "wait",
+          "amount": {
+            "line": 7,
+            "col": 28,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          },
+          "unit": "ticks"
+        }
+      ]
+    }
+  ],
+  "guis": [
+    {
+      "line": 40,
+      "col": 1,
+      "name": "quick",
+      "rows": 1,
+      "title": { "line": 42, "col": 12, "kind": "string", "value": "Quick" },
+      "state": {},
+      "fill": null,
+      "border": null,
+      "slots": [
+        {
+          "slots": [ 0 ],
+          "item": {
+            "material": {
+              "line": 45,
+              "col": 23,
+              "kind": "string",
+              "value": "stone"
+            },
+            "skull": null,
+            "name": null,
+            "lore": null,
+            "amount": null,
+            "glint": null
+          },
+          "click_handlers": [
+            {
+              "filter": "left",
+              "body": [
+                {
+                  "line": 48,
+                  "col": 25,
+                  "kind": "send",
+                  "message": {
+                    "line": 48,
+                    "col": 30,
+                    "kind": "string",
+                    "value": "clicked"
+                  },
+                  "target": {
+                    "line": 48,
+                    "col": 43,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            }
+          ],
+          "refresh": null
+        }
+      ],
+      "editable": [
+        {
+          "slots": [ 8 ],
+          "on_change": [
+            {
+              "line": 52,
+              "col": 19,
+              "kind": "send",
+              "message": {
+                "line": 52,
+                "col": 24,
+                "kind": "string",
+                "value": "changed slot ${slot}"
+              },
+              "target": {
+                "line": 52,
+                "col": 50,
+                "kind": "var",
+                "name": "player"
+              }
+            }
+          ]
+        }
+      ],
+      "paginate": null,
+      "refresh": null,
+      "on_open": [
+        {
+          "line": 55,
+          "col": 13,
+          "kind": "send",
+          "message": {
+            "line": 55,
+            "col": 18,
+            "kind": "string",
+            "value": "opened"
+          },
+          "target": {
+            "line": 55,
+            "col": 30,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ],
+      "on_close": [
+        {
+          "line": 56,
+          "col": 14,
+          "kind": "send",
+          "message": {
+            "line": 56,
+            "col": 19,
+            "kind": "string",
+            "value": "closed (${reason})"
+          },
+          "target": {
+            "line": 56,
+            "col": 43,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ],
+      "on_click_fallback": [
+        {
+          "line": 57,
+          "col": 14,
+          "kind": "send",
+          "message": {
+            "line": 57,
+            "col": 19,
+            "kind": "string",
+            "value": "fallback ${slot}"
+          },
+          "target": {
+            "line": 57,
+            "col": 41,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ]
+    }
+  ],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,209 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 7,
+      "col": 1,
+      "name": "PickupItem",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 9,
+              "col": 14,
+              "kind": "string",
+              "value": "picked up ${event.item_stack}"
+            },
+            "target": {
+              "line": 9,
+              "col": 49,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 10,
+              "col": 18,
+              "kind": "prop",
+              "target": {
+                "line": 10,
+                "col": 12,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "cancelled"
+            },
+            "then": {
+              "line": 10,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 11,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 11,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "already cancelled"
+                  },
+                  "target": {
+                    "line": 11,
+                    "col": 41,
+                    "kind": "string",
+                    "value": "all"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          { "line": 13, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 18,
+      "col": 1,
+      "name": "PlayerBeginItemUse",
+      "priority": 3,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 22,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 22,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "item_use_duration",
+            "value": {
+              "line": 22,
+              "col": 40,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            }
+          },
+          { "line": 23, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 27,
+      "col": 1,
+      "name": "EntityShoot",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 29,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 29,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "power",
+            "value": {
+              "line": 29,
+              "col": 28,
+              "kind": "number",
+              "value": 2.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 30,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 30,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "spread",
+            "value": {
+              "line": 30,
+              "col": 29,
+              "kind": "number",
+              "value": 0.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 31,
+              "col": 14,
+              "kind": "string",
+              "value": "projectile ${event.projectile} towards ${event.to}"
+            },
+            "target": {
+              "line": 31,
+              "col": 70,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 39,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 41,
+              "col": 14,
+              "kind": "string",
+              "value": "spawned (first: ${event.first_spawn}) for ${event.player.name}"
+            },
+            "target": {
+              "line": 41,
+              "col": 82,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

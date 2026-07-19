@@ -1,0 +1,1 @@
+persist_dup_storage.sw:5:1: error: duplicate 'storage' block; only one storage block is allowed per script

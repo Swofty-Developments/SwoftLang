@@ -1,0 +1,1 @@
+wait_in_sync.sw:4:9: error: 'wait' is only allowed in async functions, 'execute async', or 'async { }' blocks

@@ -1,0 +1,181 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "items": [
+    {
+      "line": 7,
+      "col": 1,
+      "id": "flame_blade",
+      "material": "DIAMOND_SWORD",
+      "skull": null,
+      "name": {
+        "line": 9,
+        "col": 11,
+        "kind": "string",
+        "value": "<red>Flame Blade"
+      },
+      "rarity": "rare",
+      "glint": null,
+      "amount": null,
+      "lore": [
+        {
+          "line": 12,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 12,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>Id: ${item_id}"
+          }
+        },
+        {
+          "line": 13,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 13,
+            "col": 14,
+            "kind": "string",
+            "value": "<red>Damage: ${tags.damage}"
+          }
+        },
+        {
+          "line": 14,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 14,
+            "col": 14,
+            "kind": "string",
+            "value": "<gold>Tier ${tags.meta.tier}"
+          }
+        },
+        { "line": 15, "col": 9, "kind": "blank" },
+        {
+          "line": 16,
+          "col": 9,
+          "kind": "if",
+          "condition": {
+            "line": 16,
+            "col": 17,
+            "kind": "prop",
+            "target": {
+              "line": 16,
+              "col": 12,
+              "kind": "var",
+              "name": "tags"
+            },
+            "name": "soulbound"
+          },
+          "then": {
+            "line": 16,
+            "col": 27,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 17,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 17,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<dark_gray>Soulbound"
+                }
+              }
+            ]
+          },
+          "else": null
+        },
+        {
+          "line": 19,
+          "col": 9,
+          "kind": "loop",
+          "count": {
+            "line": 19,
+            "col": 24,
+            "kind": "prop",
+            "target": {
+              "line": 19,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 19,
+                "col": 14,
+                "kind": "var",
+                "name": "tags"
+              },
+              "name": "meta"
+            },
+            "name": "tier"
+          },
+          "var": null,
+          "body": {
+            "line": 19,
+            "col": 35,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 20,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 20,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "<yellow>*"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "attributes": {},
+      "tags": {
+        "damage": {
+          "line": 24,
+          "col": 17,
+          "kind": "number",
+          "value": 120,
+          "integer": true
+        },
+        "soulbound": {
+          "line": 25,
+          "col": 20,
+          "kind": "boolean",
+          "value": true
+        },
+        "meta": {
+          "line": 26,
+          "col": 15,
+          "kind": "map",
+          "entries": {
+            "tier": {
+              "line": 27,
+              "col": 19,
+              "kind": "number",
+              "value": 4,
+              "integer": true
+            },
+            "origin": {
+              "line": 28,
+              "col": 21,
+              "kind": "string",
+              "value": "the_nether"
+            }
+          }
+        }
+      },
+      "on_click": []
+    }
+  ]
+}

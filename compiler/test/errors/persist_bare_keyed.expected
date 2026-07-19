@@ -1,0 +1,1 @@
+persist_bare_keyed.sw:5:22: error: 'kills' is keyed by Player — use 'kills for <player>'

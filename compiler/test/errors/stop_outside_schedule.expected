@@ -1,0 +1,1 @@
+'stop' is only allowed inside an 'every', 'schedule', or 'repeat' body

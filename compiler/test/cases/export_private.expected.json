@@ -1,0 +1,213 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "exportmix",
+      "path": "cases/mod/exportmix.sw",
+      "entry": false,
+      "commands": [
+        {
+          "line": 3,
+          "col": 1,
+          "names": [ "mixcmd" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 5,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 5,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "from the module"
+                },
+                "target": {
+                  "line": 5,
+                  "col": 35,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "line": 9,
+          "col": 1,
+          "name": "PlayerJoin",
+          "priority": 0,
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 11,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 11,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "module says hi"
+                },
+                "target": {
+                  "line": 11,
+                  "col": 34,
+                  "kind": "var",
+                  "name": "player"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "functions": [
+        {
+          "line": 25,
+          "col": 8,
+          "name": "give_blade",
+          "async": false,
+          "params": [
+            {
+              "line": 25,
+              "col": 28,
+              "name": "target",
+              "type": { "base": "PLAYER" }
+            }
+          ],
+          "body": [
+            {
+              "line": 26,
+              "col": 5,
+              "kind": "give_item",
+              "id": {
+                "line": 26,
+                "col": 15,
+                "kind": "string",
+                "value": "mix_blade"
+              },
+              "target": {
+                "line": 26,
+                "col": 30,
+                "kind": "var",
+                "name": "target"
+              },
+              "amount": null
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null,
+      "items": [
+        {
+          "line": 15,
+          "col": 8,
+          "id": "mix_blade",
+          "material": "IRON_SWORD",
+          "skull": null,
+          "name": {
+            "line": 17,
+            "col": 11,
+            "kind": "string",
+            "value": "Mix Blade"
+          },
+          "rarity": null,
+          "glint": null,
+          "amount": null,
+          "lore": null,
+          "attributes": {},
+          "tags": {},
+          "on_click": [],
+          "exported": true
+        },
+        {
+          "line": 20,
+          "col": 1,
+          "id": "mix_secret",
+          "material": "STICK",
+          "skull": null,
+          "name": {
+            "line": 22,
+            "col": 11,
+            "kind": "string",
+            "value": "Secret Stick"
+          },
+          "rarity": null,
+          "glint": null,
+          "amount": null,
+          "lore": null,
+          "attributes": {},
+          "tags": {},
+          "on_click": [],
+          "exported": false
+        }
+      ]
+    },
+    {
+      "name": "export_private",
+      "path": "cases/export_private.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 3,
+          "col": 1,
+          "names": [ "blade" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 5,
+                "col": 9,
+                "kind": "call",
+                "name": "give_blade",
+                "args": [
+                  { "line": 5, "col": 20, "kind": "var", "name": "sender" }
+                ]
+              },
+              {
+                "line": 6,
+                "col": 9,
+                "kind": "give_item",
+                "id": {
+                  "line": 6,
+                  "col": 19,
+                  "kind": "string",
+                  "value": "mix_blade"
+                },
+                "target": {
+                  "line": 6,
+                  "col": 34,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "amount": null
+              }
+            ]
+          }
+        }
+      ],
+      "events": [],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    }
+  ]
+}

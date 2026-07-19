@@ -1,0 +1,647 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 109,
+      "col": 1,
+      "names": [ "storage" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 111,
+            "col": 9,
+            "kind": "open_gui",
+            "name": "storage",
+            "target": {
+              "line": 111,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            },
+            "init": {
+              "page": {
+                "line": 111,
+                "col": 51,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 112,
+            "col": 9,
+            "kind": "replace_gui",
+            "name": "confirm",
+            "target": {
+              "line": 112,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            },
+            "init": {}
+          },
+          {
+            "line": 113,
+            "col": 9,
+            "kind": "gui_back",
+            "target": {
+              "line": 113,
+              "col": 21,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 114,
+            "col": 9,
+            "kind": "close_gui",
+            "target": {
+              "line": 114,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "storage",
+      "rows": 6,
+      "title": {
+        "line": 3,
+        "col": 12,
+        "kind": "binary",
+        "op": "CONCATENATE",
+        "left": {
+          "line": 3,
+          "col": 12,
+          "kind": "binary",
+          "op": "CONCATENATE",
+          "left": {
+            "line": 3,
+            "col": 12,
+            "kind": "string",
+            "value": "Storage (page "
+          },
+          "right": {
+            "line": 3,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": {
+              "line": 3,
+              "col": 12,
+              "kind": "prop",
+              "target": {
+                "line": 3,
+                "col": 12,
+                "kind": "var",
+                "name": "state"
+              },
+              "name": "page"
+            },
+            "right": {
+              "line": 3,
+              "col": 12,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          }
+        },
+        "right": { "line": 3, "col": 12, "kind": "string", "value": ")" }
+      },
+      "state": {
+        "page": {
+          "line": 6,
+          "col": 15,
+          "kind": "number",
+          "value": 0,
+          "integer": true
+        },
+        "enabled": { "line": 7, "col": 18, "kind": "boolean", "value": true },
+        "items": { "line": 8, "col": 16, "kind": "list", "items": [] }
+      },
+      "fill": {
+        "material": {
+          "line": 11,
+          "col": 16,
+          "kind": "string",
+          "value": "BLACK_STAINED_GLASS_PANE"
+        },
+        "skull": null,
+        "name": { "line": 11, "col": 50, "kind": "string", "value": " " },
+        "lore": null,
+        "amount": null,
+        "glint": null
+      },
+      "border": {
+        "material": {
+          "line": 12,
+          "col": 18,
+          "kind": "string",
+          "value": "GRAY_STAINED_GLASS_PANE"
+        },
+        "skull": null,
+        "name": { "line": 12, "col": 51, "kind": "string", "value": " " },
+        "lore": null,
+        "amount": null,
+        "glint": { "line": 12, "col": 63, "kind": "boolean", "value": false }
+      },
+      "slots": [
+        {
+          "slots": [ 4 ],
+          "item": {
+            "material": {
+              "line": 16,
+              "col": 23,
+              "kind": "string",
+              "value": "DIAMOND"
+            },
+            "skull": null,
+            "name": {
+              "line": 17,
+              "col": 19,
+              "kind": "string",
+              "value": "<green>Toggle"
+            },
+            "lore": [
+              {
+                "line": 18,
+                "col": 20,
+                "kind": "string",
+                "value": "<gray>hi ${player.name}"
+              },
+              {
+                "line": 18,
+                "col": 47,
+                "kind": "string",
+                "value": "<gray>page ${state.page}"
+              }
+            ],
+            "amount": {
+              "line": 19,
+              "col": 21,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            },
+            "glint": {
+              "line": 20,
+              "col": 26,
+              "kind": "prop",
+              "target": {
+                "line": 20,
+                "col": 20,
+                "kind": "var",
+                "name": "state"
+              },
+              "name": "enabled"
+            }
+          },
+          "click_handlers": [
+            {
+              "filter": "right",
+              "body": [
+                {
+                  "line": 23,
+                  "col": 23,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 23,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "state"
+                  },
+                  "name": "enabled",
+                  "value": {
+                    "line": 23,
+                    "col": 34,
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ]
+            },
+            {
+              "filter": "any",
+              "body": [
+                {
+                  "line": 26,
+                  "col": 23,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 26,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "state"
+                  },
+                  "name": "page",
+                  "value": {
+                    "line": 26,
+                    "col": 37,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 26,
+                      "col": 37,
+                      "kind": "prop",
+                      "target": {
+                        "line": 26,
+                        "col": 31,
+                        "kind": "var",
+                        "name": "state"
+                      },
+                      "name": "page"
+                    },
+                    "right": {
+                      "line": 26,
+                      "col": 44,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "refresh": 20
+        },
+        {
+          "slots": [ 8 ],
+          "item": {
+            "material": null,
+            "skull": {
+              "line": 33,
+              "col": 27,
+              "kind": "prop",
+              "target": {
+                "line": 33,
+                "col": 20,
+                "kind": "var",
+                "name": "player"
+              },
+              "name": "name"
+            },
+            "name": {
+              "line": 34,
+              "col": 19,
+              "kind": "string",
+              "value": "<aqua>You"
+            },
+            "lore": null,
+            "amount": null,
+            "glint": null
+          },
+          "click_handlers": [
+            {
+              "filter": "shift_left",
+              "body": [
+                {
+                  "line": 37,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 37,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "clicked slot ${slot} with ${click_type}"
+                  },
+                  "target": {
+                    "line": 37,
+                    "col": 63,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            }
+          ],
+          "refresh": null
+        },
+        {
+          "slots": [ 0, 1, 2, 3, 5, 6, 7 ],
+          "item": {
+            "material": {
+              "line": 43,
+              "col": 23,
+              "kind": "string",
+              "value": "GRAY_STAINED_GLASS_PANE"
+            },
+            "skull": null,
+            "name": { "line": 44, "col": 19, "kind": "string", "value": " " },
+            "lore": null,
+            "amount": null,
+            "glint": null
+          },
+          "click_handlers": [],
+          "refresh": null
+        }
+      ],
+      "editable": [
+        {
+          "slots": [
+            28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43
+          ],
+          "on_change": [
+            {
+              "line": 50,
+              "col": 13,
+              "kind": "send",
+              "message": {
+                "line": 50,
+                "col": 18,
+                "kind": "string",
+                "value": "slot ${slot} changed"
+              },
+              "target": {
+                "line": 50,
+                "col": 44,
+                "kind": "var",
+                "name": "player"
+              }
+            }
+          ]
+        }
+      ],
+      "paginate": {
+        "source": {
+          "line": 55,
+          "col": 23,
+          "kind": "prop",
+          "target": { "line": 55, "col": 17, "kind": "var", "name": "state" },
+          "name": "items"
+        },
+        "slots": [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25 ],
+        "render": {
+          "material": {
+            "line": 58,
+            "col": 23,
+            "kind": "string",
+            "value": "PAPER"
+          },
+          "skull": null,
+          "name": {
+            "line": 59,
+            "col": 19,
+            "kind": "string",
+            "value": "<white>#${index}"
+          },
+          "lore": null,
+          "amount": null,
+          "glint": null
+        },
+        "on_click": [
+          {
+            "line": 62,
+            "col": 13,
+            "kind": "send",
+            "message": {
+              "line": 62,
+              "col": 18,
+              "kind": "string",
+              "value": "you picked item ${index}"
+            },
+            "target": {
+              "line": 62,
+              "col": 48,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ],
+        "prev_slot": 45,
+        "next_slot": 53
+      },
+      "refresh": 100,
+      "on_open": [
+        {
+          "line": 71,
+          "col": 9,
+          "kind": "send",
+          "message": {
+            "line": 71,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>opened storage"
+          },
+          "target": {
+            "line": 71,
+            "col": 40,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ],
+      "on_close": [
+        {
+          "line": 74,
+          "col": 9,
+          "kind": "send",
+          "message": {
+            "line": 74,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>closed (${reason})"
+          },
+          "target": {
+            "line": 74,
+            "col": 44,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ],
+      "on_click_fallback": [
+        {
+          "line": 77,
+          "col": 9,
+          "kind": "send",
+          "message": {
+            "line": 77,
+            "col": 14,
+            "kind": "string",
+            "value": "unhandled click on ${slot}"
+          },
+          "target": {
+            "line": 77,
+            "col": 46,
+            "kind": "var",
+            "name": "player"
+          }
+        }
+      ]
+    },
+    {
+      "line": 81,
+      "col": 1,
+      "name": "confirm",
+      "rows": 1,
+      "title": {
+        "line": 83,
+        "col": 12,
+        "kind": "string",
+        "value": "<red>Are you sure?"
+      },
+      "state": {},
+      "fill": null,
+      "border": null,
+      "slots": [
+        {
+          "slots": [ 3 ],
+          "item": {
+            "material": {
+              "line": 87,
+              "col": 23,
+              "kind": "string",
+              "value": "LIME_WOOL"
+            },
+            "skull": null,
+            "name": {
+              "line": 88,
+              "col": 19,
+              "kind": "string",
+              "value": "<green>Yes"
+            },
+            "lore": null,
+            "amount": null,
+            "glint": null
+          },
+          "click_handlers": [
+            {
+              "filter": "any",
+              "body": [
+                {
+                  "line": 91,
+                  "col": 13,
+                  "kind": "async_block",
+                  "body": [
+                    {
+                      "line": 92,
+                      "col": 17,
+                      "kind": "assign",
+                      "target": "answer",
+                      "value": {
+                        "line": 92,
+                        "col": 31,
+                        "kind": "call",
+                        "name": "prompt_input",
+                        "args": [
+                          {
+                            "line": 92,
+                            "col": 44,
+                            "kind": "var",
+                            "name": "player"
+                          },
+                          {
+                            "line": 92,
+                            "col": 52,
+                            "kind": "string",
+                            "value": "why?"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "line": 93,
+                      "col": 17,
+                      "kind": "send",
+                      "message": {
+                        "line": 93,
+                        "col": 22,
+                        "kind": "string",
+                        "value": "because: ${answer}"
+                      },
+                      "target": {
+                        "line": 93,
+                        "col": 46,
+                        "kind": "var",
+                        "name": "player"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "line": 95,
+                  "col": 13,
+                  "kind": "close_gui",
+                  "target": {
+                    "line": 95,
+                    "col": 27,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            }
+          ],
+          "refresh": null
+        },
+        {
+          "slots": [ 5 ],
+          "item": {
+            "material": {
+              "line": 100,
+              "col": 23,
+              "kind": "string",
+              "value": "RED_WOOL"
+            },
+            "skull": null,
+            "name": {
+              "line": 101,
+              "col": 19,
+              "kind": "string",
+              "value": "<red>No"
+            },
+            "lore": null,
+            "amount": null,
+            "glint": null
+          },
+          "click_handlers": [
+            {
+              "filter": "any",
+              "body": [
+                {
+                  "line": 104,
+                  "col": 13,
+                  "kind": "gui_back",
+                  "target": {
+                    "line": 104,
+                    "col": 25,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            }
+          ],
+          "refresh": null
+        }
+      ],
+      "editable": [],
+      "paginate": null,
+      "refresh": null,
+      "on_open": null,
+      "on_close": null,
+      "on_click_fallback": null
+    }
+  ],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

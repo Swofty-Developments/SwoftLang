@@ -1,0 +1,16 @@
+(executable
+ (name test_swoftc)
+ (libraries yojson))
+
+(rule
+ (alias runtest)
+ (deps
+  (glob_files cases/*)
+  (glob_files cases/mod/*)
+  (glob_files errors/*)
+  (glob_files errors/mod/*)
+  property-table.json
+  %{exe:../bin/main.exe}
+  %{exe:test_swoftc.exe})
+ (action
+  (run %{exe:test_swoftc.exe} %{exe:../bin/main.exe})))

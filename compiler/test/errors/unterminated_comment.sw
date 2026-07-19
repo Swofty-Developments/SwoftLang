@@ -1,0 +1,2 @@
+command "x" { }
+/* never closed

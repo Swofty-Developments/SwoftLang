@@ -1,0 +1,675 @@
+type pos = {
+  line : int;
+  col : int;
+}
+
+type data_type =
+  | DSimple of string
+  | DEither of data_type list
+  | DOptional of data_type
+  | DList of data_type
+  (* map<K, V>: K in {String, Integer} (phase 11). map<V> parses to
+     DMap (DSimple "STRING", V) — String keys are the back-compat default. *)
+  | DMap of data_type * data_type
+
+type param = {
+  p_name : string;
+  p_type : data_type option;
+  p_pos : pos;
+}
+
+(* Storage backend config: used by storage{} blocks and, since phase 6, by
+   the polar_storage_loader(...) world-loader expression, which reuses the
+   exact same backend syntax (design 6B). *)
+type backend =
+  | BFiles of string
+  | BSqlite of string
+  | BMysql of { host : string; port : int; database : string; user : string; password : string }
+  | BMongodb of string
+
+(* a map<K, V> literal key: a String literal or an Integer literal. The int is
+   carried as its source text so emit can render it as a JSON int (phase 11). *)
+type map_key =
+  | MKStr of string
+  | MKInt of string
+
+type expr = {
+  e : expr_node;
+  epos : pos;
+}
+
+and expr_node =
+  | EString of string
+  | ENumber of { value : string; integer : bool }
+  | EBool of bool
+  | ENone
+  | EVar of string
+  | EType of string
+  | EBinary of string * expr * expr
+  | EUnary of string * expr
+  | ECall of string * expr list
+  | EAllPlayers
+  | EList of expr list
+  | EProp of expr * string
+  | EPersistGet of string * expr option
+  | ELambda of { lam_async : bool; lam_params : param list; lam_body : stmt list }
+  (* nested field map inside 'send packet' values, e.g. action: { type: "...", ... } *)
+  | EMap of (string * expr) list
+  (* map<K, V> literal in value position: { "key": expr, ... } or { 1: expr, ... }.
+     Keys are all String or all Integer (phase 11); mixed keys are a checker
+     error. Distinct from EMap (packet field records with ident keys). *)
+  | EMapLit of (map_key * expr) list
+  (* polar_storage_loader(<backend config>) — a world loader over a
+     SwoftStorage backend, same syntax as storage{} backends (design 6B) *)
+  | ELoaderStorage of backend
+  (* schedule [after <dur>] [every <dur>] [as "name"] { body } — returns a
+     Schedule value; the body is async-colored and runs on the AsyncRuntime.
+     'run' (1-based iteration counter) and 'stop' are bound inside the body *)
+  | ESchedule of {
+      sc_after : int option;
+      sc_every : int option;
+      sc_name : string option;
+      sc_body : stmt list;
+    }
+
+and skin =
+  | SkBuiltin of string
+  | SkPlayer of expr
+  | SkCustom of expr * expr
+
+(* npc skin form (first-class npc construct): a bare username String (fetched
+   from Mojang, async+cached at runtime) OR skin(texture, signature) direct
+   properties. Distinct from the tablist-entry `skin` above, which offers the
+   builtin palette / 'skin of <player>' forms. *)
+and npc_skin =
+  | NpcSkinUsername of expr
+  | NpcSkinTexture of expr * expr
+
+and stmt = {
+  s : stmt_node;
+  spos : pos;
+}
+
+and stmt_node =
+  | SSend of expr * expr option
+  | SBroadcast of expr
+  | STeleport of expr * expr
+  | SHalt
+  | SCancelEvent
+  | SIf of expr * stmt * stmt option
+  | SBlock of stmt list
+  | SAssign of string * expr
+  | SSetProp of expr * string * expr
+  | SLoop of expr * string option * stmt
+  | SWhile of expr * stmt
+  | SForeach of { fe_var : string; fe_limit : expr option; fe_iter : expr; fe_body : stmt }
+  (* map foreach (phase 10): loop m as key -> value { body } — binds the String
+     key and the V value over each entry of the map *)
+  | SForeachMap of { fm_key : string; fm_val : string; fm_map : expr; fm_body : stmt }
+  | SCall of string * expr list
+  | SReturn of expr option
+  | SWait of expr * string
+  | SSpawn of string * expr list
+  | SAsyncBlock of stmt list
+  | SOpenGui of gui_open
+  | SReplaceGui of gui_open
+  | SCloseGui of expr
+  | SGuiBack of expr
+  | SShowScoreboard of string * expr
+  | SHideScoreboard of expr
+  | SUpdateScoreboard of expr
+  | SShowTablist of string * expr
+  | SHideTablist of expr
+  | SSetTablistPart of string * expr * expr
+  | STitle of {
+      t_title : expr;
+      t_subtitle : expr option;
+      t_target : expr;
+      t_fade_in : int option;
+      t_stay : int option;
+      t_fade_out : int option;
+    }
+  | SClearTitle of expr
+  | SActionbar of { ab_text : expr; ab_target : expr; ab_duration : int option }
+  | SShowBossbar of string * expr
+  | SHideBossbar of string * expr
+  | SSetBossbarPart of { bp_name : string; bp_part : string; bp_value : expr; bp_target : expr }
+  | SBelowname of expr * expr
+  | SSetBelownameScore of expr * expr
+  | SClearBelowname of expr
+  | SLine of expr
+  | SBlank
+  | SEntry of expr * skin
+  | SFill of skin
+  | SPersistSet of string * expr option * expr
+  | SGiveItem of { gi_id : expr; gi_target : expr; gi_amount : expr option }
+  | SSpawnMob of { sm_id : expr; sm_at : expr; sm_as : string option }
+  | SDespawnMob of expr
+  | SSetNametag of {
+      nt_part : string option; (* None = whole nametag; Some prefix|suffix|color *)
+      nt_target : expr;
+      nt_value : expr;
+      nt_viewer : expr option; (* None = all viewers *)
+    }
+  | SResetNametag of { rn_target : expr; rn_viewer : expr option }
+  | SSendPacket of { sp_name : string; sp_fields : (string * expr) list; sp_target : expr }
+  | SCancelPacket
+  (* --- phase-6 display entities --- *)
+  | SShowDisplay of { sh_display : expr; sh_target : expr }
+  | SHideDisplay of { hi_display : expr; hi_target : expr }
+  | SMountDisplay of { mo_display : expr; mo_entity : expr }
+  | STeleportDisplay of { tp_display : expr; tp_to : expr }
+  | SDestroyDisplay of expr
+  (* --- phase-6 http --- *)
+  | SReply of { rp_code : expr option; rp_body : expr }
+  (* --- phase-6 NBS songs --- *)
+  | SPlaySong of {
+      ps_song : expr;
+      ps_target : expr option; (* 'to <target>' form *)
+      ps_tick : expr option; (* optional 'at tick N' start offset *)
+      ps_at : expr option; (* 'at <location> radius R' form *)
+      ps_radius : expr option;
+    }
+  | SPauseSong of expr
+  | SResumeSong of expr
+  | SStopSong of expr
+  | SBroadcastSong of expr
+  | SSongVolume of { vo_target : expr; vo_volume : expr }
+  | SFadeSong of { fa_target : expr; fa_volume : expr; fa_ticks : int }
+  (* --- phase-6 blocks --- *)
+  | SSetBlock of { bl_at : expr; bl_block : expr }
+  | SFillBlocks of { fb_from : expr; fb_to : expr; fb_block : expr }
+  (* --- phase-6 sounds --- *)
+  | SPlaySound of {
+      sn_sound : expr;
+      sn_target : expr;
+      sn_at : expr option;
+      sn_volume : expr option;
+      sn_pitch : expr option;
+    }
+  | SStopSound of { so_sound : expr option; so_target : expr }
+  (* --- phase-6 particles --- *)
+  | SSpawnParticle of {
+      pa_particle : expr;
+      pa_at : expr;
+      pa_count : expr option;
+      pa_offset : (expr * expr * expr) option;
+      pa_speed : expr option;
+      pa_viewer : expr option; (* None = all viewers *)
+    }
+  (* --- phase-6 MOTD --- *)
+  | SSetServerMotd of expr
+  (* --- phase-6 toasts --- *)
+  | SShowToast of {
+      to_title : expr;
+      to_description : expr option;
+      to_icon : expr option;
+      to_frame : (string * pos) option; (* task | goal | challenge *)
+      to_target : expr;
+    }
+  (* --- phase-6 map canvases --- *)
+  | SDrawPixel of { px_canvas : expr; px_x : expr; px_y : expr; px_color : expr }
+  | SDrawRect of {
+      rc_canvas : expr;
+      rc_x1 : expr;
+      rc_y1 : expr;
+      rc_x2 : expr;
+      rc_y2 : expr;
+      rc_color : expr;
+    }
+  | SDrawText of { tx_canvas : expr; tx_x : expr; tx_y : expr; tx_text : expr; tx_color : expr }
+  | SGiveMap of { gm_canvas : expr; gm_target : expr }
+  (* --- phase-6 schedulers --- *)
+  | SCancelSchedule of expr
+  (* --- phase-11 scheduler v2 --- *)
+  (* 'stop': cancel the enclosing schedule/repeat after the current run.
+     Legal only inside an every/schedule/repeat body. *)
+  | SStop
+  (* 'repeat <count> times [every <dur>] { body }': run the body 'count'
+     times, spaced by 'every' (default immediate/consecutive ticks). 'run'
+     and 'stop' are bound inside the body; async-colored like a schedule. *)
+  | SRepeat of { rp_count : expr; rp_every : int option; rp_body : stmt list }
+  (* --- phase-6 worlds --- *)
+  | SCreateWorld of { cw_name : expr; cw_readonly : bool; cw_loader : expr }
+  | SLoadWorld of { lw_name : expr; lw_loader : expr }
+  | SUnloadWorld of { uw_name : expr; uw_save : bool; uw_teleport : expr option }
+  | SSaveWorld of expr
+  | SCloneWorld of { cl_from : expr; cl_to : expr; cl_loader : expr }
+  | SDeleteWorld of { dw_name : expr; dw_loader : expr }
+  | SImportWorld of { iw_path : expr; iw_name : expr; iw_loader : expr }
+  (* --- phase-7 entities --- *)
+  | SSpawnEntity of { se_type : expr; se_at : expr; se_as : string option }
+  | SRemoveEntity of expr
+  | SMount of { m_rider : expr; m_vehicle : expr }
+  | SDismount of expr
+  | SLaunchProjectile of {
+      lp_type : expr;
+      lp_from : expr;
+      lp_velocity : expr option; (* 'with velocity <vec>' *)
+      lp_speed : expr option; (* 'with speed N' — look direction * speed *)
+      lp_as : string option;
+    }
+  (* --- phase-9 dispenser runtime: 'dispense from <location>' fires the
+     dispenser/dropper block at that location --- *)
+  | SDispenseFrom of expr
+  (* --- first-class holograms + npcs (GROUP C/D) --- *)
+  (* show hologram "n" to <target>; hide hologram "n" from <target> *)
+  | SShowHologram of string * expr
+  | SHideHologram of string * expr
+  (* set hologram "n" line <k> to <expr> *)
+  | SSetHologramLine of { shl_name : string; shl_index : expr; shl_value : expr }
+  (* move hologram "n" to <location> *)
+  | SMoveHologram of string * expr
+  | SRemoveHologram of string
+  (* set npc "n" skin <form> / name <expr> / location <expr>; remove npc "n" *)
+  | SSetNpcSkin of { sns_name : string; sns_skin : npc_skin }
+  | SSetNpcName of { snn_name : string; snn_value : expr }
+  | SSetNpcLocation of { snl_name : string; snl_value : expr }
+  | SRemoveNpc of string
+
+and gui_open = {
+  go_name : string;
+  go_target : expr;
+  go_init : (string * expr) list;
+}
+
+type argument = {
+  arg_name : string;
+  arg_type : data_type;
+  arg_default : string option;
+  arg_pos : pos;
+}
+
+type exec_block = {
+  ex_async : bool;
+  ex_stmts : stmt list;
+}
+
+type command = {
+  names : string list;
+  permission : string option;
+  description : string option;
+  arguments : argument list;
+  execute : exec_block option;
+  cmd_pos : pos;
+}
+
+type event = {
+  ev_name : string;
+  priority : int;
+  ev_execute : exec_block option;
+  ev_pos : pos;
+}
+
+type func = {
+  fn_name : string;
+  fn_async : bool;
+  fn_exported : bool;
+  params : param list;
+  body : stmt list;
+  fn_pos : pos;
+}
+
+type item_spec = {
+  is_material : expr option;
+  is_skull : expr option;
+  is_name : expr option;
+  is_lore : expr list option;
+  is_amount : expr option;
+  is_glint : expr option;
+  is_pos : pos;
+}
+
+type click_handler = {
+  ch_filter : string;
+  ch_body : stmt list;
+}
+
+(* first-class inline event handler on an item/mob/hologram/npc declaration
+   (W-inline-handlers): on_<event>(binders) { body }. The event name is checked
+   against the declaration kind's fixed handler table (registry.ml); the binder
+   names are user-chosen and bind positionally to the fixed parameter types,
+   with `this` bound to the kind's instance type. Body is sync-colored. *)
+type inline_handler = {
+  ih_event : string;
+  ih_params : (string * pos) list; (* user binder names + positions *)
+  ih_body : stmt list;
+  ih_pos : pos;
+}
+
+type gui_slot = {
+  gs_slots : int list;
+  gs_item : item_spec;
+  gs_clicks : click_handler list;
+  gs_refresh : int option;
+  gs_pos : pos;
+}
+
+type gui_editable = {
+  ge_slots : int list;
+  ge_on_change : stmt list option;
+  ge_pos : pos;
+}
+
+type gui_paginate = {
+  gp_source : expr;
+  gp_slots : int list;
+  gp_render : item_spec;
+  gp_on_click : stmt list option;
+  gp_prev_slot : int option;
+  gp_next_slot : int option;
+  gp_pos : pos;
+}
+
+type fill_value =
+  | FSpec of item_spec
+  | FExpr of expr
+
+type gui = {
+  g_name : string;
+  g_exported : bool;
+  g_rows : int;
+  g_title : expr;
+  g_state : (string * expr) list;
+  g_fill : fill_value option;
+  g_border : fill_value option;
+  g_slots : gui_slot list;
+  g_editable : gui_editable list;
+  g_paginate : gui_paginate option;
+  g_refresh : int option;
+  g_on_open : stmt list option;
+  g_on_close : stmt list option;
+  g_on_click : stmt list option;
+  g_pos : pos;
+}
+
+type update_spec =
+  | UTicks of int
+  | UManual
+
+type scoreboard = {
+  sb_name : string;
+  sb_exported : bool;
+  sb_title : expr;
+  sb_update : update_spec;
+  sb_numbers : string;
+  sb_lines : stmt list;
+  sb_pos : pos;
+}
+
+type tab_column = {
+  col_body : stmt list;
+  col_pos : pos;
+}
+
+type tablist = {
+  tl_name : string;
+  tl_exported : bool;
+  tl_update : update_spec;
+  tl_header : expr option;
+  tl_footer : expr option;
+  tl_columns : tab_column list;
+  tl_pos : pos;
+}
+
+type bossbar = {
+  bb_name : string;
+  bb_exported : bool;
+  bb_text : expr;
+  bb_progress : expr;
+  bb_color : string;
+  bb_style : string;
+  bb_update : update_spec;
+  bb_pos : pos;
+}
+
+(* first-class hologram declaration (GROUP D). One stack of text-display
+   entities per (hologram, viewer-scope); lines use the restricted line-DSL
+   (line/blank/if/loop) shared with scoreboards. h_per_viewer is computed by
+   the emitter (a line interpolating a player-scoped path forces per-viewer
+   render, like scoreboards). *)
+type hologram = {
+  h_name : string;
+  h_exported : bool;
+  h_location : expr;
+  h_billboard : string; (* center | vertical | horizontal | fixed (default center) *)
+  h_billboard_pos : pos; (* position of the billboard value, for the enum error *)
+  h_scale : expr option;
+  h_update : update_spec;
+  h_lines : stmt list; (* restricted DSL: line/blank/if/loop *)
+  (* first-class handlers: on_click / on_line_click (W-inline-handlers) *)
+  h_handlers : inline_handler list;
+  h_pos : pos;
+}
+
+(* first-class npc declaration (GROUP C): a fake player entity. skin is a
+   username String (Mojang-fetched) or skin(texture, signature). name +
+   on_click(player)/on_left_click(player) are per-viewer / interaction hooks. *)
+type npc = {
+  n_name : string;
+  n_exported : bool;
+  n_location : expr;
+  n_display_name : expr option; (* overhead name, MiniMessage, per-viewer capable *)
+  n_skin : npc_skin option;
+  n_look_at_players : bool; (* head tracks nearest player *)
+  n_on_click : (string * stmt list) option; (* right-click: (player binder, body) *)
+  n_on_left_click : (string * stmt list) option;
+  (* generic handler path (reconciled with on_click/on_left_click above): used
+     to surface unknown-handler errors for any other on_<name> (W-inline-handlers) *)
+  n_handlers : inline_handler list;
+  n_pos : pos;
+}
+
+type storage_conf = {
+  st_backend : backend;
+  st_flush_ticks : int;
+  st_pos : pos;
+}
+
+type persistent_decl = {
+  pd_name : string;
+  pd_subject : data_type option;
+  pd_type : data_type;
+  pd_default : expr;
+  pd_pos : pos;
+}
+
+(* --- phase-5 content declarations (reduced to the generic core in phase 9:
+   stats{}/ability{} are gone — gameplay systems are built in userland with
+   event handlers; the language keeps identity, appearance, lore, and NBT) --- *)
+
+type item_decl = {
+  it_id : string;
+  it_exported : bool;
+  it_material : string option; (* XOR skull *)
+  it_skull : string option;
+  it_name : expr option;
+  it_rarity : (string * pos) option; (* vanilla rarity component: common..epic *)
+  it_glint : expr option;
+  it_amount : expr option; (* default stack size on give (phase 9) *)
+  it_lore : stmt list option; (* restricted DSL: line/blank/if/loop — WYSIWYG *)
+  it_attributes : (string * pos * expr) list;
+  (* nested NBT (phase 9): values are scalars, EList lists, or EMap compounds *)
+  it_tags : (string * expr) list;
+  (* on_click(left|right|any) sugar: filtered PlayerUseItem handlers for this
+     item id, emitted like gui click handlers (phase 9) *)
+  it_on_click : click_handler list;
+  (* additive first-class handlers: on_right_click / on_left_click /
+     on_right_click_block / on_attack_entity / on_consume / on_drop /
+     on_pickup / on_swap_to / on_break (W-inline-handlers) *)
+  it_handlers : inline_handler list;
+  it_pos : pos;
+}
+
+type mob_drop = {
+  dr_id : string;
+  dr_pos : pos;
+  dr_chance : expr;
+  dr_amount : expr option;
+}
+
+type mob_decl = {
+  mb_id : string;
+  mb_exported : bool;
+  mb_type : (string * pos) option; (* required; checked against EntityType names *)
+  mb_name : expr option;
+  mb_health : expr option;
+  mb_damage : expr option;
+  mb_speed : expr option;
+  mb_ai : (string * pos) option; (* melee | passive | none *)
+  mb_drops : mob_drop list;
+  mb_on_spawn : stmt list option;
+  mb_on_death : stmt list option;
+  mb_on_attack : stmt list option;
+  (* on_hit(attacker) { }: fired when this mob is damaged; binds 'mob' and the
+     named 'attacker' (optional<Player>). The string is the attacker binder. *)
+  mb_on_hit : (string * stmt list) option;
+  (* additive first-class handlers: on_click / on_attack / on_target / on_tick
+     (on_spawn/on_death/on_hit keep their dedicated fields above)
+     (W-inline-handlers) *)
+  mb_handlers : inline_handler list;
+  mb_pos : pos;
+}
+
+type packet_listener = {
+  pk_name : string;
+  pk_execute : exec_block option;
+  pk_pos : pos;
+}
+
+(* --- phase-8 fishing loot tables --- *)
+
+(* one 'catch item|mob "id" weight N [message "..."]' row of a fishing_loot
+   table; weight is a declaration constant (folded like mob drop chances) *)
+type fishing_catch = {
+  fc_mob : bool; (* false = item catch, true = mob catch *)
+  fc_id : string;
+  fc_weight : expr;
+  fc_message : string option;
+  fc_pos : pos;
+}
+
+(* fishing_loot "name" { medium: water|lava, world: "...", catch ... } —
+   matched at runtime by medium + optional world name; weighted rows *)
+type fishing_loot = {
+  fl_name : string;
+  fl_medium : (string * pos) option; (* required; validated water | lava *)
+  fl_world : string option;
+  fl_catches : fishing_catch list;
+  fl_pos : pos;
+}
+
+type auth =
+  | AuthOffline
+  | AuthMojang
+  | AuthVelocity of string
+  | AuthBungeecord
+
+(* server{} http { port, bind } — the JDK-httpserver API endpoint (design 6B) *)
+type http_conf = {
+  hc_port : int;
+  hc_bind : string;
+}
+
+(* server{} fishing { min_bite, max_bite } — the randomized bite window of the
+   native fishing engine, in ticks (phase 8) *)
+type fishing_conf = {
+  fi_min_bite : int;
+  fi_max_bite : int;
+}
+
+type server_conf = {
+  sv_auth : auth;
+  sv_host : string option;
+  sv_port : int option;
+  sv_brand : string option;
+  sv_motd : string option;
+  sv_http : http_conf option;
+  sv_fishing : fishing_conf option; (* bite window of the fishing engine (phase 8) *)
+  sv_favicon : string option; (* png path, base64'd at boot (design 6D) *)
+  sv_permissions : (string * string list) list; (* user -> permission list *)
+  sv_open_to_lan : bool;
+  sv_lighting : bool; (* whether world lighting is computed/sent (default true) *)
+  sv_pos : pos;
+}
+
+(* api "/path/:param" { method: GET, execute { ... } } — handlers are
+   async-colored by default (they run off-thread on virtual threads) *)
+type api_decl = {
+  api_path : string;
+  api_method : (string * pos) option; (* GET|POST|PUT|DELETE|ANY; None = ANY *)
+  api_execute : exec_block option;
+  api_pos : pos;
+}
+
+(* top-level 'every <duration> { body }' — async-colored, starts at boot *)
+type sched_decl = {
+  sd_every : int; (* ticks *)
+  sd_name : string option; (* 'every <dur> as "name"' — named registry entry *)
+  sd_body : stmt list;
+  sd_pos : pos;
+}
+
+(* --- phase-6 module system --- *)
+
+(* import "name" (script dir, then the addon search path) or
+   import "./relative.sw" (relative to the importing file) *)
+type import_decl = {
+  im_spec : string;
+  im_pos : pos;
+}
+
+(* module-level 'var name = expr': private module state, typed by inference
+   from the initializer, non-persistent, initialized at load in dependency
+   order *)
+type module_var = {
+  mv_name : string;
+  mv_value : expr;
+  mv_pos : pos;
+}
+
+type script = {
+  imports : import_decl list;
+  module_vars : module_var list;
+  commands : command list;
+  events : event list;
+  functions : func list;
+  guis : gui list;
+  scoreboards : scoreboard list;
+  tablists : tablist list;
+  bossbars : bossbar list;
+  holograms : hologram list;
+  npcs : npc list;
+  servers : server_conf list;
+  storages : storage_conf list;
+  persistents : persistent_decl list;
+  items : item_decl list;
+  mobs : mob_decl list;
+  packet_listeners : packet_listener list;
+  apis : api_decl list;
+  schedulers : sched_decl list;
+  fishing_loots : fishing_loot list;
+}
+
+(* Constant-fold a numeric declaration-field expression (mob health/damage/
+   speed, drop chance/amount, item attributes/amount): number literals, unary
+   minus, and + - * / % over folded operands. Anything else - variables,
+   properties, calls - is not a declaration constant and yields None. The
+   Java loader only accepts literal scalars for these fields, so the checker
+   requires foldability and the emitter serializes the folded literal. *)
+let rec fold_number (e : expr) : float option =
+  match e.e with
+  | ENumber { value; _ } -> float_of_string_opt value
+  | EUnary ("NEGATE", operand) -> Option.map (fun f -> -.f) (fold_number operand)
+  | EBinary (op, left, right) -> (
+    match (fold_number left, fold_number right) with
+    | Some a, Some b -> (
+      match op with
+      | "ADD" -> Some (a +. b)
+      | "SUBTRACT" -> Some (a -. b)
+      | "MULTIPLY" -> Some (a *. b)
+      | "DIVIDE" -> if b = 0.0 then None else Some (a /. b)
+      | "MODULO" -> if b = 0.0 then None else Some (Float.rem a b)
+      | _ -> None)
+    | _ -> None)
+  | _ -> None

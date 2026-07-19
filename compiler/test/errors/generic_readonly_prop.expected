@@ -1,0 +1,1 @@
+generic_readonly_prop.sw:3:19: error: property 'projectile' on event<EntityShoot> is read-only

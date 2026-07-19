@@ -1,0 +1,421 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 3,
+      "col": 1,
+      "names": [ "arena" ],
+      "permission": null,
+      "description": null,
+      "arguments": [
+        {
+          "line": 5,
+          "col": 9,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "assign",
+            "target": "loader",
+            "value": {
+              "line": 8,
+              "col": 23,
+              "kind": "call",
+              "name": "polar_loader",
+              "args": [
+                {
+                  "line": 8,
+                  "col": 36,
+                  "kind": "string",
+                  "value": "worlds/"
+                }
+              ]
+            }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 9,
+              "col": 12,
+              "kind": "call",
+              "name": "world_exists",
+              "args": [
+                {
+                  "line": 9,
+                  "col": 30,
+                  "kind": "prop",
+                  "target": {
+                    "line": 9,
+                    "col": 25,
+                    "kind": "var",
+                    "name": "args"
+                  },
+                  "name": "name"
+                },
+                { "line": 9, "col": 36, "kind": "var", "name": "loader" }
+              ]
+            },
+            "then": {
+              "line": 9,
+              "col": 44,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 10,
+                  "col": 13,
+                  "kind": "load_world",
+                  "name": {
+                    "line": 10,
+                    "col": 29,
+                    "kind": "prop",
+                    "target": {
+                      "line": 10,
+                      "col": 24,
+                      "kind": "var",
+                      "name": "args"
+                    },
+                    "name": "name"
+                  },
+                  "loader": {
+                    "line": 10,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "loader"
+                  }
+                },
+                {
+                  "line": 11,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 11,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<green>Loaded ${args.name}"
+                  },
+                  "target": {
+                    "line": 11,
+                    "col": 50,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 12,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 13,
+                  "col": 13,
+                  "kind": "create_world",
+                  "name": {
+                    "line": 13,
+                    "col": 31,
+                    "kind": "prop",
+                    "target": {
+                      "line": 13,
+                      "col": 26,
+                      "kind": "var",
+                      "name": "args"
+                    },
+                    "name": "name"
+                  },
+                  "readonly": false,
+                  "loader": {
+                    "line": 13,
+                    "col": 41,
+                    "kind": "var",
+                    "name": "loader"
+                  }
+                },
+                {
+                  "line": 14,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 14,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<yellow>Created ${args.name}"
+                  },
+                  "target": {
+                    "line": 14,
+                    "col": 52,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "foreach",
+            "var": "w",
+            "limit": null,
+            "iterable": {
+              "line": 16,
+              "col": 14,
+              "kind": "call",
+              "name": "all_worlds",
+              "args": [
+                { "line": 16, "col": 25, "kind": "var", "name": "loader" }
+              ]
+            },
+            "body": {
+              "line": 17,
+              "col": 13,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 17,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 17,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "world: ${w}"
+                  },
+                  "target": {
+                    "line": 17,
+                    "col": 35,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 21,
+      "col": 1,
+      "names": [ "arenaadmin" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "create_world",
+            "name": {
+              "line": 23,
+              "col": 22,
+              "kind": "string",
+              "value": "template"
+            },
+            "readonly": true,
+            "loader": {
+              "line": 23,
+              "col": 47,
+              "kind": "call",
+              "name": "anvil_loader",
+              "args": [
+                {
+                  "line": 23,
+                  "col": 60,
+                  "kind": "string",
+                  "value": "template-world/"
+                }
+              ]
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "clone_world",
+            "from": {
+              "line": 24,
+              "col": 21,
+              "kind": "string",
+              "value": "template"
+            },
+            "to": {
+              "line": 24,
+              "col": 35,
+              "kind": "string",
+              "value": "arena-live"
+            },
+            "loader": {
+              "line": 24,
+              "col": 53,
+              "kind": "call",
+              "name": "polar_loader",
+              "args": [
+                {
+                  "line": 24,
+                  "col": 66,
+                  "kind": "string",
+                  "value": "worlds/"
+                }
+              ]
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "save_world",
+            "name": {
+              "line": 25,
+              "col": 20,
+              "kind": "string",
+              "value": "arena-live"
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "unload_world",
+            "name": {
+              "line": 26,
+              "col": 22,
+              "kind": "string",
+              "value": "arena-live"
+            },
+            "save": false,
+            "teleport": {
+              "line": 26,
+              "col": 73,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 26,
+                  "col": 82,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 26,
+                  "col": 85,
+                  "kind": "number",
+                  "value": 100,
+                  "integer": true
+                },
+                {
+                  "line": 26,
+                  "col": 90,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "delete_world",
+            "name": {
+              "line": 27,
+              "col": 22,
+              "kind": "string",
+              "value": "arena-live"
+            },
+            "loader": {
+              "line": 27,
+              "col": 40,
+              "kind": "call",
+              "name": "polar_loader",
+              "args": [
+                {
+                  "line": 27,
+                  "col": 53,
+                  "kind": "string",
+                  "value": "worlds/"
+                }
+              ]
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "unload_world",
+            "name": {
+              "line": 28,
+              "col": 22,
+              "kind": "string",
+              "value": "template"
+            },
+            "save": true,
+            "teleport": null
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "import_world",
+            "path": {
+              "line": 29,
+              "col": 28,
+              "kind": "string",
+              "value": "vanilla-world/"
+            },
+            "name": {
+              "line": 29,
+              "col": 48,
+              "kind": "string",
+              "value": "lobby"
+            },
+            "loader": {
+              "line": 29,
+              "col": 61,
+              "kind": "loader_storage",
+              "backend": { "kind": "sqlite", "path": "worlds.db" }
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "import_world",
+            "path": {
+              "line": 30,
+              "col": 28,
+              "kind": "string",
+              "value": "hub-src/"
+            },
+            "name": {
+              "line": 30,
+              "col": 42,
+              "kind": "string",
+              "value": "hub"
+            },
+            "loader": {
+              "line": 30,
+              "col": 53,
+              "kind": "loader_storage",
+              "backend": { "kind": "files", "path": "world-store" }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}
