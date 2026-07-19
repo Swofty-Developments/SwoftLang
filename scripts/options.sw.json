@@ -1,0 +1,633 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 16,
+      "col": 1,
+      "names": [ "options" ],
+      "permission": null,
+      "description": "Showcase of option types, narrowing and otherwise chains",
+      "arguments": [
+        {
+          "line": 20,
+          "col": 9,
+          "name": "who",
+          "type": {
+            "base": "OPTIONAL",
+            "subtypes": [ { "base": "PLAYER" } ]
+          },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "assign",
+            "target": "missing_player",
+            "value": {
+              "line": 25,
+              "col": 31,
+              "kind": "call",
+              "name": "player",
+              "args": [
+                { "line": 25, "col": 38, "kind": "string", "value": "Notch" }
+              ]
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 26,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 26,
+                "col": 12,
+                "kind": "var",
+                "name": "missing_player"
+              }
+            },
+            "then": {
+              "line": 26,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 27,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 27,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "found ${missing_player.name}"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 28,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 29,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 29,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "nobody called Notch here"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 31,
+              "col": 12,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 31,
+                "col": 12,
+                "kind": "unary",
+                "op": "EXISTS",
+                "operand": {
+                  "line": 31,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "missing_player"
+                }
+              }
+            },
+            "then": {
+              "line": 31,
+              "col": 38,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 32,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 32,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "confirmed: still missing"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "assign",
+            "target": "label",
+            "value": { "line": 36, "col": 22, "kind": "none" }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "assign",
+            "target": "title",
+            "value": {
+              "line": 37,
+              "col": 22,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 37,
+                "col": 22,
+                "kind": "var",
+                "name": "label"
+              },
+              "right": {
+                "line": 37,
+                "col": 38,
+                "kind": "string",
+                "value": "guest"
+              }
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 38,
+              "col": 14,
+              "kind": "string",
+              "value": "title = ${title}"
+            },
+            "target": null
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "assign",
+            "target": "fallback",
+            "value": {
+              "line": 41,
+              "col": 25,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 41,
+                "col": 25,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 41,
+                  "col": 25,
+                  "kind": "call",
+                  "name": "player",
+                  "args": [
+                    {
+                      "line": 41,
+                      "col": 32,
+                      "kind": "string",
+                      "value": "Alex"
+                    }
+                  ]
+                },
+                "right": {
+                  "line": 41,
+                  "col": 50,
+                  "kind": "call",
+                  "name": "player",
+                  "args": [
+                    {
+                      "line": 41,
+                      "col": 57,
+                      "kind": "string",
+                      "value": "Steve"
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "line": 41,
+                "col": 76,
+                "kind": "string",
+                "value": "console"
+              }
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 42,
+              "col": 14,
+              "kind": "string",
+              "value": "fallback = ${fallback}"
+            },
+            "target": null
+          },
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 45,
+              "col": 17,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 45,
+                "col": 17,
+                "kind": "prop",
+                "target": {
+                  "line": 45,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "who"
+              }
+            },
+            "then": {
+              "line": 45,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 46,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 46,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "who = ${args.who.name}"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 47,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 48,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 48,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "no who argument supplied"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "where",
+            "value": {
+              "line": 52,
+              "col": 22,
+              "kind": "call",
+              "name": "describe",
+              "args": [
+                {
+                  "line": 52,
+                  "col": 31,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 52,
+                      "col": 40,
+                      "kind": "number",
+                      "value": 0.5,
+                      "integer": false
+                    },
+                    {
+                      "line": 52,
+                      "col": 45,
+                      "kind": "number",
+                      "value": 64.0,
+                      "integer": false
+                    },
+                    {
+                      "line": 52,
+                      "col": 51,
+                      "kind": "number",
+                      "value": 0.5,
+                      "integer": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 53,
+              "col": 14,
+              "kind": "string",
+              "value": "spawn is ${where}"
+            },
+            "target": null
+          },
+          {
+            "line": 56,
+            "col": 9,
+            "kind": "assign",
+            "target": "target",
+            "value": {
+              "line": 56,
+              "col": 23,
+              "kind": "call",
+              "name": "find_target",
+              "args": [
+                {
+                  "line": 56,
+                  "col": 35,
+                  "kind": "string",
+                  "value": "Herobrine"
+                }
+              ]
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 57,
+              "col": 12,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 57,
+                "col": 12,
+                "kind": "var",
+                "name": "target"
+              }
+            },
+            "then": {
+              "line": 57,
+              "col": 26,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 58,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 58,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "target found"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 59,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 60,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 60,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "no target - falling back"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 62,
+            "col": 9,
+            "kind": "assign",
+            "target": "safe",
+            "value": {
+              "line": 62,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 62,
+                "col": 21,
+                "kind": "call",
+                "name": "find_target",
+                "args": [
+                  {
+                    "line": 62,
+                    "col": 33,
+                    "kind": "string",
+                    "value": "Herobrine"
+                  }
+                ]
+              },
+              "right": {
+                "line": 62,
+                "col": 56,
+                "kind": "var",
+                "name": "sender"
+              }
+            }
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 63,
+              "col": 14,
+              "kind": "string",
+              "value": "safe = ${safe}"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "find_target",
+      "async": false,
+      "params": [
+        {
+          "line": 1,
+          "col": 22,
+          "name": "name",
+          "type": { "base": "STRING" }
+        }
+      ],
+      "body": [
+        {
+          "line": 2,
+          "col": 5,
+          "kind": "assign",
+          "target": "found",
+          "value": {
+            "line": 2,
+            "col": 18,
+            "kind": "call",
+            "name": "player",
+            "args": [
+              { "line": 2, "col": 25, "kind": "var", "name": "name" }
+            ]
+          }
+        },
+        {
+          "line": 3,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 3,
+            "col": 8,
+            "kind": "unary",
+            "op": "EXISTS",
+            "operand": {
+              "line": 3,
+              "col": 8,
+              "kind": "var",
+              "name": "found"
+            }
+          },
+          "then": {
+            "line": 3,
+            "col": 21,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 4,
+                "col": 9,
+                "kind": "return",
+                "value": {
+                  "line": 4,
+                  "col": 16,
+                  "kind": "var",
+                  "name": "found"
+                }
+              }
+            ]
+          },
+          "else": null
+        }
+      ]
+    },
+    {
+      "line": 8,
+      "col": 1,
+      "name": "describe",
+      "async": false,
+      "params": [
+        {
+          "line": 8,
+          "col": 19,
+          "name": "dest",
+          "type": {
+            "base": "EITHER",
+            "subtypes": [ { "base": "PLAYER" }, { "base": "LOCATION" } ]
+          }
+        }
+      ],
+      "body": [
+        {
+          "line": 9,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 9,
+            "col": 8,
+            "kind": "binary",
+            "op": "IS_TYPE",
+            "left": { "line": 9, "col": 8, "kind": "var", "name": "dest" },
+            "right": {
+              "line": 9,
+              "col": 18,
+              "kind": "type",
+              "name": "Player"
+            }
+          },
+          "then": {
+            "line": 9,
+            "col": 25,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 10,
+                "col": 9,
+                "kind": "return",
+                "value": {
+                  "line": 10,
+                  "col": 16,
+                  "kind": "string",
+                  "value": "a player"
+                }
+              }
+            ]
+          },
+          "else": {
+            "line": 11,
+            "col": 12,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 12,
+                "col": 9,
+                "kind": "return",
+                "value": {
+                  "line": 12,
+                  "col": 16,
+                  "kind": "string",
+                  "value": "a location at x=${dest.x}"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

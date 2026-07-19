@@ -1,0 +1,577 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "music",
+      "path": "addons/music.sw",
+      "entry": false,
+      "commands": [],
+      "events": [],
+      "functions": [
+        {
+          "line": 18,
+          "col": 8,
+          "name": "play_song_near",
+          "async": false,
+          "params": [
+            {
+              "line": 18,
+              "col": 32,
+              "name": "song_file",
+              "type": { "base": "STRING" }
+            },
+            {
+              "line": 18,
+              "col": 51,
+              "name": "center",
+              "type": { "base": "LOCATION" }
+            },
+            {
+              "line": 18,
+              "col": 69,
+              "name": "radius",
+              "type": { "base": "DOUBLE" }
+            }
+          ],
+          "body": [
+            {
+              "line": 19,
+              "col": 5,
+              "kind": "play_song",
+              "song": {
+                "line": 19,
+                "col": 15,
+                "kind": "var",
+                "name": "song_file"
+              },
+              "target": null,
+              "tick": null,
+              "at": {
+                "line": 19,
+                "col": 28,
+                "kind": "var",
+                "name": "center"
+              },
+              "radius": {
+                "line": 19,
+                "col": 42,
+                "kind": "var",
+                "name": "radius"
+              }
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 23,
+          "col": 8,
+          "name": "play_song_for_all",
+          "async": false,
+          "params": [
+            {
+              "line": 23,
+              "col": 35,
+              "name": "song_file",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 24,
+              "col": 5,
+              "kind": "play_song",
+              "song": {
+                "line": 24,
+                "col": 15,
+                "kind": "var",
+                "name": "song_file"
+              },
+              "target": { "line": 24, "col": 28, "kind": "all_players" },
+              "tick": null,
+              "at": null,
+              "radius": null
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 28,
+          "col": 8,
+          "name": "stop_all_songs",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 29,
+              "col": 5,
+              "kind": "stop_song",
+              "target": { "line": 29, "col": 18, "kind": "all_players" }
+            }
+          ],
+          "exported": true
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null
+    },
+    {
+      "name": "addons-demo",
+      "path": "scripts/addons-demo.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 44,
+          "col": 1,
+          "names": [ "holo-demo" ],
+          "permission": null,
+          "description": "Per-viewer hologram lifecycle (needs a live world)",
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 48,
+                "col": 9,
+                "kind": "show_hologram",
+                "name": "welcome",
+                "target": {
+                  "line": 48,
+                  "col": 36,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              {
+                "line": 49,
+                "col": 9,
+                "kind": "set_hologram_line",
+                "name": "welcome",
+                "index": {
+                  "line": 49,
+                  "col": 37,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                "value": {
+                  "line": 49,
+                  "col": 42,
+                  "kind": "string",
+                  "value": "<gray>rewritten in place"
+                }
+              },
+              {
+                "line": 50,
+                "col": 9,
+                "kind": "move_hologram",
+                "name": "welcome",
+                "to": {
+                  "line": 50,
+                  "col": 36,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 50,
+                      "col": 45,
+                      "kind": "number",
+                      "value": 4.5,
+                      "integer": false
+                    },
+                    {
+                      "line": 50,
+                      "col": 50,
+                      "kind": "number",
+                      "value": 83.0,
+                      "integer": false
+                    },
+                    {
+                      "line": 50,
+                      "col": 56,
+                      "kind": "number",
+                      "value": 0.5,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              {
+                "line": 51,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 51,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "hologram 'welcome' shown - it greets you by name"
+                },
+                "target": {
+                  "line": 51,
+                  "col": 68,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 55,
+          "col": 1,
+          "names": [ "holo-off" ],
+          "permission": null,
+          "description": "Hide the demo hologram from you",
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 59,
+                "col": 9,
+                "kind": "hide_hologram",
+                "name": "welcome",
+                "target": {
+                  "line": 59,
+                  "col": 38,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 63,
+          "col": 1,
+          "names": [ "npc-demo" ],
+          "permission": null,
+          "description": "Retarget the first-class NPC (needs a live world)",
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 67,
+                "col": 9,
+                "kind": "set_npc_name",
+                "name": "guide",
+                "value": {
+                  "line": 67,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "<aqua>Renamed Guide"
+                }
+              },
+              {
+                "line": 68,
+                "col": 9,
+                "kind": "set_npc_location",
+                "name": "guide",
+                "value": {
+                  "line": 68,
+                  "col": 34,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 68,
+                      "col": 43,
+                      "kind": "number",
+                      "value": 4.5,
+                      "integer": false
+                    },
+                    {
+                      "line": 68,
+                      "col": 48,
+                      "kind": "number",
+                      "value": 64.0,
+                      "integer": false
+                    },
+                    {
+                      "line": 68,
+                      "col": 54,
+                      "kind": "number",
+                      "value": 4.5,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              {
+                "line": 69,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 69,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "NPC 'guide' updated - right-click it, it watches you"
+                },
+                "target": {
+                  "line": 69,
+                  "col": 72,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 73,
+          "col": 1,
+          "names": [ "music-demo" ],
+          "permission": null,
+          "description": "Song helpers (needs songs in scripts/songs/)",
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 77,
+                "col": 9,
+                "kind": "call",
+                "name": "play_song_near",
+                "args": [
+                  {
+                    "line": 77,
+                    "col": 24,
+                    "kind": "string",
+                    "value": "demo.nbs"
+                  },
+                  {
+                    "line": 77,
+                    "col": 43,
+                    "kind": "prop",
+                    "target": {
+                      "line": 77,
+                      "col": 36,
+                      "kind": "var",
+                      "name": "sender"
+                    },
+                    "name": "location"
+                  },
+                  {
+                    "line": 77,
+                    "col": 53,
+                    "kind": "number",
+                    "value": 16.0,
+                    "integer": false
+                  }
+                ]
+              },
+              {
+                "line": 78,
+                "col": 9,
+                "kind": "call",
+                "name": "play_song_for_all",
+                "args": [
+                  {
+                    "line": 78,
+                    "col": 27,
+                    "kind": "string",
+                    "value": "demo.nbs"
+                  }
+                ]
+              },
+              {
+                "line": 79,
+                "col": 9,
+                "kind": "call",
+                "name": "stop_all_songs",
+                "args": []
+              },
+              {
+                "line": 80,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 80,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "music helpers exercised"
+                },
+                "target": {
+                  "line": 80,
+                  "col": 43,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "events": [],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null,
+      "holograms": [
+        {
+          "line": 17,
+          "col": 1,
+          "name": "welcome",
+          "location": {
+            "line": 18,
+            "col": 15,
+            "kind": "call",
+            "name": "location",
+            "args": [
+              {
+                "line": 18,
+                "col": 24,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              },
+              {
+                "line": 18,
+                "col": 29,
+                "kind": "number",
+                "value": 82.0,
+                "integer": false
+              },
+              {
+                "line": 18,
+                "col": 35,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              }
+            ]
+          },
+          "billboard": "center",
+          "scale": {
+            "line": 20,
+            "col": 12,
+            "kind": "number",
+            "value": 1.5,
+            "integer": false
+          },
+          "update": { "kind": "ticks", "value": 40 },
+          "per_viewer": true,
+          "lines": [
+            {
+              "line": 23,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 23,
+                "col": 14,
+                "kind": "string",
+                "value": "<gold><bold>SwoftLang"
+              }
+            },
+            { "line": 24, "col": 9, "kind": "blank" },
+            {
+              "line": 25,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 25,
+                "col": 14,
+                "kind": "string",
+                "value": "<gray>first-class holograms"
+              }
+            },
+            {
+              "line": 26,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 26,
+                "col": 14,
+                "kind": "string",
+                "value": "<yellow>Hi ${player.name}"
+              }
+            }
+          ],
+          "exported": false
+        }
+      ],
+      "npcs": [
+        {
+          "line": 34,
+          "col": 1,
+          "name": "guide",
+          "location": {
+            "line": 35,
+            "col": 15,
+            "kind": "call",
+            "name": "location",
+            "args": [
+              {
+                "line": 35,
+                "col": 24,
+                "kind": "number",
+                "value": 2.5,
+                "integer": false
+              },
+              {
+                "line": 35,
+                "col": 29,
+                "kind": "number",
+                "value": 64.0,
+                "integer": false
+              },
+              {
+                "line": 35,
+                "col": 35,
+                "kind": "number",
+                "value": 2.5,
+                "integer": false
+              }
+            ]
+          },
+          "display_name": {
+            "line": 36,
+            "col": 11,
+            "kind": "string",
+            "value": "<green>Village Guide"
+          },
+          "skin": {
+            "kind": "username",
+            "username": {
+              "line": 37,
+              "col": 11,
+              "kind": "string",
+              "value": "Notch"
+            }
+          },
+          "look_at_players": true,
+          "on_click": {
+            "param": "player",
+            "body": [
+              {
+                "line": 40,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 40,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "<gold>Guide<gray> says: welcome, ${player.name}!"
+                },
+                "target": {
+                  "line": 40,
+                  "col": 68,
+                  "kind": "var",
+                  "name": "player"
+                }
+              }
+            ]
+          },
+          "on_left_click": null,
+          "exported": false
+        }
+      ]
+    }
+  ]
+}

@@ -20,7 +20,7 @@ event PlayerJoin {
     priority: 5
 
     execute {
-        send "<green>Welcome ${event.player.name.content}!" to all
-        send "Hello ${event.player.name.content}!" to event.player
+        send "<green>Welcome ${event.player.name}!" to all
+        send "Hello ${event.player.name}!" to event.player
     }
 }

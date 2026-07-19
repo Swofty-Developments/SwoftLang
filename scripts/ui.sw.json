@@ -1,0 +1,547 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 47,
+      "col": 1,
+      "names": [ "ui" ],
+      "permission": null,
+      "description": "UI statement showcase",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 51,
+            "col": 9,
+            "kind": "show_scoreboard",
+            "name": "main",
+            "target": {
+              "line": 51,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "update_scoreboard",
+            "target": {
+              "line": 52,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 54,
+            "col": 9,
+            "kind": "show_tablist",
+            "name": "lobby",
+            "target": {
+              "line": 54,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 55,
+            "col": 9,
+            "kind": "set_tablist_part",
+            "part": "header",
+            "value": {
+              "line": 55,
+              "col": 31,
+              "kind": "string",
+              "value": "<red>Maintenance"
+            },
+            "target": {
+              "line": 55,
+              "col": 54,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "show_bossbar",
+            "name": "objective",
+            "target": {
+              "line": 57,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 58,
+            "col": 9,
+            "kind": "set_bossbar_part",
+            "name": "objective",
+            "part": "progress",
+            "value": {
+              "line": 58,
+              "col": 45,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            },
+            "target": {
+              "line": 58,
+              "col": 53,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "title",
+            "title": {
+              "line": 60,
+              "col": 15,
+              "kind": "string",
+              "value": "<gold>WELCOME"
+            },
+            "subtitle": {
+              "line": 60,
+              "col": 40,
+              "kind": "string",
+              "value": "<gray>to SwoftLang"
+            },
+            "target": {
+              "line": 60,
+              "col": 64,
+              "kind": "var",
+              "name": "sender"
+            },
+            "fade_in": 20,
+            "stay": 60,
+            "fade_out": 10
+          },
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "actionbar",
+            "text": {
+              "line": 61,
+              "col": 19,
+              "kind": "string",
+              "value": "<aqua>boost!"
+            },
+            "target": {
+              "line": 61,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            },
+            "duration": 100
+          },
+          {
+            "line": 62,
+            "col": 9,
+            "kind": "belowname",
+            "text": {
+              "line": 62,
+              "col": 19,
+              "kind": "string",
+              "value": "<red>hearts"
+            },
+            "target": {
+              "line": 62,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "set_belowname_score",
+            "value": {
+              "line": 63,
+              "col": 39,
+              "kind": "prop",
+              "target": {
+                "line": 63,
+                "col": 32,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "health"
+            },
+            "target": {
+              "line": 63,
+              "col": 50,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 67,
+      "col": 1,
+      "names": [ "uihide" ],
+      "permission": null,
+      "description": "Hide every UI element again",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 71,
+            "col": 9,
+            "kind": "hide_scoreboard",
+            "target": {
+              "line": 71,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "hide_tablist",
+            "target": {
+              "line": 72,
+              "col": 27,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 73,
+            "col": 9,
+            "kind": "hide_bossbar",
+            "name": "objective",
+            "target": {
+              "line": 73,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 74,
+            "col": 9,
+            "kind": "clear_title",
+            "target": {
+              "line": 74,
+              "col": 25,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 75,
+            "col": 9,
+            "kind": "clear_belowname",
+            "target": {
+              "line": 75,
+              "col": 29,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "main",
+      "title": {
+        "line": 2,
+        "col": 12,
+        "kind": "string",
+        "value": "<yellow><bold>SWOFTLANG"
+      },
+      "update": { "kind": "ticks", "value": 4 },
+      "numbers": "hidden",
+      "lines": [
+        {
+          "line": 7,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 7,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>${player.name}"
+          }
+        },
+        { "line": 8, "col": 9, "kind": "blank" },
+        {
+          "line": 9,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 9,
+            "col": 14,
+            "kind": "string",
+            "value": " <white>Health: <red>${player.health}"
+          }
+        },
+        {
+          "line": 10,
+          "col": 9,
+          "kind": "if",
+          "condition": {
+            "line": 10,
+            "col": 19,
+            "kind": "binary",
+            "op": "GREATER_THAN",
+            "left": {
+              "line": 10,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 10,
+                "col": 12,
+                "kind": "var",
+                "name": "player"
+              },
+              "name": "level"
+            },
+            "right": {
+              "line": 10,
+              "col": 27,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            }
+          },
+          "then": {
+            "line": 10,
+            "col": 29,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 11,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 11,
+                  "col": 18,
+                  "kind": "string",
+                  "value": " <white>Level: <aqua>${player.level}"
+                }
+              }
+            ]
+          },
+          "else": {
+            "line": 12,
+            "col": 16,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 13,
+                "col": 13,
+                "kind": "line",
+                "text": {
+                  "line": 13,
+                  "col": 18,
+                  "kind": "string",
+                  "value": " <white>Level: <gray>none yet"
+                }
+              }
+            ]
+          }
+        },
+        { "line": 15, "col": 9, "kind": "blank" },
+        {
+          "line": 16,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 16,
+            "col": 14,
+            "kind": "string",
+            "value": "<yellow>www.swofty.net"
+          }
+        }
+      ]
+    }
+  ],
+  "tablists": [
+    {
+      "line": 20,
+      "col": 1,
+      "name": "lobby",
+      "update": { "kind": "ticks", "value": 60 },
+      "header": {
+        "line": 22,
+        "col": 13,
+        "kind": "string",
+        "value": "<aqua>You are playing on <yellow><bold>SWOFTY.NET"
+      },
+      "footer": {
+        "line": 23,
+        "col": 13,
+        "kind": "string",
+        "value": "<green>Have fun!"
+      },
+      "columns": [
+        {
+          "line": 25,
+          "col": 5,
+          "body": [
+            {
+              "line": 26,
+              "col": 9,
+              "kind": "entry",
+              "text": {
+                "line": 26,
+                "col": 15,
+                "kind": "call",
+                "name": "centered",
+                "args": [
+                  {
+                    "line": 26,
+                    "col": 24,
+                    "kind": "string",
+                    "value": "Players"
+                  }
+                ]
+              },
+              "skin": { "kind": "builtin", "name": "green" }
+            },
+            {
+              "line": 27,
+              "col": 9,
+              "kind": "foreach",
+              "var": "p",
+              "limit": {
+                "line": 27,
+                "col": 20,
+                "kind": "number",
+                "value": 18,
+                "integer": true
+              },
+              "iterable": {
+                "line": 27,
+                "col": 26,
+                "kind": "call",
+                "name": "all_players",
+                "args": []
+              },
+              "body": {
+                "line": 27,
+                "col": 45,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 28,
+                    "col": 13,
+                    "kind": "entry",
+                    "text": {
+                      "line": 28,
+                      "col": 19,
+                      "kind": "string",
+                      "value": "${p.display_name}"
+                    },
+                    "skin": {
+                      "kind": "player",
+                      "expr": {
+                        "line": 28,
+                        "col": 52,
+                        "kind": "var",
+                        "name": "p"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "line": 30,
+              "col": 9,
+              "kind": "fill",
+              "skin": { "kind": "builtin", "name": "gray" }
+            }
+          ]
+        },
+        {
+          "line": 32,
+          "col": 5,
+          "body": [
+            {
+              "line": 33,
+              "col": 9,
+              "kind": "entry",
+              "text": {
+                "line": 33,
+                "col": 15,
+                "kind": "call",
+                "name": "centered",
+                "args": [
+                  {
+                    "line": 33,
+                    "col": 24,
+                    "kind": "string",
+                    "value": "Server Info"
+                  }
+                ]
+              },
+              "skin": { "kind": "builtin", "name": "cyan" }
+            },
+            {
+              "line": 34,
+              "col": 9,
+              "kind": "entry",
+              "text": {
+                "line": 34,
+                "col": 15,
+                "kind": "string",
+                "value": "Latency: ${player.latency}ms"
+              },
+              "skin": { "kind": "builtin", "name": "gray" }
+            },
+            {
+              "line": 35,
+              "col": 9,
+              "kind": "fill",
+              "skin": { "kind": "builtin", "name": "gray" }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bossbars": [
+    {
+      "line": 39,
+      "col": 1,
+      "name": "objective",
+      "text": {
+        "line": 40,
+        "col": 11,
+        "kind": "string",
+        "value": "Objective: <yellow>collect wood"
+      },
+      "progress": {
+        "line": 41,
+        "col": 22,
+        "kind": "prop",
+        "target": { "line": 41, "col": 15, "kind": "var", "name": "player" },
+        "name": "exp"
+      },
+      "color": "yellow",
+      "style": "progress",
+      "update": { "kind": "ticks", "value": 30 }
+    }
+  ],
+  "server": null
+}

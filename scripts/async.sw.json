@@ -1,0 +1,336 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 11,
+      "col": 1,
+      "names": [ "burst" ],
+      "permission": null,
+      "description": "Sync entry point that fires an async block",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 15,
+              "col": 14,
+              "kind": "string",
+              "value": "sync: before async block"
+            },
+            "target": null
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "async_block",
+            "body": [
+              {
+                "line": 17,
+                "col": 13,
+                "kind": "wait",
+                "amount": {
+                  "line": 17,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 60,
+                  "integer": true
+                },
+                "unit": "millis"
+              },
+              {
+                "line": 18,
+                "col": 13,
+                "kind": "send",
+                "message": {
+                  "line": 18,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "async block: finished after 60ms"
+                },
+                "target": null
+              }
+            ]
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 20,
+              "col": 14,
+              "kind": "string",
+              "value": "sync: after async block (no waiting here)"
+            },
+            "target": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 24,
+      "col": 1,
+      "names": [ "asyncdemo" ],
+      "permission": null,
+      "description": "Async command handler with waits, spawn and async return values",
+      "arguments": [],
+      "execute": {
+        "async": true,
+        "statements": [
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "wait",
+            "amount": {
+              "line": 28,
+              "col": 14,
+              "kind": "number",
+              "value": 40,
+              "integer": true
+            },
+            "unit": "millis"
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 29,
+              "col": 14,
+              "kind": "string",
+              "value": "task: starting"
+            },
+            "target": null
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "assign",
+            "target": "doubled",
+            "value": {
+              "line": 30,
+              "col": 24,
+              "kind": "call",
+              "name": "fetch_score",
+              "args": [
+                {
+                  "line": 30,
+                  "col": 36,
+                  "kind": "number",
+                  "value": 21,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 31,
+              "col": 14,
+              "kind": "string",
+              "value": "task: fetch_score(21) = ${doubled}"
+            },
+            "target": null
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "wait",
+            "amount": {
+              "line": 32,
+              "col": 14,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            },
+            "unit": "ticks"
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 33,
+              "col": 14,
+              "kind": "string",
+              "value": "task: tick wait done"
+            },
+            "target": null
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "spawn",
+            "call": {
+              "name": "farewell",
+              "args": [
+                {
+                  "line": 34,
+                  "col": 24,
+                  "kind": "string",
+                  "value": "swofty"
+                }
+              ]
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 35,
+              "col": 14,
+              "kind": "string",
+              "value": "task: farewell spawned"
+            },
+            "target": null
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "assign",
+            "target": "total",
+            "value": {
+              "line": 36,
+              "col": 22,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 36,
+                "col": 22,
+                "kind": "call",
+                "name": "fetch_score",
+                "args": [
+                  { "line": 36, "col": 34, "kind": "var", "name": "doubled" }
+                ]
+              },
+              "right": {
+                "line": 36,
+                "col": 45,
+                "kind": "number",
+                "value": 16,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 37,
+              "col": 14,
+              "kind": "string",
+              "value": "task: total = ${total}"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 1,
+      "col": 7,
+      "name": "fetch_score",
+      "async": true,
+      "params": [
+        {
+          "line": 1,
+          "col": 28,
+          "name": "base",
+          "type": { "base": "INTEGER" }
+        }
+      ],
+      "body": [
+        {
+          "line": 2,
+          "col": 5,
+          "kind": "wait",
+          "amount": {
+            "line": 2,
+            "col": 10,
+            "kind": "number",
+            "value": 50,
+            "integer": true
+          },
+          "unit": "millis"
+        },
+        {
+          "line": 3,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 3,
+            "col": 12,
+            "kind": "binary",
+            "op": "MULTIPLY",
+            "left": { "line": 3, "col": 12, "kind": "var", "name": "base" },
+            "right": {
+              "line": 3,
+              "col": 19,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "line": 6,
+      "col": 7,
+      "name": "farewell",
+      "async": true,
+      "params": [
+        {
+          "line": 6,
+          "col": 25,
+          "name": "name",
+          "type": { "base": "STRING" }
+        }
+      ],
+      "body": [
+        {
+          "line": 7,
+          "col": 5,
+          "kind": "wait",
+          "amount": {
+            "line": 7,
+            "col": 10,
+            "kind": "number",
+            "value": 80,
+            "integer": true
+          },
+          "unit": "millis"
+        },
+        {
+          "line": 8,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 8,
+            "col": 10,
+            "kind": "string",
+            "value": "goodbye, ${name}"
+          },
+          "target": null
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

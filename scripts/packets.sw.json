@@ -1,0 +1,413 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 8,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "set_nametag",
+            "part": null,
+            "target": {
+              "line": 10,
+              "col": 30,
+              "kind": "prop",
+              "target": {
+                "line": 10,
+                "col": 24,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            },
+            "value": {
+              "line": 10,
+              "col": 40,
+              "kind": "string",
+              "value": "<red>[ADMIN] ${event.player.name}"
+            },
+            "viewer": null
+          },
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "set_nametag",
+            "part": "prefix",
+            "target": {
+              "line": 11,
+              "col": 37,
+              "kind": "prop",
+              "target": {
+                "line": 11,
+                "col": 31,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            },
+            "value": {
+              "line": 11,
+              "col": 47,
+              "kind": "string",
+              "value": "&6[VIP] "
+            },
+            "viewer": {
+              "line": 11,
+              "col": 68,
+              "kind": "prop",
+              "target": {
+                "line": 11,
+                "col": 62,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "set_nametag",
+            "part": "color",
+            "target": {
+              "line": 12,
+              "col": 36,
+              "kind": "prop",
+              "target": {
+                "line": 12,
+                "col": 30,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            },
+            "value": {
+              "line": 12,
+              "col": 46,
+              "kind": "string",
+              "value": "red"
+            },
+            "viewer": null
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "set_nametag",
+            "part": "suffix",
+            "target": {
+              "line": 13,
+              "col": 37,
+              "kind": "prop",
+              "target": {
+                "line": 13,
+                "col": 31,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            },
+            "value": {
+              "line": 13,
+              "col": 47,
+              "kind": "string",
+              "value": " &7(AFK)"
+            },
+            "viewer": {
+              "line": 13,
+              "col": 62,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "reset_nametag",
+            "target": {
+              "line": 14,
+              "col": 32,
+              "kind": "prop",
+              "target": {
+                "line": 14,
+                "col": 26,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            },
+            "viewer": {
+              "line": 14,
+              "col": 43,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "send_packet",
+            "name": "ParticlePacket",
+            "fields": {
+              "particle": {
+                "line": 17,
+                "col": 23,
+                "kind": "string",
+                "value": "minecraft:flame"
+              },
+              "overrideLimiter": {
+                "line": 18,
+                "col": 30,
+                "kind": "boolean",
+                "value": false
+              },
+              "longDistance": {
+                "line": 18,
+                "col": 51,
+                "kind": "boolean",
+                "value": false
+              },
+              "x": {
+                "line": 19,
+                "col": 16,
+                "kind": "number",
+                "value": 100.5,
+                "integer": false
+              },
+              "y": {
+                "line": 19,
+                "col": 26,
+                "kind": "number",
+                "value": 65.0,
+                "integer": false
+              },
+              "z": {
+                "line": 19,
+                "col": 35,
+                "kind": "number",
+                "value": 20.5,
+                "integer": false
+              },
+              "offsetX": {
+                "line": 20,
+                "col": 22,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              },
+              "offsetY": {
+                "line": 20,
+                "col": 36,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              },
+              "offsetZ": {
+                "line": 20,
+                "col": 50,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              },
+              "maxSpeed": {
+                "line": 21,
+                "col": 23,
+                "kind": "number",
+                "value": 0.01,
+                "integer": false
+              },
+              "particleCount": {
+                "line": 21,
+                "col": 44,
+                "kind": "number",
+                "value": 40,
+                "integer": true
+              }
+            },
+            "target": {
+              "line": 22,
+              "col": 20,
+              "kind": "prop",
+              "target": {
+                "line": 22,
+                "col": 14,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send_packet",
+            "name": "TeamsPacket",
+            "fields": {
+              "teamName": {
+                "line": 25,
+                "col": 23,
+                "kind": "string",
+                "value": "nt_lobby"
+              },
+              "action": {
+                "line": 26,
+                "col": 21,
+                "kind": "map",
+                "entries": {
+                  "type": {
+                    "line": 27,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "CreateTeamAction"
+                  },
+                  "displayName": {
+                    "line": 28,
+                    "col": 30,
+                    "kind": "string",
+                    "value": ""
+                  },
+                  "friendlyFlags": {
+                    "line": 29,
+                    "col": 32,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  },
+                  "nameTagVisibility": {
+                    "line": 30,
+                    "col": 36,
+                    "kind": "string",
+                    "value": "ALWAYS"
+                  },
+                  "collisionRule": {
+                    "line": 31,
+                    "col": 32,
+                    "kind": "string",
+                    "value": "ALWAYS"
+                  },
+                  "teamColor": {
+                    "line": 32,
+                    "col": 28,
+                    "kind": "string",
+                    "value": "gold"
+                  },
+                  "teamPrefix": {
+                    "line": 33,
+                    "col": 29,
+                    "kind": "string",
+                    "value": "&6[MVP] "
+                  },
+                  "teamSuffix": {
+                    "line": 34,
+                    "col": 29,
+                    "kind": "string",
+                    "value": ""
+                  },
+                  "entities": {
+                    "line": 35,
+                    "col": 27,
+                    "kind": "list",
+                    "items": [
+                      {
+                        "line": 35,
+                        "col": 28,
+                        "kind": "string",
+                        "value": "Swofty"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "target": {
+              "line": 37,
+              "col": 14,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "packet_listeners": [
+    {
+      "line": 41,
+      "col": 1,
+      "name": "ClientPlayerDiggingPacket",
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 43,
+              "col": 19,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": {
+                "line": 43,
+                "col": 19,
+                "kind": "prop",
+                "target": {
+                  "line": 43,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "packet"
+                },
+                "name": "status"
+              },
+              "right": {
+                "line": 43,
+                "col": 29,
+                "kind": "string",
+                "value": "STARTED_DIGGING"
+              }
+            },
+            "then": {
+              "line": 43,
+              "col": 47,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 44,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 44,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<red>No mining in the lobby."
+                  },
+                  "target": {
+                    "line": 44,
+                    "col": 52,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                },
+                { "line": 45, "col": 13, "kind": "cancel_packet" }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    }
+  ]
+}

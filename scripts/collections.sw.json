@@ -1,0 +1,749 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 5,
+      "col": 1,
+      "names": [ "leaderboard" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "assign",
+            "target": "kills",
+            "value": {
+              "line": 9,
+              "col": 22,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": 101,
+                  "value": {
+                    "line": 9,
+                    "col": 29,
+                    "kind": "number",
+                    "value": 12,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 102,
+                  "value": {
+                    "line": 9,
+                    "col": 38,
+                    "kind": "number",
+                    "value": 30,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 103,
+                  "value": {
+                    "line": 9,
+                    "col": 47,
+                    "kind": "number",
+                    "value": 7,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 104,
+                  "value": {
+                    "line": 9,
+                    "col": 55,
+                    "kind": "number",
+                    "value": 21,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              { "line": 13, "col": 13, "kind": "var", "name": "kills" },
+              {
+                "line": 13,
+                "col": 22,
+                "kind": "number",
+                "value": 103,
+                "integer": true
+              },
+              {
+                "line": 13,
+                "col": 29,
+                "kind": "number",
+                "value": 8,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              { "line": 14, "col": 17, "kind": "var", "name": "kills" },
+              {
+                "line": 14,
+                "col": 24,
+                "kind": "number",
+                "value": 105,
+                "integer": true
+              },
+              {
+                "line": 14,
+                "col": 29,
+                "kind": "number",
+                "value": 30,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "assign",
+            "target": "ranked",
+            "value": {
+              "line": 19,
+              "col": 23,
+              "kind": "call",
+              "name": "sort_by_value_desc",
+              "args": [
+                { "line": 19, "col": 42, "kind": "var", "name": "kills" }
+              ]
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 21,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 21,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 21,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "leaderboard ("
+                },
+                "right": {
+                  "line": 21,
+                  "col": 14,
+                  "kind": "call",
+                  "name": "map_size",
+                  "args": [
+                    {
+                      "line": 21,
+                      "col": 14,
+                      "kind": "var",
+                      "name": "ranked"
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "line": 21,
+                "col": 14,
+                "kind": "string",
+                "value": " players):"
+              }
+            },
+            "target": {
+              "line": 21,
+              "col": 62,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "foreach_map",
+            "key": "id",
+            "value": "score",
+            "map": { "line": 22, "col": 14, "kind": "var", "name": "ranked" },
+            "body": {
+              "line": 22,
+              "col": 36,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 23,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 23,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "player ${id}: ${score} kills"
+                  },
+                  "target": {
+                    "line": 23,
+                    "col": 52,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "assign",
+            "target": "best",
+            "value": {
+              "line": 28,
+              "col": 21,
+              "kind": "call",
+              "name": "max_by",
+              "args": [
+                {
+                  "line": 28,
+                  "col": 28,
+                  "kind": "call",
+                  "name": "map_keys",
+                  "args": [
+                    { "line": 28, "col": 37, "kind": "var", "name": "kills" }
+                  ]
+                },
+                {
+                  "line": 28,
+                  "col": 45,
+                  "kind": "lambda",
+                  "async": false,
+                  "params": [
+                    { "line": 28, "col": 54, "name": "id", "type": null }
+                  ],
+                  "body": [
+                    {
+                      "line": 28,
+                      "col": 58,
+                      "kind": "return",
+                      "value": {
+                        "line": 28,
+                        "col": 70,
+                        "kind": "binary",
+                        "op": "OR_ELSE",
+                        "left": {
+                          "line": 28,
+                          "col": 70,
+                          "kind": "call",
+                          "name": "map_get",
+                          "args": [
+                            {
+                              "line": 28,
+                              "col": 65,
+                              "kind": "var",
+                              "name": "kills"
+                            },
+                            {
+                              "line": 28,
+                              "col": 71,
+                              "kind": "var",
+                              "name": "id"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "line": 28,
+                          "col": 85,
+                          "kind": "number",
+                          "value": 0,
+                          "integer": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 29,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 29,
+                "col": 14,
+                "kind": "string",
+                "value": "leader is player "
+              },
+              "right": {
+                "line": 29,
+                "col": 14,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 29,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "best"
+                },
+                "right": {
+                  "line": 29,
+                  "col": 14,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              }
+            },
+            "target": {
+              "line": 29,
+              "col": 56,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 33,
+      "col": 1,
+      "names": [ "loot" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "assign",
+            "target": "pool",
+            "value": {
+              "line": 36,
+              "col": 21,
+              "kind": "list",
+              "items": [
+                { "line": 36, "col": 22, "kind": "string", "value": "sword" },
+                {
+                  "line": 36,
+                  "col": 31,
+                  "kind": "string",
+                  "value": "shield"
+                },
+                {
+                  "line": 36,
+                  "col": 41,
+                  "kind": "string",
+                  "value": "potion"
+                },
+                { "line": 36, "col": 51, "kind": "string", "value": "gold" },
+                { "line": 36, "col": 59, "kind": "string", "value": "gem" }
+              ]
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "assign",
+            "target": "bag",
+            "value": {
+              "line": 37,
+              "col": 20,
+              "kind": "call",
+              "name": "shuffle",
+              "args": [
+                { "line": 37, "col": 28, "kind": "var", "name": "pool" }
+              ]
+            }
+          },
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 39,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 39,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 39,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "rolling "
+                },
+                "right": {
+                  "line": 39,
+                  "col": 14,
+                  "kind": "call",
+                  "name": "length",
+                  "args": [
+                    { "line": 39, "col": 14, "kind": "var", "name": "bag" }
+                  ]
+                }
+              },
+              "right": {
+                "line": 39,
+                "col": 14,
+                "kind": "string",
+                "value": " items:"
+              }
+            },
+            "target": {
+              "line": 39,
+              "col": 49,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "foreach",
+            "var": "item",
+            "limit": null,
+            "iterable": {
+              "line": 40,
+              "col": 14,
+              "kind": "var",
+              "name": "bag"
+            },
+            "body": {
+              "line": 40,
+              "col": 26,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 42,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 42,
+                    "col": 16,
+                    "kind": "call",
+                    "name": "random_chance",
+                    "args": [
+                      {
+                        "line": 42,
+                        "col": 30,
+                        "kind": "number",
+                        "value": 0.4,
+                        "integer": false
+                      }
+                    ]
+                  },
+                  "then": {
+                    "line": 42,
+                    "col": 35,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 43,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 43,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "dropped ${item}"
+                        },
+                        "target": {
+                          "line": 43,
+                          "col": 43,
+                          "kind": "var",
+                          "name": "sender"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 48,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 48,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 48,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 48,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "pool still has "
+                },
+                "right": {
+                  "line": 48,
+                  "col": 14,
+                  "kind": "call",
+                  "name": "length",
+                  "args": [
+                    { "line": 48, "col": 14, "kind": "var", "name": "pool" }
+                  ]
+                }
+              },
+              "right": {
+                "line": 48,
+                "col": 14,
+                "kind": "string",
+                "value": " items"
+              }
+            },
+            "target": {
+              "line": 48,
+              "col": 56,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "weights",
+            "value": {
+              "line": 52,
+              "col": 24,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": 1,
+                  "value": {
+                    "line": 52,
+                    "col": 29,
+                    "kind": "number",
+                    "value": 60,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 2,
+                  "value": {
+                    "line": 52,
+                    "col": 36,
+                    "kind": "number",
+                    "value": 30,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 3,
+                  "value": {
+                    "line": 52,
+                    "col": 43,
+                    "kind": "number",
+                    "value": 9,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": 4,
+                  "value": {
+                    "line": 52,
+                    "col": 49,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "assign",
+            "target": "by_weight",
+            "value": {
+              "line": 53,
+              "col": 26,
+              "kind": "call",
+              "name": "sort_by_value_desc",
+              "args": [
+                { "line": 53, "col": 45, "kind": "var", "name": "weights" }
+              ]
+            }
+          },
+          {
+            "line": 54,
+            "col": 9,
+            "kind": "foreach",
+            "var": "tier",
+            "limit": null,
+            "iterable": {
+              "line": 54,
+              "col": 14,
+              "kind": "call",
+              "name": "map_keys",
+              "args": [
+                { "line": 54, "col": 23, "kind": "var", "name": "by_weight" }
+              ]
+            },
+            "body": {
+              "line": 54,
+              "col": 42,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 55,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 55,
+                    "col": 18,
+                    "kind": "binary",
+                    "op": "CONCATENATE",
+                    "left": {
+                      "line": 55,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "tier ${tier} weight "
+                    },
+                    "right": {
+                      "line": 55,
+                      "col": 18,
+                      "kind": "binary",
+                      "op": "OR_ELSE",
+                      "left": {
+                        "line": 55,
+                        "col": 18,
+                        "kind": "call",
+                        "name": "map_get",
+                        "args": [
+                          {
+                            "line": 55,
+                            "col": 18,
+                            "kind": "var",
+                            "name": "by_weight"
+                          },
+                          {
+                            "line": 55,
+                            "col": 18,
+                            "kind": "var",
+                            "name": "tier"
+                          }
+                        ]
+                      },
+                      "right": {
+                        "line": 55,
+                        "col": 18,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    }
+                  },
+                  "target": {
+                    "line": 55,
+                    "col": 74,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 59,
+            "col": 9,
+            "kind": "assign",
+            "target": "rolled",
+            "value": {
+              "line": 59,
+              "col": 23,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 59,
+                "col": 23,
+                "kind": "call",
+                "name": "random_in",
+                "args": [
+                  {
+                    "line": 59,
+                    "col": 33,
+                    "kind": "call",
+                    "name": "map_keys",
+                    "args": [
+                      {
+                        "line": 59,
+                        "col": 42,
+                        "kind": "var",
+                        "name": "weights"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "right": {
+                "line": 59,
+                "col": 62,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 60,
+              "col": 14,
+              "kind": "string",
+              "value": "rolled tier ${rolled}"
+            },
+            "target": {
+              "line": 60,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

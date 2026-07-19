@@ -1,0 +1,399 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 14,
+      "col": 1,
+      "name": "PlayerBeginItemUse",
+      "priority": 2,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 18,
+              "col": 14,
+              "kind": "string",
+              "value": "casting ${event.item_stack} (${event.animation})"
+            },
+            "target": {
+              "line": 18,
+              "col": 74,
+              "kind": "prop",
+              "target": {
+                "line": 18,
+                "col": 68,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 20,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 20,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "item_use_duration",
+            "value": {
+              "line": 20,
+              "col": 40,
+              "kind": "number",
+              "value": 30,
+              "integer": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 26,
+      "col": 1,
+      "name": "PlayerFinishItemUse",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 28,
+              "col": 14,
+              "kind": "string",
+              "value": "reeled in after ${event.use_duration} ticks"
+            },
+            "target": {
+              "line": 28,
+              "col": 69,
+              "kind": "prop",
+              "target": {
+                "line": 28,
+                "col": 63,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 33,
+      "col": 1,
+      "name": "EntityShoot",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 36,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 36,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "power",
+            "value": {
+              "line": 36,
+              "col": 28,
+              "kind": "number",
+              "value": 1.5,
+              "integer": false
+            }
+          },
+          {
+            "line": 37,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 37,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "spread",
+            "value": {
+              "line": 37,
+              "col": 29,
+              "kind": "number",
+              "value": 0.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 38,
+              "col": 14,
+              "kind": "string",
+              "value": "line out: ${event.projectile} towards ${event.to}"
+            },
+            "target": {
+              "line": 38,
+              "col": 69,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 42,
+      "col": 1,
+      "name": "ProjectileCollideWithBlock",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 44,
+              "col": 14,
+              "kind": "string",
+              "value": "splash! landed on ${event.block}"
+            },
+            "target": {
+              "line": 44,
+              "col": 52,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          { "line": 46, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 50,
+      "col": 1,
+      "name": "ProjectileCollideWithEntity",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 52,
+              "col": 14,
+              "kind": "string",
+              "value": "snagged ${event.target}"
+            },
+            "target": {
+              "line": 52,
+              "col": 43,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 57,
+      "col": 1,
+      "name": "PickupItem",
+      "priority": 1,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 61,
+              "col": 18,
+              "kind": "prop",
+              "target": {
+                "line": 61,
+                "col": 12,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "cancelled"
+            },
+            "then": {
+              "line": 61,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 62,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 62,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "too slow, the catch is gone"
+                  },
+                  "target": {
+                    "line": 62,
+                    "col": 51,
+                    "kind": "string",
+                    "value": "all"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 64,
+              "col": 14,
+              "kind": "string",
+              "value": "caught ${event.item_stack}"
+            },
+            "target": {
+              "line": 64,
+              "col": 46,
+              "kind": "string",
+              "value": "all"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 69,
+      "col": 1,
+      "name": "EntityVelocity",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 71,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 71,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "velocity",
+            "value": {
+              "line": 71,
+              "col": 31,
+              "kind": "call",
+              "name": "velocity",
+              "args": [
+                {
+                  "line": 71,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                },
+                {
+                  "line": 71,
+                  "col": 45,
+                  "kind": "number",
+                  "value": 1.0,
+                  "integer": false
+                },
+                {
+                  "line": 71,
+                  "col": 50,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          { "line": 72, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 81,
+      "col": 1,
+      "name": "PlayerUseItemEvent",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 83,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 83,
+              "col": 14,
+              "kind": "string",
+              "value": "engine item use: ${event.item_stack}"
+            },
+            "target": {
+              "line": 83,
+              "col": 62,
+              "kind": "prop",
+              "target": {
+                "line": 83,
+                "col": 56,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 84,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 84,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "item_use_time",
+            "value": {
+              "line": 84,
+              "col": 36,
+              "kind": "number",
+              "value": 100,
+              "integer": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

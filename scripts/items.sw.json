@@ -1,0 +1,1526 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "modules": [
+    {
+      "name": "abilities",
+      "path": "addons/abilities.sw",
+      "entry": false,
+      "module_vars": [
+        {
+          "line": 23,
+          "col": 1,
+          "name": "ability_data",
+          "value": {
+            "line": 23,
+            "col": 20,
+            "kind": "lambda",
+            "async": false,
+            "params": [
+              {
+                "line": 23,
+                "col": 29,
+                "name": "lookup",
+                "type": { "base": "STRING" }
+              }
+            ],
+            "body": [
+              {
+                "line": 23,
+                "col": 45,
+                "kind": "return",
+                "value": { "line": 23, "col": 52, "kind": "none" }
+              }
+            ]
+          }
+        },
+        {
+          "line": 27,
+          "col": 1,
+          "name": "ability_now",
+          "value": {
+            "line": 27,
+            "col": 19,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        },
+        {
+          "line": 30,
+          "col": 1,
+          "name": "ability_seq",
+          "value": {
+            "line": 30,
+            "col": 19,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        }
+      ],
+      "commands": [],
+      "events": [
+        {
+          "line": 103,
+          "col": 1,
+          "name": "PlayerUseItem",
+          "priority": 0,
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 105,
+                "col": 9,
+                "kind": "assign",
+                "target": "id",
+                "value": {
+                  "line": 105,
+                  "col": 25,
+                  "kind": "binary",
+                  "op": "OR_ELSE",
+                  "left": {
+                    "line": 105,
+                    "col": 25,
+                    "kind": "prop",
+                    "target": {
+                      "line": 105,
+                      "col": 19,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "custom_id"
+                  },
+                  "right": {
+                    "line": 105,
+                    "col": 45,
+                    "kind": "string",
+                    "value": ""
+                  }
+                }
+              },
+              {
+                "line": 106,
+                "col": 9,
+                "kind": "if",
+                "condition": {
+                  "line": 106,
+                  "col": 12,
+                  "kind": "binary",
+                  "op": "NOT_EQUALS",
+                  "left": {
+                    "line": 106,
+                    "col": 12,
+                    "kind": "var",
+                    "name": "id"
+                  },
+                  "right": {
+                    "line": 106,
+                    "col": 22,
+                    "kind": "string",
+                    "value": ""
+                  }
+                },
+                "then": {
+                  "line": 106,
+                  "col": 25,
+                  "kind": "block",
+                  "statements": [
+                    {
+                      "line": 107,
+                      "col": 13,
+                      "kind": "call",
+                      "name": "ability_dispatch",
+                      "args": [
+                        {
+                          "line": 107,
+                          "col": 36,
+                          "kind": "prop",
+                          "target": {
+                            "line": 107,
+                            "col": 30,
+                            "kind": "var",
+                            "name": "event"
+                          },
+                          "name": "player"
+                        },
+                        {
+                          "line": 107,
+                          "col": 50,
+                          "kind": "prop",
+                          "target": {
+                            "line": 107,
+                            "col": 44,
+                            "kind": "var",
+                            "name": "event"
+                          },
+                          "name": "item"
+                        },
+                        {
+                          "line": 107,
+                          "col": 56,
+                          "kind": "var",
+                          "name": "id"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "else": null
+              }
+            ]
+          }
+        }
+      ],
+      "functions": [
+        {
+          "line": 32,
+          "col": 1,
+          "name": "ability_put",
+          "async": false,
+          "params": [
+            {
+              "line": 32,
+              "col": 22,
+              "name": "key",
+              "type": { "base": "STRING" }
+            },
+            { "line": 32, "col": 35, "name": "value", "type": null }
+          ],
+          "body": [
+            {
+              "line": 33,
+              "col": 5,
+              "kind": "assign",
+              "target": "previous",
+              "value": {
+                "line": 33,
+                "col": 21,
+                "kind": "var",
+                "name": "ability_data"
+              }
+            },
+            {
+              "line": 34,
+              "col": 5,
+              "kind": "assign",
+              "target": "ability_data",
+              "value": {
+                "line": 34,
+                "col": 25,
+                "kind": "lambda",
+                "async": false,
+                "params": [
+                  {
+                    "line": 34,
+                    "col": 34,
+                    "name": "lookup",
+                    "type": { "base": "STRING" }
+                  }
+                ],
+                "body": [
+                  {
+                    "line": 35,
+                    "col": 9,
+                    "kind": "if",
+                    "condition": {
+                      "line": 35,
+                      "col": 12,
+                      "kind": "binary",
+                      "op": "EQUALS",
+                      "left": {
+                        "line": 35,
+                        "col": 12,
+                        "kind": "var",
+                        "name": "lookup"
+                      },
+                      "right": {
+                        "line": 35,
+                        "col": 22,
+                        "kind": "var",
+                        "name": "key"
+                      }
+                    },
+                    "then": {
+                      "line": 35,
+                      "col": 26,
+                      "kind": "block",
+                      "statements": [
+                        {
+                          "line": 35,
+                          "col": 26,
+                          "kind": "return",
+                          "value": {
+                            "line": 35,
+                            "col": 33,
+                            "kind": "var",
+                            "name": "value"
+                          }
+                        }
+                      ]
+                    },
+                    "else": null
+                  },
+                  {
+                    "line": 36,
+                    "col": 9,
+                    "kind": "return",
+                    "value": {
+                      "line": 36,
+                      "col": 16,
+                      "kind": "call",
+                      "name": "previous",
+                      "args": [
+                        {
+                          "line": 36,
+                          "col": 25,
+                          "kind": "var",
+                          "name": "lookup"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 40,
+          "col": 1,
+          "name": "ability_get",
+          "async": false,
+          "params": [
+            {
+              "line": 40,
+              "col": 22,
+              "name": "key",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 41,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 41,
+                "col": 12,
+                "kind": "call",
+                "name": "ability_data",
+                "args": [
+                  { "line": 41, "col": 25, "kind": "var", "name": "key" }
+                ]
+              }
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 44,
+          "col": 1,
+          "name": "ability_tick",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 45,
+              "col": 5,
+              "kind": "assign",
+              "target": "ability_now",
+              "value": {
+                "line": 45,
+                "col": 24,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 45,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "ability_now"
+                },
+                "right": {
+                  "line": 45,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 48,
+          "col": 1,
+          "name": "ability_clock",
+          "async": false,
+          "params": [],
+          "body": [
+            {
+              "line": 49,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 49,
+                "col": 12,
+                "kind": "var",
+                "name": "ability_now"
+              }
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 63,
+          "col": 8,
+          "name": "on_item_use",
+          "async": false,
+          "params": [
+            {
+              "line": 63,
+              "col": 29,
+              "name": "item_id",
+              "type": { "base": "STRING" }
+            },
+            {
+              "line": 63,
+              "col": 46,
+              "name": "filter",
+              "type": { "base": "STRING" }
+            },
+            { "line": 63, "col": 62, "name": "handler", "type": null }
+          ],
+          "body": [
+            {
+              "line": 64,
+              "col": 5,
+              "kind": "call",
+              "name": "ability_put",
+              "args": [
+                {
+                  "line": 64,
+                  "col": 17,
+                  "kind": "string",
+                  "value": "use:${item_id}:${filter}"
+                },
+                { "line": 64, "col": 45, "kind": "var", "name": "handler" }
+              ]
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 70,
+          "col": 8,
+          "name": "with_cooldown",
+          "async": false,
+          "params": [
+            {
+              "line": 70,
+              "col": 31,
+              "name": "seconds",
+              "type": { "base": "DOUBLE" }
+            },
+            { "line": 70, "col": 48, "name": "handler", "type": null }
+          ],
+          "body": [
+            {
+              "line": 71,
+              "col": 5,
+              "kind": "assign",
+              "target": "ability_seq",
+              "value": {
+                "line": 71,
+                "col": 24,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 71,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "ability_seq"
+                },
+                "right": {
+                  "line": 71,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            },
+            {
+              "line": 72,
+              "col": 5,
+              "kind": "assign",
+              "target": "slot",
+              "value": {
+                "line": 72,
+                "col": 17,
+                "kind": "var",
+                "name": "ability_seq"
+              }
+            },
+            {
+              "line": 73,
+              "col": 5,
+              "kind": "return",
+              "value": {
+                "line": 73,
+                "col": 12,
+                "kind": "lambda",
+                "async": false,
+                "params": [
+                  {
+                    "line": 73,
+                    "col": 21,
+                    "name": "user",
+                    "type": { "base": "PLAYER" }
+                  },
+                  {
+                    "line": 73,
+                    "col": 35,
+                    "name": "held",
+                    "type": { "base": "ITEM" }
+                  }
+                ],
+                "body": [
+                  {
+                    "line": 74,
+                    "col": 9,
+                    "kind": "assign",
+                    "target": "key",
+                    "value": {
+                      "line": 74,
+                      "col": 20,
+                      "kind": "string",
+                      "value": "cd:${slot}:${user.uuid}"
+                    }
+                  },
+                  {
+                    "line": 75,
+                    "col": 9,
+                    "kind": "assign",
+                    "target": "ready",
+                    "value": {
+                      "line": 75,
+                      "col": 22,
+                      "kind": "binary",
+                      "op": "OR_ELSE",
+                      "left": {
+                        "line": 75,
+                        "col": 22,
+                        "kind": "call",
+                        "name": "ability_get",
+                        "args": [
+                          {
+                            "line": 75,
+                            "col": 34,
+                            "kind": "var",
+                            "name": "key"
+                          }
+                        ]
+                      },
+                      "right": {
+                        "line": 75,
+                        "col": 49,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    }
+                  },
+                  {
+                    "line": 76,
+                    "col": 9,
+                    "kind": "if",
+                    "condition": {
+                      "line": 76,
+                      "col": 12,
+                      "kind": "binary",
+                      "op": "LESS_THAN",
+                      "left": {
+                        "line": 76,
+                        "col": 12,
+                        "kind": "call",
+                        "name": "ability_clock",
+                        "args": []
+                      },
+                      "right": {
+                        "line": 76,
+                        "col": 30,
+                        "kind": "var",
+                        "name": "ready"
+                      }
+                    },
+                    "then": {
+                      "line": 76,
+                      "col": 36,
+                      "kind": "block",
+                      "statements": [
+                        {
+                          "line": 77,
+                          "col": 13,
+                          "kind": "assign",
+                          "target": "remaining",
+                          "value": {
+                            "line": 77,
+                            "col": 31,
+                            "kind": "binary",
+                            "op": "DIVIDE",
+                            "left": {
+                              "line": 77,
+                              "col": 31,
+                              "kind": "binary",
+                              "op": "SUBTRACT",
+                              "left": {
+                                "line": 77,
+                                "col": 31,
+                                "kind": "var",
+                                "name": "ready"
+                              },
+                              "right": {
+                                "line": 77,
+                                "col": 39,
+                                "kind": "call",
+                                "name": "ability_clock",
+                                "args": []
+                              }
+                            },
+                            "right": {
+                              "line": 77,
+                              "col": 58,
+                              "kind": "number",
+                              "value": 20.0,
+                              "integer": false
+                            }
+                          }
+                        },
+                        {
+                          "line": 78,
+                          "col": 13,
+                          "kind": "actionbar",
+                          "text": {
+                            "line": 78,
+                            "col": 23,
+                            "kind": "string",
+                            "value": "<red>On cooldown: ${remaining}s"
+                          },
+                          "target": {
+                            "line": 78,
+                            "col": 60,
+                            "kind": "var",
+                            "name": "user"
+                          },
+                          "duration": null
+                        },
+                        {
+                          "line": 79,
+                          "col": 13,
+                          "kind": "return",
+                          "value": {
+                            "line": 79,
+                            "col": 20,
+                            "kind": "number",
+                            "value": 0,
+                            "integer": true
+                          }
+                        }
+                      ]
+                    },
+                    "else": null
+                  },
+                  {
+                    "line": 81,
+                    "col": 9,
+                    "kind": "call",
+                    "name": "ability_put",
+                    "args": [
+                      { "line": 81, "col": 21, "kind": "var", "name": "key" },
+                      {
+                        "line": 81,
+                        "col": 26,
+                        "kind": "binary",
+                        "op": "ADD",
+                        "left": {
+                          "line": 81,
+                          "col": 26,
+                          "kind": "call",
+                          "name": "ability_clock",
+                          "args": []
+                        },
+                        "right": {
+                          "line": 81,
+                          "col": 44,
+                          "kind": "call",
+                          "name": "round",
+                          "args": [
+                            {
+                              "line": 81,
+                              "col": 50,
+                              "kind": "binary",
+                              "op": "MULTIPLY",
+                              "left": {
+                                "line": 81,
+                                "col": 50,
+                                "kind": "var",
+                                "name": "seconds"
+                              },
+                              "right": {
+                                "line": 81,
+                                "col": 60,
+                                "kind": "number",
+                                "value": 20.0,
+                                "integer": false
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "line": 82,
+                    "col": 9,
+                    "kind": "call",
+                    "name": "handler",
+                    "args": [
+                      {
+                        "line": 82,
+                        "col": 17,
+                        "kind": "var",
+                        "name": "user"
+                      },
+                      {
+                        "line": 82,
+                        "col": 23,
+                        "kind": "var",
+                        "name": "held"
+                      }
+                    ]
+                  },
+                  {
+                    "line": 83,
+                    "col": 9,
+                    "kind": "return",
+                    "value": {
+                      "line": 83,
+                      "col": 16,
+                      "kind": "number",
+                      "value": 0,
+                      "integer": true
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "exported": true
+        },
+        {
+          "line": 87,
+          "col": 1,
+          "name": "ability_fire",
+          "async": false,
+          "params": [
+            {
+              "line": 87,
+              "col": 23,
+              "name": "key",
+              "type": { "base": "STRING" }
+            },
+            {
+              "line": 87,
+              "col": 36,
+              "name": "user",
+              "type": { "base": "PLAYER" }
+            },
+            {
+              "line": 87,
+              "col": 50,
+              "name": "held",
+              "type": { "base": "ITEM" }
+            }
+          ],
+          "body": [
+            {
+              "line": 88,
+              "col": 5,
+              "kind": "assign",
+              "target": "handler",
+              "value": {
+                "line": 88,
+                "col": 20,
+                "kind": "call",
+                "name": "ability_get",
+                "args": [
+                  { "line": 88, "col": 32, "kind": "var", "name": "key" }
+                ]
+              }
+            },
+            {
+              "line": 89,
+              "col": 5,
+              "kind": "if",
+              "condition": {
+                "line": 89,
+                "col": 8,
+                "kind": "unary",
+                "op": "EXISTS",
+                "operand": {
+                  "line": 89,
+                  "col": 8,
+                  "kind": "var",
+                  "name": "handler"
+                }
+              },
+              "then": {
+                "line": 89,
+                "col": 23,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 90,
+                    "col": 9,
+                    "kind": "call",
+                    "name": "handler",
+                    "args": [
+                      {
+                        "line": 90,
+                        "col": 17,
+                        "kind": "var",
+                        "name": "user"
+                      },
+                      {
+                        "line": 90,
+                        "col": 23,
+                        "kind": "var",
+                        "name": "held"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "else": null
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 96,
+          "col": 1,
+          "name": "ability_dispatch",
+          "async": false,
+          "params": [
+            {
+              "line": 96,
+              "col": 27,
+              "name": "user",
+              "type": { "base": "PLAYER" }
+            },
+            {
+              "line": 96,
+              "col": 41,
+              "name": "held",
+              "type": { "base": "ITEM" }
+            },
+            {
+              "line": 96,
+              "col": 53,
+              "name": "id",
+              "type": { "base": "STRING" }
+            }
+          ],
+          "body": [
+            {
+              "line": 97,
+              "col": 5,
+              "kind": "call",
+              "name": "ability_fire",
+              "args": [
+                {
+                  "line": 97,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "use:${id}:any"
+                },
+                { "line": 97, "col": 35, "kind": "var", "name": "user" },
+                { "line": 97, "col": 41, "kind": "var", "name": "held" }
+              ]
+            },
+            {
+              "line": 98,
+              "col": 5,
+              "kind": "call",
+              "name": "ability_fire",
+              "args": [
+                {
+                  "line": 98,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "use:${id}:left"
+                },
+                { "line": 98, "col": 36, "kind": "var", "name": "user" },
+                { "line": 98, "col": 42, "kind": "var", "name": "held" }
+              ]
+            },
+            {
+              "line": 99,
+              "col": 5,
+              "kind": "call",
+              "name": "ability_fire",
+              "args": [
+                {
+                  "line": 99,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "use:${id}:right"
+                },
+                { "line": 99, "col": 37, "kind": "var", "name": "user" },
+                { "line": 99, "col": 43, "kind": "var", "name": "held" }
+              ]
+            }
+          ],
+          "exported": false
+        }
+      ],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null,
+      "schedulers": [
+        {
+          "line": 53,
+          "col": 1,
+          "every_ticks": 1,
+          "body": [
+            {
+              "line": 54,
+              "col": 5,
+              "kind": "call",
+              "name": "ability_tick",
+              "args": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "path": "scripts/items.sw",
+      "entry": true,
+      "commands": [
+        {
+          "line": 72,
+          "col": 1,
+          "names": [ "kit" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 74,
+                "col": 9,
+                "kind": "give_item",
+                "id": {
+                  "line": 74,
+                  "col": 19,
+                  "kind": "string",
+                  "value": "aspect_of_the_end"
+                },
+                "target": {
+                  "line": 74,
+                  "col": 42,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "amount": null
+              },
+              {
+                "line": 75,
+                "col": 9,
+                "kind": "give_item",
+                "id": {
+                  "line": 75,
+                  "col": 19,
+                  "kind": "string",
+                  "value": "crypt_key"
+                },
+                "target": {
+                  "line": 75,
+                  "col": 34,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "amount": null
+              },
+              {
+                "line": 76,
+                "col": 9,
+                "kind": "give_item",
+                "id": {
+                  "line": 76,
+                  "col": 19,
+                  "kind": "string",
+                  "value": "farmer_boots"
+                },
+                "target": {
+                  "line": 76,
+                  "col": 37,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "amount": {
+                  "line": 76,
+                  "col": 51,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              },
+              {
+                "line": 77,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 77,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "<green>Kit delivered."
+                },
+                "target": {
+                  "line": 77,
+                  "col": 41,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 84,
+          "col": 1,
+          "names": [ "kit-setup" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 86,
+                "col": 9,
+                "kind": "call",
+                "name": "on_item_use",
+                "args": [
+                  {
+                    "line": 86,
+                    "col": 21,
+                    "kind": "string",
+                    "value": "aspect_of_the_end"
+                  },
+                  {
+                    "line": 86,
+                    "col": 42,
+                    "kind": "string",
+                    "value": "right"
+                  },
+                  {
+                    "line": 86,
+                    "col": 51,
+                    "kind": "call",
+                    "name": "with_cooldown",
+                    "args": [
+                      {
+                        "line": 86,
+                        "col": 65,
+                        "kind": "number",
+                        "value": 3.0,
+                        "integer": false
+                      },
+                      {
+                        "line": 87,
+                        "col": 13,
+                        "kind": "lambda",
+                        "async": false,
+                        "params": [
+                          {
+                            "line": 87,
+                            "col": 22,
+                            "name": "user",
+                            "type": { "base": "PLAYER" }
+                          },
+                          {
+                            "line": 87,
+                            "col": 36,
+                            "name": "held",
+                            "type": { "base": "ITEM" }
+                          }
+                        ],
+                        "body": [
+                          {
+                            "line": 88,
+                            "col": 17,
+                            "kind": "send",
+                            "message": {
+                              "line": 88,
+                              "col": 22,
+                              "kind": "string",
+                              "value": "<aqua>Instant Transmission! Whoosh."
+                            },
+                            "target": {
+                              "line": 88,
+                              "col": 63,
+                              "kind": "var",
+                              "name": "user"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "line": 90,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 90,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "<gray>Aspect ability registered."
+                },
+                "target": {
+                  "line": 90,
+                  "col": 52,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "line": 95,
+          "col": 1,
+          "names": [ "dispense-demo" ],
+          "permission": null,
+          "description": null,
+          "arguments": [],
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 97,
+                "col": 9,
+                "kind": "dispense_from",
+                "from": {
+                  "line": 97,
+                  "col": 23,
+                  "kind": "call",
+                  "name": "location",
+                  "args": [
+                    {
+                      "line": 97,
+                      "col": 32,
+                      "kind": "number",
+                      "value": 0.0,
+                      "integer": false
+                    },
+                    {
+                      "line": 97,
+                      "col": 37,
+                      "kind": "number",
+                      "value": 64.0,
+                      "integer": false
+                    },
+                    {
+                      "line": 97,
+                      "col": 43,
+                      "kind": "number",
+                      "value": 0.0,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              {
+                "line": 98,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 98,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "<gray>Fired the dispenser at 0, 64, 0."
+                },
+                "target": {
+                  "line": 98,
+                  "col": 58,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "line": 103,
+          "col": 1,
+          "name": "BlockDispense",
+          "priority": 0,
+          "execute": {
+            "async": false,
+            "statements": [
+              {
+                "line": 105,
+                "col": 9,
+                "kind": "send",
+                "message": {
+                  "line": 105,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "<gray>A dispenser fired at ${event.location}."
+                },
+                "target": { "line": 105, "col": 65, "kind": "all_players" }
+              }
+            ]
+          }
+        }
+      ],
+      "functions": [],
+      "guis": [],
+      "scoreboards": [],
+      "tablists": [],
+      "bossbars": [],
+      "server": null,
+      "items": [
+        {
+          "line": 13,
+          "col": 1,
+          "id": "aspect_of_the_end",
+          "material": "DIAMOND_SWORD",
+          "skull": null,
+          "name": {
+            "line": 15,
+            "col": 11,
+            "kind": "string",
+            "value": "<blue>Aspect of the End"
+          },
+          "rarity": "rare",
+          "glint": {
+            "line": 17,
+            "col": 12,
+            "kind": "boolean",
+            "value": true
+          },
+          "amount": {
+            "line": 18,
+            "col": 13,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          },
+          "lore": [
+            {
+              "line": 21,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 21,
+                "col": 14,
+                "kind": "string",
+                "value": "<gray>A legendary blade from the End."
+              }
+            },
+            { "line": 22, "col": 9, "kind": "blank" },
+            {
+              "line": 23,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 23,
+                "col": 14,
+                "kind": "string",
+                "value": "<dark_gray>Soulbound"
+              }
+            }
+          ],
+          "attributes": {},
+          "tags": {
+            "damage": {
+              "line": 27,
+              "col": 17,
+              "kind": "number",
+              "value": 100,
+              "integer": true
+            },
+            "meta": {
+              "line": 28,
+              "col": 15,
+              "kind": "map",
+              "entries": {
+                "tier": {
+                  "line": 28,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                },
+                "keywords": {
+                  "line": 28,
+                  "col": 36,
+                  "kind": "list",
+                  "items": [
+                    {
+                      "line": 28,
+                      "col": 37,
+                      "kind": "string",
+                      "value": "end"
+                    },
+                    {
+                      "line": 28,
+                      "col": 44,
+                      "kind": "string",
+                      "value": "sword"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "on_click": [],
+          "exported": false
+        },
+        {
+          "line": 32,
+          "col": 1,
+          "id": "crypt_key",
+          "material": null,
+          "skull": "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081",
+          "name": {
+            "line": 34,
+            "col": 11,
+            "kind": "string",
+            "value": "<gold>Crypt Key"
+          },
+          "rarity": "epic",
+          "glint": null,
+          "amount": null,
+          "lore": [
+            {
+              "line": 43,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 43,
+                "col": 14,
+                "kind": "string",
+                "value": "<gray>Opens the sealed crypt beneath the graveyard."
+              }
+            },
+            {
+              "line": 44,
+              "col": 9,
+              "kind": "line",
+              "text": {
+                "line": 44,
+                "col": 14,
+                "kind": "string",
+                "value": "<dark_gray>Consumed on use."
+              }
+            }
+          ],
+          "attributes": {},
+          "tags": {
+            "uses": {
+              "line": 38,
+              "col": 15,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            },
+            "meta": {
+              "line": 39,
+              "col": 15,
+              "kind": "map",
+              "entries": {
+                "engraving": {
+                  "line": 39,
+                  "col": 28,
+                  "kind": "string",
+                  "value": "unclaimed"
+                }
+              }
+            }
+          },
+          "on_click": [
+            {
+              "filter": "left",
+              "body": [
+                {
+                  "line": 50,
+                  "col": 23,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 50,
+                    "col": 18,
+                    "kind": "prop",
+                    "target": {
+                      "line": 50,
+                      "col": 13,
+                      "kind": "var",
+                      "name": "item"
+                    },
+                    "name": "tags"
+                  },
+                  "name": "uses",
+                  "value": {
+                    "line": 50,
+                    "col": 42,
+                    "kind": "binary",
+                    "op": "SUBTRACT",
+                    "left": {
+                      "line": 50,
+                      "col": 42,
+                      "kind": "binary",
+                      "op": "OR_ELSE",
+                      "left": {
+                        "line": 50,
+                        "col": 42,
+                        "kind": "prop",
+                        "target": {
+                          "line": 50,
+                          "col": 37,
+                          "kind": "prop",
+                          "target": {
+                            "line": 50,
+                            "col": 32,
+                            "kind": "var",
+                            "name": "item"
+                          },
+                          "name": "tags"
+                        },
+                        "name": "uses"
+                      },
+                      "right": {
+                        "line": 50,
+                        "col": 57,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    },
+                    "right": {
+                      "line": 50,
+                      "col": 62,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                },
+                {
+                  "line": 51,
+                  "col": 9,
+                  "kind": "send",
+                  "message": {
+                    "line": 51,
+                    "col": 14,
+                    "kind": "string",
+                    "value": "<light_purple>The key turns..."
+                  },
+                  "target": {
+                    "line": 51,
+                    "col": 50,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              ]
+            }
+          ],
+          "exported": false
+        },
+        {
+          "line": 55,
+          "col": 1,
+          "id": "farmer_boots",
+          "material": "GOLDEN_BOOTS",
+          "skull": null,
+          "name": {
+            "line": 57,
+            "col": 11,
+            "kind": "string",
+            "value": "<green>Farmer Boots"
+          },
+          "rarity": "uncommon",
+          "glint": null,
+          "amount": null,
+          "lore": [
+            {
+              "line": 66,
+              "col": 9,
+              "kind": "loop",
+              "count": {
+                "line": 66,
+                "col": 14,
+                "kind": "number",
+                "value": 2,
+                "integer": true
+              },
+              "var": null,
+              "body": {
+                "line": 66,
+                "col": 22,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 67,
+                    "col": 13,
+                    "kind": "line",
+                    "text": {
+                      "line": 67,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "<green>Tilled and true."
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "attributes": {
+            "speed": {
+              "line": 61,
+              "col": 16,
+              "kind": "number",
+              "value": 0.02,
+              "integer": false
+            },
+            "max_health": {
+              "line": 62,
+              "col": 21,
+              "kind": "number",
+              "value": 4,
+              "integer": true
+            }
+          },
+          "tags": {},
+          "on_click": [],
+          "exported": false
+        }
+      ]
+    }
+  ]
+}

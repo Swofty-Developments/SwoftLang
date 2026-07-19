@@ -1,0 +1,170 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "hello" ],
+      "permission": "swoftlang.hello",
+      "description": "Sends a hello message",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 6,
+              "col": 14,
+              "kind": "string",
+              "value": "<lime>Hello from SwoftLang"
+            },
+            "target": {
+              "line": 6,
+              "col": 46,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 10,
+      "col": 1,
+      "names": [ "tp", "teleport" ],
+      "permission": "swoftlang.teleport",
+      "description": "Teleport a player to coordinates or another player",
+      "arguments": [
+        {
+          "line": 16,
+          "col": 9,
+          "name": "player",
+          "type": { "base": "PLAYER" },
+          "default": "sender"
+        },
+        {
+          "line": 17,
+          "col": 9,
+          "name": "target",
+          "type": {
+            "base": "EITHER",
+            "subtypes": [ { "base": "PLAYER" }, { "base": "LOCATION" } ]
+          },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 21,
+              "col": 17,
+              "kind": "binary",
+              "op": "IS_NOT_TYPE",
+              "left": {
+                "line": 21,
+                "col": 17,
+                "kind": "prop",
+                "target": {
+                  "line": 21,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "args"
+                },
+                "name": "player"
+              },
+              "right": {
+                "line": 21,
+                "col": 33,
+                "kind": "type",
+                "name": "Player"
+              }
+            },
+            "then": {
+              "line": 21,
+              "col": 40,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 22,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 22,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<red>You can only teleport players"
+                  },
+                  "target": {
+                    "line": 22,
+                    "col": 58,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                },
+                { "line": 23, "col": 13, "kind": "halt" }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "teleport",
+            "entity": {
+              "line": 26,
+              "col": 23,
+              "kind": "prop",
+              "target": {
+                "line": 26,
+                "col": 18,
+                "kind": "var",
+                "name": "args"
+              },
+              "name": "player"
+            },
+            "target": {
+              "line": 26,
+              "col": 38,
+              "kind": "prop",
+              "target": {
+                "line": 26,
+                "col": 33,
+                "kind": "var",
+                "name": "args"
+              },
+              "name": "target"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "string",
+              "value": "<lime>Teleported ${sender} to ${args.target}"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

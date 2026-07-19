@@ -1,0 +1,354 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 15,
+      "col": 1,
+      "names": [ "persist" ],
+      "permission": null,
+      "description": "Increment and show the persistent counters",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "runs",
+            "subject": null,
+            "value": {
+              "line": 19,
+              "col": 21,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 19,
+                "col": 21,
+                "kind": "persist_get",
+                "name": "runs",
+                "subject": null
+              },
+              "right": {
+                "line": 19,
+                "col": 28,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "karma",
+            "subject": null,
+            "value": {
+              "line": 20,
+              "col": 22,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 20,
+                "col": 22,
+                "kind": "persist_get",
+                "name": "karma",
+                "subject": null
+              },
+              "right": {
+                "line": 20,
+                "col": 30,
+                "kind": "number",
+                "value": 0.5,
+                "integer": false
+              }
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "visits",
+            "subject": {
+              "line": 21,
+              "col": 24,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": {
+              "line": 21,
+              "col": 34,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 21,
+                "col": 34,
+                "kind": "persist_get",
+                "name": "visits",
+                "subject": {
+                  "line": 21,
+                  "col": 45,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              "right": {
+                "line": 21,
+                "col": 54,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 23,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 23,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 23,
+                  "col": 14,
+                  "kind": "binary",
+                  "op": "CONCATENATE",
+                  "left": {
+                    "line": 23,
+                    "col": 14,
+                    "kind": "binary",
+                    "op": "CONCATENATE",
+                    "left": {
+                      "line": 23,
+                      "col": 14,
+                      "kind": "binary",
+                      "op": "CONCATENATE",
+                      "left": {
+                        "line": 23,
+                        "col": 14,
+                        "kind": "string",
+                        "value": "Run #"
+                      },
+                      "right": {
+                        "line": 23,
+                        "col": 14,
+                        "kind": "persist_get",
+                        "name": "runs",
+                        "subject": null
+                      }
+                    },
+                    "right": {
+                      "line": 23,
+                      "col": 14,
+                      "kind": "string",
+                      "value": " (karma "
+                    }
+                  },
+                  "right": {
+                    "line": 23,
+                    "col": 14,
+                    "kind": "persist_get",
+                    "name": "karma",
+                    "subject": null
+                  }
+                },
+                "right": {
+                  "line": 23,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "), seen before: "
+                }
+              },
+              "right": {
+                "line": 23,
+                "col": 14,
+                "kind": "persist_get",
+                "name": "has_run_before",
+                "subject": null
+              }
+            },
+            "target": {
+              "line": 23,
+              "col": 81,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 24,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 24,
+                  "col": 14,
+                  "kind": "binary",
+                  "op": "CONCATENATE",
+                  "left": {
+                    "line": 24,
+                    "col": 14,
+                    "kind": "string",
+                    "value": "Last runner was "
+                  },
+                  "right": {
+                    "line": 24,
+                    "col": 14,
+                    "kind": "persist_get",
+                    "name": "last_runner",
+                    "subject": null
+                  }
+                },
+                "right": {
+                  "line": 24,
+                  "col": 14,
+                  "kind": "string",
+                  "value": ", your visits: "
+                }
+              },
+              "right": {
+                "line": 24,
+                "col": 14,
+                "kind": "persist_get",
+                "name": "visits",
+                "subject": {
+                  "line": 24,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              }
+            },
+            "target": {
+              "line": 24,
+              "col": 85,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "last_runner",
+            "subject": null,
+            "value": {
+              "line": 26,
+              "col": 28,
+              "kind": "string",
+              "value": "harness"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "has_run_before",
+            "subject": null,
+            "value": {
+              "line": 27,
+              "col": 31,
+              "kind": "boolean",
+              "value": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 4,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 9,
+      "col": 1,
+      "name": "runs",
+      "subject": null,
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 9,
+        "col": 28,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    },
+    {
+      "line": 10,
+      "col": 1,
+      "name": "karma",
+      "subject": null,
+      "type": { "base": "DOUBLE" },
+      "default": {
+        "line": 10,
+        "col": 28,
+        "kind": "number",
+        "value": 0.0,
+        "integer": false
+      }
+    },
+    {
+      "line": 11,
+      "col": 1,
+      "name": "last_runner",
+      "subject": null,
+      "type": { "base": "STRING" },
+      "default": {
+        "line": 11,
+        "col": 34,
+        "kind": "string",
+        "value": "nobody"
+      }
+    },
+    {
+      "line": 12,
+      "col": 1,
+      "name": "has_run_before",
+      "subject": null,
+      "type": { "base": "BOOLEAN" },
+      "default": { "line": 12, "col": 38, "kind": "boolean", "value": false }
+    },
+    {
+      "line": 13,
+      "col": 1,
+      "name": "visits",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 13,
+        "col": 41,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,433 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 16,
+      "col": 1,
+      "names": [ "functions" ],
+      "permission": null,
+      "description": "Showcase of SwoftLang functions",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "assign",
+            "target": "f",
+            "value": {
+              "line": 20,
+              "col": 18,
+              "kind": "call",
+              "name": "factorial",
+              "args": [
+                {
+                  "line": 20,
+                  "col": 28,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 21,
+              "col": 14,
+              "kind": "string",
+              "value": "factorial(5) = ${f}"
+            },
+            "target": null
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 22,
+              "col": 14,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 22,
+                "col": 14,
+                "kind": "string",
+                "value": "factorial(0) = "
+              },
+              "right": {
+                "line": 22,
+                "col": 34,
+                "kind": "call",
+                "name": "factorial",
+                "args": [
+                  {
+                    "line": 22,
+                    "col": 44,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                ]
+              }
+            },
+            "target": null
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "assign",
+            "target": "s",
+            "value": {
+              "line": 23,
+              "col": 18,
+              "kind": "call",
+              "name": "add",
+              "args": [
+                {
+                  "line": 23,
+                  "col": 22,
+                  "kind": "call",
+                  "name": "add",
+                  "args": [
+                    {
+                      "line": 23,
+                      "col": 26,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    },
+                    {
+                      "line": 23,
+                      "col": 29,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    }
+                  ]
+                },
+                {
+                  "line": 23,
+                  "col": 33,
+                  "kind": "call",
+                  "name": "add",
+                  "args": [
+                    {
+                      "line": 23,
+                      "col": 37,
+                      "kind": "number",
+                      "value": 3,
+                      "integer": true
+                    },
+                    {
+                      "line": 23,
+                      "col": 40,
+                      "kind": "number",
+                      "value": 4,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "nested add = ${s}"
+            },
+            "target": null
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "call",
+            "name": "greet",
+            "args": [
+              { "line": 25, "col": 20, "kind": "var", "name": "sender" }
+            ]
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "call",
+            "name": "greet",
+            "args": [
+              { "line": 26, "col": 15, "kind": "var", "name": "sender" }
+            ]
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 27,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": {
+                "line": 27,
+                "col": 12,
+                "kind": "call",
+                "name": "factorial",
+                "args": [
+                  {
+                    "line": 27,
+                    "col": 22,
+                    "kind": "number",
+                    "value": 4,
+                    "integer": true
+                  }
+                ]
+              },
+              "right": {
+                "line": 27,
+                "col": 27,
+                "kind": "number",
+                "value": 24,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 27,
+              "col": 30,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 28,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 28,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "factorial(4) = 24"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 30,
+              "col": 14,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 30,
+                "col": 14,
+                "kind": "string",
+                "value": "uppercase = "
+              },
+              "right": {
+                "line": 30,
+                "col": 31,
+                "kind": "call",
+                "name": "uppercase",
+                "args": [
+                  {
+                    "line": 30,
+                    "col": 41,
+                    "kind": "string",
+                    "value": "swoft"
+                  }
+                ]
+              }
+            },
+            "target": null
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 31,
+              "col": 14,
+              "kind": "string",
+              "value": "before return"
+            },
+            "target": null
+          },
+          { "line": 32, "col": 9, "kind": "return", "value": null },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 33,
+              "col": 14,
+              "kind": "string",
+              "value": "after return"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "factorial",
+      "async": false,
+      "params": [
+        { "line": 1, "col": 20, "name": "n", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 2,
+          "col": 5,
+          "kind": "if",
+          "condition": {
+            "line": 2,
+            "col": 8,
+            "kind": "binary",
+            "op": "LESS_EQUALS",
+            "left": { "line": 2, "col": 8, "kind": "var", "name": "n" },
+            "right": {
+              "line": 2,
+              "col": 13,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          },
+          "then": {
+            "line": 2,
+            "col": 15,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 3,
+                "col": 9,
+                "kind": "return",
+                "value": {
+                  "line": 3,
+                  "col": 16,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              }
+            ]
+          },
+          "else": null
+        },
+        {
+          "line": 5,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 5,
+            "col": 12,
+            "kind": "binary",
+            "op": "MULTIPLY",
+            "left": { "line": 5, "col": 12, "kind": "var", "name": "n" },
+            "right": {
+              "line": 5,
+              "col": 16,
+              "kind": "call",
+              "name": "factorial",
+              "args": [
+                {
+                  "line": 5,
+                  "col": 26,
+                  "kind": "binary",
+                  "op": "SUBTRACT",
+                  "left": {
+                    "line": 5,
+                    "col": 26,
+                    "kind": "var",
+                    "name": "n"
+                  },
+                  "right": {
+                    "line": 5,
+                    "col": 30,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "line": 8,
+      "col": 1,
+      "name": "greet",
+      "async": false,
+      "params": [
+        {
+          "line": 8,
+          "col": 16,
+          "name": "player",
+          "type": { "base": "PLAYER" }
+        }
+      ],
+      "body": [
+        {
+          "line": 9,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 9,
+            "col": 10,
+            "kind": "string",
+            "value": "Welcome, ${player}!"
+          },
+          "target": { "line": 9, "col": 35, "kind": "var", "name": "player" }
+        }
+      ]
+    },
+    {
+      "line": 12,
+      "col": 1,
+      "name": "add",
+      "async": false,
+      "params": [
+        { "line": 12, "col": 14, "name": "a", "type": { "base": "INTEGER" } },
+        { "line": 12, "col": 22, "name": "b", "type": { "base": "INTEGER" } }
+      ],
+      "body": [
+        {
+          "line": 13,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 13,
+            "col": 12,
+            "kind": "binary",
+            "op": "ADD",
+            "left": { "line": 13, "col": 12, "kind": "var", "name": "a" },
+            "right": { "line": 13, "col": 16, "kind": "var", "name": "b" }
+          }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

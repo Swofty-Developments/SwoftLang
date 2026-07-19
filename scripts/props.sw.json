@@ -1,0 +1,279 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "props" ],
+      "permission": null,
+      "description": "Property chains on the harness TestThing fixture",
+      "arguments": [
+        {
+          "line": 5,
+          "col": 9,
+          "name": "thing",
+          "type": { "base": "UNKNOWN" },
+          "default": null
+        }
+      ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 9,
+              "col": 14,
+              "kind": "string",
+              "value": "start: ${thing}"
+            },
+            "target": null
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 10,
+              "col": 14,
+              "kind": "string",
+              "value": "name = ${thing.name}"
+            },
+            "target": null
+          },
+          {
+            "line": 13,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 13,
+              "col": 13,
+              "kind": "var",
+              "name": "thing"
+            },
+            "name": "name",
+            "value": {
+              "line": 13,
+              "col": 27,
+              "kind": "string",
+              "value": "gizmo"
+            }
+          },
+          {
+            "line": 14,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 14,
+              "col": 13,
+              "kind": "var",
+              "name": "thing"
+            },
+            "name": "score",
+            "value": {
+              "line": 14,
+              "col": 34,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 14,
+                "col": 34,
+                "kind": "prop",
+                "target": {
+                  "line": 14,
+                  "col": 28,
+                  "kind": "var",
+                  "name": "thing"
+                },
+                "name": "score"
+              },
+              "right": {
+                "line": 14,
+                "col": 42,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 15,
+              "col": 14,
+              "kind": "string",
+              "value": "renamed: ${thing.name} score ${thing.score}"
+            },
+            "target": null
+          },
+          {
+            "line": 18,
+            "col": 25,
+            "kind": "set_prop",
+            "target": {
+              "line": 18,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 18,
+                "col": 13,
+                "kind": "var",
+                "name": "thing"
+              },
+              "name": "point"
+            },
+            "name": "x",
+            "value": {
+              "line": 18,
+              "col": 30,
+              "kind": "number",
+              "value": 9.5,
+              "integer": false
+            }
+          },
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 19,
+              "col": 14,
+              "kind": "string",
+              "value": "point after wither write: ${thing.point}"
+            },
+            "target": null
+          },
+          {
+            "line": 20,
+            "col": 25,
+            "kind": "set_prop",
+            "target": {
+              "line": 20,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 20,
+                "col": 13,
+                "kind": "var",
+                "name": "thing"
+              },
+              "name": "point"
+            },
+            "name": "y",
+            "value": {
+              "line": 20,
+              "col": 42,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 20,
+                "col": 42,
+                "kind": "prop",
+                "target": {
+                  "line": 20,
+                  "col": 36,
+                  "kind": "prop",
+                  "target": {
+                    "line": 20,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "thing"
+                  },
+                  "name": "point"
+                },
+                "name": "x"
+              },
+              "right": {
+                "line": 20,
+                "col": 46,
+                "kind": "number",
+                "value": 0.25,
+                "integer": false
+              }
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 21,
+              "col": 14,
+              "kind": "string",
+              "value": "moved: ${thing}"
+            },
+            "target": null
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "assign",
+            "target": "p",
+            "value": {
+              "line": 24,
+              "col": 24,
+              "kind": "prop",
+              "target": {
+                "line": 24,
+                "col": 18,
+                "kind": "var",
+                "name": "thing"
+              },
+              "name": "point"
+            }
+          },
+          {
+            "line": 25,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 25, "col": 13, "kind": "var", "name": "p" },
+            "name": "x",
+            "value": {
+              "line": 25,
+              "col": 20,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 26,
+              "col": 14,
+              "kind": "string",
+              "value": "local point = ${p}"
+            },
+            "target": null
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "string",
+              "value": "thing untouched by local write: ${thing.point}"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,525 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 48,
+      "col": 1,
+      "name": "PlayerCastRod",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 50,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 50,
+              "col": 25,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 50,
+                "col": 25,
+                "kind": "prop",
+                "target": {
+                  "line": 50,
+                  "col": 19,
+                  "kind": "prop",
+                  "target": {
+                    "line": 50,
+                    "col": 12,
+                    "kind": "var",
+                    "name": "player"
+                  },
+                  "name": "world"
+                },
+                "name": "time"
+              },
+              "right": {
+                "line": 50,
+                "col": 32,
+                "kind": "number",
+                "value": 100000,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 50,
+              "col": 39,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 51,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 51,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<gray>The fish are asleep."
+                  },
+                  "target": {
+                    "line": 51,
+                    "col": 50,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                },
+                { "line": 52, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 58,
+      "col": 1,
+      "name": "FishBite",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 60,
+              "col": 14,
+              "kind": "string",
+              "value": "bite at x=${hook_location.x} z=${hook_location.z}"
+            },
+            "target": {
+              "line": 60,
+              "col": 69,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 66,
+      "col": 1,
+      "name": "PlayerCatchFish",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 68,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 68,
+              "col": 18,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 68,
+                "col": 18,
+                "kind": "prop",
+                "target": {
+                  "line": 68,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "event"
+                },
+                "name": "caught_mob"
+              }
+            },
+            "then": {
+              "line": 68,
+              "col": 36,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 69,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 69,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<red>brace yourself..."
+                  },
+                  "target": {
+                    "line": 69,
+                    "col": 46,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                },
+                { "line": 70, "col": 13, "kind": "halt" }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 72,
+              "col": 18,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 72,
+                "col": 18,
+                "kind": "prop",
+                "target": {
+                  "line": 72,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "event"
+                },
+                "name": "caught_item"
+              }
+            },
+            "then": {
+              "line": 72,
+              "col": 37,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 73,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 73,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "you landed ${event.caught_item.name}!"
+                  },
+                  "target": {
+                    "line": 73,
+                    "col": 61,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                },
+                {
+                  "line": 74,
+                  "col": 13,
+                  "kind": "if",
+                  "condition": {
+                    "line": 74,
+                    "col": 34,
+                    "kind": "binary",
+                    "op": "EQUALS",
+                    "left": {
+                      "line": 74,
+                      "col": 34,
+                      "kind": "prop",
+                      "target": {
+                        "line": 74,
+                        "col": 22,
+                        "kind": "prop",
+                        "target": {
+                          "line": 74,
+                          "col": 16,
+                          "kind": "var",
+                          "name": "event"
+                        },
+                        "name": "caught_item"
+                      },
+                      "name": "material"
+                    },
+                    "right": {
+                      "line": 74,
+                      "col": 46,
+                      "kind": "string",
+                      "value": "minecraft:pufferfish"
+                    }
+                  },
+                  "then": {
+                    "line": 74,
+                    "col": 69,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 75,
+                        "col": 27,
+                        "kind": "set_prop",
+                        "target": {
+                          "line": 75,
+                          "col": 21,
+                          "kind": "var",
+                          "name": "event"
+                        },
+                        "name": "caught_item",
+                        "value": {
+                          "line": 75,
+                          "col": 42,
+                          "kind": "call",
+                          "name": "item",
+                          "args": [
+                            {
+                              "line": 75,
+                              "col": 47,
+                              "kind": "string",
+                              "value": "COD"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "line": 76,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 76,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "<gray>...swapped the puffer for a safer cod."
+                        },
+                        "target": {
+                          "line": 76,
+                          "col": 72,
+                          "kind": "var",
+                          "name": "player"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 82,
+      "col": 1,
+      "name": "PlayerReelIn",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 84,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 84,
+              "col": 14,
+              "kind": "string",
+              "value": "<gray>line reeled in"
+            },
+            "target": {
+              "line": 84,
+              "col": 40,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": {
+    "line": 39,
+    "col": 1,
+    "auth": { "kind": "offline", "secret": null },
+    "host": "0.0.0.0",
+    "port": 25565,
+    "brand": null,
+    "motd": "Gone fishin'",
+    "fishing": { "min_bite_ticks": 80, "max_bite_ticks": 400 }
+  },
+  "items": [
+    {
+      "line": 5,
+      "col": 1,
+      "id": "glimmering_cod",
+      "material": "COD",
+      "skull": null,
+      "name": {
+        "line": 7,
+        "col": 11,
+        "kind": "string",
+        "value": "<aqua>Glimmering Cod"
+      },
+      "rarity": "rare",
+      "glint": null,
+      "amount": null,
+      "lore": [
+        {
+          "line": 10,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 10,
+            "col": 14,
+            "kind": "string",
+            "value": "<gray>It hums faintly."
+          }
+        }
+      ],
+      "attributes": {},
+      "tags": {},
+      "on_click": []
+    }
+  ],
+  "mobs": [
+    {
+      "line": 14,
+      "col": 1,
+      "id": "sea_walker",
+      "type": "ZOMBIE",
+      "name": {
+        "line": 16,
+        "col": 11,
+        "kind": "string",
+        "value": "<dark_aqua>Sea Walker"
+      },
+      "health": {
+        "line": 17,
+        "col": 13,
+        "kind": "number",
+        "value": 40,
+        "integer": true
+      },
+      "damage": null,
+      "speed": null,
+      "ai": "melee",
+      "drops": [],
+      "on_spawn": null,
+      "on_death": null,
+      "on_attack": null
+    }
+  ],
+  "fishing_loot": [
+    {
+      "line": 23,
+      "col": 1,
+      "name": "overworld_water",
+      "medium": "water",
+      "world": "world",
+      "catches": [
+        {
+          "line": 26,
+          "col": 5,
+          "kind": "item",
+          "id": "COD",
+          "weight": {
+            "line": 26,
+            "col": 29,
+            "kind": "number",
+            "value": 40,
+            "integer": true
+          },
+          "message": null
+        },
+        {
+          "line": 27,
+          "col": 5,
+          "kind": "item",
+          "id": "SALMON",
+          "weight": {
+            "line": 27,
+            "col": 32,
+            "kind": "number",
+            "value": 25,
+            "integer": true
+          },
+          "message": null
+        },
+        {
+          "line": 28,
+          "col": 5,
+          "kind": "item",
+          "id": "glimmering_cod",
+          "weight": {
+            "line": 28,
+            "col": 40,
+            "kind": "number",
+            "value": 5,
+            "integer": true
+          },
+          "message": "<aqua>It glimmers in your hands."
+        },
+        {
+          "line": 29,
+          "col": 5,
+          "kind": "mob",
+          "id": "sea_walker",
+          "weight": {
+            "line": 29,
+            "col": 35,
+            "kind": "number",
+            "value": 3,
+            "integer": true
+          },
+          "message": "<red>Something walked out of the water..."
+        },
+        {
+          "line": 30,
+          "col": 5,
+          "kind": "item",
+          "id": "PUFFERFISH",
+          "weight": {
+            "line": 30,
+            "col": 36,
+            "kind": "number",
+            "value": 10,
+            "integer": true
+          },
+          "message": "<yellow>Careful, it puffs!"
+        }
+      ]
+    },
+    {
+      "line": 33,
+      "col": 1,
+      "name": "any_lava",
+      "medium": "lava",
+      "world": null,
+      "catches": [
+        {
+          "line": 35,
+          "col": 5,
+          "kind": "item",
+          "id": "MAGMA_CREAM",
+          "weight": {
+            "line": 35,
+            "col": 37,
+            "kind": "number",
+            "value": 8,
+            "integer": true
+          },
+          "message": null
+        },
+        {
+          "line": 36,
+          "col": 5,
+          "kind": "item",
+          "id": "BLAZE_ROD",
+          "weight": {
+            "line": 36,
+            "col": 35,
+            "kind": "number",
+            "value": 2,
+            "integer": true
+          },
+          "message": "<gold>Still warm."
+        }
+      ]
+    }
+  ]
+}

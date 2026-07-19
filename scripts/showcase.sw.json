@@ -1,0 +1,1044 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "demo" ],
+      "permission": null,
+      "description": "Showcase of SwoftLang language features",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "assign",
+            "target": "x",
+            "value": {
+              "line": 6,
+              "col": 18,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 6,
+                "col": 18,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              },
+              "right": {
+                "line": 6,
+                "col": 22,
+                "kind": "binary",
+                "op": "MULTIPLY",
+                "left": {
+                  "line": 6,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                "right": {
+                  "line": 6,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 7,
+              "col": 14,
+              "kind": "string",
+              "value": "x = ${x}"
+            },
+            "target": null
+          },
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "assign",
+            "target": "y",
+            "value": {
+              "line": 8,
+              "col": 19,
+              "kind": "binary",
+              "op": "MULTIPLY",
+              "left": {
+                "line": 8,
+                "col": 19,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 8,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                "right": {
+                  "line": 8,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              },
+              "right": {
+                "line": 8,
+                "col": 28,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 9,
+              "col": 14,
+              "kind": "string",
+              "value": "y = ${y}"
+            },
+            "target": null
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "assign",
+            "target": "z",
+            "value": {
+              "line": 10,
+              "col": 18,
+              "kind": "binary",
+              "op": "SUBTRACT",
+              "left": {
+                "line": 10,
+                "col": 18,
+                "kind": "number",
+                "value": 10,
+                "integer": true
+              },
+              "right": {
+                "line": 10,
+                "col": 23,
+                "kind": "binary",
+                "op": "DIVIDE",
+                "left": {
+                  "line": 10,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 4,
+                  "integer": true
+                },
+                "right": {
+                  "line": 10,
+                  "col": 27,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              }
+            }
+          },
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 11,
+              "col": 14,
+              "kind": "string",
+              "value": "z = ${z}"
+            },
+            "target": null
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 12,
+              "col": 18,
+              "kind": "binary",
+              "op": "MODULO",
+              "left": {
+                "line": 12,
+                "col": 18,
+                "kind": "number",
+                "value": 17,
+                "integer": true
+              },
+              "right": {
+                "line": 12,
+                "col": 23,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 13,
+              "col": 14,
+              "kind": "string",
+              "value": "17 mod 5 = ${r}"
+            },
+            "target": null
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "assign",
+            "target": "neg",
+            "value": {
+              "line": 14,
+              "col": 20,
+              "kind": "unary",
+              "op": "NEGATE",
+              "operand": {
+                "line": 14,
+                "col": 21,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 15,
+              "col": 14,
+              "kind": "string",
+              "value": "neg = ${neg}"
+            },
+            "target": null
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "assign",
+            "target": "half",
+            "value": {
+              "line": 16,
+              "col": 21,
+              "kind": "binary",
+              "op": "DIVIDE",
+              "left": {
+                "line": 16,
+                "col": 21,
+                "kind": "number",
+                "value": 7,
+                "integer": true
+              },
+              "right": {
+                "line": 16,
+                "col": 25,
+                "kind": "number",
+                "value": 2.0,
+                "integer": false
+              }
+            }
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 17,
+              "col": 14,
+              "kind": "string",
+              "value": "half = ${half}"
+            },
+            "target": null
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 20,
+              "col": 12,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": { "line": 20, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 20,
+                "col": 16,
+                "kind": "number",
+                "value": 6,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 20,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 21,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 21,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "x is greater than 6"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 23,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": { "line": 23, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 23,
+                "col": 16,
+                "kind": "number",
+                "value": 7,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 23,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 24,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 24,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "x equals 7"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 26,
+              "col": 12,
+              "kind": "binary",
+              "op": "NOT_EQUALS",
+              "left": { "line": 26, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 26,
+                "col": 17,
+                "kind": "number",
+                "value": 8,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 26,
+              "col": 19,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 27,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 27,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "x is not 8"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "assign",
+            "target": "flag",
+            "value": {
+              "line": 29,
+              "col": 21,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 30,
+              "col": 12,
+              "kind": "binary",
+              "op": "AND",
+              "left": {
+                "line": 30,
+                "col": 12,
+                "kind": "var",
+                "name": "flag"
+              },
+              "right": {
+                "line": 30,
+                "col": 21,
+                "kind": "binary",
+                "op": "GREATER_EQUALS",
+                "left": { "line": 30, "col": 21, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 30,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 7,
+                  "integer": true
+                }
+              }
+            },
+            "then": {
+              "line": 30,
+              "col": 28,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 31,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 31,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "flag and x >= 7"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 33,
+              "col": 12,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 33,
+                "col": 17,
+                "kind": "binary",
+                "op": "LESS_THAN",
+                "left": { "line": 33, "col": 17, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 33,
+                  "col": 21,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              }
+            },
+            "then": {
+              "line": 33,
+              "col": 24,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 34,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 34,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "x is not less than 5"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 38,
+              "col": 12,
+              "kind": "binary",
+              "op": "EQUALS",
+              "left": { "line": 38, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 38,
+                "col": 16,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            },
+            "then": {
+              "line": 38,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 39,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 39,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "branch: five"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 40,
+              "col": 16,
+              "kind": "if",
+              "condition": {
+                "line": 40,
+                "col": 19,
+                "kind": "binary",
+                "op": "EQUALS",
+                "left": { "line": 40, "col": 19, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 40,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 7,
+                  "integer": true
+                }
+              },
+              "then": {
+                "line": 40,
+                "col": 25,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 41,
+                    "col": 13,
+                    "kind": "send",
+                    "message": {
+                      "line": 41,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "branch: seven"
+                    },
+                    "target": null
+                  }
+                ]
+              },
+              "else": {
+                "line": 42,
+                "col": 16,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 43,
+                    "col": 13,
+                    "kind": "send",
+                    "message": {
+                      "line": 43,
+                      "col": 18,
+                      "kind": "string",
+                      "value": "branch: other"
+                    },
+                    "target": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 47,
+            "col": 9,
+            "kind": "loop",
+            "count": {
+              "line": 47,
+              "col": 14,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            },
+            "var": "i",
+            "body": {
+              "line": 47,
+              "col": 27,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 48,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 48,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "loop iteration ${i}"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "countdown",
+            "value": {
+              "line": 52,
+              "col": 26,
+              "kind": "number",
+              "value": 3,
+              "integer": true
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "while",
+            "condition": {
+              "line": 53,
+              "col": 15,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 53,
+                "col": 15,
+                "kind": "var",
+                "name": "countdown"
+              },
+              "right": {
+                "line": 53,
+                "col": 27,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            },
+            "body": {
+              "line": 53,
+              "col": 29,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 54,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 54,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "countdown ${countdown}"
+                  },
+                  "target": null
+                },
+                {
+                  "line": 55,
+                  "col": 13,
+                  "kind": "assign",
+                  "target": "countdown",
+                  "value": {
+                    "line": 55,
+                    "col": 30,
+                    "kind": "binary",
+                    "op": "SUBTRACT",
+                    "left": {
+                      "line": 55,
+                      "col": 30,
+                      "kind": "var",
+                      "name": "countdown"
+                    },
+                    "right": {
+                      "line": 55,
+                      "col": 42,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 59,
+            "col": 9,
+            "kind": "assign",
+            "target": "name",
+            "value": {
+              "line": 59,
+              "col": 21,
+              "kind": "string",
+              "value": "SwoftLang"
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 60,
+              "col": 14,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 60,
+                "col": 14,
+                "kind": "string",
+                "value": "Hello from ${name}, x + y = "
+              },
+              "right": {
+                "line": 60,
+                "col": 48,
+                "kind": "binary",
+                "op": "ADD",
+                "left": { "line": 60, "col": 48, "kind": "var", "name": "x" },
+                "right": {
+                  "line": 60,
+                  "col": 52,
+                  "kind": "var",
+                  "name": "y"
+                }
+              }
+            },
+            "target": null
+          },
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 63,
+              "col": 12,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": {
+                "line": 63,
+                "col": 12,
+                "kind": "var",
+                "name": "name"
+              },
+              "right": {
+                "line": 63,
+                "col": 26,
+                "kind": "string",
+                "value": "swoft"
+              }
+            },
+            "then": {
+              "line": 63,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 64,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 64,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "name contains swoft"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 66,
+              "col": 12,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": {
+                "line": 66,
+                "col": 12,
+                "kind": "var",
+                "name": "name"
+              },
+              "right": {
+                "line": 66,
+                "col": 26,
+                "kind": "string",
+                "value": "java"
+              }
+            },
+            "then": {
+              "line": 66,
+              "col": 33,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 67,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 67,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "name contains java"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": {
+              "line": 68,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 69,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 69,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "name does not contain java"
+                  },
+                  "target": null
+                }
+              ]
+            }
+          },
+          {
+            "line": 73,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 73,
+              "col": 12,
+              "kind": "binary",
+              "op": "IS_TYPE",
+              "left": { "line": 73, "col": 12, "kind": "var", "name": "x" },
+              "right": {
+                "line": 73,
+                "col": 19,
+                "kind": "type",
+                "name": "Number"
+              }
+            },
+            "then": {
+              "line": 73,
+              "col": 26,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 74,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 74,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "x is a Number"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 76,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 76,
+              "col": 12,
+              "kind": "binary",
+              "op": "IS_TYPE",
+              "left": {
+                "line": 76,
+                "col": 12,
+                "kind": "var",
+                "name": "name"
+              },
+              "right": {
+                "line": 76,
+                "col": 22,
+                "kind": "type",
+                "name": "String"
+              }
+            },
+            "then": {
+              "line": 76,
+              "col": 29,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 77,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 77,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "name is a String"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 79,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 79,
+              "col": 12,
+              "kind": "binary",
+              "op": "IS_NOT_TYPE",
+              "left": {
+                "line": 79,
+                "col": 12,
+                "kind": "var",
+                "name": "flag"
+              },
+              "right": {
+                "line": 79,
+                "col": 26,
+                "kind": "type",
+                "name": "Number"
+              }
+            },
+            "then": {
+              "line": 79,
+              "col": 33,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 80,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 80,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "flag is not a Number"
+                  },
+                  "target": null
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 83,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 83,
+              "col": 14,
+              "kind": "string",
+              "value": "flag = ${flag}"
+            },
+            "target": null
+          },
+          {
+            "line": 86,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 86,
+              "col": 12,
+              "kind": "boolean",
+              "value": false
+            },
+            "then": {
+              "line": 86,
+              "col": 18,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 87,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 87,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "<gold>Hello everyone"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 90,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 90,
+              "col": 14,
+              "kind": "string",
+              "value": "demo complete"
+            },
+            "target": null
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

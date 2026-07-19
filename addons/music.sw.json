@@ -1,0 +1,107 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [
+    {
+      "line": 18,
+      "col": 8,
+      "name": "play_song_near",
+      "async": false,
+      "params": [
+        {
+          "line": 18,
+          "col": 32,
+          "name": "song_file",
+          "type": { "base": "STRING" }
+        },
+        {
+          "line": 18,
+          "col": 51,
+          "name": "center",
+          "type": { "base": "LOCATION" }
+        },
+        {
+          "line": 18,
+          "col": 69,
+          "name": "radius",
+          "type": { "base": "DOUBLE" }
+        }
+      ],
+      "body": [
+        {
+          "line": 19,
+          "col": 5,
+          "kind": "play_song",
+          "song": {
+            "line": 19,
+            "col": 15,
+            "kind": "var",
+            "name": "song_file"
+          },
+          "target": null,
+          "tick": null,
+          "at": { "line": 19, "col": 28, "kind": "var", "name": "center" },
+          "radius": {
+            "line": 19,
+            "col": 42,
+            "kind": "var",
+            "name": "radius"
+          }
+        }
+      ]
+    },
+    {
+      "line": 23,
+      "col": 8,
+      "name": "play_song_for_all",
+      "async": false,
+      "params": [
+        {
+          "line": 23,
+          "col": 35,
+          "name": "song_file",
+          "type": { "base": "STRING" }
+        }
+      ],
+      "body": [
+        {
+          "line": 24,
+          "col": 5,
+          "kind": "play_song",
+          "song": {
+            "line": 24,
+            "col": 15,
+            "kind": "var",
+            "name": "song_file"
+          },
+          "target": { "line": 24, "col": 28, "kind": "all_players" },
+          "tick": null,
+          "at": null,
+          "radius": null
+        }
+      ]
+    },
+    {
+      "line": 28,
+      "col": 8,
+      "name": "stop_all_songs",
+      "async": false,
+      "params": [],
+      "body": [
+        {
+          "line": 29,
+          "col": 5,
+          "kind": "stop_song",
+          "target": { "line": 29, "col": 18, "kind": "all_players" }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

@@ -1,0 +1,95 @@
+name: Release
+
+# Tag a version (e.g. `git tag v1.0.0 && git push --tags`) to publish a single,
+# fully self-contained server jar to a GitHub Release. The jar bundles the native
+# swoftc compiler for every OS and extracts the right one at runtime, so users
+# need nothing but a Java 25 runtime: download the jar, put .sw files in a
+# scripts/ folder beside it, and run `java -jar swoftlang-server.jar`.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # Build the native swoftc compiler once per platform. Artifact names match the
+  # jar resource names SwoftcCompiler looks up (os-arch, .exe on Windows).
+  swoftc:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset: linux-x64
+          - os: macos-14
+            asset: macos-arm64
+          - os: macos-13
+            asset: macos-x64
+          - os: windows-latest
+            asset: windows-x64.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.2"
+      - name: Build swoftc
+        shell: bash
+        run: |
+          opam install -y yojson dune
+          cd compiler
+          opam exec -- dune build --profile release
+          cd ..
+          mkdir -p out
+          cp compiler/_build/default/bin/main.exe "out/${{ matrix.asset }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: swoftc-${{ matrix.asset }}
+          path: out/${{ matrix.asset }}
+
+  # Build the fat jar and bake every native swoftc into it under /swoftc/.
+  release:
+    needs: swoftc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Gradle 8.5 runs on JDK 21; the :java module compiles against JDK 25.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            25
+
+      - name: Build fat jar
+        run: |
+          JAVA_HOME="$JAVA_HOME_21_X64" ./gradlew :java:jar --no-daemon --console=plain \
+            -Dorg.gradle.java.installations.paths="$JAVA_HOME_25_X64"
+          cp java/build/libs/java.jar swoftlang-server.jar
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: swoftc-artifacts
+
+      - name: Bundle compilers into the jar
+        run: |
+          set -eux
+          mkdir -p staging/swoftc
+          # Each artifact folder is swoftc-<asset>/<asset>; flatten into swoftc/<asset>.
+          for d in swoftc-artifacts/swoftc-*; do
+            for f in "$d"/*; do cp "$f" "staging/swoftc/$(basename "$f")"; done
+          done
+          chmod +x staging/swoftc/* || true
+          ls -la staging/swoftc
+          ( cd staging && zip -r "$GITHUB_WORKSPACE/swoftlang-server.jar" swoftc )
+          # Sanity: the swoftc entries are now inside the jar.
+          unzip -l swoftlang-server.jar | grep swoftc/
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: swoftlang-server.jar

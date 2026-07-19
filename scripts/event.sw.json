@@ -1,0 +1,177 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "PlayerChat",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 6,
+            "col": 19,
+            "kind": "set_prop",
+            "target": {
+              "line": 6,
+              "col": 13,
+              "kind": "var",
+              "name": "event"
+            },
+            "name": "message",
+            "value": {
+              "line": 6,
+              "col": 30,
+              "kind": "string",
+              "value": "[Filtered] ${event.message}"
+            }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 9,
+              "col": 14,
+              "kind": "string",
+              "value": "You said: ${event.message}"
+            },
+            "target": {
+              "line": 9,
+              "col": 52,
+              "kind": "prop",
+              "target": {
+                "line": 9,
+                "col": 46,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 12,
+              "col": 18,
+              "kind": "binary",
+              "op": "CONTAINS",
+              "left": {
+                "line": 12,
+                "col": 18,
+                "kind": "prop",
+                "target": {
+                  "line": 12,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "event"
+                },
+                "name": "message"
+              },
+              "right": {
+                "line": 12,
+                "col": 35,
+                "kind": "string",
+                "value": "badword"
+              }
+            },
+            "then": {
+              "line": 12,
+              "col": 45,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 13,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 13,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<red>Your message was blocked!"
+                  },
+                  "target": {
+                    "line": 13,
+                    "col": 60,
+                    "kind": "prop",
+                    "target": {
+                      "line": 13,
+                      "col": 54,
+                      "kind": "var",
+                      "name": "event"
+                    },
+                    "name": "player"
+                  }
+                },
+                { "line": 14, "col": 13, "kind": "cancel_event" }
+              ]
+            },
+            "else": null
+          }
+        ]
+      }
+    },
+    {
+      "line": 19,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 5,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 23,
+              "col": 14,
+              "kind": "string",
+              "value": "<green>Welcome ${event.player.name}!"
+            },
+            "target": {
+              "line": 23,
+              "col": 56,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "Hello ${event.player.name}!"
+            },
+            "target": {
+              "line": 24,
+              "col": 53,
+              "kind": "prop",
+              "target": {
+                "line": 24,
+                "col": 47,
+                "kind": "var",
+                "name": "event"
+              },
+              "name": "player"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

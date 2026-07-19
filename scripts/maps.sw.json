@@ -1,0 +1,614 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 16,
+      "col": 1,
+      "names": [ "inventory" ],
+      "permission": null,
+      "description": "Build an item->count map and report every entry",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "assign",
+            "target": "counts",
+            "value": {
+              "line": 21,
+              "col": 23,
+              "kind": "map_lit",
+              "entries": [
+                {
+                  "key": "diamond",
+                  "value": {
+                    "line": 21,
+                    "col": 36,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "emerald",
+                  "value": {
+                    "line": 21,
+                    "col": 50,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                },
+                {
+                  "key": "gold",
+                  "value": {
+                    "line": 21,
+                    "col": 61,
+                    "kind": "number",
+                    "value": 7,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              { "line": 24, "col": 17, "kind": "var", "name": "counts" },
+              { "line": 24, "col": 25, "kind": "string", "value": "iron" },
+              {
+                "line": 24,
+                "col": 33,
+                "kind": "number",
+                "value": 12,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              { "line": 25, "col": 13, "kind": "var", "name": "counts" },
+              { "line": 25, "col": 23, "kind": "string", "value": "diamond" },
+              {
+                "line": 25,
+                "col": 36,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 27,
+                "col": 14,
+                "kind": "string",
+                "value": "size is "
+              },
+              "right": {
+                "line": 27,
+                "col": 14,
+                "kind": "call",
+                "name": "map_size",
+                "args": [
+                  { "line": 27, "col": 14, "kind": "var", "name": "counts" }
+                ]
+              }
+            },
+            "target": {
+              "line": 27,
+              "col": 47,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "assign",
+            "target": "gold",
+            "value": {
+              "line": 30,
+              "col": 27,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 30,
+                "col": 27,
+                "kind": "call",
+                "name": "map_get",
+                "args": [
+                  { "line": 30, "col": 21, "kind": "var", "name": "counts" },
+                  {
+                    "line": 30,
+                    "col": 28,
+                    "kind": "string",
+                    "value": "gold"
+                  }
+                ]
+              },
+              "right": {
+                "line": 30,
+                "col": 46,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 31,
+              "col": 14,
+              "kind": "string",
+              "value": "gold count is ${gold}"
+            },
+            "target": {
+              "line": 31,
+              "col": 41,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 34,
+              "col": 18,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 34,
+                "col": 18,
+                "kind": "call",
+                "name": "map_get",
+                "args": [
+                  { "line": 34, "col": 12, "kind": "var", "name": "counts" },
+                  {
+                    "line": 34,
+                    "col": 19,
+                    "kind": "string",
+                    "value": "ruby"
+                  }
+                ]
+              }
+            },
+            "then": {
+              "line": 34,
+              "col": 34,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 35,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 35,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "has ruby"
+                  },
+                  "target": {
+                    "line": 35,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 36,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 37,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 37,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "no ruby"
+                  },
+                  "target": {
+                    "line": 37,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 40,
+              "col": 12,
+              "kind": "call",
+              "name": "map_has",
+              "args": [
+                { "line": 40, "col": 20, "kind": "var", "name": "counts" },
+                { "line": 40, "col": 28, "kind": "string", "value": "iron" }
+              ]
+            },
+            "then": {
+              "line": 40,
+              "col": 36,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 41,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 41,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "has iron"
+                  },
+                  "target": {
+                    "line": 41,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "foreach",
+            "var": "material",
+            "limit": null,
+            "iterable": {
+              "line": 45,
+              "col": 14,
+              "kind": "call",
+              "name": "map_keys",
+              "args": [
+                { "line": 45, "col": 23, "kind": "var", "name": "counts" }
+              ]
+            },
+            "body": {
+              "line": 45,
+              "col": 43,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 46,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 46,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "key ${material}"
+                  },
+                  "target": {
+                    "line": 46,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 50,
+            "col": 9,
+            "kind": "foreach_map",
+            "key": "name",
+            "value": "amount",
+            "map": { "line": 50, "col": 14, "kind": "var", "name": "counts" },
+            "body": {
+              "line": 50,
+              "col": 39,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 51,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 51,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "${name} x${amount}"
+                  },
+                  "target": {
+                    "line": 51,
+                    "col": 42,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 55,
+            "col": 9,
+            "kind": "call",
+            "name": "map_delete",
+            "args": [
+              { "line": 55, "col": 20, "kind": "var", "name": "counts" },
+              { "line": 55, "col": 28, "kind": "string", "value": "emerald" }
+            ]
+          },
+          {
+            "line": 56,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 56,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 56,
+                "col": 14,
+                "kind": "string",
+                "value": "after delete size is "
+              },
+              "right": {
+                "line": 56,
+                "col": 14,
+                "kind": "call",
+                "name": "map_size",
+                "args": [
+                  { "line": 56, "col": 14, "kind": "var", "name": "counts" }
+                ]
+              }
+            },
+            "target": {
+              "line": 56,
+              "col": 60,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 60,
+      "col": 1,
+      "names": [ "record-score" ],
+      "permission": null,
+      "description": "Write into a persistent map that survives a restart",
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "scores",
+            "subject": null,
+            "value": {
+              "line": 66,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 66,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "scores",
+                  "subject": null
+                },
+                {
+                  "line": 66,
+                  "col": 23,
+                  "kind": "string",
+                  "value": "team-red"
+                },
+                {
+                  "line": 66,
+                  "col": 37,
+                  "kind": "number",
+                  "value": 42,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "scores",
+            "subject": null,
+            "value": {
+              "line": 67,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 67,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "scores",
+                  "subject": null
+                },
+                {
+                  "line": 67,
+                  "col": 23,
+                  "kind": "string",
+                  "value": "team-blue"
+                },
+                {
+                  "line": 67,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 17,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "assign",
+            "target": "red",
+            "value": {
+              "line": 69,
+              "col": 26,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 69,
+                "col": 26,
+                "kind": "call",
+                "name": "map_get",
+                "args": [
+                  {
+                    "line": 69,
+                    "col": 20,
+                    "kind": "persist_get",
+                    "name": "scores",
+                    "subject": null
+                  },
+                  {
+                    "line": 69,
+                    "col": 27,
+                    "kind": "string",
+                    "value": "team-red"
+                  }
+                ]
+              },
+              "right": {
+                "line": 69,
+                "col": 49,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 70,
+              "col": 14,
+              "kind": "string",
+              "value": "team-red has ${red}"
+            },
+            "target": {
+              "line": 70,
+              "col": 39,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 71,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 71,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 71,
+                "col": 14,
+                "kind": "string",
+                "value": "teams recorded: "
+              },
+              "right": {
+                "line": 71,
+                "col": 14,
+                "kind": "call",
+                "name": "map_size",
+                "args": [
+                  {
+                    "line": 71,
+                    "col": 14,
+                    "kind": "persist_get",
+                    "name": "scores",
+                    "subject": null
+                  }
+                ]
+              }
+            },
+            "target": {
+              "line": 71,
+              "col": 55,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 8,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 14,
+      "col": 1,
+      "name": "scores",
+      "subject": null,
+      "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+      "default": {
+        "line": 14,
+        "col": 35,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      }
+    }
+  ]
+}
