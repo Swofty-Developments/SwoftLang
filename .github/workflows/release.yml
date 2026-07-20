@@ -68,6 +68,7 @@ jobs:
 
       - name: Build fat jar
         run: |
+          chmod +x ./gradlew
           JAVA_HOME="$JAVA_HOME_21_X64" ./gradlew :java:jar --no-daemon --console=plain \
             -Dorg.gradle.java.installations.paths="$JAVA_HOME_25_X64"
           cp java/build/libs/java.jar swoftlang-server.jar
