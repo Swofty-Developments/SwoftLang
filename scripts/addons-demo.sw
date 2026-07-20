@@ -11,6 +11,12 @@
 
 import "music"
 
+// The vanilla block placement rules addon: importing it registers stairs,
+// slab, log, fence, pane, wall and door placement_rule{}s so blocks orient
+// and connect like vanilla (Minestom ships none). It is a pure-SwoftLang
+// feature and the reference example for the placement_rule construct.
+import "blocks"
+
 // A per-viewer hologram: the "${player.name}" line makes each viewer get a
 // private display stack rendered with their own player bound (auto-detected,
 // like scoreboards). Re-rendered on the update cadence.
