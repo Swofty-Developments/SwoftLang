@@ -3,7 +3,7 @@ title: Setup
 ---
 
 <StepHeader>
-a working toolchain and a server that answers <code>/hello</code> — the edit-check-run loop you'll use for the rest of the course.
+a running server that answers <code>/hello</code> — the edit-run loop you'll use for the rest of the course.
 </StepHeader>
 
 SwoftLang is a scripting language for Minecraft servers. You write `.sw` files in an
@@ -15,7 +15,7 @@ compiler is the point: missing-value bugs, property typos, and threading mistake
 <div class="sw-hub-sec">
 <div class="sw-hub-sec-head"><h2 class="sw-hub-sec-title">The course</h2><span class="sw-hub-sec-note">16 steps · one concept each · ending runnable</span></div>
 <div class="sw-hub">
-<a class="sw-hub-card" href="/guide/"><span class="sw-hub-num">01</span><span class="sw-hub-body"><span class="sw-hub-title">Setup</span><span class="sw-hub-desc">The toolchain and the edit-check-run loop. You're here.</span></span></a>
+<a class="sw-hub-card" href="/guide/"><span class="sw-hub-num">01</span><span class="sw-hub-body"><span class="sw-hub-title">Setup</span><span class="sw-hub-desc">Install Java, download the server, run your first script. You're here.</span></span></a>
 <a class="sw-hub-card" href="/guide/commands"><span class="sw-hub-num">02</span><span class="sw-hub-body"><span class="sw-hub-title">Your First Command</span><span class="sw-hub-desc">Command blocks, arguments, and the sender.</span></span></a>
 <a class="sw-hub-card" href="/guide/events"><span class="sw-hub-num">03</span><span class="sw-hub-body"><span class="sw-hub-title">Events</span><span class="sw-hub-desc">Handle Minestom events by name, typed.</span></span></a>
 <a class="sw-hub-card" href="/guide/variables-and-types"><span class="sw-hub-num">04</span><span class="sw-hub-body"><span class="sw-hub-title">Variables &amp; Types</span><span class="sw-hub-desc"><code>set … to</code>, inferred locals, and the core type set.</span></span></a>
@@ -34,46 +34,38 @@ compiler is the point: missing-value bugs, property typos, and threading mistake
 </div>
 </div>
 
-## Install the toolchain
+## Install Java 25
 
-Two things:
-
-- **JDK 21** — the runtime uses virtual threads, so 21 is a hard floor.
-- **OCaml + dune** — to build `swoftc`. The only library dependency is `yojson`.
-
-::: code-group
-
-```bash [nix-shell]
-nix-shell -p ocaml dune_3 ocamlPackages.yojson
-```
-
-```bash [opam]
-opam install dune yojson
-```
-
-:::
-
-## Build the compiler
+The server runs on **Java 25** — Minestom tracks the latest Minecraft, which is Java-25
+bytecode. Grab a JDK 25 build from [Adoptium](https://adoptium.net/temurin/releases/?version=25)
+(or your package manager) and confirm:
 
 ```bash
-cd compiler
-dune build
+$ java -version
+openjdk version "25" ...
 ```
 
-The binary lands at `compiler/_build/default/bin/main.exe`. Check it works:
+That's the *only* thing you install. The `swoftc` compiler is baked into the server jar and
+extracted automatically at boot — there's no toolchain to set up and nothing to build from
+source.
 
-```bash
-$ ./compiler/_build/default/bin/main.exe --version
-swoftc 2.0.0
+## Download the server
+
+Grab the latest **`swoftlang-server.jar`** from the
+[Releases page](https://github.com/Swofty-Developments/SwoftLang/releases/latest) and drop it
+in a fresh folder. Everything lives next to the jar:
+
 ```
-
-Put it on your `PATH` as `swoftc` (or export `SWOFTC=/path/to/main.exe` — the server
-runtime honors the same variable when it compiles your scripts at boot).
+my-server/
+├── swoftlang-server.jar
+└── scripts/
+    └── hello.sw
+```
 
 ## Write your first script
 
-The engine loads every `.sw` file it finds in the `scripts/` directory next to the server.
-Create `scripts/hello.sw`:
+The server loads **every `.sw` file in the `scripts/` folder beside the jar**. Create
+`scripts/hello.sw`:
 
 ```swoftlang
 command "hello" {
@@ -85,32 +77,31 @@ command "hello" {
 }
 ```
 
-## Check it
-
-```bash
-$ swoftc check scripts/hello.sw
-$ echo $?
-0
-```
-
-Silence means it's good. When something is wrong, errors come out as
-`file:line:col: error: message` with a caret pointing at your code — you'll meet plenty
-of real ones through this course, on purpose.
-
 ## Run the server
 
 ```bash
-./gradlew :java:run
+java -jar swoftlang-server.jar
 ```
 
-This boots a Minestom server on `0.0.0.0:25565` (offline mode by default — you'll
-configure auth, MOTD, and the rest in [Step 16](/guide/ship-it)), compiles every script
-in `scripts/`, and registers what it finds. Join with a 1.21.4 client and type `/hello`:
+On boot the server compiles every script in `scripts/` — any mistake surfaces as
+`file:line:col: error: message` with a caret pointing at your code, *before* the world loads —
+then starts a Minestom server on `0.0.0.0:25565` (offline mode by default; you'll configure
+auth, MOTD, and the rest in [Step 16](/guide/ship-it)) and registers what it found. Join with a
+current Minecraft client and type `/hello`:
 
 > **Hello from SwoftLang!** — in lime green.
 
-That's the whole loop: edit a `.sw` file, `swoftc check` it, restart the server. The
-repository's `scripts/` directory ships a set of real examples that double as the
-compiler's acceptance suite — worth skimming as you go.
+That's the whole loop: edit a `.sw` file, restart the server. Prefer save-and-see? Run with
+`--debug` and the server hot-reloads scripts the moment you save them (and hosts the live
+execution tracer the VS Code extension connects to):
+
+```bash
+java -jar swoftlang-server.jar --debug
+```
+
+::: tip Editor support
+Install the **SwoftLang** VS Code extension for syntax highlighting, inline type errors as you
+type, and — with `--debug` — a live tracer that highlights each line as it runs.
+:::
 
 Next: that `command` block, taken seriously.

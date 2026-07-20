@@ -169,7 +169,16 @@ export class DebugTracer implements vscode.Disposable {
     }
     this.handlerMarker = makeHandlerMarker(context);
 
-    context.subscriptions.push(this.status, this.output, this);
+    context.subscriptions.push(
+      this.status,
+      this.output,
+      this,
+      // editing a traced file shifts its line numbers — clear stale pulses at once
+      vscode.workspace.onDidChangeTextDocument((e) => {
+        const key = e.document.uri.toString();
+        if (this.active.some((a) => a.editorKey === key)) this.clearFile(e.document.uri);
+      }),
+    );
   }
 
   // ---- connection lifecycle ----
@@ -373,6 +382,10 @@ export class DebugTracer implements vscode.Disposable {
 
   private onReload(msg: ReloadMsg): void {
     const short = path.basename(msg.file);
+    // the file's line numbers may have shifted on save — drop any stale pulses
+    // so only fresh traces at the NEW line numbers light up.
+    const reloadedUri = this.host.resolveFile(msg.file);
+    if (reloadedUri) this.clearFile(reloadedUri);
     if (msg.ok) {
       this.lastReload = `reloaded ${short} ✓`;
       vscode.window.setStatusBarMessage(`$(check) reloaded ${short}`, 4000);
@@ -385,6 +398,18 @@ export class DebugTracer implements vscode.Disposable {
       this.log(`reload error: ${msg.file}${err}`);
     }
     this.updateStatus();
+  }
+
+  // Drop all active pulses + handler marks for one file (its lines shifted).
+  private clearFile(uri: vscode.Uri): void {
+    const key = uri.toString();
+    this.active = this.active.filter((a) => a.editorKey !== key);
+    this.handlerLines.delete(key);
+    const editor = this.findEditor(uri);
+    if (editor) {
+      for (const l of this.layers) editor.setDecorations(l.type, []);
+      editor.setDecorations(this.handlerMarker, []);
+    }
   }
 
   // ---- rendering ----
