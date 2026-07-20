@@ -150,6 +150,12 @@ command "sentry" {
 }
 ```
 
+::: tip Per-mob timers
+A `Mob` carries a [task registry](./schedulers#obj-tasks):
+`set mob.tasks.<id> to schedule every N ticks { }` (bind it in `on_spawn`) attaches a
+named repeating task that auto-cancels when the mob despawns.
+:::
+
 ## The `on_hit` handler {#on-hit}
 
 `on_hit(<name>) { ... }` runs when the mob takes damage, inline in the declaration. It

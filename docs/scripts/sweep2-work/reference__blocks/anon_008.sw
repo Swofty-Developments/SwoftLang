@@ -1,9 +1,18 @@
-placement_rule for "oak_log" {
-    on_place(location, face, cursor, against, player) -> Block {
-        set axis to "y"
-        if (face is "north") or (face is "south") set axis to "z"
-        if (face is "east") or (face is "west") set axis to "x"
-        return block("oak_log").with("axis", axis)
+block_handler "oak_sign" {
+    on_place(player, location, block) {
+        send "placed a sign" to player
     }
-    self_replaceable: false
+    on_destroy(location, block) {
+        broadcast "a sign broke"
+    }
+    on_interact(player, location, block) -> Boolean {
+        send "you clicked the sign" to player
+        return true
+    }
+    on_touch(entity, location) {
+        broadcast "something touched a sign"
+    }
+    tick(location, block) {
+        broadcast "sign tick"
+    }
 }

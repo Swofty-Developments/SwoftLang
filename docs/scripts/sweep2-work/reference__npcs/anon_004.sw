@@ -1,12 +1,13 @@
-npc "guide" {
-    location: location(5, 64, 5)
+npc "sentry" {
+    location: location(0, 64, 0)
     skin: "Notch"
+    viewable: false
 }
 
-command "reassign" {
+command "reveal" {
     execute {
-        set npc "guide" skin "Herobrine"
-        set npc "guide" name "<red>Renamed Guide"
-        set npc "guide" location location(6, 64, 6)
+        show npc "sentry" to sender
+        show npc "sentry" to all
+        hide npc "sentry" from sender
     }
 }

@@ -291,3 +291,10 @@ function inspect(x: either<Mob|String>) {
 The text/item/block [display entities](./displays) are spawned entities too — a
 `Display` value can be mounted, teleported, and removed with the same statements.
 :::
+
+::: tip Per-entity timers
+Any `Entity` (and therefore any `Mob`) carries a
+[task registry](./schedulers#obj-tasks):
+`set <entity>.tasks.<id> to schedule every N ticks { }` binds a named repeating task that
+auto-cancels when the entity is removed.
+:::

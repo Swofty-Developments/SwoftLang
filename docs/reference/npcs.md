@@ -30,8 +30,10 @@ npc "guide" {
 | `name:` | `String` | no | overhead name; per-viewer when it interpolates `player.*` |
 | `skin:` | skin source | no | a username `String` or `skin(texture, signature)` |
 | `look_at_players:` | `Boolean` | no | head tracks the nearest player (default `false`) |
+| `viewable:` | `Boolean` | no | whether every player sees it by default (default `true`) |
 | `on_click(p) { ... }` | handler | no | right-click interact; binds the clicking `Player` |
 | `on_left_click(p) { ... }` | handler | no | left-click / attack; binds the clicking `Player` |
+| `on_tick() { ... }` | handler | no | runs every tick with `this` bound to the NPC's fake-player entity |
 
 The click parameter is yours to name — `on_click(player)`, `on_left_click(clicker)` —
 and is a `Player`, bound for the duration of the handler exactly like a command body.
@@ -71,6 +73,77 @@ npc "greeter" {
 }
 ```
 
+::: tip Per-NPC timers
+Inside an NPC handler `this` is bound to the NPC, which carries a
+[task registry](./schedulers#obj-tasks):
+`set this.tasks.<id> to schedule after 2 seconds every 1 seconds { }` binds a named task
+that auto-cancels when the NPC is removed.
+:::
+
+## Visibility
+
+By default an NPC is spawned for everyone (`viewable: true`). Set `viewable: false` to
+declare it hidden — the fake player exists but no one sees it until a `show` statement
+targets a player or `all`. `show npc "name" to` and `hide npc "name" from` route through
+the same [Viewable](./entities#per-viewer) machinery as entities, taking a single `Player`,
+a `list<Player>`, or `all`:
+
+```swoftlang
+npc "sentry" {
+    location: location(0, 64, 0)
+    skin: "Notch"
+    viewable: false
+}
+
+command "reveal" {
+    execute {
+        show npc "sentry" to sender
+        show npc "sentry" to all
+        hide npc "sentry" from sender
+    }
+}
+```
+
+`viewers of npc "name"` reads the current audience as a `list<Player>` — the players the
+fake player is spawned for right now — so you can iterate it directly:
+
+```swoftlang
+npc "sentry" {
+    location: location(0, 64, 0)
+    skin: "Notch"
+    viewable: false
+}
+
+command "who_sees" {
+    execute {
+        loop viewers of npc "sentry" as p {
+            send "<gray>You can see the sentry." to p
+        }
+    }
+}
+```
+
+## Per-tick handler
+
+An `on_tick()` handler runs every tick with `this` bound to the NPC's fake-player
+entity, so you can drive per-frame behaviour — glow, position nudges, entity properties —
+straight from the declaration:
+
+```swoftlang
+npc "sentry" {
+    location: location(0, 64, 0)
+    name: "<gold>Sentry (${player.name})"
+    skin: "Notch"
+    viewable: false
+    on_click(player) {
+        send "<yellow>Halt, ${player.name}!" to player
+    }
+    on_tick() {
+        set this.glowing to true
+    }
+}
+```
+
 ## Statements
 
 Every NPC statement addresses a declared NPC by name:
@@ -80,6 +153,8 @@ Every NPC statement addresses a declared NPC by name:
 | `set npc "name" skin <source>` | reskin — a username `String` or `skin(...)` |
 | `set npc "name" name <string>` | change the overhead name |
 | `set npc "name" location <location>` | move it |
+| `show npc "name" to <target>` | render it for a player, a list of players, or `all` |
+| `hide npc "name" from <target>` | stop rendering it for that target |
 | `remove npc "name"` | despawn it everywhere and stop head tracking |
 
 ```swoftlang

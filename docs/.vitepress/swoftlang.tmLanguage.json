@@ -256,7 +256,7 @@
         },
         {
           "name": "keyword.other.statement.swoftlang",
-          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|nametag|prefix|suffix|emit)\\b"
+          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|place|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|nametag|prefix|suffix|emit)\\b"
         },
         {
           "name": "keyword.other.connective.swoftlang",
@@ -264,7 +264,7 @@
         },
         {
           "name": "keyword.other.block.swoftlang",
-          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|on_place|on_destroy|on_interact|on_update|on_touch|billboard|look_at_players|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
+          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|on_place|on_destroy|on_interact|on_update|on_touch|on_tick|billboard|look_at_players|viewable|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
         },
         {
           "name": "constant.language.unit.swoftlang",

@@ -687,7 +687,7 @@ command "census" {
 `block_at(at: Location) : String`
 
 The block key at a location (`minecraft:stone`-style). Pairs with
-[`set block` / `fill blocks`](./worlds#blocks).
+[`set block` / `fill blocks`](./blocks#placing-and-reading-blocks).
 
 ```swoftlang
 command "under" {

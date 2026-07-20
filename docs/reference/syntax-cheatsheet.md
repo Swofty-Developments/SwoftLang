@@ -430,7 +430,7 @@ copy-on-write: the runtime reads the deepest settable *anchor* (`location`,
 | [packets](./packets) | `send packet "Name" { field: expr, ... } to <target>`, `cancel packet` |
 | [displays](./displays) | `show\|hide display <d> to\|from <target>`, `mount display <d> on <entity>`, `teleport display <d> to <loc>`, `destroy display <d>` |
 | [worlds](./worlds) | `create\|load\|unload\|save\|delete world ...`, `clone world "a" to "b" with <loader>`, `import anvil world ...` |
-| [blocks](./worlds#blocks) | `set block at <loc> to "STONE"`, `fill blocks from <loc> to <loc> with "X"` |
+| [blocks](./blocks#placing-and-reading-blocks) | `set block at <loc> to "STONE"`, `place <block> at <loc>`, `remove block at <loc>`, `fill blocks from <loc> to <loc> with "X"` |
 | [http](./http-api) | `reply [code <n>] with <expr>` — api handlers only |
 | [songs](./songs) | `play\|pause\|resume\|stop song ...`, `broadcast song <file>`, `set song volume ...`, `fade song ...` |
 | [sounds](./maps-toasts-skins-tps#sounds) | `play sound <key> to <target> [at <loc>] [volume <v>] [pitch <p>]`, `stop sound [<key>] for <target>` |

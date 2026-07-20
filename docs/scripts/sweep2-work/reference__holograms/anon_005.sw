@@ -1,14 +1,15 @@
-hologram "rules" {
-    location: location(4, 70, 4)
-    billboard: fixed
+hologram "shop" {
+    location: location(0, 82, 0)
     lines {
-        line "<aqua><bold>Server Rules"
-        line "<gray>1. Be nice"
+        line "<gold><bold>Item Shop"
+        line "<gray>open"
     }
 }
 
-command "showrules" {
+command "closeshop" {
     execute {
-        show hologram "rules" to all
+        set hologram "shop" line 1 to "<red>closed for maintenance"
+        move hologram "shop" to location(2, 82, 0)
+        show hologram "shop" to all
     }
 }

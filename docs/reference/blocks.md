@@ -102,10 +102,17 @@ is rejected exactly like the map form.
 
 ## Placing and reading blocks
 
-Block values plug straight into the world statements from
-[Worlds & Blocks](./worlds#blocks). `set block at` and `fill blocks` accept either a
-plain id string or a posed `block(...)`; `block_at` reads one back as a `Block` you can
-call methods on.
+These statements edit the blocks inside a loaded [world](./worlds). `set block at`,
+`fill blocks`, and `place ... at` accept either a plain id string or a posed `block(...)`;
+`block_at` reads one back as a `Block` you can call methods on.
+
+| Form | Effect |
+|---|---|
+| `set block at <location> to "STONE"` | place one block |
+| `place <Block\|"id"> at <location>` | place one block (same effect as `set block at ... to`) |
+| `remove block at <location>` | clear the block, and cancel any tasks bound to that position |
+| `fill blocks from <loc> to <loc> with "GLASS"` | fill the box between two corners |
+| `block_at(<location>)` | `Block` — the block at that spot (`.id` is its key) |
 
 ```swoftlang
 command "place" {
@@ -114,6 +121,49 @@ command "place" {
         set block at sender.location to block("oak_stairs", {facing: "north"})
         fill blocks from location(0, 63, 0) to location(2, 63, 2) with block("oak_slab", {type: "double"})
         send "was standing on ${here.id}" to sender
+    }
+}
+```
+
+`place ... at` and `set block at ... to` are two spellings of the same one-cell placement —
+pick whichever reads better at the call site. Either accepts a plain id string (which skips
+the state machinery) or a posed `block(...)` value that carries a full state:
+
+```swoftlang
+command "platform" {
+    execute {
+        fill blocks from location(-5.0, 63.0, -5.0) to location(5.0, 63.0, 5.0) with "SMOOTH_STONE"
+        set block at location(0.0, 64.0, 0.0) to "BEACON"
+        send "standing on ${block_at(sender.location)}" to sender
+    }
+}
+```
+
+`remove block at` clears the cell to air and cancels every
+[`.tasks`](/reference/schedulers#obj-tasks) task bound to that
+position. Together, `place` and `remove block at` are the imperative pair for scripting the
+world from an event handler:
+
+```swoftlang
+on PlayerJoin {
+    place block("minecraft:sea_lantern") at event.player.location
+    place "minecraft:oak_log" at event.player.location
+    remove block at event.player.location
+}
+```
+
+Fills run on the tick thread. The compiler measures literal volumes and warns before you
+freeze the server — real `swoftc` output:
+
+```
+w_fill.sw:3:9: warning: 'fill blocks' spans 1000000 blocks here; fills over 100000 blocks can stall the tick thread
+```
+
+```swoftlang
+command "bigfill" {
+    execute {
+        // compiles, but earns the warning above
+        fill blocks from location(0.0, 0.0, 0.0) to location(99.0, 99.0, 99.0) with "STONE"
     }
 }
 ```

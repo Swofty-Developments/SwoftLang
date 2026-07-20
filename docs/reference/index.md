@@ -9,6 +9,7 @@ shown failing, that's real compiler output, byte for byte.</p>
 <div class="sw-hub">
 <a class="sw-hub-card" href="/reference/syntax-cheatsheet"><span class="sw-hub-body"><span class="sw-hub-title">Syntax Cheatsheet</span><span class="sw-hub-desc">Every construct at a glance — the one-page version of the whole language.</span></span></a>
 <a class="sw-hub-card" href="/reference/maps"><span class="sw-hub-body"><span class="sw-hub-title">Maps</span><span class="sw-hub-desc">The <code>map&lt;V&gt;</code> type — literals, <code>map_*</code> builtins, index sugar, iteration, persistent scalar maps.</span></span></a>
+<a class="sw-hub-card" href="/reference/collections"><span class="sw-hub-body"><span class="sw-hub-title">Collections &amp; Strings</span><span class="sw-hub-desc">The <code>receiver.method(args)</code> forms — list, map, and String methods, pure vs mutating, and the zero-arg accessors.</span></span></a>
 <a class="sw-hub-card" href="/reference/builtins"><span class="sw-hub-body"><span class="sw-hub-title">Builtins</span><span class="sw-hub-desc">Every builtin function with checked signatures.</span></span></a>
 <a class="sw-hub-card" href="/reference/events"><span class="sw-hub-body"><span class="sw-hub-title">Event Catalog</span><span class="sw-hub-desc">Every Minestom event you can handle — a curated typed core plus the full generated catalog.</span></span></a>
 <a class="sw-hub-card" href="/reference/cli"><span class="sw-hub-body"><span class="sw-hub-title">CLI — swoftc</span><span class="sw-hub-desc">Compile and check, sidecars, exit codes, how the runtime finds the binary.</span></span></a>
@@ -38,7 +39,7 @@ shown failing, that's real compiler output, byte for byte.</p>
 <div class="sw-hub-sec-head"><h2 class="sw-hub-sec-title">Platform</h2><span class="sw-hub-sec-note">the server around your scripts</span></div>
 <div class="sw-hub">
 <a class="sw-hub-card" href="/reference/server-config"><span class="sw-hub-body"><span class="sw-hub-title">Server Config</span><span class="sw-hub-desc">The <code>server</code> block — auth, http, permissions, MOTD, storage.</span></span></a>
-<a class="sw-hub-card" href="/reference/worlds"><span class="sw-hub-body"><span class="sw-hub-title">Worlds &amp; Blocks</span><span class="sw-hub-desc">Anvil/polar/storage loaders, world lifecycle, block statements.</span></span></a>
+<a class="sw-hub-card" href="/reference/worlds"><span class="sw-hub-body"><span class="sw-hub-title">Worlds</span><span class="sw-hub-desc">Anvil/polar/storage loaders, world lifecycle, weather and time.</span></span></a>
 <a class="sw-hub-card" href="/reference/blocks"><span class="sw-hub-body"><span class="sw-hub-title">Blocks</span><span class="sw-hub-desc">The <code>block(...)</code> state value, NBT tags, <code>block_handler</code> and <code>placement_rule</code> — plus the ready-made vanilla-placement addon.</span></span></a>
 <a class="sw-hub-card" href="/reference/http-api"><span class="sw-hub-body"><span class="sw-hub-title">HTTP API</span><span class="sw-hub-desc"><code>api</code> routes, <code>request</code>, <code>reply</code>.</span></span></a>
 <a class="sw-hub-card" href="/reference/songs"><span class="sw-hub-body"><span class="sw-hub-title">Songs</span><span class="sw-hub-desc">NBS playback and metadata.</span></span></a>

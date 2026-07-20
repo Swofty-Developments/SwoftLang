@@ -1,15 +1,9 @@
-hologram "shop" {
-    location: location(0, 82, 0)
+hologram "clock" {
+    location: location(0, 66, 0)
     lines {
-        line "<gold><bold>Item Shop"
-        line "<gray>open"
+        line "<aqua>Clock"
     }
-}
-
-command "closeshop" {
-    execute {
-        set hologram "shop" line 1 to "<red>closed for maintenance"
-        move hologram "shop" to location(2, 82, 0)
-        show hologram "shop" to all
+    on_tick() {
+        set this.text to "<aqua>Clock"
     }
 }

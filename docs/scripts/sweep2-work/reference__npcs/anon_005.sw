@@ -1,9 +1,13 @@
-npc "guide" {
-    location: location(5, 64, 5)
-    name: "<green>Village Guide"
+npc "sentry" {
+    location: location(0, 64, 0)
     skin: "Notch"
-    look_at_players: true
-    on_click(player) {
-        send "<yellow>Hello ${player.name}!" to player
+    viewable: false
+}
+
+command "who_sees" {
+    execute {
+        loop viewers of npc "sentry" as p {
+            send "<gray>You can see the sentry." to p
+        }
     }
 }

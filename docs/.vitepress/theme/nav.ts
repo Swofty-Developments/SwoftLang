@@ -53,6 +53,7 @@ export const navGroups: NavGroup[] = [
         items: [
           { text: 'Syntax Cheatsheet', link: '/reference/syntax-cheatsheet' },
           { text: 'Maps', link: '/reference/maps' },
+          { text: 'Collections & Strings', link: '/reference/collections' },
           { text: 'Builtins', link: '/reference/builtins' },
           { text: 'Event Catalog', link: '/reference/events' },
           { text: 'CLI (swoftc)', link: '/reference/cli' }
@@ -80,7 +81,7 @@ export const navGroups: NavGroup[] = [
         text: 'Platform',
         items: [
           { text: 'Server Config', link: '/reference/server-config' },
-          { text: 'Worlds & Blocks', link: '/reference/worlds' },
+          { text: 'Worlds', link: '/reference/worlds' },
           { text: 'Blocks', link: '/reference/blocks' },
           { text: 'HTTP API', link: '/reference/http-api' },
           { text: 'Songs', link: '/reference/songs' },

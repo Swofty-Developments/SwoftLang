@@ -1,9 +1,8 @@
-# Worlds & Blocks
+# Worlds
 
 Create, load, clone, and delete whole worlds from scripts — backed by vanilla Anvil
 directories, compact Polar files, or Polar blobs inside your existing
-[storage backend](./server-config#storage-phase-3). Plus the block statements for
-editing the world you're standing in.
+[storage backend](./server-config#storage-phase-3).
 
 ```swoftlang
 command "arena" {
@@ -128,43 +127,12 @@ command "midnight" {
 }
 ```
 
-## Blocks {#blocks}
+## Blocks
 
-| Form | Effect |
-|---|---|
-| `set block at <location> to "STONE"` | place one block |
-| `fill blocks from <loc> to <loc> with "GLASS"` | fill the box between two corners |
-| `block_at(<location>)` | `Block` — the block at that spot (`.id` is its key) |
-
-```swoftlang
-command "platform" {
-    execute {
-        fill blocks from location(-5.0, 63.0, -5.0) to location(5.0, 63.0, 5.0) with "SMOOTH_STONE"
-        set block at location(0.0, 64.0, 0.0) to "BEACON"
-        send "standing on ${block_at(sender.location)}" to sender
-    }
-}
-```
-
-`set block at` and `fill blocks` also take a posed `block(...)` value, and `block_at`
-returns a full `Block` you can inspect — see [Blocks](./blocks) for block states, NBT,
-custom tags, `block_handler`, and `placement_rule`.
-
-Fills run on the tick thread. The compiler measures literal volumes and warns before
-you freeze the server — real `swoftc` output:
-
-```
-w_fill.sw:3:9: warning: 'fill blocks' spans 1000000 blocks here; fills over 100000 blocks can stall the tick thread
-```
-
-```swoftlang
-command "bigfill" {
-    execute {
-        // compiles, but earns the warning above
-        fill blocks from location(0.0, 0.0, 0.0) to location(99.0, 99.0, 99.0) with "STONE"
-    }
-}
-```
+Editing the blocks inside a loaded world — `set block at`, `fill blocks`, `place ... at`,
+`remove block at`, and reading one back with `block_at` — lives in
+[Blocks](./blocks#placing-and-reading-blocks), the single home for block values, states,
+NBT, custom tags, `block_handler`, and `placement_rule`.
 
 ::: tip Polar dependency
 Polar support rides `dev.hollowcube:polar`, pinned to a release compatible with the

@@ -41,6 +41,7 @@ player or `all`.
 | `billboard:` | mode | no | facing mode — `center` (default), `vertical`, `horizontal`, `fixed` |
 | `scale:` | `Number` | no | display scale factor (`1.0` = default) |
 | `update:` | `every <dur>` | no | re-render cadence for dynamic and per-viewer lines |
+| `on_tick() { ... }` | handler | no | runs every tick with `this` bound to the line stack |
 | `lines { ... }` | block | **yes** | the line DSL — see below |
 
 The billboard mode is an enum, checked at compile time — `center`, `vertical`,
@@ -119,6 +120,31 @@ A hologram with no player-scoped line is **global**: one shared stack rendered f
 everyone it is shown to. `update: every <dur>` re-runs the `lines` block on that
 cadence, so interpolated counters and per-viewer conditions stay current without a
 manual refresh loop.
+
+## Per-tick handler
+
+An `on_tick()` handler runs every tick with `this` bound to the hologram's text-display
+stack, a lower-level companion to `update: every <dur>` when you need per-frame control
+over the line displays rather than a fixed re-render cadence:
+
+```swoftlang
+hologram "clock" {
+    location: location(0, 66, 0)
+    lines {
+        line "<aqua>Clock"
+    }
+    on_tick() {
+        set this.text to "<aqua>Clock"
+    }
+}
+```
+
+::: tip Per-hologram timers
+Inside a hologram handler `this` is the hologram, and it carries a
+[task registry](./schedulers#obj-tasks):
+`set this.tasks.<id> to schedule every N ticks { }` binds a named task that auto-cancels
+when the hologram is removed.
+:::
 
 ## Statements
 
