@@ -39,10 +39,12 @@ public final class PropertyTables {
         registered = true;
         registerEntity();
         registerPlayer();
+        registerCombatSurface();
         registerPos();
         registerVec();
         registerItemStack();
         registerBlockValue();
+        registerTasks();
         registerEventWrappers();
 
         // Phase-5 content rows (items/mobs namespaces + event wrappers)
@@ -506,6 +508,38 @@ public final class PropertyTables {
                 net.swofty.entities.ViewerControl::orderedViewers));
     }
 
+    /**
+     * W-pvp surface: the entity ATTRIBUTE keys as direct rw Double properties
+     * (read e.armor = current value, set e.max_health = base value) plus the
+     * native combat trackers as ro properties. Each attribute row is backed by
+     * the SAME Attribute API the removed attribute/set_attribute builtins used;
+     * "gravity" and "max_health" are skipped (handled by CombatRuntime's list)
+     * so the pre-existing boolean gravity / rw max_health rows keep priority.
+     */
+    private static void registerCombatSurface() {
+        for (String attrName : net.swofty.combat.CombatRuntime.ATTRIBUTE_PROPERTY_NAMES) {
+            Attribute attr = net.swofty.combat.CombatRuntime.attributeFromName(attrName);
+            PropertyRegistry.register(PropertyDef.of(attrName, LivingEntity.class,
+                    entity -> entity.getAttributeValue(attr),
+                    (entity, value) ->
+                            entity.getAttribute(attr).setBaseValue(((Number) value).doubleValue()),
+                    null, Coercions::toDouble, TICK));
+        }
+        // native trackers (Minestom exposes no first-class accessors): remaining
+        // i-frame ticks, blocks fallen, positional climbing heuristic, and the
+        // live potion-key list. All read-only, off the same runtime helpers the
+        // removed invulnerable_ticks/fall_distance/is_climbing/active_effects
+        // builtins called.
+        PropertyRegistry.register(PropertyDef.readOnly("invulnerable_ticks", Entity.class,
+                net.swofty.entities.EntityCombatTrackers::invulnerableTicks));
+        PropertyRegistry.register(PropertyDef.readOnly("fall_distance", Entity.class,
+                net.swofty.entities.EntityCombatTrackers::fallDistance));
+        PropertyRegistry.register(PropertyDef.readOnly("is_climbing", Entity.class,
+                net.swofty.entities.EntityCombatTrackers::isClimbing));
+        PropertyRegistry.register(PropertyDef.readOnly("active_effects", Entity.class,
+                net.swofty.combat.CombatRuntime::activeEffects));
+    }
+
     /** EntityPose enum name -> lowercase snake_case script name. */
     private static String poseName(net.minestom.server.entity.EntityPose pose) {
         return pose.name().toLowerCase(java.util.Locale.ROOT);
@@ -710,6 +744,30 @@ public final class PropertyTables {
         PropertyRegistry.register(PropertyDef.readOnly("nbt",
                 net.swofty.blocks.BlockValue.class,
                 net.swofty.blocks.BlockValue::nbt));
+    }
+
+    /**
+     * W-tasks: the read side of the {@code <obj>.tasks.<id>} namespace. The
+     * {@code tasks} hop returns a {@link net.swofty.tasks.TasksView} keyed by
+     * owner identity, so {@code <obj>.tasks.<id>} resolves to the live
+     * {@code Schedule} handle or {@code none}. Reads only — associating a task
+     * uses the dedicated {@code set <obj>.tasks.<id> to schedule ...} statement,
+     * never a generic property write. Registered on every task owner: Entity
+     * (covers Player/Mob/Npc-entity via the superclass walk), display entities
+     * (holograms), positioned block values, and offline players.
+     */
+    private static void registerTasks() {
+        PropertyRegistry.register(PropertyDef.readOnly("tasks", Entity.class,
+                net.swofty.tasks.TasksView::new));
+        PropertyRegistry.register(PropertyDef.readOnly("tasks",
+                net.swofty.displays.SwoftDisplay.class,
+                net.swofty.tasks.TasksView::new));
+        PropertyRegistry.register(PropertyDef.readOnly("tasks",
+                net.swofty.blocks.BlockValue.class,
+                net.swofty.tasks.TasksView::new));
+        PropertyRegistry.register(PropertyDef.readOnly("tasks",
+                net.swofty.players.OfflinePlayerValue.class,
+                net.swofty.tasks.TasksView::new));
     }
 
     private static void registerEventWrappers() {

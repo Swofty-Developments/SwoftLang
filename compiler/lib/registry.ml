@@ -15,6 +15,13 @@ type ty =
   | TMob
   | TItemTags (* the item.tags.* namespace: freeform nested NBT, optional reads *)
   | TEntityTags (* the entity/mob .tags.* namespace: freeform tags, optional reads *)
+  | TTasks
+    (* the per-object .tasks.* namespace (W-tasks): a first-class task registry
+       that mirrors .tags but whose values are Schedule handles. Keys are
+       user-chosen ids; a read yields optional<Schedule> (none if absent or
+       finished). Lives on Player/Mob/Entity/Npc(this)/Hologram(this) and on the
+       positioned Block value from block_at(loc). Item is intentionally excluded
+       (items are value types with no stable runtime identity). *)
   | TDisplay (* text/item/block display entities (design 6B) *)
   | TRequest (* the 'request' binding inside api handlers *)
   | TReqParams (* the request.params.* namespace: path params, String reads *)
@@ -48,6 +55,7 @@ let rec ty_to_string = function
   | TMob -> "Mob"
   | TItemTags -> "ItemTags"
   | TEntityTags -> "EntityTags"
+  | TTasks -> "Tasks"
   | TDisplay -> "Display"
   | TRequest -> "Request"
   | TReqParams -> "RequestParams"
@@ -86,6 +94,47 @@ type prop = {
 let ro name ty = { p_name = name; p_ty = ty; p_writable = false }
 let rw name ty = { p_name = name; p_ty = ty; p_writable = true }
 
+(* W-pvp: entity ATTRIBUTE keys, now exposed as direct rw entity/player
+   properties (like max_health): reading e.armor yields the current value,
+   'set e.max_health to 40.0' sets the base value. Snake_case of the
+   net.minestom.server.entity.attribute.Attributes constants (javap-verified
+   against 2026.07.12-26.2); "absorption" aliases MAX_ABSORPTION (there is no
+   plain ABSORPTION attribute in the jar). Single source of truth reused by the
+   'add/remove modifier' statements and mirrored by Builtins.attributeFromName. *)
+let combat_attribute_names =
+  [
+    "armor"; "armor_toughness"; "attack_damage"; "attack_knockback"; "attack_speed";
+    "knockback_resistance"; "max_health"; "max_absorption"; "absorption"; "movement_speed";
+    "fall_damage_multiplier"; "safe_fall_distance"; "sweeping_damage_ratio"; "flying_speed";
+    "follow_range"; "jump_strength"; "scale"; "gravity"; "step_height"; "luck";
+    "block_interaction_range"; "entity_interaction_range"; "explosion_knockback_resistance";
+  ]
+
+(* the attribute keys as rw Double properties, plus the native combat trackers
+   as ro properties (Minestom exposes no first-class accessors for these):
+   invulnerable_ticks (remaining i-frame ticks), fall_distance (blocks fallen),
+   is_climbing (positional heuristic), and active_effects (the live potion-key
+   list). Composed (deduped) onto Player/Mob/Entity property lookup so that
+   e.armor / set e.max_health / e.fall_distance / e.active_effects resolve as
+   direct properties, re-pointed at the same runtime Attribute/tracker code. *)
+let combat_attribute_props = List.map (fun n -> rw n TDouble) combat_attribute_names
+
+let combat_tracker_props =
+  [
+    ro "invulnerable_ticks" TInteger;
+    ro "fall_distance" TDouble;
+    ro "is_climbing" TBoolean;
+    ro "active_effects" (TList TString);
+  ]
+
+let combat_entity_extra = combat_attribute_props @ combat_tracker_props
+
+(* append 'extra' rows onto a base property list, dropping any whose name a base
+   row already declares (the base row — e.g. the existing rw Double max_health
+   or the boolean gravity — keeps priority) *)
+let dedup_props base extra =
+  base @ List.filter (fun p -> not (List.exists (fun q -> q.p_name = p.p_name) base)) extra
+
 let player_props =
   [
     ro "name" TString;
@@ -119,6 +168,9 @@ let player_props =
        optional<Any> reads, writable, 'set ... to none' deletes. Player is an
        Entity, so at runtime these go through the same per-entity store. *)
     ro "tags" TEntityTags;
+    (* W-tasks: the per-player task registry, player.tasks.<id> — a Schedule
+       handle keyed by id, auto-cancelled on disconnect *)
+    ro "tasks" TTasks;
   ]
 
 (* OfflinePlayer rows (phase 8): identity + seen-store timestamps, plus the
@@ -210,6 +262,11 @@ let entity_props =
     (* freeform entity tags: mob.tags.<path> / entity.tags.<path>, same shape as
        item tags — optional<Any> reads, writable, 'set ... to none' deletes *)
     ro "tags" TEntityTags;
+    (* W-tasks: the per-entity task registry, entity.tags.<id> / mob.tasks.<id>
+       (Mob <: Entity composes it on). An npc's on_* handlers bind `this` to the
+       npc's fake-player Entity, so this.tasks.<id> is the npc scope too. Each
+       task auto-cancels when the entity despawns/is removed. *)
+    ro "tasks" TTasks;
   ]
 
 (* the Entity rows a Mob does not declare itself, composed onto Mob property
@@ -246,6 +303,10 @@ let display_props =
     rw "line_width" TInteger;
     rw "see_through" TBoolean;
     rw "view_range" TDouble;
+    (* W-tasks: a hologram's on_* handlers bind `this` to its text-display stack
+       (a Display), so this.tasks.<id> is the hologram task scope; the task
+       auto-cancels when the display/hologram is removed *)
+    ro "tasks" TTasks;
   ]
 
 (* the 'request' binding inside api handlers (design 6B) *)
@@ -1109,6 +1170,10 @@ let block_props =
     ro "id" TString;
     ro "properties" (TMap (TString, TString));
     ro "nbt" (TOptional TString);
+    (* W-tasks: block_at(loc) returns a Block that remembers its position, so
+       block_at(loc).tasks.<id> keys the task registry by that position; the
+       task auto-cancels when the block is removed/replaced *)
+    ro "tasks" TTasks;
   ]
 
 let props_of_ty = function
@@ -1118,14 +1183,15 @@ let props_of_ty = function
   | TMap (k, v) -> Some (map_props k v)
   (* Player <: OfflinePlayer (phase 8): the OfflinePlayer-only rows compose
      onto Player values *)
-  | TPlayer -> Some (player_props @ offline_extra_props)
+  | TPlayer -> Some (dedup_props (player_props @ offline_extra_props) combat_entity_extra)
   | TOfflinePlayer -> Some offline_player_props
   | TLocation -> Some location_props
   | TItem -> Some item_props
   (* Mob <: Entity (phase 7): the Entity-only rows compose onto Mob values *)
-  | TMob -> Some (mob_props @ mob_extra_props)
+  | TMob -> Some (dedup_props (mob_props @ mob_extra_props) combat_entity_extra)
   | TItemTags -> Some []
   | TEntityTags -> Some []
+  | TTasks -> Some []
   | TWorld -> Some world_props
   | TDisplay -> Some display_props
   | TRequest -> Some request_props
@@ -1136,7 +1202,7 @@ let props_of_ty = function
   | TCanvas -> Some canvas_props
   | TWorldLoader -> Some []
   | TSchedule -> Some []
-  | TEntity -> Some entity_props
+  | TEntity -> Some (dedup_props entity_props combat_entity_extra)
   | TVec -> Some vec_props
   | TEvent name -> (
     match find_event name with
@@ -1150,6 +1216,11 @@ let find_prop owner name =
      discipline (exists/otherwise) extends to NBT *)
   if owner = TItemTags || owner = TEntityTags then
     Some { p_name = name; p_ty = TOptional TAny; p_writable = true }
+  else if owner = TTasks then
+    (* W-tasks: <obj>.tasks.<id> — any id resolves; a read yields
+       optional<Schedule> (none if absent or finished). Writes go through the
+       dedicated task_set node, not the generic prop path. *)
+    Some { p_name = name; p_ty = TOptional TSchedule; p_writable = true }
   else if owner = TReqParams then
     (* request.params.<key>: path params resolve by name, String reads *)
     Some { p_name = name; p_ty = TString; p_writable = false }
@@ -1161,6 +1232,19 @@ let find_prop owner name =
 (* a freeform tag namespace (item tags or entity/mob tags): any key resolves,
    reads are optional<Any>, and 'set ... to none' deletes *)
 let is_tags_ty = function TItemTags | TEntityTags -> true | _ -> false
+
+(* W-tasks: the per-object task namespace (obj.tasks.<id>): any id resolves,
+   reads are optional<Schedule> *)
+let is_tasks_ty = function TTasks -> true | _ -> false
+
+(* W-tasks: the object types that carry a .tasks registry. Player/Mob/Entity all
+   have a stable runtime identity; Display backs holograms; Block (from
+   block_at) keys by position. Npc's this binds to Entity, Hologram's this to
+   Display — both already covered. Item is excluded: it is a value type with no
+   stable identity, so .tasks is rejected on it. *)
+let is_task_owner = function
+  | TPlayer | TMob | TEntity | TDisplay | TBlock | TOfflinePlayer | TAny -> true
+  | _ -> false
 
 (* --- inline event handlers on item/mob/hologram/npc declarations
    (W-inline-handlers). Generalizes the mob on_hit dispatch into a full
@@ -1242,11 +1326,23 @@ let item_handlers =
   ]
 
 let hologram_handlers =
-  [ hs "on_click" [ ("player", TPlayer) ]; hs "on_line_click" [ ("player", TPlayer); ("line", TInteger) ] ]
+  [
+    hs "on_click" [ ("player", TPlayer) ];
+    hs "on_line_click" [ ("player", TPlayer); ("line", TInteger) ];
+    (* on_tick(): fired every tick while the hologram is active; `this` binds to
+       the hologram's text-display stack. Guarded — only ticked if declared. *)
+    hs "on_tick" [];
+  ]
 
-(* NPC: both handlers already shipped (dedicated fields); reconciled here. *)
+(* NPC: both click handlers already shipped (dedicated fields); reconciled here.
+   on_tick() fires every tick while the npc is active; `this` binds to the npc's
+   fake-player entity. Guarded — only ticked if declared. *)
 let npc_handlers =
-  [ hs "on_click" [ ("player", TPlayer) ]; hs "on_left_click" [ ("player", TPlayer) ] ]
+  [
+    hs "on_click" [ ("player", TPlayer) ];
+    hs "on_left_click" [ ("player", TPlayer) ];
+    hs "on_tick" [];
+  ]
 
 let handlers_for = function
   | KMob -> mob_handlers
@@ -1424,46 +1520,15 @@ let builtins =
     b "map_delete" [ ([ PStr; PStr ], RTy TAny) ];
     b "map_keys" [ ([ PStr ], RTy (TList TString)) ];
     b "map_size" [ ([ PStr ], RTy TInteger) ];
-    (* --- W-pvp: entity ATTRIBUTE accessors + modifiers. Like the state store,
-       the entity argument accepts any live entity (Player/Mob/Entity/Display),
-       so the real typing/validation is special-cased in Tc_expr
-       (attr_builtin_type); these entries reserve the names/arities for
-       collision checks. attribute(e, key) -> the attribute's base value;
-       set_attribute(e, key, v) sets the base; add/remove_attribute_modifier
-       manage named modifiers by id. --- *)
-    b "attribute" [ ([ PPlayer; PStr ], RTy TDouble) ];
-    b "set_attribute" [ ([ PPlayer; PStr; PNum ], RTy TAny) ];
-    b "add_attribute_modifier" [ ([ PPlayer; PStr; PStr; PNum; PStr ], RTy TAny) ];
-    b "remove_attribute_modifier" [ ([ PPlayer; PStr; PStr ], RTy TAny) ];
-    (* --- W-pvp: combat EFFECTS. Like the state/attribute builtins, the entity
-       arguments accept any live entity, so the real typing/validation is
-       special-cased in Tc_expr (combat_builtin_type); these entries reserve the
-       names/arities for collision checks only. apply_damage returns a Boolean
-       (whether the hit landed), active_effects flows to list<String>,
-       spawn_projectile flows to the spawned Entity. --- *)
-    b "apply_damage"
-      [ ([ PPlayer; PNum; PStr ], RTy TBoolean); ([ PPlayer; PNum; PStr; PPlayer ], RTy TBoolean) ];
-    b "apply_knockback" [ ([ PPlayer; PNum; PNum; PNum ], RTy TAny) ];
-    b "apply_effect"
-      [
-        ([ PPlayer; PStr; PNum; PNum ], RTy TAny);
-        ([ PPlayer; PStr; PNum; PNum; PStr ], RTy TAny);
-        ([ PPlayer; PStr; PNum; PNum; PStr; PStr ], RTy TAny);
-      ];
-    b "remove_effect" [ ([ PPlayer; PStr ], RTy TAny) ];
-    b "active_effects" [ ([ PPlayer ], RTy (TList TString)) ];
-    b "spawn_projectile"
-      [ ([ PStr; PLoc; PNum ], RTy TEntity); ([ PStr; PLoc; PNum; PPlayer ], RTy TEntity) ];
-    (* --- W-pvp: native trackers Minestom does not expose. Like the other
-       combat builtins the entity argument accepts any live entity, so the real
-       typing/validation is special-cased in Tc_expr (combat_builtin_type); these
-       entries reserve the names/arities for collision checks only.
-       invulnerable_ticks(e) -> remaining vanilla i-frame ticks (window 10),
-       fall_distance(e) -> blocks fallen while airborne, is_climbing(e) -> Boolean
-       (positional heuristic; Minestom exposes no climbing meta). --- *)
-    b "invulnerable_ticks" [ ([ PPlayer ], RTy TInteger) ];
-    b "fall_distance" [ ([ PPlayer ], RTy TDouble) ];
-    b "is_climbing" [ ([ PPlayer ], RTy TBoolean) ];
+    (* --- W-pvp: the entity ATTRIBUTE accessors/modifiers, combat EFFECTS, and
+       native trackers were free functions (attribute/set_attribute/
+       add_attribute_modifier/remove_attribute_modifier, apply_damage/
+       apply_knockback/apply_effect/remove_effect/active_effects/spawn_projectile,
+       invulnerable_ticks/fall_distance/is_climbing). They are REMOVED: attribute
+       keys are now direct rw entity/player properties (combat_attribute_props),
+       the trackers are ro properties (combat_tracker_props), and the effects are
+       English statement verbs (damage/knock/apply/remove/shoot + add/remove
+       modifier). Calling the old names now errors as an unknown function. --- *)
     (* --- phase-11 random (java.util.concurrent.ThreadLocalRandom at runtime).
        random(min,max) above stays; these are the additive draws. random_in and
        shuffle depend on the list element type, so they are handled specially in
@@ -1723,19 +1788,8 @@ let item_click_filters = [ "left"; "right"; "any" ]
 let item_attribute_names =
   [ "speed"; "max_health"; "attack_damage"; "attack_speed"; "armor"; "knockback_resistance" ]
 
-(* W-pvp: attribute keys accepted by the attribute/set_attribute/…_modifier
-   builtins (snake_case of the net.minestom.server.entity.attribute.Attributes
-   constants, javap-verified against 2026.07.12-26.2). "absorption" is an alias
-   for MAX_ABSORPTION (there is no plain ABSORPTION attribute in the jar). This
-   list is the single source of truth mirrored by Builtins.attributeFromName. *)
-let combat_attribute_names =
-  [
-    "armor"; "armor_toughness"; "attack_damage"; "attack_knockback"; "attack_speed";
-    "knockback_resistance"; "max_health"; "max_absorption"; "absorption"; "movement_speed";
-    "fall_damage_multiplier"; "safe_fall_distance"; "sweeping_damage_ratio"; "flying_speed";
-    "follow_range"; "jump_strength"; "scale"; "gravity"; "step_height"; "luck";
-    "block_interaction_range"; "entity_interaction_range"; "explosion_knockback_resistance";
-  ]
+(* combat_attribute_names is defined near the top of this file (it composes into
+   the entity/player property tables). *)
 
 (* W-pvp: AttributeOperation names (javap-verified enum ADD_VALUE /
    ADD_MULTIPLIED_BASE / ADD_MULTIPLIED_TOTAL) plus friendly aliases; mirrored by
@@ -1867,10 +1921,10 @@ let property_table_json () : Yojson.Safe.t =
       props
   in
   `List
-    (owner_rows "Player" player_props
+    (owner_rows "Player" (dedup_props player_props combat_entity_extra)
     @ owner_rows "Location" location_props
     @ owner_rows "Item" item_props
-    @ owner_rows "Mob" (mob_props @ mob_extra_props)
+    @ owner_rows "Mob" (dedup_props (mob_props @ mob_extra_props) combat_entity_extra)
     @ owner_rows "World" world_props
     @ owner_rows "Display" display_props
     @ owner_rows "Request" request_props
@@ -1878,7 +1932,7 @@ let property_table_json () : Yojson.Safe.t =
     @ owner_rows "Server" server_props
     @ owner_rows "Skin" skin_props
     @ owner_rows "Canvas" canvas_props
-    @ owner_rows "Entity" entity_props
+    @ owner_rows "Entity" (dedup_props entity_props combat_entity_extra)
     @ owner_rows "Vec" vec_props
     @ owner_rows "OfflinePlayer" offline_player_props
     @ List.concat_map (fun e -> owner_rows ("event:" ^ e.e_name) e.e_props) events)

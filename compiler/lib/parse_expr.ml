@@ -136,6 +136,20 @@ and parse_comparison st =
         let type_name = expect_ident st "type name" in
         let op = if negated then "IS_NOT_TYPE" else "IS_TYPE" in
         left := mke p (EBinary (op, !left, mke tpos (EType type_name)))
+      | Token.IDENT "running", _ ->
+        (* W-tasks: '<obj>.tasks.<id> is [not] running' -> Boolean. The left
+           operand must be a '<owner>.tasks.<id>' task path. *)
+        ignore (advance st);
+        let running =
+          match (!left).e with
+          | EProp (inner, id) -> (
+            match inner.e with
+            | EProp (owner, "tasks") -> mke p (ETaskRunning { tr_owner = owner; tr_id = id })
+            | _ ->
+              error st "'is running' requires a '<obj>.tasks.<id>' task on the left")
+          | _ -> error st "'is running' requires a '<obj>.tasks.<id>' task on the left"
+        in
+        left := if negated then mke p (EUnary ("NOT", running)) else running
       | _ ->
         let op = if negated then "NOT_EQUALS" else "EQUALS" in
         left := mke p (EBinary (op, !left, parse_additive st)))
@@ -321,7 +335,15 @@ and parse_primary st =
   | Token.IDENT "viewers" when soft2 st "of" ->
     ignore (advance st);
     ignore (advance st);
-    mke p (ECall ("viewers_of", [ parse_postfix st ]))
+    (* W-viewers §2: 'viewers of npc "n"' -> list<Player>. Npcs are name-keyed
+       declarations, so this reads the fake player's Viewable#getViewers by name
+       (same mechanism as 'viewers of <entity>'), rather than an entity handle. *)
+    (match peek_tok st with
+    | Token.IDENT "npc" when (match peek2_tok st with Token.STRING _ -> true | _ -> false) ->
+      ignore (advance st);
+      let name = expect_string st "npc name" in
+      mke p (ECall ("viewers_of_npc", [ mke p (EString name) ]))
+    | _ -> mke p (ECall ("viewers_of", [ parse_postfix st ])))
   (* W-blocks: block("id") / block("id", { facing: "north", ... }) — the second
      argument is an ident-keyed property brace (an EMap), not a general
      expression, so it is parsed here rather than through parse_call_args. *)

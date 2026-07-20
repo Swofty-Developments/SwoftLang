@@ -103,6 +103,142 @@
     "type": "EntityTags",
     "writable": false
   },
+  { "owner": "Player", "name": "tasks", "type": "Tasks", "writable": false },
+  { "owner": "Player", "name": "armor", "type": "Double", "writable": true },
+  {
+    "owner": "Player",
+    "name": "armor_toughness",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_damage",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_knockback",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "max_absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "movement_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "fall_damage_multiplier",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "safe_fall_distance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "sweeping_damage_ratio",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "follow_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "jump_strength",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Player", "name": "scale", "type": "Double", "writable": true },
+  {
+    "owner": "Player",
+    "name": "gravity",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "step_height",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Player", "name": "luck", "type": "Double", "writable": true },
+  {
+    "owner": "Player",
+    "name": "block_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "entity_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "explosion_knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "invulnerable_ticks",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "fall_distance",
+    "type": "Double",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "is_climbing",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "active_effects",
+    "type": "list<String>",
+    "writable": false
+  },
   { "owner": "Location", "name": "x", "type": "Double", "writable": true },
   { "owner": "Location", "name": "y", "type": "Double", "writable": true },
   { "owner": "Location", "name": "z", "type": "Double", "writable": true },
@@ -227,6 +363,142 @@
     "writable": false
   },
   { "owner": "Mob", "name": "tags", "type": "EntityTags", "writable": false },
+  { "owner": "Mob", "name": "tasks", "type": "Tasks", "writable": false },
+  { "owner": "Mob", "name": "armor", "type": "Double", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "armor_toughness",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_damage",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_knockback",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "max_absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "movement_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "fall_damage_multiplier",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "safe_fall_distance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "sweeping_damage_ratio",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "flying_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "follow_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "jump_strength",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Mob", "name": "scale", "type": "Double", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "step_height",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Mob", "name": "luck", "type": "Double", "writable": true },
+  {
+    "owner": "Mob",
+    "name": "block_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "entity_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "explosion_knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "invulnerable_ticks",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "fall_distance",
+    "type": "Double",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "is_climbing",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "active_effects",
+    "type": "list<String>",
+    "writable": false
+  },
   { "owner": "World", "name": "time", "type": "Integer", "writable": true },
   {
     "owner": "World",
@@ -305,6 +577,7 @@
     "type": "Double",
     "writable": true
   },
+  { "owner": "Display", "name": "tasks", "type": "Tasks", "writable": false },
   {
     "owner": "Request",
     "name": "method",
@@ -467,6 +740,148 @@
     "owner": "Entity",
     "name": "tags",
     "type": "EntityTags",
+    "writable": false
+  },
+  { "owner": "Entity", "name": "tasks", "type": "Tasks", "writable": false },
+  { "owner": "Entity", "name": "armor", "type": "Double", "writable": true },
+  {
+    "owner": "Entity",
+    "name": "armor_toughness",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_damage",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_knockback",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "max_health",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "max_absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "absorption",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "movement_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "fall_damage_multiplier",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "safe_fall_distance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "sweeping_damage_ratio",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "flying_speed",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "follow_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "jump_strength",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Entity", "name": "scale", "type": "Double", "writable": true },
+  {
+    "owner": "Entity",
+    "name": "step_height",
+    "type": "Double",
+    "writable": true
+  },
+  { "owner": "Entity", "name": "luck", "type": "Double", "writable": true },
+  {
+    "owner": "Entity",
+    "name": "block_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "entity_interaction_range",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "explosion_knockback_resistance",
+    "type": "Double",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "invulnerable_ticks",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "fall_distance",
+    "type": "Double",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "is_climbing",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "active_effects",
+    "type": "list<String>",
     "writable": false
   },
   { "owner": "Vec", "name": "x", "type": "Double", "writable": true },

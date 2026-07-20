@@ -34,14 +34,45 @@ import net.swofty.runtime.MapValue;
  */
 public final class BlockValue {
     private final Block block;
+    /**
+     * W-tasks: the world + position this block was read from, or null for a
+     * free-standing {@code block("id")} value with no location. A positioned
+     * block (from {@code block_at(location)}) keys its {@code .tasks.*} registry
+     * by this position, so a task bound to {@code block_at(loc).tasks.x}
+     * auto-cancels when the block at {@code loc} is removed or replaced.
+     */
+    private final net.minestom.server.instance.Instance instance;
+    private final net.minestom.server.coordinate.Pos position;
 
     public BlockValue(Block block) {
+        this(block, null, null);
+    }
+
+    public BlockValue(Block block, net.minestom.server.instance.Instance instance,
+            net.minestom.server.coordinate.Pos position) {
         this.block = block;
+        this.instance = instance;
+        this.position = position;
     }
 
     /** The wrapped Minestom block (for placement into an instance). */
     public Block block() {
         return block;
+    }
+
+    /** The world this block was read from (block_at), or null. */
+    public net.minestom.server.instance.Instance instance() {
+        return instance;
+    }
+
+    /** The position this block was read from (block_at), or null. */
+    public net.minestom.server.coordinate.Pos position() {
+        return position;
+    }
+
+    /** True when this value carries a world position ({@code block_at}). */
+    public boolean hasPosition() {
+        return position != null;
     }
 
     /** The namespaced id, e.g. {@code "minecraft:oak_stairs"}. */
@@ -69,7 +100,7 @@ public final class BlockValue {
                     + property + "' of block " + id() + "; valid values: "
                     + String.join(", ", allowed));
         }
-        return new BlockValue(block.withProperty(property, value));
+        return new BlockValue(block.withProperty(property, value), instance, position);
     }
 
     /** Apply several validated property changes at once (pure). */
@@ -124,7 +155,7 @@ public final class BlockValue {
 
     /** Attach block-entity NBT parsed from an SNBT string (pure). */
     public BlockValue withNbt(String snbt) {
-        return new BlockValue(block.withNbt(parseSnbt(snbt)));
+        return new BlockValue(block.withNbt(parseSnbt(snbt)), instance, position);
     }
 
     /** Read a String-typed block tag, or {@code none} if unset. */
@@ -135,7 +166,7 @@ public final class BlockValue {
 
     /** Set a String-typed block tag (pure). */
     public BlockValue withTag(String name, String value) {
-        return new BlockValue(block.withTag(Tag.String(name), value));
+        return new BlockValue(block.withTag(Tag.String(name), value), instance, position);
     }
 
     private static CompoundBinaryTag parseSnbt(String snbt) {

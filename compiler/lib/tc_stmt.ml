@@ -631,6 +631,28 @@ let rec check_stmt ctx bctx env st : env * bool =
     | TPlayer | TAny -> ()
     | _ -> err ctx gm_target.epos "give target must be a Player (got %s)" (ty_to_string tt));
     (env, false)
+  (* --- W-tasks: per-object task registry --- *)
+  | STaskSet { tk_owner; tk_id = _; tk_value } ->
+    check_task_owner ctx bctx env tk_owner;
+    let vt = type_of ctx bctx env tk_value in
+    require_present ctx env tk_value vt ~use:"the task";
+    (match vt with
+    | TSchedule | TAny -> ()
+    | _ ->
+      err ctx tk_value.epos
+        "a task must be assigned a schedule (from a 'schedule ...' expression), got %s"
+        (ty_to_string vt));
+    (env, false)
+  | STaskCancel { tc_owner; tc_id = _ } ->
+    check_task_owner ctx bctx env tc_owner;
+    (env, false)
+  | SPlaceBlock { pb_block; pb_at } ->
+    check_block_value_arg ctx bctx env pb_block "the placed block";
+    check_location_arg ctx bctx env pb_at "the placement location";
+    (env, false)
+  | SRemoveBlock loc ->
+    check_location_arg ctx bctx env loc "the block location";
+    (env, false)
   (* --- phase-6 schedulers --- *)
   | SCancelSchedule e ->
     let t = type_of ctx bctx env e in
@@ -775,6 +797,14 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SRemoveNpc name ->
     check_decl_name ctx st.spos "npc" ctx.npcs name;
     (env, false)
+  | SShowNpc (name, t) ->
+    check_decl_name ctx st.spos "npc" ctx.npcs name;
+    check_ui_target ctx bctx env t ~what:"show an npc";
+    (env, false)
+  | SHideNpc (name, t) ->
+    check_decl_name ctx st.spos "npc" ctx.npcs name;
+    check_ui_target ctx bctx env t ~what:"hide an npc";
+    (env, false)
   (* --- W-viewers: entity viewer control + per-viewer nametag --- *)
   | SShowEntity { she_entity; she_target } ->
     check_viewer_entity ctx bctx env she_entity ~what:"show";
@@ -799,6 +829,68 @@ let rec check_stmt ctx bctx env st : env * bool =
     | _ ->
       err ctx sen_viewer.epos
         "the per-viewer name target must be a Player (got %s)" (ty_to_string vwt));
+    (env, false)
+  (* --- W-pvp: attribute modifiers (were add/remove_attribute_modifier) --- *)
+  | SAddModifier { am_id; am_entity; am_attr; am_attr_pos; am_amount; am_op; am_op_pos } ->
+    check_string_arg ctx bctx env am_id "the modifier id";
+    check_entity_arg ctx bctx env am_entity "the modifier target";
+    check_attribute_name ctx am_attr_pos am_attr;
+    check_num ctx bctx env am_amount "the modifier amount";
+    check_modifier_operation ctx am_op_pos am_op;
+    (env, false)
+  | SRemoveModifier { rm_id; rm_entity; rm_attr; rm_attr_pos } ->
+    check_string_arg ctx bctx env rm_id "the modifier id";
+    check_entity_arg ctx bctx env rm_entity "the modifier target";
+    check_attribute_name ctx rm_attr_pos rm_attr;
+    (env, false)
+  (* --- W-pvp: combat effect verbs (were apply_*/spawn_projectile) --- *)
+  | SDamage { dm_target; dm_amount; dm_type; dm_source } ->
+    check_entity_arg ctx bctx env dm_target "the damage target";
+    check_num ctx bctx env dm_amount "the damage amount";
+    (match dm_type with
+    | Some t ->
+      check_string_arg ctx bctx env t "the damage type";
+      check_damage_type_literal ctx t
+    | None -> ());
+    (match dm_source with
+    | Some s -> check_entity_arg ctx bctx env s "the damage source"
+    | None -> ());
+    (env, false)
+  | SKnock { kn_target; kn_from; kn_strength } ->
+    check_entity_arg ctx bctx env kn_target "the knockback target";
+    check_location_arg ctx bctx env kn_from "the knockback origin";
+    check_num_opt ctx bctx env kn_strength "the knockback strength";
+    (env, false)
+  | SApplyEffect { ae_effect; ae_amplifier; ae_entity; ae_duration } ->
+    check_string_arg ctx bctx env ae_effect "the effect type";
+    check_potion_effect_literal ctx ae_effect;
+    check_num ctx bctx env ae_amplifier "the effect amplifier";
+    check_entity_arg ctx bctx env ae_entity "the effect target";
+    check_num ctx bctx env ae_duration "the effect duration";
+    (env, false)
+  | SRemoveEffect { re_effect; re_entity } ->
+    check_string_arg ctx bctx env re_effect "the effect type";
+    check_potion_effect_literal ctx re_effect;
+    check_entity_arg ctx bctx env re_entity "the effect target";
+    (env, false)
+  | SShoot { sh_type; sh_from; sh_velocity; sh_shooter } ->
+    check_string_arg ctx bctx env sh_type "the projectile type";
+    check_projectile_type_literal ctx sh_type;
+    check_location_arg ctx bctx env sh_from "the projectile spawn location";
+    (match sh_velocity with
+    | Some v ->
+      let vt = type_of ctx bctx env v in
+      require_present ctx env v vt ~use:"the projectile velocity";
+      (match vt with
+      | TVec | TAny -> ()
+      | _ ->
+        err ctx v.epos
+          "the projectile velocity must be a velocity vector (from velocity(x, y, z)), got %s"
+          (ty_to_string vt))
+    | None -> ());
+    (match sh_shooter with
+    | Some s -> check_entity_arg ctx bctx env s "the projectile shooter"
+    | None -> ());
     (env, false)
 
 (* loop bodies execute more than once: widen the entry env to a fixpoint of
@@ -868,6 +960,40 @@ and check_num_opt ctx bctx env e what =
   match e with
   | Some e -> check_num ctx bctx env e what
   | None -> ()
+
+(* W-pvp: the <attr> in 'add/remove modifier ... <e>.<attr>' must name a real
+   attribute key (the same list that backs the direct attribute properties) *)
+and check_attribute_name ctx pos attr =
+  if not (List.mem attr combat_attribute_names) then
+    err ctx pos "unknown attribute '%s'; valid attributes: %s%s" attr
+      (String.concat ", " combat_attribute_names)
+      (suggestion attr combat_attribute_names)
+
+(* W-pvp: the <operation> of 'add modifier' is one of add | add_multiplied_base
+   | add_multiplied_total (the AttributeOperation enum) *)
+and check_modifier_operation ctx pos op =
+  let valid = [ "add"; "add_multiplied_base"; "add_multiplied_total" ] in
+  if not (List.mem op valid) then
+    err ctx pos "unknown modifier operation '%s'; valid operations: %s%s" op
+      (String.concat ", " valid)
+      (suggestion op valid)
+
+(* W-tasks: the owner of a <obj>.tasks.<id> operation must be an object with a
+   stable runtime identity (Player/Mob/Entity/Display/Block). Item is rejected
+   with a targeted message — it is a value type with no per-object registry. *)
+and check_task_owner ctx bctx env e =
+  let t = type_of ctx bctx env e in
+  require_present ctx env e t ~use:"the task owner";
+  match unwrap t with
+  | t when is_task_owner t -> ()
+  | TItem ->
+    err ctx e.epos
+      "Item has no task registry; .tasks is only available on Player, Mob, Entity, Npc, \
+       Hologram, and block_at(...) (items are value types with no stable identity)"
+  | t ->
+    err ctx e.epos
+      "%s has no task registry; .tasks needs a Player, Mob, Entity, Display, or Block owner"
+      (ty_to_string t)
 
 and check_location_arg ctx bctx env e what =
   let t = type_of ctx bctx env e in

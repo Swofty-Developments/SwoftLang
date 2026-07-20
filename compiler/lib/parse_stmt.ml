@@ -4,6 +4,63 @@ open Parse_expr
 
 let mks pos node = { s = node; spos = pos }
 
+(* W-tasks: destructure a parsed postfix expression into (owner, id) when it is a
+   `<owner>.tasks.<id>` member access — the shape that keys the per-object task
+   registry. Returns None for anything else. *)
+let task_owner_id (e : Ast.expr) =
+  match e.e with
+  | EProp (inner, id) -> (
+    match inner.e with
+    | EProp (owner, "tasks") -> Some (owner, id)
+    | _ -> None)
+  | _ -> None
+
+(* W-tasks: scan the token stream starting at index [i0] for a `.tasks.<id>`
+   member access at bracket-depth 0, before the surrounding expression ends
+   (a depth-0 'to'/'{', a closing bracket, or a non-postfix token). Bounded to
+   the line of the first token so a bare 'stop' can never absorb the following
+   statement. Routes 'set/stop <obj>.tasks.<id>' to the task path before the
+   generic 'set'/bare-'stop' handlers run. *)
+let tasks_member_ahead st i0 =
+  let toks = st.tokens in
+  let n = Array.length toks in
+  if i0 >= n then false
+  else begin
+    let _, start_line, _ = toks.(i0) in
+    let depth = ref 0 in
+    let i = ref i0 in
+    let found = ref false in
+    let stop = ref false in
+    while (not !stop) && (not !found) && !i < n do
+      let t, line, _ = toks.(!i) in
+      if line > start_line then stop := true
+      else begin
+        (match t with
+        | Token.LPAREN | Token.LBRACKET -> incr depth
+        | Token.RPAREN | Token.RBRACKET -> if !depth > 0 then decr depth else stop := true
+        | Token.DOT when !depth = 0 ->
+          let is_tasks =
+            !i + 2 < n
+            && (match toks.(!i + 1) with Token.IDENT "tasks", _, _ -> true | _ -> false)
+            && (match toks.(!i + 2) with Token.DOT, _, _ -> true | _ -> false)
+          in
+          if is_tasks then found := true
+        | Token.TO when !depth = 0 -> stop := true
+        | Token.LBRACE when !depth = 0 -> stop := true
+        | _ when !depth = 0 ->
+          (* only ident-like/member words continue a postfix chain at depth 0;
+             anything else ends the expression *)
+          (match t with
+          | Token.IDENT _ -> ()
+          | _ when member_word t <> None -> ()
+          | _ -> stop := true)
+        | _ -> ());
+        incr i
+      end
+    done;
+    !found
+  end
+
 (* npc skin form (GROUP C), shared by the npc{} declaration and
    'set npc "n" skin ...': skin(texture, signature) direct properties, or a
    bare username String (Mojang-fetched at runtime) *)
@@ -32,17 +89,26 @@ let rec parse_statement st =
   | Token.CANCEL -> (
     ignore (advance st);
     match peek_tok st with
-    | Token.EVENT ->
+    | Token.EVENT when peek2_tok st <> Token.DOT ->
       ignore (advance st);
       mks p SCancelEvent
-    | Token.IDENT "packet" ->
+    | Token.IDENT "packet" when peek2_tok st <> Token.DOT ->
       ignore (advance st);
       mks p SCancelPacket
     | Token.IDENT "schedule" ->
       ignore (advance st);
       mks p (SCancelSchedule (parse_expr st))
+    | t when starts_expression t ->
+      (* W-tasks: 'cancel <obj>.tasks.<id>' — cancel a named per-object task *)
+      let e = parse_postfix st in
+      (match task_owner_id e with
+      | Some (owner, id) -> mks p (STaskCancel { tc_owner = owner; tc_id = id })
+      | None ->
+        error st
+          "Expected 'event', 'packet', 'schedule', or a '<obj>.tasks.<id>' task after 'cancel'")
     | t ->
-      error st (Printf.sprintf "Expected 'event', 'packet', or 'schedule' after 'cancel', found %s"
+      error st (Printf.sprintf
+                  "Expected 'event', 'packet', 'schedule', or a task after 'cancel', found %s"
                   (Token.describe t)))
   | Token.SET -> parse_set st p
   | Token.IF -> parse_if st
@@ -80,6 +146,16 @@ let rec parse_statement st =
   | Token.HALT ->
     ignore (advance st);
     mks p SHalt
+  | Token.IDENT "stop"
+    when (not (soft2 st "song")) && (not (soft2 st "sound"))
+         && tasks_member_ahead st (st.pos + 1) ->
+    (* W-tasks: 'stop <obj>.tasks.<id>' — an alias of 'cancel <obj>.tasks.<id>'.
+       Detected by lookahead so it wins over bare 'stop' below. *)
+    ignore (advance st);
+    let e = parse_postfix st in
+    (match task_owner_id e with
+    | Some (owner, id) -> mks p (STaskCancel { tc_owner = owner; tc_id = id })
+    | None -> error st "Expected a '<obj>.tasks.<id>' task after 'stop'")
   | Token.IDENT "stop"
     when peek2_tok st <> Token.LPAREN && (not (soft2 st "song")) && not (soft2 st "sound") ->
     (* bare 'stop': cancel the enclosing schedule (scheduler v2). 'stop song'
@@ -206,6 +282,21 @@ let rec parse_statement st =
     ignore (advance st);
     ignore (advance st);
     mks p (SRemoveEntity (parse_expr st))
+  | Token.IDENT "remove" when soft2 st "block" ->
+    (* W-tasks/blocks: 'remove block at <location>' — set air and cancel every
+       task bound to that position *)
+    ignore (advance st);
+    ignore (advance st);
+    expect_soft st "at";
+    mks p (SRemoveBlock (parse_expr st))
+  | Token.IDENT "place"
+    when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    (* W-blocks: 'place <Block|"id"> at <location>' — imperative block placement *)
+    ignore (advance st);
+    let pb_block = parse_expr st in
+    expect_soft st "at";
+    let pb_at = parse_expr st in
+    mks p (SPlaceBlock { pb_block; pb_at })
   | Token.IDENT "dismount" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
     ignore (advance st);
     mks p (SDismount (parse_expr st))
@@ -245,6 +336,89 @@ let rec parse_statement st =
     ignore (advance st);
     expect_soft st "from";
     mks p (SDispenseFrom (parse_expr st))
+  (* --- W-pvp: combat effect verbs + attribute modifiers (replace the old
+     apply_*/spawn_projectile/…_attribute_modifier free functions) --- *)
+  | Token.IDENT "damage" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let dm_target = parse_expr st in
+    expect_soft st "by";
+    let dm_amount = parse_expr st in
+    let dm_type = if matches st Token.AS then Some (parse_expr st) else None in
+    let dm_source = if eat_soft st "from" then Some (parse_expr st) else None in
+    mks p (SDamage { dm_target; dm_amount; dm_type; dm_source })
+  | Token.IDENT "knock" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let kn_target = parse_expr st in
+    expect_soft st "away";
+    expect_soft st "from";
+    let kn_from = parse_expr st in
+    let kn_strength =
+      if eat_soft st "with" then begin
+        expect_soft st "strength";
+        Some (parse_expr st)
+      end
+      else None
+    in
+    mks p (SKnock { kn_target; kn_from; kn_strength })
+  | Token.IDENT "apply" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let ae_effect = parse_expr st in
+    let ae_amplifier = parse_expr st in
+    expect st Token.TO "'to' in apply statement";
+    let ae_entity = parse_expr st in
+    expect_soft st "for";
+    let ae_duration = parse_expr st in
+    mks p (SApplyEffect { ae_effect; ae_amplifier; ae_entity; ae_duration })
+  | Token.IDENT "shoot" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let sh_type = parse_expr st in
+    expect_soft st "from";
+    let sh_from = parse_expr st in
+    let sh_velocity =
+      if eat_soft st "with" then begin
+        expect_soft st "velocity";
+        Some (parse_expr st)
+      end
+      else None
+    in
+    let sh_shooter = if eat_soft st "by" then Some (parse_expr st) else None in
+    mks p (SShoot { sh_type; sh_from; sh_velocity; sh_shooter })
+  | Token.IDENT "add" when soft2 st "modifier" ->
+    ignore (advance st);
+    ignore (advance st);
+    let am_id = parse_expr st in
+    expect st Token.TO "'to' in add modifier statement";
+    let target = parse_postfix st in
+    let am_entity, am_attr, am_attr_pos =
+      match target.e with
+      | EProp (ent, attr) -> (ent, attr, target.epos)
+      | _ -> error st "expected '<entity>.<attribute>' after 'to' in add modifier statement"
+    in
+    expect_soft st "of";
+    let am_amount = parse_expr st in
+    let am_op_pos = pos_here st in
+    let am_op =
+      expect_ident st "the modifier operation (add, add_multiplied_base, or add_multiplied_total)"
+    in
+    mks p (SAddModifier { am_id; am_entity; am_attr; am_attr_pos; am_amount; am_op; am_op_pos })
+  | Token.IDENT "remove" when soft2 st "modifier" ->
+    ignore (advance st);
+    ignore (advance st);
+    let rm_id = parse_expr st in
+    expect_soft st "from";
+    let target = parse_postfix st in
+    let rm_entity, rm_attr, rm_attr_pos =
+      match target.e with
+      | EProp (ent, attr) -> (ent, attr, target.epos)
+      | _ -> error st "expected '<entity>.<attribute>' after 'from' in remove modifier statement"
+    in
+    mks p (SRemoveModifier { rm_id; rm_entity; rm_attr; rm_attr_pos })
+  | Token.IDENT "remove" when (match peek2_tok st with Token.STRING _ -> true | _ -> false) ->
+    ignore (advance st);
+    let re_effect = parse_expr st in
+    expect_soft st "from";
+    let re_entity = parse_expr st in
+    mks p (SRemoveEffect { re_effect; re_entity })
   | Token.IDENT "reset" when soft2 st "nametag" ->
     ignore (advance st);
     ignore (advance st);
@@ -592,6 +766,21 @@ let rec parse_statement st =
     ignore (advance st);
     ignore (advance st);
     mks p (SRemoveNpc (expect_string st "npc name"))
+  (* W-viewers §2: 'show npc "n" to <target>' / 'hide npc "n" from <target>' —
+     name-keyed, matched (like the hologram forms) BEFORE the generic entity
+     show/hide branch below *)
+  | Token.IDENT "show" when soft2 st "npc" ->
+    ignore (advance st);
+    ignore (advance st);
+    let name = expect_string st "npc name" in
+    expect st Token.TO "'to' after npc name";
+    mks p (SShowNpc (name, parse_target st))
+  | Token.IDENT "hide" when soft2 st "npc" ->
+    ignore (advance st);
+    ignore (advance st);
+    let name = expect_string st "npc name" in
+    expect_soft st "from";
+    mks p (SHideNpc (name, parse_target st))
   (* --- W-viewers: entity viewer control (must come AFTER every UI show/hide
      form above; the UI keyword branches — scoreboard/tablist/bossbar/hologram/
      display/toast — are matched first, so this only fires on an entity
@@ -679,7 +868,19 @@ let rec parse_statement st =
 
 and parse_set st p =
   ignore (advance st);
-  if soft st "tablist" && (soft2 st "header" || soft2 st "footer") then begin
+  if tasks_member_ahead st st.pos then begin
+    (* W-tasks: 'set <obj>.tasks.<id> to <schedule-expr>' — associate a named
+       task with the owner. The owner may be any postfix expression (a variable,
+       a member chain, or block_at(loc)), so parse the whole lvalue with
+       parse_postfix rather than the ident-chain parse_lvalue. *)
+    let lvalue = parse_postfix st in
+    expect st Token.TO "'to' after the task in 'set'";
+    let value = parse_expr st in
+    match task_owner_id lvalue with
+    | Some (owner, id) -> mks p (STaskSet { tk_owner = owner; tk_id = id; tk_value = value })
+    | None -> error st "Expected a '<obj>.tasks.<id>' target in this task assignment"
+  end
+  else if soft st "tablist" && (soft2 st "header" || soft2 st "footer") then begin
     ignore (advance st);
     let part = expect_ident st "'header' or 'footer'" in
     expect st Token.TO "'to' in set tablist statement";

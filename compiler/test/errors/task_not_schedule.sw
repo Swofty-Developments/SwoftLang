@@ -1,0 +1,5 @@
+// W-tasks: a task value must be a Schedule expression; assigning a non-Schedule
+// (here an Integer) is a type error.
+on PlayerJoin {
+    set event.player.tasks.bad to 5
+}

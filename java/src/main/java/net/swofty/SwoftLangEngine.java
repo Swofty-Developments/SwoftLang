@@ -128,6 +128,7 @@ public class SwoftLangEngine {
         net.swofty.entities.ScriptEntityRegistry.removeAll();
         net.swofty.entities.EntityStateStore.clearAll();
         net.swofty.entities.EntityCombatTrackers.clearAll();
+        net.swofty.tasks.TaskRegistry.clearAll();
         net.swofty.worlds.WorldsRuntime.unloadAll();
         net.swofty.players.SeenPlayersStore.shutdownActive();
         PersistStore.shutdownActive();
@@ -280,6 +281,12 @@ public class SwoftLangEngine {
         // scratch state so the freshly (re)loaded script starts from empty.
         net.swofty.entities.EntityStateStore.init();
         net.swofty.entities.EntityStateStore.clearAll();
+        // W-tasks: per-object task registry (<obj>.tasks.<id>). Wire the
+        // despawn/disconnect/block-change auto-cancel listeners once
+        // (idempotent), then cancel + drop every task so the reloaded script
+        // starts with no owner holding a stale schedule.
+        net.swofty.tasks.TaskRegistry.init();
+        net.swofty.tasks.TaskRegistry.clearAll();
         // W-pvp native trackers Minestom lacks (i-frame timer + fall distance):
         // wire the damage/tick/auto-clear listeners once (idempotent), then wipe
         // every entity's tracker state so the (re)loaded script starts clean.

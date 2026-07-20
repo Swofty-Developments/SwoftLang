@@ -22,7 +22,9 @@ import net.swofty.ASTExecutor;
 import net.swofty.InstanceRegistry;
 import net.swofty.ScriptError;
 import net.swofty.displays.SwoftDisplay;
+import net.swofty.handlers.HandlerDispatch;
 import net.swofty.model.HologramModel;
+import net.swofty.model.InlineHandler;
 import net.swofty.model.UpdateCadence;
 import net.swofty.nativebridge.execution.Expression;
 import net.swofty.nativebridge.execution.Statement;
@@ -91,6 +93,8 @@ public final class HologramRuntime {
 
     private static final Map<String, Hologram> HOLOS = new ConcurrentHashMap<>();
     private static final Map<String, Task> TASKS = new ConcurrentHashMap<>();
+    /** Per-tick on_tick handler tasks, one per hologram that declares on_tick. */
+    private static final Map<String, Task> TICK_TASKS = new ConcurrentHashMap<>();
 
     private static volatile boolean initialized = false;
 
@@ -135,6 +139,56 @@ public final class HologramRuntime {
             }, ExecutionType.TICK_END);
             TASKS.put(model.name(), task);
         }
+        // on_tick(): fires every tick while the decl is active, independent of
+        // the update cadence. Guard cost — the per-tick task is created ONLY
+        // when the hologram declares on_tick, so holograms without one pay
+        // nothing (no scheduled work at all).
+        if (model.handler("on_tick") != null) {
+            Task tick = MinecraftServer.getSchedulerManager().submitTask(() -> {
+                try {
+                    tickHologram(HOLOS.get(model.name()));
+                } catch (Exception e) {
+                    System.err.println("Hologram '" + model.name() + "' on_tick failed: " + e);
+                }
+                return TaskSchedule.tick(1);
+            }, ExecutionType.TICK_END);
+            TICK_TASKS.put(model.name(), tick);
+        }
+    }
+
+    /**
+     * Fire the hologram's {@code on_tick} handler for each live stack, binding
+     * {@code this} (TDisplay) to that stack's first text-display line so the
+     * body can read/write display props such as {@code this.text}. A global
+     * hologram has one stack (bound once); a per-viewer hologram fires once per
+     * viewer's private stack. When no stack is live yet (the hologram has not
+     * been shown), there is no display to bind, so on_tick is a no-op that
+     * tick. Reuses the shared {@link HandlerDispatch} machinery the mob/npc
+     * on_tick paths use.
+     */
+    private static void tickHologram(Hologram holo) {
+        if (holo == null) {
+            return;
+        }
+        InlineHandler handler = holo.model.handler("on_tick");
+        if (handler == null) {
+            return;
+        }
+        if (holo.model.perViewer()) {
+            for (Stack stack : holo.viewers.values()) {
+                dispatchTick(holo, handler, stack);
+            }
+        } else if (holo.global != null) {
+            dispatchTick(holo, handler, holo.global);
+        }
+    }
+
+    private static void dispatchTick(Hologram holo, InlineHandler handler, Stack stack) {
+        if (stack.displays.isEmpty()) {
+            return;
+        }
+        HandlerDispatch.dispatch(handler, stack.displays.get(0), null,
+                "hologram '" + holo.model.name() + "' on_tick");
     }
 
     // ------------------------------------------------------------------
@@ -231,6 +285,10 @@ public final class HologramRuntime {
         if (task != null) {
             task.cancel();
         }
+        Task tick = TICK_TASKS.remove(name);
+        if (tick != null) {
+            tick.cancel();
+        }
         if (holo != null) {
             destroyAll(holo);
         }
@@ -295,6 +353,10 @@ public final class HologramRuntime {
             task.cancel();
         }
         TASKS.clear();
+        for (Task task : TICK_TASKS.values()) {
+            task.cancel();
+        }
+        TICK_TASKS.clear();
         for (Hologram holo : HOLOS.values()) {
             destroyAll(holo);
         }
@@ -558,6 +620,31 @@ public final class HologramRuntime {
     public static int perViewerStackCount(String name) {
         Hologram holo = HOLOS.get(name);
         return holo == null ? 0 : holo.viewers.size();
+    }
+
+    /**
+     * Test hook: is a per-tick {@code on_tick} task scheduled for this
+     * hologram? Proves the guard — a task exists iff the decl declares on_tick.
+     */
+    public static boolean hasTickTask(String name) {
+        return TICK_TASKS.containsKey(name);
+    }
+
+    /**
+     * Test hook: run the {@code on_tick} handler once (headless, no tick loop)
+     * and return the first global-stack display's live text, so a smoke can
+     * observe that on_tick actually mutated the bound display. Null if there is
+     * no global stack shown yet.
+     */
+    public static String tickOnceForTest(String name) {
+        Hologram holo = HOLOS.get(name);
+        if (holo == null) {
+            return null;
+        }
+        tickHologram(holo);
+        return holo.global != null && !holo.global.displays.isEmpty()
+                ? holo.global.displays.get(0).getText()
+                : null;
     }
 
     /**

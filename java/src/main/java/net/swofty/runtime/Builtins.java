@@ -122,6 +122,13 @@ public final class Builtins {
             }
             case "all_players":
                 return MinecraftServer.getConnectionManager().getOnlinePlayers();
+            case "viewers_of_npc": {
+                // viewers of npc "name" -> ordered list<Player> (W-viewers §2).
+                // Npcs are name-keyed (declared, not spawn handles), so this
+                // resolves the npc's fake-player entity and returns its viewers.
+                Object npcName = Coercions.toStringValue(evaluateArg(context, args, 0));
+                return net.swofty.npcs.NpcRuntime.viewersOf((String) npcName);
+            }
             case "world": {
                 Object worldName = Coercions.toStringValue(evaluateArg(context, args, 0));
                 Instance instance = InstanceRegistry.get((String) worldName);
@@ -331,8 +338,12 @@ public final class Builtins {
                                 + pos.blockX() + ", " + pos.blockZ()
                                 + " is not loaded (auto chunk load is disabled)");
                     }
+                    // W-tasks: remember the world + position so
+                    // block_at(loc).tasks.<id> keys its task registry by
+                    // position and auto-cancels when the block is removed.
                     return new net.swofty.blocks.BlockValue(
-                            chunk.getBlock(pos.blockX(), pos.blockY(), pos.blockZ()));
+                            chunk.getBlock(pos.blockX(), pos.blockY(), pos.blockZ()),
+                            instance, pos);
                 });
             }
 
@@ -509,192 +520,12 @@ public final class Builtins {
                 return map.size();
             }
 
-            // ---------- W-pvp: entity attribute accessors + modifiers --------
-            case "attribute": {
-                net.minestom.server.entity.LivingEntity living =
-                        requireLivingEntityArg(context, name, args, 0);
-                net.minestom.server.entity.attribute.Attribute attr =
-                        attributeFromName(requireStringArg(context, name, args, 1));
-                return living.getAttribute(attr).getBaseValue();
-            }
-            case "set_attribute": {
-                net.minestom.server.entity.LivingEntity living =
-                        requireLivingEntityArg(context, name, args, 0);
-                net.minestom.server.entity.attribute.Attribute attr =
-                        attributeFromName(requireStringArg(context, name, args, 1));
-                double value = requireNumberArg(context, name, args, 2).doubleValue();
-                living.getAttribute(attr).setBaseValue(value);
-                return NoneValue.INSTANCE;
-            }
-            case "add_attribute_modifier": {
-                net.minestom.server.entity.LivingEntity living =
-                        requireLivingEntityArg(context, name, args, 0);
-                net.minestom.server.entity.attribute.Attribute attr =
-                        attributeFromName(requireStringArg(context, name, args, 1));
-                String id = requireStringArg(context, name, args, 2);
-                double amount = requireNumberArg(context, name, args, 3).doubleValue();
-                net.minestom.server.entity.attribute.AttributeOperation op =
-                        attributeOperationFromName(requireStringArg(context, name, args, 4));
-                net.minestom.server.entity.attribute.AttributeInstance inst =
-                        living.getAttribute(attr);
-                String modId = normalizeModifierId(id);
-                // re-adding under the same id would throw; make it idempotent
-                removeModifierById(inst, modId);
-                inst.addModifier(new net.minestom.server.entity.attribute.AttributeModifier(
-                        modId, amount, op));
-                return NoneValue.INSTANCE;
-            }
-            case "remove_attribute_modifier": {
-                net.minestom.server.entity.LivingEntity living =
-                        requireLivingEntityArg(context, name, args, 0);
-                net.minestom.server.entity.attribute.Attribute attr =
-                        attributeFromName(requireStringArg(context, name, args, 1));
-                String id = requireStringArg(context, name, args, 2);
-                removeModifierById(living.getAttribute(attr), normalizeModifierId(id));
-                return NoneValue.INSTANCE;
-            }
-
-            // ---------- W-pvp: combat effects ----------
-            case "apply_damage": {
-                // deal typed damage through the Minestom pipeline (fires
-                // EntityDamageEvent, applies i-frames/health). Returns whether
-                // the hit landed. With a source entity the damage carries an
-                // attacker/source so death messages + knockback direction work.
-                net.minestom.server.entity.LivingEntity target =
-                        requireLivingEntityArg(context, name, args, 0);
-                float amount = requireNumberArg(context, name, args, 1).floatValue();
-                net.minestom.server.registry.RegistryKey<
-                        net.minestom.server.entity.damage.DamageType> typeKey =
-                        damageTypeKeyFromName(requireStringArg(context, name, args, 2));
-                Object src = args.size() > 3 ? evaluateArg(context, args, 3) : null;
-                if (src == null || NoneValue.isNone(src)) {
-                    return target.damage(typeKey, amount);
-                }
-                net.minestom.server.entity.Entity source =
-                        requireEntityArg(context, name, args, 3);
-                net.minestom.server.entity.damage.Damage damage =
-                        new net.minestom.server.entity.damage.Damage(
-                                typeKey, source, source, source.getPosition(), amount);
-                return target.damage(damage);
-            }
-            case "apply_knockback": {
-                net.minestom.server.entity.LivingEntity living =
-                        requireLivingEntityArg(context, name, args, 0);
-                float strength = requireNumberArg(context, name, args, 1).floatValue();
-                double dirX = requireNumberArg(context, name, args, 2).doubleValue();
-                double dirZ = requireNumberArg(context, name, args, 3).doubleValue();
-                living.takeKnockback(strength, dirX, dirZ);
-                return NoneValue.INSTANCE;
-            }
-            case "apply_effect": {
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                net.minestom.server.potion.PotionEffect effect =
-                        potionEffectFromName(requireStringArg(context, name, args, 1));
-                int duration = requireNumberArg(context, name, args, 2).intValue();
-                int amplifier = requireNumberArg(context, name, args, 3).intValue();
-                net.minestom.server.potion.Potion potion;
-                if (args.size() > 4) {
-                    boolean ambient = (Boolean) Coercions.toBoolean(evaluateArg(context, args, 4));
-                    // particles default on; icon always on so the HUD shows it
-                    boolean particles = args.size() <= 5
-                            || (Boolean) Coercions.toBoolean(evaluateArg(context, args, 5));
-                    byte flags = (byte) ((ambient ? net.minestom.server.potion.Potion.AMBIENT_FLAG : 0)
-                            | (particles ? net.minestom.server.potion.Potion.PARTICLES_FLAG : 0)
-                            | net.minestom.server.potion.Potion.ICON_FLAG);
-                    potion = new net.minestom.server.potion.Potion(
-                            effect, amplifier, duration, flags);
-                } else {
-                    potion = new net.minestom.server.potion.Potion(effect, amplifier, duration);
-                }
-                entity.addEffect(potion);
-                return NoneValue.INSTANCE;
-            }
-            case "remove_effect": {
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                entity.removeEffect(potionEffectFromName(requireStringArg(context, name, args, 1)));
-                return NoneValue.INSTANCE;
-            }
-            case "active_effects": {
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                java.util.List<Object> effects = new java.util.ArrayList<>();
-                for (net.minestom.server.potion.TimedPotion timed : entity.getActiveEffects()) {
-                    // the bare effect key (e.g. "speed"), matching apply_effect input
-                    effects.add(timed.potion().effect().key().value());
-                }
-                return effects;
-            }
-            case "spawn_projectile": {
-                String typeName = requireStringArg(context, name, args, 0);
-                net.minestom.server.entity.EntityType projectileType =
-                        net.swofty.mobs.SwoftMob.resolveType(typeName);
-                Pos from = (Pos) Coercions.toPos(evaluateArg(context, args, 1));
-                Vec projVelocity = (Vec) Coercions.toVec(evaluateArg(context, args, 2));
-                Object shooterVal = args.size() > 3 ? evaluateArg(context, args, 3) : null;
-                net.minestom.server.entity.Entity shooter =
-                        (shooterVal == null || NoneValue.isNone(shooterVal))
-                                ? null : requireEntityArg(context, name, args, 3);
-                Instance instance = shooter != null && shooter.getInstance() != null
-                        ? shooter.getInstance()
-                        : InstanceRegistry.get("world");
-                if (instance == null) {
-                    throw new ScriptError("spawn_projectile: no world to spawn the projectile in");
-                }
-                net.minestom.server.entity.EntityProjectile projectile =
-                        new net.minestom.server.entity.EntityProjectile(shooter, projectileType);
-                net.swofty.async.TickDispatch.call(() -> {
-                    // spawning + shooting: fire EntityShootEvent (cancellable,
-                    // handler power rescales) exactly like launch projectile,
-                    // then place + velocity so EntityProjectile.tick fires the
-                    // ProjectileCollide* events on impact
-                    double length = projVelocity.length();
-                    Vec direction = length > 0 ? projVelocity.normalize() : Vec.ZERO;
-                    double power = length / 20.0;
-                    Vec velocity = projVelocity;
-                    if (shooter != null) {
-                        net.minestom.server.event.entity.EntityShootEvent shootEvent =
-                                new net.minestom.server.event.entity.EntityShootEvent(
-                                        shooter, projectile, from.add(direction), power, 0.0);
-                        net.minestom.server.event.EventDispatcher.call(shootEvent);
-                        if (shootEvent.isCancelled()) {
-                            projectile.remove();
-                            return null;
-                        }
-                        if (shootEvent.getPower() != power && length > 0) {
-                            velocity = direction.mul(shootEvent.getPower() * 20.0);
-                        }
-                    }
-                    projectile.setInstance(instance, from);
-                    projectile.setVelocity(velocity);
-                    net.swofty.entities.ScriptEntityRegistry.track(projectile);
-                    return null;
-                });
-                return projectile;
-            }
-
-            // ---------- W-pvp: native trackers Minestom does not expose -------
-            case "invulnerable_ticks": {
-                // remaining vanilla i-frame ticks since the last damage event
-                // (window = 10t). Provided; honouring it is the script's call.
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                return net.swofty.entities.EntityCombatTrackers.invulnerableTicks(entity);
-            }
-            case "fall_distance": {
-                // blocks fallen while airborne (0 on the ground / flying)
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                return net.swofty.entities.EntityCombatTrackers.fallDistance(entity);
-            }
-            case "is_climbing": {
-                // positional heuristic (ladder/vine/scaffolding under the feet):
-                // Minestom exposes no native/meta climbing flag
-                net.minestom.server.entity.Entity entity =
-                        requireEntityArg(context, name, args, 0);
-                return net.swofty.entities.EntityCombatTrackers.isClimbing(entity);
-            }
+            // ---------- W-pvp: entity attributes, modifiers, combat effects,
+            // and native trackers were free functions. They are REMOVED: the
+            // attribute keys are direct rw entity properties, the trackers are
+            // ro properties (see PropertyTables.registerCombatSurface), and the
+            // effects are English statement verbs (damage/knock/apply/remove/
+            // shoot + add/remove modifier, see commands.combat.*). ------------
 
             // ---------- collections pass: sorting (non-mutating, stable) ----
             case "sort": {
@@ -1939,160 +1770,4 @@ public final class Builtins {
                 + Values.displayString(value));
     }
 
-    /**
-     * Resolve a living-entity argument (the attribute API lives on LivingEntity):
-     * players, mobs, and other living entities qualify; a script display unwraps
-     * to its backing entity when that entity is living.
-     */
-    private static net.minestom.server.entity.LivingEntity requireLivingEntityArg(
-            ExecutionContext context, String function, List<Expression> args, int index) {
-        net.minestom.server.entity.Entity entity =
-                requireEntityArg(context, function, args, index);
-        if (entity instanceof net.minestom.server.entity.LivingEntity living) {
-            return living;
-        }
-        throw new ScriptError(function + "() expects a living entity (player, mob, ...) with "
-                + "attributes, got: " + entity.getEntityType().key().asString());
-    }
-
-    /**
-     * Map a snake_case attribute key from a script to a Minestom Attribute
-     * constant. Kept in sync with Registry.combat_attribute_names. "absorption"
-     * is an alias for MAX_ABSORPTION (no plain ABSORPTION attribute exists).
-     */
-    private static net.minestom.server.entity.attribute.Attribute attributeFromName(String raw) {
-        String key = raw.trim().toLowerCase(Locale.ROOT);
-        int colon = key.indexOf(':');
-        if (colon >= 0) {
-            key = key.substring(colon + 1);
-        }
-        return switch (key) {
-            case "armor" -> net.minestom.server.entity.attribute.Attribute.ARMOR;
-            case "armor_toughness" ->
-                    net.minestom.server.entity.attribute.Attribute.ARMOR_TOUGHNESS;
-            case "attack_damage" -> net.minestom.server.entity.attribute.Attribute.ATTACK_DAMAGE;
-            case "attack_knockback" ->
-                    net.minestom.server.entity.attribute.Attribute.ATTACK_KNOCKBACK;
-            case "attack_speed" -> net.minestom.server.entity.attribute.Attribute.ATTACK_SPEED;
-            case "knockback_resistance" ->
-                    net.minestom.server.entity.attribute.Attribute.KNOCKBACK_RESISTANCE;
-            case "max_health" -> net.minestom.server.entity.attribute.Attribute.MAX_HEALTH;
-            case "max_absorption", "absorption" ->
-                    net.minestom.server.entity.attribute.Attribute.MAX_ABSORPTION;
-            case "movement_speed" -> net.minestom.server.entity.attribute.Attribute.MOVEMENT_SPEED;
-            case "fall_damage_multiplier" ->
-                    net.minestom.server.entity.attribute.Attribute.FALL_DAMAGE_MULTIPLIER;
-            case "safe_fall_distance" ->
-                    net.minestom.server.entity.attribute.Attribute.SAFE_FALL_DISTANCE;
-            case "sweeping_damage_ratio" ->
-                    net.minestom.server.entity.attribute.Attribute.SWEEPING_DAMAGE_RATIO;
-            case "flying_speed" -> net.minestom.server.entity.attribute.Attribute.FLYING_SPEED;
-            case "follow_range" -> net.minestom.server.entity.attribute.Attribute.FOLLOW_RANGE;
-            case "jump_strength" -> net.minestom.server.entity.attribute.Attribute.JUMP_STRENGTH;
-            case "scale" -> net.minestom.server.entity.attribute.Attribute.SCALE;
-            case "gravity" -> net.minestom.server.entity.attribute.Attribute.GRAVITY;
-            case "step_height" -> net.minestom.server.entity.attribute.Attribute.STEP_HEIGHT;
-            case "luck" -> net.minestom.server.entity.attribute.Attribute.LUCK;
-            case "block_interaction_range" ->
-                    net.minestom.server.entity.attribute.Attribute.BLOCK_INTERACTION_RANGE;
-            case "entity_interaction_range" ->
-                    net.minestom.server.entity.attribute.Attribute.ENTITY_INTERACTION_RANGE;
-            case "explosion_knockback_resistance" ->
-                    net.minestom.server.entity.attribute.Attribute.EXPLOSION_KNOCKBACK_RESISTANCE;
-            default -> throw new ScriptError("unknown attribute '" + raw + "'");
-        };
-    }
-
-    /**
-     * Resolve a script potion-effect key (e.g. "speed", "minecraft:strength") to
-     * a Minestom PotionEffect via the registry. Bare names are namespaced to
-     * "minecraft:". Kept in sync with Registry.potion_effect_names.
-     */
-    private static net.minestom.server.potion.PotionEffect potionEffectFromName(String raw) {
-        String key = raw.trim().toLowerCase(Locale.ROOT);
-        if (key.indexOf(':') < 0) {
-            key = "minecraft:" + key;
-        }
-        net.minestom.server.potion.PotionEffect effect =
-                net.minestom.server.potion.PotionEffect.fromKey(key);
-        if (effect == null) {
-            throw new ScriptError("unknown potion effect '" + raw + "'");
-        }
-        return effect;
-    }
-
-    /**
-     * Build a RegistryKey&lt;DamageType&gt; from a script damage-type key (e.g.
-     * "player_attack", "minecraft:magic"). Bare names are namespaced to
-     * "minecraft:". Kept in sync with Registry.damage_type_names.
-     */
-    private static net.minestom.server.registry.RegistryKey<
-            net.minestom.server.entity.damage.DamageType> damageTypeKeyFromName(String raw) {
-        String key = raw.trim().toLowerCase(Locale.ROOT);
-        if (key.indexOf(':') < 0) {
-            key = "minecraft:" + key;
-        }
-        return net.minestom.server.registry.RegistryKey.unsafeOf(key);
-    }
-
-    /**
-     * Map a script operation name to an AttributeOperation. The vanilla enum is
-     * ADD_VALUE / ADD_MULTIPLIED_BASE / ADD_MULTIPLIED_TOTAL; friendly aliases
-     * (add, multiply_base, multiply_total) are accepted too.
-     */
-    private static net.minestom.server.entity.attribute.AttributeOperation
-            attributeOperationFromName(String raw) {
-        String op = raw.trim().toLowerCase(Locale.ROOT);
-        return switch (op) {
-            case "add_value", "add" ->
-                    net.minestom.server.entity.attribute.AttributeOperation.ADD_VALUE;
-            case "add_multiplied_base", "multiply_base" ->
-                    net.minestom.server.entity.attribute.AttributeOperation.ADD_MULTIPLIED_BASE;
-            case "add_multiplied_total", "multiply_total" ->
-                    net.minestom.server.entity.attribute.AttributeOperation.ADD_MULTIPLIED_TOTAL;
-            default -> throw new ScriptError("unknown attribute operation '" + raw
-                    + "' (valid: add_value, add_multiplied_base, add_multiplied_total)");
-        };
-    }
-
-    /**
-     * Remove any modifier on this attribute whose id matches {@code id}
-     * (comparing both the bare value and the namespaced key form), so
-     * add/remove round-trips regardless of the namespace the key was minted in.
-     */
-    private static void removeModifierById(
-            net.minestom.server.entity.attribute.AttributeInstance inst, String id) {
-        String needle = id.trim().toLowerCase(Locale.ROOT);
-        for (net.minestom.server.entity.attribute.AttributeModifier mod
-                : new ArrayList<>(inst.getModifiers())) {
-            net.kyori.adventure.key.Key key = mod.id();
-            if (key.value().equalsIgnoreCase(needle)
-                    || key.asString().equalsIgnoreCase(needle)) {
-                inst.removeModifier(key);
-            }
-        }
-    }
-
-    /**
-     * Coerce a user modifier id into a valid Adventure key value
-     * ({@code [a-z0-9_.-]}). Uppercase folds to lowercase, spaces and other
-     * characters become underscores; add and remove use the same normalization
-     * so ids round-trip. An id that normalizes to empty is rejected.
-     */
-    private static String normalizeModifierId(String raw) {
-        StringBuilder sb = new StringBuilder(raw.length());
-        for (char c : raw.trim().toLowerCase(Locale.ROOT).toCharArray()) {
-            if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
-                    || c == '_' || c == '.' || c == '-') {
-                sb.append(c);
-            } else {
-                sb.append('_');
-            }
-        }
-        if (sb.length() == 0) {
-            throw new ScriptError("attribute modifier id '" + raw + "' is empty after "
-                    + "normalization; use letters, digits, '_', '.', or '-'");
-        }
-        return sb.toString();
-    }
 }

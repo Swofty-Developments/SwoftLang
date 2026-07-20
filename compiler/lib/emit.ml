@@ -112,6 +112,9 @@ let rec expr (e : Ast.expr) : Yojson.Safe.t =
                (fun (k, v) -> `Assoc [ ("key", key_json k); ("value", expr v) ])
                entries) ) ]
   | ELoaderStorage b -> node [ ("kind", `String "loader_storage"); ("backend", backend b) ]
+  | ETaskRunning { tr_owner; tr_id } ->
+    node
+      [ ("kind", `String "task_running"); ("owner", expr tr_owner); ("id", `String tr_id) ]
   | ESchedule { sc_after; sc_every; sc_name; sc_body } ->
     node
       ([ ("kind", `String "schedule"); ("after_ticks", int_opt sc_after);
@@ -336,6 +339,16 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
   | SGiveMap { gm_canvas; gm_target } ->
     node
       [ ("kind", `String "give_map"); ("canvas", expr gm_canvas); ("target", expr gm_target) ]
+  | STaskSet { tk_owner; tk_id; tk_value } ->
+    node
+      [ ("kind", `String "task_set"); ("owner", expr tk_owner); ("id", `String tk_id);
+        ("value", expr tk_value) ]
+  | STaskCancel { tc_owner; tc_id } ->
+    node [ ("kind", `String "task_cancel"); ("owner", expr tc_owner); ("id", `String tc_id) ]
+  | SPlaceBlock { pb_block; pb_at } ->
+    node [ ("kind", `String "place"); ("block", expr pb_block); ("location", expr pb_at) ]
+  | SRemoveBlock loc ->
+    node [ ("kind", `String "remove_block"); ("location", expr loc) ]
   | SCancelSchedule schedule ->
     node [ ("kind", `String "cancel_schedule"); ("schedule", expr schedule) ]
   | SStop -> node [ ("kind", `String "stop") ]
@@ -401,6 +414,10 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
       [ ("kind", `String "set_npc_location"); ("name", `String snl_name);
         ("value", expr snl_value) ]
   | SRemoveNpc name -> node [ ("kind", `String "remove_npc"); ("name", `String name) ]
+  | SShowNpc (name, target) ->
+    node [ ("kind", `String "show_npc"); ("name", `String name); ("target", expr target) ]
+  | SHideNpc (name, target) ->
+    node [ ("kind", `String "hide_npc"); ("name", `String name); ("target", expr target) ]
   | SShowEntity { she_entity; she_target } ->
     node
       [ ("kind", `String "show_entity"); ("entity", expr she_entity);
@@ -413,6 +430,37 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
     node
       [ ("kind", `String "set_entity_name"); ("entity", expr sen_entity);
         ("value", expr sen_value); ("viewer", expr sen_viewer) ]
+  (* --- W-pvp: attribute modifiers + combat effect verbs --- *)
+  | SAddModifier { am_id; am_entity; am_attr; am_amount; am_op; _ } ->
+    node
+      [ ("kind", `String "add_modifier"); ("id", expr am_id); ("entity", expr am_entity);
+        ("attribute", `String am_attr); ("amount", expr am_amount);
+        ("operation", `String am_op) ]
+  | SRemoveModifier { rm_id; rm_entity; rm_attr; _ } ->
+    node
+      [ ("kind", `String "remove_modifier"); ("id", expr rm_id); ("entity", expr rm_entity);
+        ("attribute", `String rm_attr) ]
+  | SDamage { dm_target; dm_amount; dm_type; dm_source } ->
+    node
+      [ ("kind", `String "damage"); ("target", expr dm_target); ("amount", expr dm_amount);
+        ("damage_type", opt expr dm_type); ("source", opt expr dm_source) ]
+  | SKnock { kn_target; kn_from; kn_strength } ->
+    node
+      [ ("kind", `String "knock"); ("target", expr kn_target); ("from", expr kn_from);
+        ("strength", opt expr kn_strength) ]
+  | SApplyEffect { ae_effect; ae_amplifier; ae_entity; ae_duration } ->
+    node
+      [ ("kind", `String "apply_effect"); ("effect", expr ae_effect);
+        ("amplifier", expr ae_amplifier); ("entity", expr ae_entity);
+        ("duration", expr ae_duration) ]
+  | SRemoveEffect { re_effect; re_entity } ->
+    node
+      [ ("kind", `String "remove_effect"); ("effect", expr re_effect);
+        ("entity", expr re_entity) ]
+  | SShoot { sh_type; sh_from; sh_velocity; sh_shooter } ->
+    node
+      [ ("kind", `String "shoot"); ("projectile", expr sh_type); ("from", expr sh_from);
+        ("velocity", opt expr sh_velocity); ("shooter", opt expr sh_shooter) ]
 
 and gui_open_fields go =
   [
@@ -615,6 +663,7 @@ let references_player_expr =
     | EMapLit es -> List.exists (fun (_, v) -> e_p v) es
     | ELambda { lam_body; _ } -> List.exists s_p lam_body
     | ESchedule { sc_body; _ } -> List.exists s_p sc_body
+    | ETaskRunning { tr_owner; _ } -> e_p tr_owner
     | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
       false

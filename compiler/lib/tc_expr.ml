@@ -142,6 +142,21 @@ let rec type_of ctx bctx env e : ty =
     let env' = bind { env with facts = SM.empty } "run" TInteger in
     ignore (!check_stmts_ref ctx bctx' env' sc_body);
     TSchedule
+  | ETaskRunning { tr_owner; tr_id = _ } ->
+    (* '<obj>.tasks.<id> is running' — the owner must carry a .tasks registry
+       (Player/Mob/Entity/Display/Block); result is a Boolean *)
+    let ot = type_of ctx bctx env tr_owner in
+    require_present ctx env tr_owner ot ~use:"the task owner";
+    (match unwrap ot with
+    | t when is_task_owner t -> ()
+    | TItem ->
+      err ctx tr_owner.epos
+        "Item has no task registry; .tasks is only available on Player, Mob, Entity, Npc, \
+         Hologram, and block_at(...) (items are value types with no stable identity)"
+    | t ->
+      err ctx tr_owner.epos "%s has no task registry; .tasks needs a Player, Mob, Entity, Display, or Block owner"
+        (ty_to_string t));
+    TBoolean
   | EUnary ("NOT", x) ->
     let t = type_of ctx bctx env x in
     require_present ctx env x t ~use:"the operand of 'not'";
@@ -480,235 +495,6 @@ and map_builtin_type ctx bctx env pos name args =
     | _ -> TAny
   end
 
-(* W-pvp: entity attribute accessors + modifiers. Like the state store, the
-   entity argument accepts any live entity; the attribute key and (for
-   modifiers) the operation are Strings, validated against the registry lists
-   when written as literals. attribute(e, key) returns the base value (Double);
-   the mutators return Any. *)
-and attr_builtin_type ctx bctx env pos name args =
-  let arity =
-    match name with
-    | "attribute" -> 2
-    | "set_attribute" -> 3
-    | "add_attribute_modifier" -> 5
-    | "remove_attribute_modifier" -> 3
-    | _ -> 2
-  in
-  let result () = if name = "attribute" then TDouble else TAny in
-  let got = List.length args in
-  if got <> arity then begin
-    err ctx pos "'%s' expects %d argument(s), got %d" name arity got;
-    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
-    result ()
-  end
-  else begin
-    (* arg 0: any live entity *)
-    let ent = List.hd args in
-    let et = type_of ctx bctx env ent in
-    require_present ctx env ent et ~use:(Printf.sprintf "the entity argument of '%s'" name);
-    (match unwrap et with
-    | TEntity | TMob | TPlayer | TDisplay | TAny -> ()
-    | _ ->
-      err ctx ent.epos "'%s' expects an entity (Player, Mob, Entity, or Display) here, got %s" name
-        (ty_to_string et));
-    (* arg 1: the attribute key (String), validated against the known keys when
-       given as a literal *)
-    let key = List.nth args 1 in
-    let kt = type_of ctx bctx env key in
-    require_present ctx env key kt ~use:(Printf.sprintf "the attribute key of '%s'" name);
-    (match unwrap kt with
-    | TString | TAny -> ()
-    | _ -> err ctx key.epos "'%s' expects a String attribute key here, got %s" name (ty_to_string kt));
-    (match Tc_registry_checks.literal_string key with
-    | Some s when not (List.mem s Registry.combat_attribute_names) ->
-      err ctx key.epos "unknown attribute '%s'; valid attributes: %s" s
-        (String.concat ", " Registry.combat_attribute_names)
-    | _ -> ());
-    (* per-name trailing arguments *)
-    (match (name, args) with
-    | "set_attribute", [ _; _; v ] ->
-      let vt = type_of ctx bctx env v in
-      require_present ctx env v vt ~use:"the value argument of 'set_attribute'";
-      if not (num_ok vt) then
-        err ctx v.epos "'set_attribute' expects a number value (got %s)" (ty_to_string vt)
-    | "add_attribute_modifier", [ _; _; id; amount; op ] ->
-      let idt = type_of ctx bctx env id in
-      require_present ctx env id idt ~use:"the modifier id of 'add_attribute_modifier'";
-      (match unwrap idt with
-      | TString | TAny -> ()
-      | _ -> err ctx id.epos "'add_attribute_modifier' expects a String id (got %s)" (ty_to_string idt));
-      let at = type_of ctx bctx env amount in
-      require_present ctx env amount at ~use:"the amount of 'add_attribute_modifier'";
-      if not (num_ok at) then
-        err ctx amount.epos "'add_attribute_modifier' expects a number amount (got %s)"
-          (ty_to_string at);
-      let ot = type_of ctx bctx env op in
-      require_present ctx env op ot ~use:"the operation of 'add_attribute_modifier'";
-      (match unwrap ot with
-      | TString | TAny -> ()
-      | _ ->
-        err ctx op.epos "'add_attribute_modifier' expects a String operation (got %s)"
-          (ty_to_string ot));
-      (match Tc_registry_checks.literal_string op with
-      | Some s when not (List.mem s Registry.attribute_operations) ->
-        err ctx op.epos "unknown attribute operation '%s'; valid operations: %s" s
-          (String.concat ", " Registry.attribute_operations)
-      | _ -> ())
-    | "remove_attribute_modifier", [ _; _; id ] ->
-      let idt = type_of ctx bctx env id in
-      require_present ctx env id idt ~use:"the modifier id of 'remove_attribute_modifier'";
-      (match unwrap idt with
-      | TString | TAny -> ()
-      | _ ->
-        err ctx id.epos "'remove_attribute_modifier' expects a String id (got %s)" (ty_to_string idt))
-    | _ -> ());
-    result ()
-  end
-
-(* W-pvp: the combat EFFECT builtins (apply_damage / apply_knockback /
-   apply_effect / remove_effect / active_effects / spawn_projectile). Like the
-   state/attribute builtins the entity arguments accept any live entity, so the
-   typing is special-cased here rather than through the flat param_kind sigs.
-   Literal damage-type / potion-effect / projectile-type strings are validated
-   against the registry lists; dynamic strings resolve at runtime. *)
-and combat_builtin_type ctx bctx env pos name args =
-  let n = List.length args in
-  let nth i = List.nth args i in
-  let entity_arg a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    match unwrap t with
-    | TEntity | TMob | TPlayer | TDisplay | TAny -> ()
-    | _ ->
-      err ctx a.epos "'%s' expects an entity (Player, Mob, Entity, or Display) for %s, got %s"
-        name use (ty_to_string t)
-  in
-  let number_arg a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    if not (num_ok t) then
-      err ctx a.epos "'%s' expects a number for %s (got %s)" name use (ty_to_string t)
-  in
-  let bool_arg a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    match unwrap t with
-    | TBoolean | TAny -> ()
-    | _ -> err ctx a.epos "'%s' expects a Boolean for %s (got %s)" name use (ty_to_string t)
-  in
-  let string_arg ?valid a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    (match unwrap t with
-    | TString | TAny -> ()
-    | _ -> err ctx a.epos "'%s' expects a String for %s (got %s)" name use (ty_to_string t));
-    match valid with
-    | None -> ()
-    | Some (list, label) -> (
-      match Tc_registry_checks.literal_string a with
-      | Some s ->
-        let norm =
-          let s = String.lowercase_ascii (String.trim s) in
-          match String.index_opt s ':' with
-          | Some i -> String.sub s (i + 1) (String.length s - i - 1)
-          | None -> s
-        in
-        if not (List.mem norm list) then err ctx a.epos "unknown %s '%s'" label s
-      | None -> ())
-  in
-  let location_arg a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    match unwrap t with
-    | TLocation | TAny -> ()
-    | _ -> err ctx a.epos "'%s' expects a Location for %s (got %s)" name use (ty_to_string t)
-  in
-  let vec_arg a use =
-    let t = type_of ctx bctx env a in
-    require_present ctx env a t ~use;
-    match unwrap t with
-    | TVec | TAny -> ()
-    | _ ->
-      err ctx a.epos "'%s' expects a Vec (from velocity(x, y, z)) for %s (got %s)" name use
-        (ty_to_string t)
-  in
-  let arity_err expected default =
-    err ctx pos "'%s' expects %s argument(s), got %d" name expected n;
-    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
-    default
-  in
-  match name with
-  | "apply_damage" ->
-    if n <> 3 && n <> 4 then arity_err "3 or 4" TBoolean
-    else begin
-      entity_arg (nth 0) "the target";
-      number_arg (nth 1) "the amount";
-      string_arg ~valid:(Registry.damage_type_names, "damage type") (nth 2) "the damage type";
-      if n = 4 then entity_arg (nth 3) "the source";
-      TBoolean
-    end
-  | "apply_knockback" ->
-    if n <> 4 then arity_err "4" TAny
-    else begin
-      entity_arg (nth 0) "the entity";
-      number_arg (nth 1) "the strength";
-      number_arg (nth 2) "dir_x";
-      number_arg (nth 3) "dir_z";
-      TAny
-    end
-  | "apply_effect" ->
-    if n < 4 || n > 6 then arity_err "4, 5, or 6" TAny
-    else begin
-      entity_arg (nth 0) "the entity";
-      string_arg ~valid:(Registry.potion_effect_names, "potion effect") (nth 1) "the effect type";
-      number_arg (nth 2) "the duration (ticks)";
-      number_arg (nth 3) "the amplifier";
-      if n >= 5 then bool_arg (nth 4) "the ambient flag";
-      if n >= 6 then bool_arg (nth 5) "the particles flag";
-      TAny
-    end
-  | "remove_effect" ->
-    if n <> 2 then arity_err "2" TAny
-    else begin
-      entity_arg (nth 0) "the entity";
-      string_arg ~valid:(Registry.potion_effect_names, "potion effect") (nth 1) "the effect type";
-      TAny
-    end
-  | "active_effects" ->
-    if n <> 1 then arity_err "1" (TList TString)
-    else begin
-      entity_arg (nth 0) "the entity";
-      TList TString
-    end
-  | "spawn_projectile" ->
-    if n <> 3 && n <> 4 then arity_err "3 or 4" TEntity
-    else begin
-      string_arg ~valid:(Registry.projectile_types, "projectile type") (nth 0) "the projectile type";
-      location_arg (nth 1) "the spawn location";
-      vec_arg (nth 2) "the velocity";
-      if n = 4 then entity_arg (nth 3) "the shooter";
-      TEntity
-    end
-  | "invulnerable_ticks" ->
-    if n <> 1 then arity_err "1" TInteger
-    else begin
-      entity_arg (nth 0) "the entity";
-      TInteger
-    end
-  | "fall_distance" ->
-    if n <> 1 then arity_err "1" TDouble
-    else begin
-      entity_arg (nth 0) "the entity";
-      TDouble
-    end
-  | "is_climbing" ->
-    if n <> 1 then arity_err "1" TBoolean
-    else begin
-      entity_arg (nth 0) "the entity";
-      TBoolean
-    end
-  | _ -> TAny
-
 (* a key lambda for sort_by/min_by/max_by/sort_map_by: a function of the given
    arity returning a comparable (Number or String) key. Validated when the
    callee's type is statically a function (phase 11). *)
@@ -848,6 +634,16 @@ and builtin_call_type ctx bctx env pos name args looked =
       err ctx pos "'viewers of' expects a single entity";
       List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
     TList TPlayer
+  (* W-viewers §2: 'viewers of npc "n"' -> list<Player>. Name-keyed: the npc
+     name must resolve to a declared npc (unknown => error + suggestion). *)
+  | "viewers_of_npc" ->
+    (match args with
+    | [ { e = EString name; _ } ] ->
+      if not (Hashtbl.mem ctx.npcs name) then
+        err ctx pos "unknown npc '%s'; declare it with 'npc \"%s\" { }'%s" name name
+          (suggestion name (Hashtbl.fold (fun k _ acc -> k :: acc) ctx.npcs []))
+    | _ -> err ctx pos "'viewers of npc' expects a literal npc name");
+    TList TPlayer
   (* W-blocks: block("id") / block("id", { prop: value, ... }) -> Block. The
      property map is an ident-keyed brace (EMap). Literal ids/props/values are
      validated against the block-state schema; dynamic args are runtime-checked. *)
@@ -897,11 +693,6 @@ and builtin_call_type ctx bctx env pos name args looked =
       TBlock)
   | "map_get" | "map_set" | "map_has" | "map_delete" | "map_keys" | "map_size" ->
     map_builtin_type ctx bctx env pos name args
-  | "attribute" | "set_attribute" | "add_attribute_modifier" | "remove_attribute_modifier" ->
-    attr_builtin_type ctx bctx env pos name args
-  | "apply_damage" | "apply_knockback" | "apply_effect" | "remove_effect" | "active_effects"
-  | "spawn_projectile" | "invulnerable_ticks" | "fall_distance" | "is_climbing" ->
-    combat_builtin_type ctx bctx env pos name args
   | "sort" | "sort_by" | "sort_by_desc" | "reverse" | "shuffle" | "random_in" | "min_by"
   | "max_by" | "sort_by_key" | "sort_by_key_desc" | "sort_by_value" | "sort_by_value_desc"
   | "sort_map_by" | "sort_map_by_desc" | "random_element" | "sum" | "product" ->

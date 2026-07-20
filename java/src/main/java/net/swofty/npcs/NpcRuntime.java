@@ -32,6 +32,8 @@ import net.swofty.InstanceRegistry;
 import net.swofty.ScriptError;
 import net.swofty.async.AsyncRuntime;
 import net.swofty.async.TickDispatch;
+import net.swofty.entities.ViewerControl;
+import net.swofty.handlers.InlineHandlerRuntime;
 import net.swofty.model.NpcModel;
 import net.swofty.model.NpcModel.NpcSkinModel;
 import net.swofty.nametags.NametagRuntime;
@@ -195,6 +197,31 @@ public final class NpcRuntime {
         Pos pos = (Pos) Coercions.toPos(location);
         npc.pos = pos;
         TickDispatch.call(() -> npc.entity.teleport(pos));
+    }
+
+    // ------------------------------------------------------------------
+    // per-viewer visibility (W-viewers §2) — route the name-keyed npc verbs
+    // through the SAME Minestom Viewable add/removeViewer mechanism the generic
+    // `show <entity>` verbs use. The fake player IS a Viewable, so addViewer
+    // fires FakePlayer.updateNewViewer (PlayerInfo ADD + team + spawn) and
+    // removeViewer fires updateOldViewer (list + team removal). viewable:false
+    // means the entity is spawned but auto-adds no viewers, so it stays hidden
+    // until one of these reveals it.
+    // ------------------------------------------------------------------
+
+    /** {@code show npc "name" to <player|list<Player>|all>}. */
+    public static void show(String name, Object target) {
+        ViewerControl.show(require(name).entity, target);
+    }
+
+    /** {@code hide npc "name" from <player|list<Player>|all>}. */
+    public static void hide(String name, Object target) {
+        ViewerControl.hide(require(name).entity, target);
+    }
+
+    /** {@code viewers of npc "name"} — the fake player's viewers, ordered. */
+    public static List<Player> viewersOf(String name) {
+        return ViewerControl.viewersOf(require(name).entity);
     }
 
     /** {@code remove npc "name"} — despawn and drop all state. */
@@ -499,6 +526,21 @@ public final class NpcRuntime {
             setNoGravity(true);
             // viewable:false => hidden until an explicit `show npc ... to ...`.
             setAutoViewable(npc.model.viewable());
+        }
+
+        /**
+         * Per-tick -> the generic {@code on_tick} handler, exactly like
+         * {@link net.swofty.mobs.SwoftMob#tick}: the dispatcher's handler-map
+         * lookup short-circuits when no on_tick is declared, so an npc without
+         * one pays only that lookup ("presence => ticking"). {@code this} binds
+         * to this fake-player entity. The entity ticks while it is in an
+         * instance regardless of viewers, so on_tick fires even for a
+         * viewable:false npc that nobody can see yet.
+         */
+        @Override
+        public void tick(long time) {
+            super.tick(time);
+            InlineHandlerRuntime.dispatchNpc(npc.model, this, "on_tick");
         }
 
         @Override

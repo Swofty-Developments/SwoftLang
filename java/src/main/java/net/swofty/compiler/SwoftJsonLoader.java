@@ -1194,6 +1194,18 @@ public class SwoftJsonLoader {
                         buildExpression(obj.getAsJsonObject("value")));
             case "remove_npc":
                 return new RemoveNpcStatement(obj.get("name").getAsString());
+            case "show_npc":
+                // show npc "name" to <player|list<Player>|all> (W-viewers §2).
+                // Routes through the same Viewable add-viewer path as the
+                // generic `show <entity>` verb, keyed by npc name.
+                return new net.swofty.nativebridge.execution.commands.npcs
+                        .ShowNpcStatement(obj.get("name").getAsString(),
+                        buildExpression(obj.getAsJsonObject("target")));
+            case "hide_npc":
+                // hide npc "name" from <player|list<Player>|all> (W-viewers §2).
+                return new net.swofty.nativebridge.execution.commands.npcs
+                        .HideNpcStatement(obj.get("name").getAsString(),
+                        buildExpression(obj.getAsJsonObject("target")));
             case "give_item":
                 return new GiveItemStatement(buildStringOrExpression(obj.get("id")),
                         buildExpression(obj.getAsJsonObject("target")),
@@ -1480,6 +1492,32 @@ public class SwoftJsonLoader {
                 // stop (scheduler v2): cancel the enclosing schedule/repeat
                 return new net.swofty.nativebridge.execution.commands.sched.StopStatement();
 
+            // ---------- W-tasks: per-object task registry ----------
+            case "task_set":
+                // set <obj>.tasks.<id> to schedule ...
+                return new net.swofty.nativebridge.execution.commands.tasks
+                        .TaskSetStatement(
+                        buildExpression(obj.getAsJsonObject("owner")),
+                        obj.get("id").getAsString(),
+                        buildExpression(obj.getAsJsonObject("value")));
+            case "task_cancel":
+                // cancel/stop <obj>.tasks.<id>
+                return new net.swofty.nativebridge.execution.commands.tasks
+                        .TaskCancelStatement(
+                        buildExpression(obj.getAsJsonObject("owner")),
+                        obj.get("id").getAsString());
+            case "place":
+                // place <Block|"id"> at <location>
+                return new net.swofty.nativebridge.execution.commands.blocks
+                        .PlaceBlockStatement(
+                        buildStringOrExpression(obj.get("block")),
+                        buildExpression(obj.getAsJsonObject("location")));
+            case "remove_block":
+                // remove block at <location> (also cancels that position's tasks)
+                return new net.swofty.nativebridge.execution.commands.blocks
+                        .RemoveBlockStatement(
+                        buildExpression(obj.getAsJsonObject("location")));
+
             case "belowname":
                 return new BelownameStatement(BelownameStatement.Action.TEXT,
                         buildExpression(obj.getAsJsonObject("text")),
@@ -1491,6 +1529,59 @@ public class SwoftJsonLoader {
             case "clear_belowname":
                 return new BelownameStatement(BelownameStatement.Action.CLEAR, null,
                         buildExpression(obj.getAsJsonObject("target")));
+
+            // ---------- W-pvp: attribute modifiers + combat effect verbs ------
+            case "add_modifier":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .AddModifierStatement(
+                        buildExpression(obj.getAsJsonObject("id")),
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        obj.get("attribute").getAsString(),
+                        buildExpression(obj.getAsJsonObject("amount")),
+                        obj.get("operation").getAsString());
+            case "remove_modifier":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .RemoveModifierStatement(
+                        buildExpression(obj.getAsJsonObject("id")),
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        obj.get("attribute").getAsString());
+            case "damage":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .DamageStatement(
+                        buildExpression(obj.getAsJsonObject("target")),
+                        buildExpression(obj.getAsJsonObject("amount")),
+                        has(obj, "damage_type")
+                                ? buildExpression(obj.getAsJsonObject("damage_type")) : null,
+                        has(obj, "source")
+                                ? buildExpression(obj.getAsJsonObject("source")) : null);
+            case "knock":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .KnockStatement(
+                        buildExpression(obj.getAsJsonObject("target")),
+                        buildExpression(obj.getAsJsonObject("from")),
+                        has(obj, "strength")
+                                ? buildExpression(obj.getAsJsonObject("strength")) : null);
+            case "apply_effect":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .ApplyEffectStatement(
+                        buildExpression(obj.getAsJsonObject("effect")),
+                        buildExpression(obj.getAsJsonObject("amplifier")),
+                        buildExpression(obj.getAsJsonObject("entity")),
+                        buildExpression(obj.getAsJsonObject("duration")));
+            case "remove_effect":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .RemoveEffectStatement(
+                        buildExpression(obj.getAsJsonObject("effect")),
+                        buildExpression(obj.getAsJsonObject("entity")));
+            case "shoot":
+                return new net.swofty.nativebridge.execution.commands.combat
+                        .ShootStatement(
+                        buildExpression(obj.getAsJsonObject("projectile")),
+                        buildExpression(obj.getAsJsonObject("from")),
+                        has(obj, "velocity")
+                                ? buildExpression(obj.getAsJsonObject("velocity")) : null,
+                        has(obj, "shooter")
+                                ? buildExpression(obj.getAsJsonObject("shooter")) : null);
             default:
                 throw new IllegalArgumentException("Unknown statement kind: " + kind);
         }
@@ -1644,6 +1735,12 @@ public class SwoftJsonLoader {
                         buildStatements(body, true),
                         optString(obj, "name"));
             }
+            case "task_running":
+                // <obj>.tasks.<id> is running -> Boolean (W-tasks)
+                return new net.swofty.nativebridge.execution.expressions
+                        .TaskRunningExpression(
+                        buildExpression(obj.getAsJsonObject("owner")),
+                        obj.get("id").getAsString());
             case "loader_storage":
                 // polar_storage_loader(<backend config>) (design 6B)
                 return new net.swofty.nativebridge.execution.expressions

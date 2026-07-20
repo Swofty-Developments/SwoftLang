@@ -1,5 +1,5 @@
 command "bad" {
     execute {
-        apply_damage(sender, 5.0, "laser_beam")
+        damage sender by 5.0 as "laser_beam"
     }
 }

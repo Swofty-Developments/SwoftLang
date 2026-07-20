@@ -1,5 +1,5 @@
 command "bad" {
     execute {
-        apply_effect(sender, "super_speed", 100, 0)
+        apply "super_speed" 0 to sender for 100
     }
 }

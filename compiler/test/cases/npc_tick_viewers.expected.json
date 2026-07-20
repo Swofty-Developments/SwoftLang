@@ -1,0 +1,286 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 30,
+      "col": 1,
+      "names": [ "sentry" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "show_npc",
+            "name": "sentry",
+            "target": {
+              "line": 33,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "show_npc",
+            "name": "sentry",
+            "target": {
+              "line": 34,
+              "col": 30,
+              "kind": "string",
+              "value": "all"
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "hide_npc",
+            "name": "sentry",
+            "target": {
+              "line": 35,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "foreach",
+            "var": "p",
+            "limit": null,
+            "iterable": {
+              "line": 38,
+              "col": 14,
+              "kind": "call",
+              "name": "viewers_of_npc",
+              "args": [
+                {
+                  "line": 38,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "sentry"
+                }
+              ]
+            },
+            "body": {
+              "line": 38,
+              "col": 43,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 39,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 39,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "<gray>You can see the sentry."
+                  },
+                  "target": {
+                    "line": 39,
+                    "col": 53,
+                    "kind": "var",
+                    "name": "p"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "holograms": [
+    {
+      "line": 20,
+      "col": 1,
+      "name": "clock",
+      "location": {
+        "line": 21,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 21,
+            "col": 24,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 21,
+            "col": 27,
+            "kind": "number",
+            "value": 66,
+            "integer": true
+          },
+          {
+            "line": 21,
+            "col": 31,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      },
+      "billboard": "center",
+      "scale": null,
+      "update": { "kind": "manual" },
+      "per_viewer": false,
+      "lines": [
+        {
+          "line": 23,
+          "col": 9,
+          "kind": "line",
+          "text": {
+            "line": 23,
+            "col": 14,
+            "kind": "string",
+            "value": "<aqua>Clock"
+          }
+        }
+      ],
+      "handlers": {
+        "on_tick": {
+          "params": [],
+          "body": [
+            {
+              "line": 26,
+              "col": 18,
+              "kind": "set_prop",
+              "target": {
+                "line": 26,
+                "col": 13,
+                "kind": "var",
+                "name": "this"
+              },
+              "name": "text",
+              "value": {
+                "line": 26,
+                "col": 26,
+                "kind": "string",
+                "value": "<aqua>Clock"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "npcs": [
+    {
+      "line": 6,
+      "col": 1,
+      "name": "sentry",
+      "location": {
+        "line": 7,
+        "col": 15,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 7,
+            "col": 24,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 7,
+            "col": 27,
+            "kind": "number",
+            "value": 64,
+            "integer": true
+          },
+          {
+            "line": 7,
+            "col": 31,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      },
+      "display_name": {
+        "line": 8,
+        "col": 11,
+        "kind": "string",
+        "value": "<gold>Sentry (${player.name})"
+      },
+      "skin": {
+        "kind": "username",
+        "username": {
+          "line": 9,
+          "col": 11,
+          "kind": "string",
+          "value": "Notch"
+        }
+      },
+      "look_at_players": false,
+      "viewable": false,
+      "on_click": {
+        "param": "player",
+        "body": [
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 12,
+              "col": 14,
+              "kind": "string",
+              "value": "<yellow>Halt, ${player.name}!"
+            },
+            "target": {
+              "line": 12,
+              "col": 49,
+              "kind": "var",
+              "name": "player"
+            }
+          }
+        ]
+      },
+      "on_left_click": null,
+      "handlers": {
+        "on_tick": {
+          "params": [],
+          "body": [
+            {
+              "line": 15,
+              "col": 18,
+              "kind": "set_prop",
+              "target": {
+                "line": 15,
+                "col": 13,
+                "kind": "var",
+                "name": "this"
+              },
+              "name": "glowing",
+              "value": {
+                "line": 15,
+                "col": 29,
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

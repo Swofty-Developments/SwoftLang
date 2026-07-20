@@ -148,6 +148,28 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 2 && args[0].equals("--tasks-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = TasksSmoke.run(args[1]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
+        if (args.length == 2 && args[0].equals("--npc-viewers-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = NpcViewersSmoke.run(args[1]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 2 && args[0].equals("--perviewer-smoke")) {
             // MinecraftServer.init() starts non-daemon threads: always exit
             int code;

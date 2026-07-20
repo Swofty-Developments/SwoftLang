@@ -3,7 +3,7 @@
   "version": 2,
   "commands": [
     {
-      "line": 7,
+      "line": 6,
       "col": 1,
       "names": [ "combat" ],
       "permission": null,
@@ -13,247 +13,341 @@
         "async": false,
         "statements": [
           {
-            "line": 10,
+            "line": 9,
             "col": 9,
             "kind": "assign",
-            "target": "landed",
+            "target": "base",
+            "value": {
+              "line": 9,
+              "col": 28,
+              "kind": "prop",
+              "target": {
+                "line": 9,
+                "col": 21,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "armor"
+            }
+          },
+          {
+            "line": 10,
+            "col": 20,
+            "kind": "set_prop",
+            "target": {
+              "line": 10,
+              "col": 13,
+              "kind": "var",
+              "name": "sender"
+            },
+            "name": "max_health",
             "value": {
               "line": 10,
-              "col": 23,
-              "kind": "call",
-              "name": "apply_damage",
-              "args": [
-                { "line": 10, "col": 36, "kind": "var", "name": "sender" },
-                {
-                  "line": 10,
-                  "col": 44,
-                  "kind": "number",
-                  "value": 6.0,
-                  "integer": false
-                },
-                {
-                  "line": 10,
-                  "col": 49,
-                  "kind": "string",
-                  "value": "player_attack"
-                }
-              ]
+              "col": 34,
+              "kind": "number",
+              "value": 40.0,
+              "integer": false
             }
           },
           {
             "line": 11,
+            "col": 20,
+            "kind": "set_prop",
+            "target": {
+              "line": 11,
+              "col": 13,
+              "kind": "var",
+              "name": "sender"
+            },
+            "name": "attack_damage",
+            "value": {
+              "line": 11,
+              "col": 44,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 11,
+                "col": 44,
+                "kind": "prop",
+                "target": {
+                  "line": 11,
+                  "col": 37,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "name": "attack_damage"
+              },
+              "right": {
+                "line": 11,
+                "col": 60,
+                "kind": "number",
+                "value": 2.0,
+                "integer": false
+              }
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 12,
+              "col": 14,
+              "kind": "string",
+              "value": "armor: ${base}"
+            },
+            "target": {
+              "line": 12,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "add_modifier",
+            "id": {
+              "line": 15,
+              "col": 22,
+              "kind": "string",
+              "value": "rage"
+            },
+            "entity": {
+              "line": 15,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            },
+            "attribute": "attack_damage",
+            "amount": {
+              "line": 15,
+              "col": 56,
+              "kind": "number",
+              "value": 4.0,
+              "integer": false
+            },
+            "operation": "add_multiplied_base"
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "add_modifier",
+            "id": {
+              "line": 16,
+              "col": 22,
+              "kind": "string",
+              "value": "shield"
+            },
+            "entity": {
+              "line": 16,
+              "col": 34,
+              "kind": "var",
+              "name": "sender"
+            },
+            "attribute": "armor",
+            "amount": {
+              "line": 16,
+              "col": 50,
+              "kind": "number",
+              "value": 2.0,
+              "integer": false
+            },
+            "operation": "add"
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "add_modifier",
+            "id": {
+              "line": 17,
+              "col": 22,
+              "kind": "string",
+              "value": "focus"
+            },
+            "entity": {
+              "line": 17,
+              "col": 33,
+              "kind": "var",
+              "name": "sender"
+            },
+            "attribute": "attack_speed",
+            "amount": {
+              "line": 17,
+              "col": 56,
+              "kind": "number",
+              "value": 0.5,
+              "integer": false
+            },
+            "operation": "add_multiplied_total"
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "remove_modifier",
+            "id": {
+              "line": 18,
+              "col": 25,
+              "kind": "string",
+              "value": "rage"
+            },
+            "entity": {
+              "line": 18,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            },
+            "attribute": "attack_damage"
+          },
+          {
+            "line": 21,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 11,
-              "col": 12,
-              "kind": "var",
-              "name": "landed"
+              "line": 21,
+              "col": 19,
+              "kind": "binary",
+              "op": "GREATER_THAN",
+              "left": {
+                "line": 21,
+                "col": 19,
+                "kind": "prop",
+                "target": {
+                  "line": 21,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "name": "invulnerable_ticks"
+              },
+              "right": {
+                "line": 21,
+                "col": 40,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
             },
             "then": {
-              "line": 11,
-              "col": 19,
+              "line": 21,
+              "col": 42,
               "kind": "block",
               "statements": [
                 {
-                  "line": 12,
+                  "line": 22,
                   "col": 13,
-                  "kind": "call",
-                  "name": "apply_damage",
-                  "args": [
-                    {
-                      "line": 12,
-                      "col": 26,
-                      "kind": "var",
-                      "name": "sender"
-                    },
-                    {
-                      "line": 12,
-                      "col": 34,
-                      "kind": "number",
-                      "value": 2.0,
-                      "integer": false
-                    },
-                    {
-                      "line": 12,
-                      "col": 39,
-                      "kind": "string",
-                      "value": "magic"
-                    },
-                    {
-                      "line": 12,
-                      "col": 48,
-                      "kind": "var",
-                      "name": "sender"
-                    }
-                  ]
+                  "kind": "send",
+                  "message": {
+                    "line": 22,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "i-frames: ${sender.invulnerable_ticks}"
+                  },
+                  "target": {
+                    "line": 22,
+                    "col": 62,
+                    "kind": "var",
+                    "name": "sender"
+                  }
                 }
               ]
             },
             "else": null
           },
           {
-            "line": 16,
-            "col": 9,
-            "kind": "call",
-            "name": "apply_knockback",
-            "args": [
-              { "line": 16, "col": 25, "kind": "var", "name": "sender" },
-              {
-                "line": 16,
-                "col": 33,
-                "kind": "number",
-                "value": 0.4,
-                "integer": false
-              },
-              {
-                "line": 16,
-                "col": 38,
-                "kind": "number",
-                "value": 1.0,
-                "integer": false
-              },
-              {
-                "line": 16,
-                "col": 43,
-                "kind": "number",
-                "value": 0.0,
-                "integer": false
-              }
-            ]
-          },
-          {
-            "line": 19,
-            "col": 9,
-            "kind": "call",
-            "name": "apply_effect",
-            "args": [
-              { "line": 19, "col": 22, "kind": "var", "name": "sender" },
-              {
-                "line": 19,
-                "col": 30,
-                "kind": "string",
-                "value": "strength"
-              },
-              {
-                "line": 19,
-                "col": 42,
-                "kind": "number",
-                "value": 200,
-                "integer": true
-              },
-              {
-                "line": 19,
-                "col": 47,
-                "kind": "number",
-                "value": 0,
-                "integer": true
-              }
-            ]
-          },
-          {
-            "line": 20,
-            "col": 9,
-            "kind": "call",
-            "name": "apply_effect",
-            "args": [
-              { "line": 20, "col": 22, "kind": "var", "name": "sender" },
-              {
-                "line": 20,
-                "col": 30,
-                "kind": "string",
-                "value": "regeneration"
-              },
-              {
-                "line": 20,
-                "col": 46,
-                "kind": "number",
-                "value": 100,
-                "integer": true
-              },
-              {
-                "line": 20,
-                "col": 51,
-                "kind": "number",
-                "value": 1,
-                "integer": true
-              },
-              { "line": 20, "col": 54, "kind": "boolean", "value": true }
-            ]
-          },
-          {
-            "line": 21,
-            "col": 9,
-            "kind": "call",
-            "name": "apply_effect",
-            "args": [
-              { "line": 21, "col": 22, "kind": "var", "name": "sender" },
-              { "line": 21, "col": 30, "kind": "string", "value": "speed" },
-              {
-                "line": 21,
-                "col": 39,
-                "kind": "number",
-                "value": 100,
-                "integer": true
-              },
-              {
-                "line": 21,
-                "col": 44,
-                "kind": "number",
-                "value": 0,
-                "integer": true
-              },
-              { "line": 21, "col": 47, "kind": "boolean", "value": false },
-              { "line": 21, "col": 54, "kind": "boolean", "value": true }
-            ]
-          },
-          {
-            "line": 22,
-            "col": 9,
-            "kind": "call",
-            "name": "remove_effect",
-            "args": [
-              { "line": 22, "col": 23, "kind": "var", "name": "sender" },
-              {
-                "line": 22,
-                "col": 31,
-                "kind": "string",
-                "value": "strength"
-              }
-            ]
-          },
-          {
             "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "fell ${sender.fall_distance} blocks"
+            },
+            "target": {
+              "line": 24,
+              "col": 55,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 25,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 25,
+              "col": 19,
+              "kind": "prop",
+              "target": {
+                "line": 25,
+                "col": 12,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "is_climbing"
+            },
+            "then": {
+              "line": 25,
+              "col": 31,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 26,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 26,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "climbing"
+                  },
+                  "target": {
+                    "line": 26,
+                    "col": 32,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 28,
             "col": 9,
             "kind": "foreach",
             "var": "effect",
             "limit": null,
             "iterable": {
-              "line": 24,
-              "col": 14,
-              "kind": "call",
-              "name": "active_effects",
-              "args": [
-                { "line": 24, "col": 29, "kind": "var", "name": "sender" }
-              ]
+              "line": 28,
+              "col": 21,
+              "kind": "prop",
+              "target": {
+                "line": 28,
+                "col": 14,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "active_effects"
             },
             "body": {
-              "line": 24,
-              "col": 47,
+              "line": 28,
+              "col": 46,
               "kind": "block",
               "statements": [
                 {
-                  "line": 25,
+                  "line": 29,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 25,
+                    "line": 29,
                     "col": 18,
                     "kind": "string",
                     "value": "active: ${effect}"
                   },
                   "target": {
-                    "line": 25,
+                    "line": 29,
                     "col": 41,
                     "kind": "var",
                     "name": "sender"
@@ -263,32 +357,274 @@
             }
           },
           {
-            "line": 29,
+            "line": 33,
+            "col": 9,
+            "kind": "damage",
+            "target": {
+              "line": 33,
+              "col": 16,
+              "kind": "var",
+              "name": "sender"
+            },
+            "amount": {
+              "line": 33,
+              "col": 26,
+              "kind": "number",
+              "value": 6.0,
+              "integer": false
+            },
+            "damage_type": null,
+            "source": null
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "damage",
+            "target": {
+              "line": 34,
+              "col": 16,
+              "kind": "var",
+              "name": "sender"
+            },
+            "amount": {
+              "line": 34,
+              "col": 26,
+              "kind": "number",
+              "value": 2.0,
+              "integer": false
+            },
+            "damage_type": {
+              "line": 34,
+              "col": 33,
+              "kind": "string",
+              "value": "magic"
+            },
+            "source": null
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "damage",
+            "target": {
+              "line": 35,
+              "col": 16,
+              "kind": "var",
+              "name": "sender"
+            },
+            "amount": {
+              "line": 35,
+              "col": 26,
+              "kind": "number",
+              "value": 3.0,
+              "integer": false
+            },
+            "damage_type": {
+              "line": 35,
+              "col": 33,
+              "kind": "string",
+              "value": "player_attack"
+            },
+            "source": {
+              "line": 35,
+              "col": 54,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "knock",
+            "target": {
+              "line": 38,
+              "col": 15,
+              "kind": "var",
+              "name": "sender"
+            },
+            "from": {
+              "line": 38,
+              "col": 32,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 38,
+                  "col": 41,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 38,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 38,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "strength": null
+          },
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "knock",
+            "target": {
+              "line": 39,
+              "col": 15,
+              "kind": "var",
+              "name": "sender"
+            },
+            "from": {
+              "line": 39,
+              "col": 32,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 39,
+                  "col": 41,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 39,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 39,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "strength": {
+              "line": 39,
+              "col": 65,
+              "kind": "number",
+              "value": 0.8,
+              "integer": false
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "apply_effect",
+            "effect": {
+              "line": 42,
+              "col": 15,
+              "kind": "string",
+              "value": "strength"
+            },
+            "amplifier": {
+              "line": 42,
+              "col": 26,
+              "kind": "number",
+              "value": 0,
+              "integer": true
+            },
+            "entity": {
+              "line": 42,
+              "col": 31,
+              "kind": "var",
+              "name": "sender"
+            },
+            "duration": {
+              "line": 42,
+              "col": 42,
+              "kind": "number",
+              "value": 200,
+              "integer": true
+            }
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "apply_effect",
+            "effect": {
+              "line": 43,
+              "col": 15,
+              "kind": "string",
+              "value": "regeneration"
+            },
+            "amplifier": {
+              "line": 43,
+              "col": 30,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            },
+            "entity": {
+              "line": 43,
+              "col": 35,
+              "kind": "var",
+              "name": "sender"
+            },
+            "duration": {
+              "line": 43,
+              "col": 46,
+              "kind": "number",
+              "value": 100,
+              "integer": true
+            }
+          },
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "remove_effect",
+            "effect": {
+              "line": 44,
+              "col": 16,
+              "kind": "string",
+              "value": "strength"
+            },
+            "entity": {
+              "line": 44,
+              "col": 32,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 47,
             "col": 9,
             "kind": "assign",
             "target": "here",
             "value": {
-              "line": 29,
+              "line": 47,
               "col": 21,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 29,
+                  "line": 47,
                   "col": 30,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 29,
+                  "line": 47,
                   "col": 33,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
-                  "line": 29,
+                  "line": 47,
                   "col": 37,
                   "kind": "number",
                   "value": 0,
@@ -298,164 +634,215 @@
             }
           },
           {
-            "line": 30,
+            "line": 48,
             "col": 9,
-            "kind": "assign",
-            "target": "arrow",
-            "value": {
-              "line": 30,
-              "col": 22,
+            "kind": "shoot",
+            "projectile": {
+              "line": 48,
+              "col": 15,
+              "kind": "string",
+              "value": "arrow"
+            },
+            "from": { "line": 48, "col": 28, "kind": "var", "name": "here" },
+            "velocity": {
+              "line": 48,
+              "col": 47,
               "kind": "call",
-              "name": "spawn_projectile",
-              "args": [
-                { "line": 30, "col": 39, "kind": "string", "value": "arrow" },
-                { "line": 30, "col": 48, "kind": "var", "name": "here" },
-                {
-                  "line": 30,
-                  "col": 54,
-                  "kind": "call",
-                  "name": "velocity",
-                  "args": [
-                    {
-                      "line": 30,
-                      "col": 63,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    },
-                    {
-                      "line": 30,
-                      "col": 66,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    },
-                    {
-                      "line": 30,
-                      "col": 69,
-                      "kind": "number",
-                      "value": 1.5,
-                      "integer": false
-                    }
-                  ]
-                },
-                { "line": 30, "col": 75, "kind": "var", "name": "sender" }
-              ]
-            }
-          },
-          {
-            "line": 31,
-            "col": 9,
-            "kind": "assign",
-            "target": "snowball",
-            "value": {
-              "line": 31,
-              "col": 25,
-              "kind": "call",
-              "name": "spawn_projectile",
+              "name": "velocity",
               "args": [
                 {
-                  "line": 31,
-                  "col": 42,
-                  "kind": "string",
-                  "value": "snowball"
+                  "line": 48,
+                  "col": 56,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
                 },
-                { "line": 31, "col": 54, "kind": "var", "name": "here" },
                 {
-                  "line": 31,
-                  "col": 60,
-                  "kind": "call",
-                  "name": "velocity",
-                  "args": [
-                    {
-                      "line": 31,
-                      "col": 69,
-                      "kind": "number",
-                      "value": 1,
-                      "integer": true
-                    },
-                    {
-                      "line": 31,
-                      "col": 72,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    },
-                    {
-                      "line": 31,
-                      "col": 75,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    }
-                  ]
+                  "line": 48,
+                  "col": 59,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 48,
+                  "col": 62,
+                  "kind": "number",
+                  "value": 1.5,
+                  "integer": false
                 }
               ]
-            }
-          },
-          {
-            "line": 32,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 32,
-              "col": 14,
-              "kind": "string",
-              "value": "spawned ${arrow} and ${snowball}"
             },
-            "target": {
-              "line": 32,
-              "col": 52,
+            "shooter": {
+              "line": 48,
+              "col": 70,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 35,
+            "line": 49,
+            "col": 9,
+            "kind": "shoot",
+            "projectile": {
+              "line": 49,
+              "col": 15,
+              "kind": "string",
+              "value": "snowball"
+            },
+            "from": { "line": 49, "col": 31, "kind": "var", "name": "here" },
+            "velocity": null,
+            "shooter": null
+          },
+          {
+            "line": 53,
             "col": 9,
             "kind": "foreach",
             "var": "e",
             "limit": null,
             "iterable": {
-              "line": 35,
+              "line": 53,
               "col": 14,
               "kind": "call",
               "name": "all_entities",
               "args": []
             },
             "body": {
-              "line": 35,
+              "line": 53,
               "col": 34,
               "kind": "block",
               "statements": [
                 {
-                  "line": 36,
+                  "line": 54,
+                  "col": 19,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 54,
+                    "col": 17,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "name": "armor",
+                  "value": {
+                    "line": 54,
+                    "col": 28,
+                    "kind": "number",
+                    "value": 5.0,
+                    "integer": false
+                  }
+                },
+                {
+                  "line": 55,
                   "col": 13,
-                  "kind": "call",
-                  "name": "apply_effect",
-                  "args": [
-                    { "line": 36, "col": 26, "kind": "var", "name": "e" },
-                    {
-                      "line": 36,
-                      "col": 29,
-                      "kind": "string",
-                      "value": "glowing"
-                    },
-                    {
-                      "line": 36,
-                      "col": 40,
-                      "kind": "number",
-                      "value": 40,
-                      "integer": true
-                    },
-                    {
-                      "line": 36,
-                      "col": 44,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    }
-                  ]
+                  "kind": "add_modifier",
+                  "id": {
+                    "line": 55,
+                    "col": 26,
+                    "kind": "string",
+                    "value": "weaken"
+                  },
+                  "entity": {
+                    "line": 55,
+                    "col": 38,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "attribute": "attack_damage",
+                  "amount": {
+                    "line": 55,
+                    "col": 57,
+                    "kind": "number",
+                    "value": 1.0,
+                    "integer": false
+                  },
+                  "operation": "add"
+                },
+                {
+                  "line": 56,
+                  "col": 13,
+                  "kind": "remove_modifier",
+                  "id": {
+                    "line": 56,
+                    "col": 29,
+                    "kind": "string",
+                    "value": "weaken"
+                  },
+                  "entity": {
+                    "line": 56,
+                    "col": 43,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "attribute": "attack_damage"
+                },
+                {
+                  "line": 57,
+                  "col": 13,
+                  "kind": "apply_effect",
+                  "effect": {
+                    "line": 57,
+                    "col": 19,
+                    "kind": "string",
+                    "value": "glowing"
+                  },
+                  "amplifier": {
+                    "line": 57,
+                    "col": 29,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  },
+                  "entity": {
+                    "line": 57,
+                    "col": 34,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "duration": {
+                    "line": 57,
+                    "col": 40,
+                    "kind": "number",
+                    "value": 40,
+                    "integer": true
+                  }
+                },
+                {
+                  "line": 58,
+                  "col": 13,
+                  "kind": "damage",
+                  "target": {
+                    "line": 58,
+                    "col": 20,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "amount": {
+                    "line": 58,
+                    "col": 25,
+                    "kind": "number",
+                    "value": 1.0,
+                    "integer": false
+                  },
+                  "damage_type": null,
+                  "source": null
+                },
+                {
+                  "line": 59,
+                  "col": 13,
+                  "kind": "knock",
+                  "target": {
+                    "line": 59,
+                    "col": 19,
+                    "kind": "var",
+                    "name": "e"
+                  },
+                  "from": {
+                    "line": 59,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "here"
+                  },
+                  "strength": null
                 }
               ]
             }

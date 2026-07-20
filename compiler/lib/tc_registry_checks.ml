@@ -87,6 +87,37 @@ let check_entity_type_literal ctx e ~where =
       (suggestion (normalize_entity_type s) entity_types)
   | _ -> ()
 
+(* W-pvp: normalize a registry key literal the way the runtime resolves it —
+   trim, lowercase, and strip a leading 'minecraft:' namespace *)
+let normalize_registry_key s =
+  let s = String.lowercase_ascii (String.trim s) in
+  match String.index_opt s ':' with
+  | Some i -> String.sub s (i + 1) (String.length s - i - 1)
+  | None -> s
+
+(* W-pvp: literal registry-key validators for the combat effect verbs. Dynamic
+   (interpolated / computed) strings resolve at runtime; only literals check. *)
+let check_damage_type_literal ctx e =
+  match literal_string e with
+  | Some s when not (List.mem (normalize_registry_key s) damage_type_names) ->
+    err ctx e.epos "unknown damage type '%s'%s" s
+      (suggestion (normalize_registry_key s) damage_type_names)
+  | _ -> ()
+
+let check_potion_effect_literal ctx e =
+  match literal_string e with
+  | Some s when not (List.mem (normalize_registry_key s) potion_effect_names) ->
+    err ctx e.epos "unknown potion effect '%s'%s" s
+      (suggestion (normalize_registry_key s) potion_effect_names)
+  | _ -> ()
+
+let check_projectile_type_literal ctx e =
+  match literal_string e with
+  | Some s when not (List.mem (normalize_registry_key s) projectile_types) ->
+    err ctx e.epos "unknown projectile type '%s'%s" s
+      (suggestion (normalize_registry_key s) projectile_types)
+  | _ -> ()
+
 let check_nametag_color_literal ctx value =
   match literal_string value with
   | Some s ->

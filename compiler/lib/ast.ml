@@ -67,6 +67,10 @@ and expr_node =
   (* polar_storage_loader(<backend config>) — a world loader over a
      SwoftStorage backend, same syntax as storage{} backends (design 6B) *)
   | ELoaderStorage of backend
+  (* W-tasks: `<obj>.tasks.<id> is running` — a Boolean that reports whether the
+     named task is currently scheduled on the owner. tr_owner is the owning
+     object expression, tr_id the task id. *)
+  | ETaskRunning of { tr_owner : expr; tr_id : string }
   (* schedule [after <dur>] [every <dur>] [as "name"] { body } — returns a
      Schedule value; the body is async-colored and runs on the AsyncRuntime.
      'run' (1-based iteration counter) and 'stop' are bound inside the body *)
@@ -228,6 +232,18 @@ and stmt_node =
     }
   | SDrawText of { tx_canvas : expr; tx_x : expr; tx_y : expr; tx_text : expr; tx_color : expr }
   | SGiveMap of { gm_canvas : expr; gm_target : expr }
+  (* --- W-tasks: first-class per-object task registry (<obj>.tasks.<id>) --- *)
+  (* set <obj>.tasks.<id> to <schedule-expr> — associate a named Schedule with
+     the owner; re-assigning the same id cancels the old task first (runtime).
+     tk_owner is the owning object, tk_id the task id, tk_value a Schedule. *)
+  | STaskSet of { tk_owner : expr; tk_id : string; tk_value : expr }
+  (* cancel <obj>.tasks.<id> / stop <obj>.tasks.<id> — cancel the named task. *)
+  | STaskCancel of { tc_owner : expr; tc_id : string }
+  (* place <Block|"id"> at <location> — imperative block placement. *)
+  | SPlaceBlock of { pb_block : expr; pb_at : expr }
+  (* remove block at <location> — set air and cancel every task bound to that
+     position. *)
+  | SRemoveBlock of expr
   (* --- phase-6 schedulers --- *)
   | SCancelSchedule of expr
   (* --- phase-11 scheduler v2 --- *)
@@ -275,6 +291,13 @@ and stmt_node =
   | SSetNpcName of { snn_name : string; snn_value : expr }
   | SSetNpcLocation of { snl_name : string; snl_value : expr }
   | SRemoveNpc of string
+  (* W-viewers §2: show npc "n" to <target>; hide npc "n" from <target>. Npcs
+     are name-keyed declarations (not spawn handles), so — like scoreboards /
+     holograms — the viewer target routes through the SAME Viewable add/remove
+     viewer mechanism as 'show <entity> to <player>' (Minestom fake players are
+     Viewable). *)
+  | SShowNpc of string * expr
+  | SHideNpc of string * expr
   (* --- W-viewers: Minestom Viewable API on entities ---
      show <entity> to <player|list<Player>|all>   -> addViewer(s)
      hide <entity> from <player|list<Player>|all> -> removeViewer(s) *)
@@ -283,6 +306,34 @@ and stmt_node =
   (* set name of <entity> to <String> for <player>: per-viewer overhead name,
      sent to that one viewer only (per-viewer EntityMetadataPacket) *)
   | SSetEntityName of { sen_entity : expr; sen_value : expr; sen_viewer : expr }
+  (* --- W-pvp: attribute MODIFIERS as English statements (were
+     add/remove_attribute_modifier). The attribute is the ident after
+     '<entity>.', validated against combat_attribute_names; the operation is one
+     of add | add_multiplied_base | add_multiplied_total.
+       add modifier "<id>" to <e>.<attr> of <amount> <operation>
+       remove modifier "<id>" from <e>.<attr> *)
+  | SAddModifier of {
+      am_id : expr;
+      am_entity : expr;
+      am_attr : string;
+      am_attr_pos : pos;
+      am_amount : expr;
+      am_op : string;
+      am_op_pos : pos;
+    }
+  | SRemoveModifier of { rm_id : expr; rm_entity : expr; rm_attr : string; rm_attr_pos : pos }
+  (* --- W-pvp: combat EFFECT verbs (were apply_damage/apply_knockback/
+     apply_effect/remove_effect/spawn_projectile) --- *)
+  (* damage <target> by <amount> [as "<damage_type>"] [from <source>] *)
+  | SDamage of { dm_target : expr; dm_amount : expr; dm_type : expr option; dm_source : expr option }
+  (* knock <target> away from <location> [with strength <s>] (default 0.4) *)
+  | SKnock of { kn_target : expr; kn_from : expr; kn_strength : expr option }
+  (* apply "<effect>" <amplifier> to <e> for <duration> *)
+  | SApplyEffect of { ae_effect : expr; ae_amplifier : expr; ae_entity : expr; ae_duration : expr }
+  (* remove "<effect>" from <e> *)
+  | SRemoveEffect of { re_effect : expr; re_entity : expr }
+  (* shoot "<projectile>" from <location> [with velocity <vec>] [by <shooter>] *)
+  | SShoot of { sh_type : expr; sh_from : expr; sh_velocity : expr option; sh_shooter : expr option }
 
 and gui_open = {
   go_name : string;

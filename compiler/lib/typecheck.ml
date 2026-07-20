@@ -59,6 +59,7 @@ let collect_sched_names (script : Ast.script) : string list =
       List.iter we args
     | EList items -> List.iter we items
     | EProp (t, _) -> we t
+    | ETaskRunning { tr_owner; _ } -> we tr_owner
     | EPersistGet (_, s) -> Option.iter we s
     | EMap fields -> List.iter (fun (_, v) -> we v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> we v) entries
@@ -309,12 +310,51 @@ let collect_sched_names (script : Ast.script) : string list =
       Option.iter we lp_speed
     | SDispenseFrom e -> we e
     | SShowHologram (_, e) | SHideHologram (_, e) | SMoveHologram (_, e) -> we e
+    | SShowNpc (_, e) | SHideNpc (_, e) -> we e
     | SSetHologramLine { shl_index; shl_value; _ } ->
       we shl_index;
       we shl_value
     | SSetNpcSkin { sns_skin; _ } -> wnpcsk sns_skin
     | SSetNpcName { snn_value; _ } -> we snn_value
     | SSetNpcLocation { snl_value; _ } -> we snl_value
+    (* --- W-pvp: attribute modifiers + combat effect verbs --- *)
+    | SAddModifier { am_id; am_entity; am_amount; _ } ->
+      we am_id;
+      we am_entity;
+      we am_amount
+    | SRemoveModifier { rm_id; rm_entity; _ } ->
+      we rm_id;
+      we rm_entity
+    | SDamage { dm_target; dm_amount; dm_type; dm_source } ->
+      we dm_target;
+      we dm_amount;
+      Option.iter we dm_type;
+      Option.iter we dm_source
+    | SKnock { kn_target; kn_from; kn_strength } ->
+      we kn_target;
+      we kn_from;
+      Option.iter we kn_strength
+    | SApplyEffect { ae_effect; ae_amplifier; ae_entity; ae_duration } ->
+      we ae_effect;
+      we ae_amplifier;
+      we ae_entity;
+      we ae_duration
+    | SRemoveEffect { re_effect; re_entity } ->
+      we re_effect;
+      we re_entity
+    | SShoot { sh_type; sh_from; sh_velocity; sh_shooter } ->
+      we sh_type;
+      we sh_from;
+      Option.iter we sh_velocity;
+      Option.iter we sh_shooter
+    | STaskSet { tk_owner; tk_value; _ } ->
+      we tk_owner;
+      we tk_value
+    | STaskCancel { tc_owner; _ } -> we tc_owner
+    | SPlaceBlock { pb_block; pb_at } ->
+      we pb_block;
+      we pb_at
+    | SRemoveBlock loc -> we loc
     (* --- expression-free statements --- *)
     | SHalt | SCancelEvent | SBlank | SCancelPacket | SStop | SRemoveHologram _ | SRemoveNpc _ ->
       ()
@@ -460,6 +500,7 @@ let check_initializer_calls ctx own_fns (mv : module_var) =
     | EUnary (_, a) -> walk a
     | EList items -> List.iter walk items
     | EProp (target, _) -> walk target
+    | ETaskRunning { tr_owner; _ } -> walk tr_owner
     | EPersistGet (_, subject) -> Option.iter walk subject
     | EMap fields -> List.iter (fun (_, v) -> walk v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> walk v) entries

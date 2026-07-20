@@ -175,6 +175,23 @@ public final class InlineHandlerRuntime {
     }
 
     /**
+     * Fire an npc's generic handler for {@code event} (on_tick). {@code this}
+     * binds to the npc's fake-player entity (TEntity), so an on_tick body can
+     * read/write entity props like {@code this.glowing}. The handler-map lookup
+     * short-circuits when the npc declares no such handler, so npcs without one
+     * pay only that lookup. Non-cancellable; mirrors {@link #dispatchMob}.
+     */
+    public static void dispatchNpc(net.swofty.model.NpcModel model,
+            net.minestom.server.entity.Entity entity, String event, Object... args) {
+        InlineHandler handler = model.handler(event);
+        if (handler == null) {
+            return;
+        }
+        HandlerDispatch.dispatch(handler, entity, null,
+                "npc '" + model.name() + "' " + event, normalize(args));
+    }
+
+    /**
      * Resolve the acted stack to its declaration and fire {@code event},
      * binding {@code this} = the ItemStack + the event args. Returns the
      * declaration when a handler ran (so the caller can apply durability), else
