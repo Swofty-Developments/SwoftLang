@@ -1,8 +1,15 @@
-function inspect(x: either<Mob|String>) {
-    if x is a Entity {
-        // the typed Mob rows and the shared Entity rows both apply here
-        send "mob ${x.name} (${x.type})" to all
-    } else {
-        send "not an entity: ${x}" to all
+mob "sentinel" {
+    type: "IRON_GOLEM"
+    viewable: false
+}
+
+command "audience" {
+    execute {
+        spawn mob "sentinel" at in_front_of(sender, 3) as g
+        show g to sender
+        loop viewers of g as watcher {
+            send "<gray>${watcher.name} can see the sentinel" to watcher
+        }
+        send "<yellow>viewers: ${length(viewers of g)}" to sender
     }
 }

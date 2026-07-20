@@ -1,5 +1,6 @@
-command "bank" {
+command "totals" {
     execute {
-        send "Balance: ${format_number(1234567)} coins" to sender
+        set scores to [10, 20, 30]
+        send "sum ${sum(scores)} product ${product(scores)}" to sender
     }
 }

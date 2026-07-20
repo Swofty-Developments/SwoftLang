@@ -134,7 +134,7 @@ command "midnight" {
 |---|---|
 | `set block at <location> to "STONE"` | place one block |
 | `fill blocks from <loc> to <loc> with "GLASS"` | fill the box between two corners |
-| `block_at(<location>)` | `String` — the block's key at that spot |
+| `block_at(<location>)` | `Block` — the block at that spot (`.id` is its key) |
 
 ```swoftlang
 command "platform" {
@@ -145,6 +145,10 @@ command "platform" {
     }
 }
 ```
+
+`set block at` and `fill blocks` also take a posed `block(...)` value, and `block_at`
+returns a full `Block` you can inspect — see [Blocks](./blocks) for block states, NBT,
+custom tags, `block_handler`, and `placement_rule`.
 
 Fills run on the tick thread. The compiler measures literal volumes and warns before
 you freeze the server — real `swoftc` output:

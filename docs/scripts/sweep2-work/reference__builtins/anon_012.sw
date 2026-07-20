@@ -1,7 +1,6 @@
-command "blank-map" {
+command "pct" {
     execute {
-        set c to map_canvas()
-        draw rect on c from 0, 0 to 127, 127 color "white"
-        give map of c to sender
+        send "${format_decimals(3.14159, 2)}" to sender       // 3.14
+        send "${format_decimals(1.0 / 3.0, 3)}" to sender     // 0.333
     }
 }

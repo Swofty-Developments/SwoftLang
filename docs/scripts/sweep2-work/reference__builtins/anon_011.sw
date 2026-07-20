@@ -1,5 +1,5 @@
-command "mask" {
+command "bank" {
     execute {
-        set sender.skin to skin("dGV4dHVyZWRhdGE...", "c2lnbmF0dXJl...")
+        send "Balance: ${format_number(1234567)} coins" to sender
     }
 }

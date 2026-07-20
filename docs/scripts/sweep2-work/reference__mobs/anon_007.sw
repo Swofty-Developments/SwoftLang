@@ -1,18 +1,12 @@
-persistent kills for Player: Integer = 0
+mob "zombie" {
+    type: "ZOMBIE"
+    viewable: false
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            set kills for event.killer to (kills for event.killer) + 1
-            send "<gold>${event.mob.custom_id} down — ${kills for event.killer} kills" to event.killer
-        }
-    }
-}
+    tags { hits: map<Player, Integer> }      // typed, keyed by Player
 
-event MobDamage {
-    execute {
-        if event.mob.custom_id is "lost_sheep" {
-            cancel event
+    on_hit(attacker) {
+        if attacker exists {
+            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
         }
     }
 }

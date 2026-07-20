@@ -92,16 +92,38 @@ current Minecraft client and type `/hello`:
 > **Hello from SwoftLang!** — in lime green.
 
 That's the whole loop: edit a `.sw` file, restart the server. Prefer save-and-see? Run with
-`--debug` and the server hot-reloads scripts the moment you save them (and hosts the live
-execution tracer the VS Code extension connects to):
+`--debug`:
 
 ```bash
-java -jar swoftlang-server.jar --debug
+java -jar swoftlang-server.jar --debug          # tracer + hot reload on ws port 25580
+java -jar swoftlang-server.jar --debug 9000     # pick the port
 ```
+
+`--debug` turns on two dev-workflow features:
+
+- **Hot reload on save.** The server watches `scripts/` and, the moment you save a `.sw`,
+  recompiles just that file with `swoftc`. On a clean compile it applies a **tick-safe
+  reload**: every declaration is re-registered from scratch — commands, event handlers,
+  scoreboards, tablists, bossbars, GUIs, mobs, items, holograms, NPCs, block handlers —
+  while running schedules are cancelled and script-spawned entities are torn down so
+  nothing leaks across the swap. No JVM restart, no reconnect. If the recompile **fails**,
+  the old handlers keep running and the `swoftc` error is streamed to the tracer instead —
+  a broken save never takes the server down. Persistent variables and their storage
+  backend survive a reload untouched.
+- **Live execution tracer.** A small WebSocket server (default port `25580`) streams
+  handler enter/exit and per-statement execution events. It is best-effort and lossy under
+  load — the tick thread never blocks on it — and costs a normal (non-`--debug`) server
+  nothing. This is what the VS Code extension connects to.
 
 ::: tip Editor support
 Install the **SwoftLang** VS Code extension for syntax highlighting, inline type errors as you
 type, and — with `--debug` — a live tracer that highlights each line as it runs.
+:::
+
+::: warning Reload is not a live migration
+A reload re-runs registration, not your handlers' past effects. State held only in local
+variables or entity tags is rebuilt from whatever the new script does on the next event —
+put anything that must outlive an edit in a [`persistent`](/guide/persistence) variable.
 :::
 
 Next: that `command` block, taken seriously.

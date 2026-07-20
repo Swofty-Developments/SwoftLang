@@ -172,37 +172,71 @@
         },
         {
           "name": "storage.type.declaration.swoftlang",
-          "match": "\\b(command|event|event_type|function|gui|scoreboard|tablist|bossbar|server|async|mob|item|storage|persistent|fishing_loot|import|export|hologram|npc)\\b(?!\\s*\\.)"
+          "match": "\\b(command|event|event_type|function|gui|scoreboard|tablist|bossbar|server|async|mob|item|storage|persistent|fishing_loot|import|export|hologram|npc|block_handler|placement_rule)\\b(?!\\s*\\.)"
         }
       ]
     },
     "property-keys": {
-      "match": "^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(:)(?!:)",
-      "captures": {
-        "1": {
-          "name": "entity.other.attribute-name.property.swoftlang"
+      "patterns": [
+        {
+          "comment": "key: bareword — only when the lowercase word is the whole value (so `every 4 ticks`, strings, numbers and expressions are left alone)",
+          "match": "^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(:)(?!:)\\s*([a-z][a-z0-9_]*)\\s*(?=$|//)",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.swoftlang"
+            }
+          }
         },
-        "2": {
-          "name": "punctuation.separator.key-value.swoftlang"
+        {
+          "match": "^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(:)(?!:)",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            }
+          }
         }
-      }
+      ]
     },
     "types": {
       "patterns": [
         {
-          "match": "\\b(either|optional|list|map)\\s*(<)",
-          "captures": {
+          "begin": "\\b(either|optional|list|map)\\s*(<)",
+          "beginCaptures": {
             "1": {
               "name": "support.type.constructor.swoftlang"
             },
             "2": {
               "name": "punctuation.definition.typeparameters.begin.swoftlang"
             }
-          }
+          },
+          "end": ">",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.typeparameters.end.swoftlang"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#types"
+            },
+            {
+              "name": "punctuation.separator.typeparameters.swoftlang",
+              "match": "[,|]"
+            }
+          ]
         },
         {
           "name": "support.type.primitive.swoftlang",
-          "match": "\\b(String|Integer|Double|Boolean|Player|Location|Item|World|Number|int|bool|Entity|Mob|Vec|OfflinePlayer|Skin|Schedule|Canvas)\\b"
+          "match": "\\b(String|Integer|Double|Boolean|Player|Location|Item|World|Number|int|bool|Entity|Mob|Vec|OfflinePlayer|Skin|Schedule|Canvas|Song|Display|Server)\\b"
         }
       ]
     },
@@ -222,15 +256,15 @@
         },
         {
           "name": "keyword.other.statement.swoftlang",
-          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|emit)\\b"
+          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|nametag|prefix|suffix|emit)\\b"
         },
         {
           "name": "keyword.other.connective.swoftlang",
-          "match": "\\b(to|at|with|for|every|manual)\\b"
+          "match": "\\b(to|at|of|with|for|every|manual)\\b"
         },
         {
           "name": "keyword.other.block.swoftlang",
-          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|billboard|look_at_players|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
+          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|on_place|on_destroy|on_interact|on_update|on_touch|billboard|look_at_players|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
         },
         {
           "name": "constant.language.unit.swoftlang",

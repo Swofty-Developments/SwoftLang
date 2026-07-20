@@ -1,6 +1,5 @@
-command "marker" {
+command "mask" {
     execute {
-        set d to spawn_text_display("<gold>here", sender.location)
-        set d.billboard to "center"
+        set sender.skin to skin("dGV4dHVyZWRhdGE...", "c2lnbmF0dXJl...")
     }
 }

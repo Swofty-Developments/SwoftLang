@@ -45,8 +45,9 @@ CODE_ANNO = re.compile(r"\s*//\s*\[!code[^\]]*\]\s*$", re.M)
 
 TOP_LEVEL = re.compile(
     r"^(command|event|function|async\s+function|export\s+|import\s|bossbar\s|"
-    r"gui\s|item\s|mob\s|on\s+packet|persistent\s|scoreboard\s|server\s*\{|"
-    r"storage\s*\{|tablist\s|var\s|api\s|every\s|fishing_loot\s|hologram\s|npc\s)"
+    r"gui\s|item\s|mob\s|on\s+\w|persistent\s|scoreboard\s|server\s*\{|"
+    r"storage\s*\{|tablist\s|var\s|api\s|every\s|fishing_loot\s|hologram\s|npc\s|"
+    r"block_handler\s|placement_rule\s)"
 )
 
 

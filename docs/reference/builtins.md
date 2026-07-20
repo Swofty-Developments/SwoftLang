@@ -1,9 +1,10 @@
 # Builtins
 
-Every builtin function — all 57, regenerated from the compiler's registry — with its
-exact signature as the typechecker knows it. Calls are checked at compile time: wrong
+Every general-purpose builtin function, regenerated from the compiler's registry, with
+its exact signature as the typechecker knows it. Calls are checked at compile time: wrong
 arity, wrong argument types, and sync-context calls to async-only builtins are all
-errors before anything reaches the server.
+errors before anything reaches the server. (Combat, attribute, and NBT builtins live with
+their own subsystems — the [PvP](./mobs), [items](./items), and event pages.)
 
 ```
 e_unkfn.sw:3:14: error: unknown function 'formatnumber'; did you mean 'format_number'?
@@ -74,6 +75,51 @@ arguments.
 | [`sort_by_value_desc(map)`](#sorting-maps) | `map<K, V>` | ordered by value descending |
 | [`sort_map_by(map, key)`](#sorting-maps) | `map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
 | [`sort_map_by_desc(map, key)`](#sorting-maps) | `map<K, V>` | same, descending |
+| [`random_int(min, max)`](#random-aliases) | `Integer` | alias of `random` |
+| [`random_double(min, max)`](#random-aliases) | `Double` | alias of `random_float` |
+| [`chance(p)`](#random-aliases) | `Boolean` | alias of `random_chance` |
+| [`random_element(list)`](#random-aliases) | `optional<T>` | alias of `random_in` |
+| [`random_uuid()`](#random-aliases) | `String` | fresh UUID string |
+| [`random_seed(n)`](#random-aliases) | — | seed the RNG (reproducible draws) |
+| [`mod(a, b)`](#extended-math) | **↑num** | remainder |
+| [`sqrt(x)`](#extended-math) | `Double` | |
+| [`pow(base, exp)`](#extended-math) | `Double` | |
+| [`round_to(x, places)`](#extended-math) | `Double` | round to `places` decimals |
+| [`sign(x)`](#extended-math) | `Integer` | −1 / 0 / 1 |
+| [`sin(x)`](#trigonometry) | `Double` | radians |
+| [`cos(x)`](#trigonometry) | `Double` | radians |
+| [`tan(x)`](#trigonometry) | `Double` | radians |
+| [`asin(x)`](#trigonometry) | `Double` | |
+| [`acos(x)`](#trigonometry) | `Double` | |
+| [`atan(x)`](#trigonometry) | `Double` | |
+| [`atan2(y, x)`](#trigonometry) | `Double` | full-circle angle |
+| [`ln(x)`](#logarithms) | `Double` | natural log |
+| [`log(x)`](#logarithms) | `Double` | natural log |
+| [`log(x, base)`](#logarithms) | `Double` | log base `base` |
+| [`log10(x)`](#logarithms) | `Double` | |
+| [`pi()`](#logarithms) | `Double` | π |
+| [`e()`](#logarithms) | `Double` | Euler's number |
+| [`sum(list)`](#sum-product) | **↑num** | total of a number list |
+| [`product(list)`](#sum-product) | **↑num** | product of a number list |
+| [`format_decimals(x, places)`](#format-decimals) | `String` | fixed decimal places |
+| [`strip_color(s)`](#color-codes) | `String` | remove all color/format codes |
+| [`legacy_to_mini(s)`](#color-codes) | `String` | `&`-codes → MiniMessage tags |
+| [`gradient(s, from, to)`](#color-codes) | `String` | hex gradient across `s` |
+| [`rainbow(s)`](#color-codes) | `String` | rainbow across `s` |
+| [`parse(s, Type)`](#string-helpers) | `optional<T>` | **optional** — `none` if unparseable |
+| [`matches(s, regex)`](#string-helpers) | `Boolean` | full-string regex match |
+| [`stripped(s)`](#string-helpers) | `String` | strip `&`-codes |
+| [`formatted(s)`](#string-helpers) | `String` | render `&`-codes to MiniMessage |
+| [`type_of(x)`](#string-helpers) | `String` | runtime type name |
+| [`distance(a, b)`](#distance-direction) | `Double` | between two Locations |
+| [`direction_from(a, b)`](#distance-direction) | `Vec` | unit vector a→b |
+| [`above(loc, n)`](#above-below) | `Location` | shift +Y by `n` |
+| [`below(loc, n)`](#above-below) | `Location` | shift −Y by `n` |
+| [`is_within(loc, c1, c2)`](#is-within) | `Boolean` | inside the `c1`..`c2` box |
+| [`blocks_in_radius(center, r)`](#in-radius) | `list<Location>` | block cells in a sphere |
+| [`players_in_radius(center, r)`](#in-radius) | `list<Player>` | players in a sphere |
+| [`vec(x, y, z)`](#vec) | `Vec` | a velocity/direction vector |
+| [`location_of(entity)`](#location-of) | `Location` | any live entity's position |
 | [`is_running(schedule)`](#is-running) | `Boolean` | live check by handle or name |
 | [`prompt_input(player, placeholder)`](#prompt-input) | `String` | **async-only** |
 
@@ -125,6 +171,82 @@ command "mathy" {
         set d to abs(-5.5)                     // Double 5.5
         set capped to clamp(sender.health + 4.0, 0, sender.max_health)
         send "i=${i} d=${d} capped=${capped}" to sender
+    }
+}
+```
+
+### Extended math: mod, sqrt, pow, round_to, sign {#extended-math}
+
+`mod(a: Number, b: Number)` · `sqrt(x: Number) : Double` ·
+`pow(base: Number, exp: Number) : Double` · `round_to(x: Number, places: Number) : Double` ·
+`sign(x: Number) : Integer`
+
+The arithmetic gaps left by `+ - * /`. `mod` is **↑num** (the integer remainder for
+integer arguments, otherwise the floating one); `sqrt` and `pow` always return `Double`;
+`round_to` rounds to a fixed number of decimal places; `sign` collapses to `-1`, `0`, or
+`1`.
+
+```swoftlang
+command "mathgaps" {
+    execute {
+        set hyp to sqrt(pow(3, 2) + pow(4, 2))   // 5.0
+        set rem to mod(10, 3)                      // 1
+        set pi_ish to round_to(3.14159, 2)         // 3.14
+        set dir to sign(0 - 42)                    // -1
+        send "${hyp} ${rem} ${pi_ish} ${dir}" to sender
+    }
+}
+```
+
+### Trigonometry {#trigonometry}
+
+`sin(x)` · `cos(x)` · `tan(x)` · `asin(x)` · `acos(x)` · `atan(x)` ·
+`atan2(y, x)` — each takes `Number` and returns `Double`
+
+Standard `java.lang.Math` trig, in **radians**. `atan2(y, x)` gives the full-circle
+angle to the point `(x, y)` — the one you want for "which way is this vector pointing".
+
+```swoftlang
+command "trig" {
+    execute {
+        set up to sin(pi() / 2)                    // 1.0
+        set angle to atan2(1.0, 1.0)               // π/4
+        send "${up} ${angle}" to sender
+    }
+}
+```
+
+### Logarithms and constants {#logarithms}
+
+`ln(x) : Double` · `log(x) : Double` · `log(x, base) : Double` · `log10(x) : Double` ·
+`pi() : Double` · `e() : Double`
+
+`ln` and one-argument `log` are the natural log; the two-argument `log(x, base)` is the
+log to any base. `pi()` and `e()` are the constants.
+
+```swoftlang
+command "logs" {
+    execute {
+        set natural to ln(e())                     // 1.0
+        set order to log10(1000.0)                 // 3.0
+        set bits to log(256.0, 2.0)                // 8.0
+        send "${natural} ${order} ${bits}" to sender
+    }
+}
+```
+
+### sum, product {#sum-product}
+
+`sum(list) : Number` · `product(list) : Number`
+
+Fold a list of numbers into their total or product. Both are **↑num** by element type: a
+list of `Integer` gives an `Integer`, any `Double` element gives a `Double`.
+
+```swoftlang
+command "totals" {
+    execute {
+        set scores to [10, 20, 30]
+        send "sum ${sum(scores)} product ${product(scores)}" to sender
     }
 }
 ```
@@ -188,6 +310,85 @@ keep their fractional part.
 command "bank" {
     execute {
         send "Balance: ${format_number(1234567)} coins" to sender
+    }
+}
+```
+
+### format_decimals {#format-decimals}
+
+`format_decimals(x: Number, places: Number) : String`
+
+Fixed-width decimal formatting: `x` rendered with exactly `places` digits after the
+point. Where [`round_to`](#extended-math) returns a `Double` for more math,
+`format_decimals` returns the display `String`.
+
+```swoftlang
+command "pct" {
+    execute {
+        send "${format_decimals(3.14159, 2)}" to sender       // 3.14
+        send "${format_decimals(1.0 / 3.0, 3)}" to sender     // 0.333
+    }
+}
+```
+
+### parse, matches, stripped, formatted, type_of {#string-helpers}
+
+`parse(s: String, Type) : optional<T>` · `matches(s: String, regex: String) : Boolean` ·
+`stripped(s: String) : String` · `formatted(s: String) : String` ·
+`type_of(x) : String`
+
+The free string helpers. `parse` reads a value out of text — the second argument is the
+target type name (`Integer`, `Double`, `Boolean`), and the result is an `optional` that
+is `none` when the text doesn't parse, so narrow it or supply an `otherwise`. `matches`
+tests a full-string regex. `stripped` removes `&`-style color codes; `formatted` renders
+them to MiniMessage. `type_of` returns the runtime type name of any value.
+
+```swoftlang
+command "parsing" {
+    execute {
+        set n to parse("42", Integer) otherwise 0             // 42
+        if matches("abc123", "[a-z0-9]+") {
+            send "valid handle" to sender
+        }
+        send stripped("&aHello") to sender                    // Hello
+        send formatted("&aHello") to sender                   // green Hello
+        send "n is a ${type_of(n)}" to sender                 // Integer
+    }
+}
+```
+
+String values also carry the `.first_chars(n)` and `.last_chars(n)` methods for the
+common substring cases:
+
+```swoftlang
+command "clip" {
+    execute {
+        send "Hello, World".first_chars(5) to sender          // Hello
+        send "Hello, World".last_chars(5) to sender           // World
+    }
+}
+```
+
+## Color {#color}
+
+### strip_color, legacy_to_mini, gradient, rainbow {#color-codes}
+
+`strip_color(s: String) : String` · `legacy_to_mini(s: String) : String` ·
+`gradient(s: String, from: String, to: String) : String` · `rainbow(s: String) : String`
+
+Color plumbing for text you build at runtime. `strip_color` removes every color and
+format code (both `&`-legacy and MiniMessage tags), leaving plain text — handy for logs,
+lengths, and sorting. `legacy_to_mini` converts `&`-codes to the MiniMessage tags
+[`send`](../guide/commands) already speaks. `gradient` spreads a two-stop hex gradient
+across the string; `rainbow` cycles the full spectrum.
+
+```swoftlang
+command "colors" {
+    execute {
+        send strip_color("&aGreen &lBold") to sender          // Green Bold
+        send legacy_to_mini("&aGreen") to sender
+        send gradient("Rainbow road", "#ff0000", "#0000ff") to sender
+        send rainbow("Party time") to sender
     }
 }
 ```
@@ -496,6 +697,130 @@ command "under" {
 }
 ```
 
+## Locations and regions
+
+Geometry over `Location` and `Vec` values — the math you'd otherwise write out by hand
+against `.x`/`.y`/`.z`.
+
+### distance, direction_from {#distance-direction}
+
+`distance(a: Location, b: Location) : Double` ·
+`direction_from(a: Location, b: Location) : Vec`
+
+The straight-line distance between two points, and the **unit** `Vec` pointing from `a`
+toward `b` — ready to hand to a `velocity`/knockback or to face something.
+
+```swoftlang
+command "range" {
+    execute {
+        if sender is a Player {
+            set here to sender.location
+            set target to above(here, 10)
+            send "gap ${distance(here, target)}" to sender
+            set push to direction_from(here, target)
+            send "dir ${push.x}, ${push.y}, ${push.z}" to sender
+        }
+    }
+}
+```
+
+### above, below {#above-below}
+
+`above(loc: Location, n: Number) : Location` · `below(loc: Location, n: Number) : Location`
+
+A copy of `loc` shifted `n` blocks up or down the Y axis — yaw and pitch preserved.
+
+```swoftlang
+command "ceiling" {
+    execute {
+        if sender is a Player {
+            teleport sender to above(sender.location, 5)
+        }
+    }
+}
+```
+
+### is_within {#is-within}
+
+`is_within(loc: Location, corner1: Location, corner2: Location) : Boolean`
+
+Whether `loc` is inside the axis-aligned box spanned by the two corners, in any order.
+The classic region check for arenas, plots, and safe zones.
+
+```swoftlang
+command "inzone" {
+    execute {
+        if sender is a Player {
+            set a to location(0, 60, 0)
+            set b to location(32, 90, 32)
+            if is_within(sender.location, a, b) {
+                send "<green>inside the arena" to sender
+            } else {
+                send "<red>outside" to sender
+            }
+        }
+    }
+}
+```
+
+### blocks_in_radius, players_in_radius {#in-radius}
+
+`blocks_in_radius(center: Location, r: Number) : list<Location>` ·
+`players_in_radius(center: Location, r: Number) : list<Player>`
+
+Sample a sphere of radius `r` around `center`: every block cell's location, or every
+online player inside it. Pair them with `loop` for area effects.
+
+```swoftlang
+command "nova" {
+    execute {
+        if sender is a Player {
+            set folks to players_in_radius(sender.location, 8)
+            loop folks as p {
+                send "<aqua>caught in the blast" to p
+            }
+            send "blocks in range: ${length(blocks_in_radius(sender.location, 3))}" to sender
+        }
+    }
+}
+```
+
+### vec {#vec}
+
+`vec(x: Number, y: Number, z: Number) : Vec`
+
+A raw `Vec` from three components — the value type behind velocity and direction, and
+what `launch projectile ... with velocity <vec>` and [`apply_knockback`](./mobs) consume.
+It carries `.x`/`.y`/`.z` plus a `.length` (magnitude) and `.normalized` (unit vector).
+
+```swoftlang
+command "vecs" {
+    execute {
+        set v to vec(3.0, 4.0, 0.0)
+        send "length ${v.length}" to sender           // 5.0
+        send "unit x ${v.normalized.x}" to sender      // 0.6
+    }
+}
+```
+
+### location_of {#location-of}
+
+`location_of(entity) : Location`
+
+The current position of any live entity — a `Player`, `Mob`, or bare `Entity`. Equivalent
+to `entity.location`, in call form for pipelines.
+
+```swoftlang
+command "here" {
+    execute {
+        if sender is a Player {
+            set spot to location_of(sender)
+            send "you are at ${spot.x}, ${spot.y}, ${spot.z}" to sender
+        }
+    }
+}
+```
+
 ## Server introspection
 
 ### song {#song}
@@ -582,6 +907,33 @@ command "loot" {
         loop shuffle(drops) as d {        // shuffle returns a new list; 'drops' is untouched
             send "${d}" to sender
         }
+    }
+}
+```
+
+### Design-named aliases {#random-aliases}
+
+Same draws under the names you may reach for first. `random_int` / `random_double` /
+`chance` / `random_element` are exact aliases of `random` / `random_float` /
+`random_chance` / `random_in`. `random_uuid()` returns a fresh UUID `String`, and
+`random_seed(n)` seeds the generator so a run's draws are reproducible.
+
+`random_int(min, max) : Integer` · `random_double(min, max) : Double` ·
+`chance(p) : Boolean` · `random_element(list) : optional<T>` · `random_uuid() : String` ·
+`random_seed(n)`
+
+```swoftlang
+command "seeded" {
+    execute {
+        random_seed(1337)                    // reproducible sequence from here
+        set roll to random_int(1, 20)
+        set weight to random_double(0.0, 1.0)
+        if chance(0.25) {
+            send "<gold>rare!" to sender
+        }
+        set drops to ["sword", "shield", "potion"]
+        set pick to random_element(drops) otherwise "nothing"
+        send "roll ${roll} weight ${weight} pick ${pick} id ${random_uuid()}" to sender
     }
 }
 ```

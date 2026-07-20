@@ -425,6 +425,7 @@ copy-on-write: the runtime reads the deepest settable *anchor* (`location`,
 | belowname | `belowname <expr> for <p>`, `set belowname score to <expr> for <p>`, `clear belowname for <p>` |
 | [items](./items) | `give item "id" to <p> [amount <n>]` |
 | [mobs](./mobs) | `spawn mob "id" at <loc> [as <var>]`, `despawn <mob>` |
+| [viewers](./entities#per-viewer) | `show <entity> to <p\|all>`, `hide <entity> from <p\|all>`, `set name of <entity> to <expr> for <p>`; `viewers of <entity>` (expr → `list<Player>`) |
 | [nametags](./nametags) | `set nametag [prefix\|suffix\|color] of <p> to <expr> [for <viewer\|all>]`, `reset nametag of <p> [for ...]` |
 | [packets](./packets) | `send packet "Name" { field: expr, ... } to <target>`, `cancel packet` |
 | [displays](./displays) | `show\|hide display <d> to\|from <target>`, `mount display <d> on <entity>`, `teleport display <d> to <loc>`, `destroy display <d>` |

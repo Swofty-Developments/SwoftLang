@@ -64,6 +64,7 @@ export const navGroups: NavGroup[] = [
           { text: 'Custom Items', link: '/reference/items' },
           { text: 'Custom Mobs', link: '/reference/mobs' },
           { text: 'Entities', link: '/reference/entities' },
+          { text: 'Combat & PvP', link: '/reference/combat' },
           { text: 'Fishing', link: '/reference/fishing' },
           { text: 'Dispensers & Droppers', link: '/reference/dispensers' },
           { text: 'Offline Players', link: '/reference/offline-players' },
@@ -80,6 +81,7 @@ export const navGroups: NavGroup[] = [
         items: [
           { text: 'Server Config', link: '/reference/server-config' },
           { text: 'Worlds & Blocks', link: '/reference/worlds' },
+          { text: 'Blocks', link: '/reference/blocks' },
           { text: 'HTTP API', link: '/reference/http-api' },
           { text: 'Songs', link: '/reference/songs' },
           { text: 'Maps, Toasts, Skins & TPS', link: '/reference/maps-toasts-skins-tps' },

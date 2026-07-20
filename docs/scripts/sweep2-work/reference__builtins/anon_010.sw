@@ -1,7 +1,7 @@
-command "give-ish" {
-    execute {
-        set stack to item("DIAMOND", 3)
-        set sender.held_item to stack
-        send "material: ${stack.material}, amount: ${stack.amount}" to sender
+tablist "demo" {
+    update: every 3 seconds
+    column {
+        entry centered("Players") with skin green
+        fill with skin gray
     }
 }

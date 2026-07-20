@@ -1,7 +1,5 @@
-command "rename" {
-    execute async {
-        set answer to prompt_input(sender, "new name?")
-        set sender.display_name to answer
-        send "<lime>Renamed to ${answer}" to sender
+command "under" {
+    execute {
+        send "you stand on ${block_at(location(sender.location.x, sender.location.y - 1, sender.location.z))}" to sender
     }
 }

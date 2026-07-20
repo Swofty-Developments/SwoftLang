@@ -1,3 +1,4 @@
 storage {
-    backend: sqlite "data/swoftlang.db"
+    backend: files "data/swoftlang"
+    flush: every 30 seconds
 }

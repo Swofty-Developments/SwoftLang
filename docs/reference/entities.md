@@ -132,6 +132,133 @@ loop all_entities("SNOWBALL") as leftover {
 send "entities in the world: ${length(all_entities())}" to all
 ```
 
+## Per-viewer entities {#per-viewer}
+
+Every entity carries a **viewer set** — the players who have been sent its spawn
+packets and therefore see it. By default a spawned entity is auto-viewable: everyone in
+range is added as they come and go. Turn that off and the entity becomes yours to hand
+out, one player at a time — a mob only its owner can see, a marker only staff notice, a
+nameplate that reads differently to each viewer.
+
+| Form | Meaning |
+|---|---|
+| `viewable: false` (mob/npc/hologram decl key) | spawn **not** auto-viewable — nobody sees it until you `show` it |
+| `show <entity> to <player \| all>` | add the target(s) to the viewer set |
+| `hide <entity> from <player \| all>` | remove the target(s) from the viewer set |
+| `viewers of <entity>` | the current viewer set as a `list<Player>` |
+| `set name of <entity> to <string> for <player>` | that viewer's overhead name — per-viewer, `for` is required |
+
+`show` / `hide` and `set name of … for` work on **any** `Entity` value — a mob, a
+spawned armor stand, a display. `viewers of` reads Minestom's live `Viewable` set, so it
+reflects `show`/`hide` calls and (for auto-viewable entities) whoever is currently in
+range.
+
+### The per-viewer zombie
+
+The canonical example: one zombie per player, each with its own private hit counter and
+its own nameplate, despawning only for the player who slays it. It leans on four pieces —
+`viewable: false` so the spawn is private, a [typed tag](./mobs#tags) keyed by `Player`,
+`set name of … for` for the per-viewer nametag, and `hide … from` to retire it for one
+viewer:
+
+```swoftlang
+mob "zombie" {
+    type: "ZOMBIE"
+    viewable: false                          // spawns hidden — handed out per player
+
+    tags { hits: map<Player, Integer> }      // typed per-entity state, keyed by player
+
+    on_hit(attacker) {
+        if attacker exists {
+            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
+            set count to mob.tags.hits[attacker] otherwise 0
+
+            // only this attacker sees this nameplate
+            set name of mob to "<red>Zombie <gray>${count}/5" for attacker
+
+            if count >= 5 {
+                hide mob from attacker                    // gone for them only
+                send "<green>You slew your zombie!" to attacker
+            }
+        }
+    }
+}
+
+on PlayerJoin {
+    spawn mob "zombie" at in_front_of(event.player, 5) as z
+    set name of z to "<red>Zombie <gray>0/5" for event.player
+    show z to event.player                                // reveal it to just this player
+}
+```
+
+Because the zombie is `viewable: false`, the `spawn` puts it in the world seen by nobody;
+the `show z to event.player` line is what makes it appear, and only for the joining
+player. Two players standing side by side each punch their *own* zombie: the tag map is
+keyed by `Player`, so `mob.tags.hits[attacker]` counts per attacker, and the
+`set name … for attacker` nameplate updates for that attacker alone.
+
+::: tip Typed tags are per-viewer-friendly
+`tags { hits: map<Player, Integer> }` declares a **typed** tag store (unlike the freeform
+`mob.tags.<name>` — see [Tags](./mobs#tags)). A key that has never been written reads as
+`optional<Integer>`, so `otherwise 0` (or an `if … exists` narrow) is required — using it
+bare is a compile error:
+
+```
+e.sw:6:35: error: the left operand of '+' is optional<Integer> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+```
+:::
+
+### Reading and revealing to many
+
+`viewers of` gives you the set back as a `list<Player>` — loop it, count it, or reveal an
+entity to an audience with `show … to all`:
+
+```swoftlang
+mob "sentinel" {
+    type: "IRON_GOLEM"
+    viewable: false
+}
+
+command "audience" {
+    execute {
+        spawn mob "sentinel" at in_front_of(sender, 3) as g
+        show g to sender
+        loop viewers of g as watcher {
+            send "<gray>${watcher.name} can see the sentinel" to watcher
+        }
+        send "<yellow>viewers: ${length(viewers of g)}" to sender
+    }
+}
+```
+
+`show <entity> to all` adds every online player (and, for an auto-viewable entity, keeps
+tracking new joins); `hide <entity> from all` clears the set. Both take a single `Player`
+just as happily as `all`.
+
+### Per-viewer names on plain entities
+
+`set name of … for` isn't mob-only — it sets the overhead name of any entity for one
+viewer. A marker only the person who spawned it can read:
+
+```swoftlang
+command "ghost" {
+    execute {
+        spawn entity "ARMOR_STAND" at in_front_of(sender, 2) as ghost
+        set ghost.name_visible to true
+        set name of ghost to "<gray>only you see me" for sender
+        show ghost to sender
+    }
+}
+```
+
+::: tip `set name of … for` vs nametags
+`set name of <entity> to … for <player>` drives the entity's own **overhead name**
+(entity metadata), so it works on any entity — armor stands, mobs, displays. The
+separate [nametag statements](./nametags) drive a **player's** team-based nameplate
+(prefix/suffix/color), and their `for` clause is optional. Reach for entity names on
+mobs and props; reach for nametags on players.
+:::
+
 ## Mobs are entities
 
 Because `Mob` is a subtype of `Entity`, a function that takes an `Entity` accepts a mob,

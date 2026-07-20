@@ -1,6 +1,10 @@
-command "meta" {
+command "warp" {
     execute {
-        set s to song("cafe.nbs")
-        send "${s.title} by ${s.author}" to sender
+        set hub to world("hub")
+        if hub exists {
+            set sender.world to hub
+        } else {
+            send "<red>hub world is not registered" to sender
+        }
     }
 }

@@ -1,5 +1,8 @@
-command "under" {
+command "who" {
     execute {
-        send "you stand on ${block_at(location(sender.location.x, sender.location.y - 1, sender.location.z))}" to sender
+        send "There are ${length(all_players())} players online" to sender
+        loop all_players() as p {
+            send "<gray>- ${p.name}" to sender
+        }
     }
 }

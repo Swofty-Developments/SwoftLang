@@ -1,7 +1,7 @@
-command "loaders" {
+command "blank-map" {
     execute {
-        load world "a" with anvil_loader("worlds")
-        load world "b" with polar_loader("worlds")
-        load world "c" with polar_storage_loader(files "data/worlds")
+        set c to map_canvas()
+        draw rect on c from 0, 0 to 127, 127 color "white"
+        give map of c to sender
     }
 }

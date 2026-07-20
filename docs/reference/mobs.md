@@ -43,6 +43,8 @@ command "ghoul" {
 | `damage:` | Number expression | no | melee hit damage |
 | `speed:` | Number expression | no | movement speed attribute |
 | `ai:` | enum | no | `melee` (chase + attack + stroll), `passive` (stroll), `none` (statue) |
+| `viewable:` | boolean | no | auto-viewable at spawn; `false` spawns it hidden for per-viewer control — see [per-viewer entities](./entities#per-viewer) |
+| `tags { ... }` | block | no | **typed** per-entity state — see [Tags](#tags) |
 | `drops { ... }` | block | no | rolled on death; see [drops](#drops) |
 | `on_spawn { ... }` | statements | no | binds `mob` |
 | `on_death { ... }` | statements | no | binds `mob`, `killer` (`optional<Player>`) |
@@ -202,6 +204,33 @@ directly is a compile error:
 ```
 mob_tags_optional.sw:5:33: error: the left operand of '+' is optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
+
+### Typed tags {#typed-tags}
+
+Declaring a `tags { ... }` block on the mob gives a tag a **fixed type** instead of the
+freeform `optional<Any>`. Each entry is `name: <Type>` — a typed, indexable store that
+starts empty:
+
+```swoftlang
+mob "zombie" {
+    type: "ZOMBIE"
+    viewable: false
+
+    tags { hits: map<Player, Integer> }      // typed, keyed by Player
+
+    on_hit(attacker) {
+        if attacker exists {
+            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
+        }
+    }
+}
+```
+
+Now `mob.tags.hits[attacker]` is `optional<Integer>` — the value type is known, but a key
+that was never written is still missing, so the `otherwise 0` fallback stays required.
+This `map<Player, Integer>` keyed by player is the backbone of the
+[per-viewer zombie](./entities#the-per-viewer-zombie): one counter per attacker on a
+single mob. A typed tag and a freeform `mob.tags.<other>` can coexist on the same mob.
 
 ## Mob events
 

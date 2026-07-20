@@ -1,13 +1,7 @@
-mob "crypt_ghoul" {
-    type: "ZOMBIE"
-    health: 200
-}
-
-command "purge" {
+command "give-ish" {
     execute {
-        loop all_mobs("crypt_ghoul") as g {
-            despawn g
-        }
-        send "custom mobs still alive: ${length(all_mobs())}" to sender
+        set stack to item("DIAMOND", 3)
+        set sender.held_item to stack
+        send "material: ${stack.material}, amount: ${stack.amount}" to sender
     }
 }

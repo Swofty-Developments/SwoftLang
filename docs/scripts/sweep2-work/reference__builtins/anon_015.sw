@@ -1,10 +1,8 @@
-command "warp" {
+command "colors" {
     execute {
-        set hub to world("hub")
-        if hub exists {
-            set sender.world to hub
-        } else {
-            send "<red>hub world is not registered" to sender
-        }
+        send strip_color("&aGreen &lBold") to sender          // Green Bold
+        send legacy_to_mini("&aGreen") to sender
+        send gradient("Rainbow road", "#ff0000", "#0000ff") to sender
+        send rainbow("Party time") to sender
     }
 }

@@ -1,5 +1,6 @@
-command "ahead" {
+command "count" {
     execute {
-        teleport sender to in_front_of(sender, 3)
+        send "letters: ${length(sender.name)}" to sender
+        send "online: ${length(all_players())}" to sender
     }
 }

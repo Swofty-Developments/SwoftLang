@@ -1,13 +1,5 @@
-event PlayerUseItem {
+command "ahead" {
     execute {
-        if custom_id(event.item) otherwise "" is "cookie_of_truth" {
-            send "<gold>It tastes... honest." to event.player
-        }
+        teleport sender to in_front_of(sender, 3)
     }
-}
-
-item "cookie_of_truth" {
-    material: "COOKIE"
-    name: "Cookie of Truth"
-    rarity: rare
 }

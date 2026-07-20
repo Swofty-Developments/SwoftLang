@@ -1,11 +1,6 @@
-item "cookie_of_truth" {
-    material: "COOKIE"
-    name: "Cookie of Truth"
-    rarity: rare
-}
-
-command "cookie" {
+command "spawnpoint" {
     execute {
-        set sender.held_item to custom_item("cookie_of_truth")
+        teleport sender to location(0.5, 64.0, 0.5)
+        teleport sender to location(100, 70, -20, 90, 0)
     }
 }

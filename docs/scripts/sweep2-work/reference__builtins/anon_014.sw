@@ -1,8 +1,6 @@
-command "who" {
+command "clip" {
     execute {
-        send "There are ${length(all_players())} players online" to sender
-        loop all_players() as p {
-            send "<gray>- ${p.name}" to sender
-        }
+        send "Hello, World".first_chars(5) to sender          // Hello
+        send "Hello, World".last_chars(5) to sender           // World
     }
 }

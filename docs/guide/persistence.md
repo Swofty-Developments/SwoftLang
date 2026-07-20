@@ -72,15 +72,17 @@ A `persistent` declaration sits at the top level of a script, like a function. I
 three things:
 
 - a **name** — read and written exactly like a variable,
-- a **type** — one of `String`, `Integer`, `Double`, `Boolean`,
+- a **type** — a value type that serializes cleanly: the scalars `String`, `Integer`,
+  `Double`, `Boolean`, the game values `Location`, `Vec`, `Item`, or a `list`/`map`/`optional`
+  of those (see [Rich value types](#rich-value-types)),
 - a **default** — required, and it's what makes reads *total*: a value that has never
   been written reads as the default, so `total_joins` is always a plain `Integer`, never
   an `optional`. No migration dance, no "was it initialized" checks.
 
-Only scalar types persist. `Player`, `Location`, and `Item` are live game objects that
-can't meaningfully be frozen to disk — declaring one is a compile error with the fix in
-the hint: store primitive fields instead (the UUID string, the coordinates as doubles,
-the material name).
+Live handles never persist. A `Player` (or any `Entity`) is a runtime connection, not a
+value — declaring `persistent x: Player` is a compile error with the fix in the hint:
+persist the uuid `String` or a respawnable snapshot instead. The rule bites through
+collections too, so `list<Player>` and `map<String, Entity>` are rejected the same way.
 
 ## Keyed variables: `for Player`
 
@@ -130,6 +132,100 @@ error (`argument 'kills' shadows the persistent variable 'kills' — rename one 
 them`), as is a persistent that collides with a function, builtin, or reserved binding
 like `sender`. A shadowed counter that silently reads a local instead of the store is
 exactly the bug class persistence exists to kill.
+
+## Rich value types {#rich-value-types}
+
+Persistence isn't limited to counters. Anything that has a *total* serialization —
+scalars, the game values `Location`, `Vec`, and `Item`, and any `list`, `map`, or
+`optional` built from them — can be a persistent variable, keyed or not:
+
+```swoftlang
+persistent spawn: Location = location(0, 100, 0)
+persistent warps: map<String, Location> = new_map()
+
+persistent home for Player: Location = location(0, 64, 0)
+persistent last_death for Player: optional<Location> = none
+persistent knockback for Player: Vec = velocity(0, 0.4, 0)
+persistent starter for Player: Item = item("stick")
+persistent kit for Player: list<Item> = []
+persistent waypoints for Player: list<Location> = []
+persistent stash for Player: map<String, Item> = new_map()
+```
+
+`Location`, `Vec`, and `Item` freeze to the backend as their NBT — coordinates, the
+velocity components, the full item stack with name, lore, and tags — and thaw back into
+the same live value on load. Every declaration still needs a present default; the one
+exception is an `optional` type, which may legitimately default to `none` (`last_death`
+above starts empty and stays empty until someone dies).
+
+Map keys may be `String`, `Integer`, or `Player` (a `Player` key is stored by uuid), and
+map *values*, list elements, and the target of an `optional` must themselves be a
+persistable value type. So `map<String, Item>` is fine; `map<String, Player>` is the
+live-handle error again.
+
+### Save a home, save a kit
+
+Put the rich types to work: a `/sethome` that remembers a `Location` and a `/savekit`
+that snapshots an `Item` list. Because reads are total, `/home` only has to narrow the
+`optional` — there's no "have they set one?" bookkeeping beyond the `exists` check.
+
+```swoftlang
+storage {
+    backend: sqlite "data/homes.db"
+    flush: every 10 seconds
+}
+
+persistent home for Player: optional<Location> = none
+persistent kit for Player: list<Item> = []
+
+command "sethome" {
+    description: "Save your current spot as home"
+    execute {
+        if sender is a Player {
+            set home for sender to sender.location
+            send "<green>Home saved." to sender
+        }
+    }
+}
+
+command "home" {
+    description: "Teleport to your saved home"
+    execute {
+        if sender is a Player {
+            set spot to home for sender
+            if spot exists {
+                teleport sender to spot
+                send "<gray>Welcome home." to sender
+            } else {
+                send "<red>You haven't set a home yet." to sender
+            }
+        }
+    }
+}
+
+command "savekit" {
+    description: "Remember your held item as your kit"
+    execute {
+        if sender is a Player {
+            set kit for sender to [sender.held_item]
+            send "<green>Kit saved (${length(kit for sender)} items)." to sender
+        }
+    }
+}
+
+command "loadkit" {
+    execute {
+        if sender is a Player {
+            loop kit for sender as piece {
+                set sender.held_item to piece
+            }
+        }
+    }
+}
+```
+
+The whole `Item` — enchantments, custom name, [custom-item](/reference/items) identity —
+survives the round trip, so a saved kit comes back exactly as it went in.
 
 ## The `storage` block
 

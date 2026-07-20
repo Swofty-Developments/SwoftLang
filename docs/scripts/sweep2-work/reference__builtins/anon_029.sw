@@ -1,9 +1,10 @@
-command "status" {
+command "census" {
     execute {
-        set h to schedule every 1 seconds as "ticker" {
-            if run >= 10 stop
+        if world_exists("arena", polar_loader("worlds")) {
+            send "arena is on disk" to sender
         }
-        if is_running(h) send "ticker up" to sender
-        cancel schedule "ticker"
+        loop all_worlds(polar_loader("worlds")) as w {
+            send "<gray>- ${w}" to sender
+        }
     }
 }

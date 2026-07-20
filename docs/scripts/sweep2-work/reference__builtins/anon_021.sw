@@ -1,10 +1,14 @@
-command "census" {
+command "poke" {
     execute {
-        if world_exists("arena", polar_loader("worlds")) {
-            send "arena is on disk" to sender
+        set target to player("Notch")
+        if target exists {
+            send "<lime>Poke!" to target
+        } else {
+            send "<gray>Notch is not online" to sender
         }
-        loop all_worlds(polar_loader("worlds")) as w {
-            send "<gray>- ${w}" to sender
-        }
+
+        // or supply a fallback:
+        set victim to player("Notch") otherwise sender
+        send "gotcha" to victim
     }
 }

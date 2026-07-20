@@ -1,14 +1,11 @@
-command "poke" {
+command "parsing" {
     execute {
-        set target to player("Notch")
-        if target exists {
-            send "<lime>Poke!" to target
-        } else {
-            send "<gray>Notch is not online" to sender
+        set n to parse("42", Integer) otherwise 0             // 42
+        if matches("abc123", "[a-z0-9]+") {
+            send "valid handle" to sender
         }
-
-        // or supply a fallback:
-        set victim to player("Notch") otherwise sender
-        send "gotcha" to victim
+        send stripped("&aHello") to sender                    // Hello
+        send formatted("&aHello") to sender                   // green Hello
+        send "n is a ${type_of(n)}" to sender                 // Integer
     }
 }
