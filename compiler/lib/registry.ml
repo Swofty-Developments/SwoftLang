@@ -1905,6 +1905,157 @@ let tablist_column_max_entries = 20
    (design 6D: bounded volume cap, checker warns big literals) *)
 let fill_blocks_warn_volume = 100_000
 
+(* --- editor-facing language surface (swoftc --dump-symbols) ---
+
+   The single source of truth for grammar + LSP: every list below is pulled from
+   the real registry/parser structures in this file (builtins, the ty algebra,
+   the handler/callback tables, the property tables via props_of_ty, and the enum
+   value lists) so the emitted JSON can never drift from what the compiler
+   actually accepts. The three lexically-fixed surfaces that live in the
+   lexer/parser rather than as data (control/statement keywords, top-level
+   declaration keywords, and the freeform namespaces) are canonicalized here so
+   this module owns them too. *)
+
+(* control-flow + statement-verb keyword surface. Hard keywords come from the
+   lexer keyword_table (lexer.mll); the statement verbs are the soft keywords the
+   statement parser (parse_stmt.ml) matches; command/event/on/every/schedule are
+   the control-side declaration/handler heads. Kept here as the LSP source of
+   truth. *)
+let control_keywords =
+  [
+    (* declaration/handler heads that read as control keywords *)
+    "command"; "event"; "on"; "every"; "schedule";
+    (* control flow *)
+    "if"; "else"; "loop"; "while"; "times"; "function"; "return"; "call";
+    (* module machinery *)
+    "import"; "export"; "var";
+    (* core statement verbs *)
+    "set"; "send"; "broadcast"; "reply"; "teleport"; "spawn"; "launch"; "give";
+    "show"; "hide"; "wait"; "cancel"; "stop"; "halt"; "place"; "remove"; "add";
+    "clear"; "delete"; "create"; "open"; "close"; "play"; "move"; "go"; "save";
+    "load"; "unload"; "update"; "reset"; "title"; "actionbar"; "fill"; "clone";
+    "replace"; "despawn"; "destroy"; "mount"; "dismount"; "dispense"; "draw";
+    "repeat"; "skin"; "name"; "line"; "entry"; "blank"; "belowname"; "fade";
+    (* W-pvp combat verbs *)
+    "damage"; "knock"; "apply"; "shoot";
+    (* boolean / logical / relational operators (word form) *)
+    "is"; "not"; "and"; "or"; "either"; "contains"; "as"; "to"; "in"; "of";
+    "all"; "players"; "true"; "false";
+  ]
+
+(* the top-level declaration keywords, mirroring the dispatch in parser.ml. Every
+   one opens a first-class declaration block. *)
+let declaration_keywords =
+  [
+    "item"; "mob"; "npc"; "hologram"; "gui"; "scoreboard"; "tablist"; "bossbar";
+    "server"; "storage"; "persistent"; "api"; "fishing_loot"; "block_handler";
+    "placement_rule";
+  ]
+
+(* the freeform per-object namespaces reachable as <obj>.<ns>.<key>: .tags
+   (TItemTags/TEntityTags), .tasks (TTasks, the Schedule registry), and the
+   combat 'attributes' surfaced as direct rw properties (combat_attribute_names). *)
+let namespaces = [ "tags"; "tasks"; "attributes" ]
+
+(* the named + generic type surface. Named types are their ty_to_string spelling;
+   the generic constructors (list/map/optional/either) are the type keywords the
+   type parser accepts. *)
+let type_names =
+  List.map ty_to_string
+    [
+      TString; TInteger; TDouble; TBoolean; TPlayer; TOfflinePlayer; TLocation;
+      TItem; TWorld; TMob; TEntity; TDisplay; TVec; TBlock; TSchedule; TSong;
+      TServer; TSkin; TCanvas;
+    ]
+  @ [ "list"; "map"; "optional"; "either" ]
+
+(* every inline handler name across the four declaration kinds plus the
+   block_handler / placement_rule callbacks, deduped — the on_* surface. *)
+let all_handler_names =
+  let from_kinds =
+    List.concat_map handler_names [ KMob; KItem; KHologram; KNpc ]
+  in
+  let from_block_cbs =
+    block_cb_names block_handler_cbs @ block_cb_names placement_rule_cbs
+  in
+  List.sort_uniq compare (from_kinds @ from_block_cbs)
+
+(* the property-bearing owner types exposed to the editor: (display name, ty).
+   Rows come straight from props_of_ty so they can never drift. *)
+let property_owner_types =
+  [
+    ("Player", TPlayer);
+    ("OfflinePlayer", TOfflinePlayer);
+    ("Mob", TMob);
+    ("Entity", TEntity);
+    ("Item", TItem);
+    ("Block", TBlock);
+    ("Location", TLocation);
+    ("World", TWorld);
+    ("Vec", TVec);
+    ("Display", TDisplay);
+    ("Skin", TSkin);
+    ("Song", TSong);
+    ("Server", TServer);
+    ("Canvas", TCanvas);
+    ("Request", TRequest);
+  ]
+
+let dump_symbols_json () : Yojson.Safe.t =
+  let jstrings xs = `List (List.map (fun s -> `String s) xs) in
+  let props_json ty =
+    match props_of_ty ty with
+    | None -> `List []
+    | Some props ->
+      `List
+        (List.map
+           (fun p ->
+             `Assoc
+               [
+                 ("name", `String p.p_name);
+                 ("type", `String (ty_to_string p.p_ty));
+                 ("writable", `Bool p.p_writable);
+               ])
+           props)
+  in
+  `Assoc
+    [
+      ("keywords", jstrings control_keywords);
+      ("declarations", jstrings declaration_keywords);
+      ("handlers", jstrings all_handler_names);
+      ("builtins", jstrings (List.map (fun bl -> bl.b_name) builtins));
+      ("types", jstrings type_names);
+      ("namespaces", jstrings namespaces);
+      ( "properties",
+        `Assoc (List.map (fun (name, ty) -> (name, props_json ty)) property_owner_types) );
+      ( "enums",
+        `Assoc
+          [
+            ("gamemode", jstrings gamemodes);
+            ("rarity", jstrings rarities);
+            ("ai", jstrings mob_ais);
+            ("billboard", jstrings display_billboards);
+            ("alignment", jstrings display_alignments);
+            ("weather", jstrings weather_states);
+            ("pose", jstrings entity_poses);
+            ("hand", jstrings hands);
+            ("block_face", jstrings block_faces);
+            ("bossbar_color", jstrings bossbar_colors);
+            ("bossbar_style", jstrings bossbar_styles);
+            ("nametag_color", jstrings nametag_colors);
+            ("api_method", jstrings api_methods);
+            ("toast_frame", jstrings toast_frames);
+            ("fishing_medium", jstrings fishing_mediums);
+            ("projectile_type", jstrings projectile_types);
+            ("damage_types", jstrings damage_type_names);
+            ("effect_types", jstrings potion_effect_names);
+            ("attribute_keys", jstrings combat_attribute_names);
+            ("modifier_operations", jstrings attribute_operations);
+            ("item_attribute_keys", jstrings item_attribute_names);
+            ("entity_types", jstrings entity_types);
+          ] );
+    ]
+
 (* --- shared JSON fixture (test/property-table.json) --- *)
 
 let property_table_json () : Yojson.Safe.t =

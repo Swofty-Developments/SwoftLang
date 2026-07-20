@@ -3,7 +3,8 @@ let version = "2.0.0"
 let usage () =
   prerr_endline
     "Usage: swoftc compile <file.sw...> [--addon-path <dir>] [-o <out.json>] | swoftc check \
-     <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --version";
+     <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --dump-symbols | \
+     swoftc --version";
   exit 2
 
 (* Resolve entries + transitive imports into one compilation unit. Module
@@ -113,6 +114,8 @@ let () =
   | _ :: [ "--version" ] -> print_endline ("swoftc " ^ version)
   | _ :: [ "--property-table" ] ->
     print_endline (Yojson.Safe.pretty_to_string (Swoftlang.Registry.property_table_json ()))
+  | _ :: [ "--dump-symbols" ] ->
+    print_endline (Yojson.Safe.pretty_to_string (Swoftlang.Registry.dump_symbols_json ()))
   | _ :: "compile" :: rest ->
     let files, addon_path, out = parse_args rest in
     compile ~addon_path files out

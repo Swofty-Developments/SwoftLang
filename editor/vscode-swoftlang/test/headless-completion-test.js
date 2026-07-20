@@ -240,5 +240,56 @@ const complete = (prefix, depth = 1, locals = [], ctx = {}) =>
   ok(l2.includes('loc') && l2.includes('n'), 'collectLocals finds function params');
 }
 
+// --- 11. comprehensive enum-value contexts driven by the symbol dump ---
+{
+  const rarity = labels(complete('    rarity: '));
+  ok(rarity.has('common') && rarity.has('epic') && rarity.size === 4, '`rarity: ` -> rarity enum values');
+  const weather = labels(complete('    weather: '));
+  ok(weather.has('clear') && weather.has('thunder'), '`weather: ` -> weather enum values');
+  const color = labels(complete('    color: '));
+  ok(color.has('pink') && color.has('purple'), '`color: ` -> bossbar_color values');
+  const method = labels(complete('    method: '));
+  ok(method.has('GET') && method.has('DELETE'), '`method: ` -> api_method values');
+  const medium = labels(complete('    medium: '));
+  ok(medium.has('water') && medium.has('lava') && medium.size === 2, '`medium: ` -> fishing_medium values');
+  const pose = labels(complete('    pose: '));
+  ok(pose.has('standing') && pose.has('sneaking'), '`pose: ` -> pose enum values');
+}
+
+// --- 12. attribute keys inside an `attributes { }` block ---
+{
+  const a = complete('        ', 2, [], { block: 'attributes' });
+  const s = labels(a);
+  ok(s.has('max_health') && s.has('attack_damage'), '`attributes {` offers attribute keys');
+  ok(!s.has('send'), '`attributes {` does NOT offer statement keyword `send`');
+  ok(a.every((i) => i.kind === 20 /* EnumMember */), 'attribute keys are EnumMember kind');
+}
+
+// --- 13. decl body: config keys + inline handlers + namespaces + statements ---
+{
+  const it = labels(complete('        ', 2, [], { block: 'item' }));
+  ok(it.has('material'), 'item body offers config key `material`');
+  ok(it.has('on_click') && it.has('on_break'), 'item body offers inline handler snippets');
+  ok(it.has('tags') && it.has('attributes'), 'item body offers tags/attributes namespaces');
+  ok(it.has('send'), 'item body still offers statement keywords');
+  const oc = complete('        ', 2, [], { block: 'mob' }).find((i) => i.label === 'on_click');
+  ok(oc && oc.insertTextFormat === InsertTextFormat.Snippet, 'inline handler `on_click` is a Snippet');
+  ok(oc && oc.insertText.includes('left,right'), 'on_click snippet offers left/right filter choice');
+}
+
+// --- 14. comprehensive builtin breadth (all 117, incl. bare ones) ---
+{
+  const expr = labels(complete('        set x to ', 2));
+  for (const b of ['gradient', 'sqrt', 'players_in_radius', 'rainbow', 'distance', 'vec']) {
+    ok(expr.has(b), `expression offers builtin \`${b}\``);
+  }
+}
+
+// --- 15. analyze() reports the enclosing block ---
+{
+  ok(engine.analyze('item "x" {\n  attributes {\n    ').block === 'attributes', 'analyze() reports enclosing `attributes` block');
+  ok(engine.analyze('command "c" {\n  execute {\n    ').block === 'execute', 'analyze() reports enclosing `execute` block');
+}
+
 console.log(fails === 0 ? '\nALL COMPLETION TESTS PASSED' : `\n${fails} FAILURE(S)`);
 process.exit(fails === 0 ? 0 : 1);

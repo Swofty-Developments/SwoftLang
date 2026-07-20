@@ -1,17 +1,33 @@
 {
   "generatedBy": "scripts/gen-symbols.js",
-  "note": "Derived from the SwoftLang TextMate grammar + compiler/lib/registry.ml + swoftc --property-table.",
+  "note": "Breadth from editor/swoftlang-symbols.json; property rows from swoftc --property-table; signatures/docs from registry.ml.",
   "symbols": [
+    {
+      "name": "command",
+      "kind": "keyword"
+    },
+    {
+      "name": "event",
+      "kind": "keyword"
+    },
+    {
+      "name": "on",
+      "kind": "keyword"
+    },
+    {
+      "name": "every",
+      "kind": "keyword"
+    },
+    {
+      "name": "schedule",
+      "kind": "keyword"
+    },
     {
       "name": "if",
       "kind": "keyword"
     },
     {
       "name": "else",
-      "kind": "keyword"
-    },
-    {
-      "name": "halt",
       "kind": "keyword"
     },
     {
@@ -27,7 +43,7 @@
       "kind": "keyword"
     },
     {
-      "name": "as",
+      "name": "function",
       "kind": "keyword"
     },
     {
@@ -35,35 +51,19 @@
       "kind": "keyword"
     },
     {
-      "name": "wait",
-      "kind": "keyword"
-    },
-    {
-      "name": "spawn",
-      "kind": "keyword"
-    },
-    {
       "name": "call",
       "kind": "keyword"
     },
     {
-      "name": "go back",
+      "name": "import",
       "kind": "keyword"
     },
     {
-      "name": "go",
+      "name": "export",
       "kind": "keyword"
     },
     {
-      "name": "back",
-      "kind": "keyword"
-    },
-    {
-      "name": "send",
-      "kind": "keyword"
-    },
-    {
-      "name": "teleport",
+      "name": "var",
       "kind": "keyword"
     },
     {
@@ -71,7 +71,7 @@
       "kind": "keyword"
     },
     {
-      "name": "cancel",
+      "name": "send",
       "kind": "keyword"
     },
     {
@@ -79,15 +79,23 @@
       "kind": "keyword"
     },
     {
-      "name": "open",
+      "name": "reply",
       "kind": "keyword"
     },
     {
-      "name": "close",
+      "name": "teleport",
       "kind": "keyword"
     },
     {
-      "name": "replace",
+      "name": "spawn",
+      "kind": "keyword"
+    },
+    {
+      "name": "launch",
+      "kind": "keyword"
+    },
+    {
+      "name": "give",
       "kind": "keyword"
     },
     {
@@ -99,19 +107,31 @@
       "kind": "keyword"
     },
     {
-      "name": "update",
+      "name": "wait",
       "kind": "keyword"
     },
     {
-      "name": "title",
+      "name": "cancel",
       "kind": "keyword"
     },
     {
-      "name": "subtitle",
+      "name": "stop",
       "kind": "keyword"
     },
     {
-      "name": "actionbar",
+      "name": "halt",
+      "kind": "keyword"
+    },
+    {
+      "name": "place",
+      "kind": "keyword"
+    },
+    {
+      "name": "remove",
+      "kind": "keyword"
+    },
+    {
+      "name": "add",
       "kind": "keyword"
     },
     {
@@ -119,15 +139,59 @@
       "kind": "keyword"
     },
     {
-      "name": "line",
+      "name": "delete",
       "kind": "keyword"
     },
     {
-      "name": "blank",
+      "name": "create",
       "kind": "keyword"
     },
     {
-      "name": "entry",
+      "name": "open",
+      "kind": "keyword"
+    },
+    {
+      "name": "close",
+      "kind": "keyword"
+    },
+    {
+      "name": "play",
+      "kind": "keyword"
+    },
+    {
+      "name": "move",
+      "kind": "keyword"
+    },
+    {
+      "name": "go",
+      "kind": "keyword"
+    },
+    {
+      "name": "save",
+      "kind": "keyword"
+    },
+    {
+      "name": "load",
+      "kind": "keyword"
+    },
+    {
+      "name": "unload",
+      "kind": "keyword"
+    },
+    {
+      "name": "update",
+      "kind": "keyword"
+    },
+    {
+      "name": "reset",
+      "kind": "keyword"
+    },
+    {
+      "name": "title",
+      "kind": "keyword"
+    },
+    {
+      "name": "actionbar",
       "kind": "keyword"
     },
     {
@@ -135,11 +199,147 @@
       "kind": "keyword"
     },
     {
-      "name": "give",
+      "name": "clone",
+      "kind": "keyword"
+    },
+    {
+      "name": "replace",
+      "kind": "keyword"
+    },
+    {
+      "name": "despawn",
+      "kind": "keyword"
+    },
+    {
+      "name": "destroy",
+      "kind": "keyword"
+    },
+    {
+      "name": "mount",
+      "kind": "keyword"
+    },
+    {
+      "name": "dismount",
+      "kind": "keyword"
+    },
+    {
+      "name": "dispense",
+      "kind": "keyword"
+    },
+    {
+      "name": "draw",
+      "kind": "keyword"
+    },
+    {
+      "name": "repeat",
+      "kind": "keyword"
+    },
+    {
+      "name": "skin",
+      "kind": "keyword"
+    },
+    {
+      "name": "name",
+      "kind": "keyword"
+    },
+    {
+      "name": "line",
+      "kind": "keyword"
+    },
+    {
+      "name": "entry",
+      "kind": "keyword"
+    },
+    {
+      "name": "blank",
+      "kind": "keyword"
+    },
+    {
+      "name": "belowname",
+      "kind": "keyword"
+    },
+    {
+      "name": "fade",
+      "kind": "keyword"
+    },
+    {
+      "name": "damage",
+      "kind": "keyword"
+    },
+    {
+      "name": "knock",
+      "kind": "keyword"
+    },
+    {
+      "name": "apply",
+      "kind": "keyword"
+    },
+    {
+      "name": "shoot",
+      "kind": "keyword"
+    },
+    {
+      "name": "is",
+      "kind": "keyword"
+    },
+    {
+      "name": "not",
+      "kind": "keyword"
+    },
+    {
+      "name": "and",
+      "kind": "keyword"
+    },
+    {
+      "name": "or",
+      "kind": "keyword"
+    },
+    {
+      "name": "either",
+      "kind": "keyword"
+    },
+    {
+      "name": "contains",
+      "kind": "keyword"
+    },
+    {
+      "name": "as",
       "kind": "keyword"
     },
     {
       "name": "to",
+      "kind": "keyword"
+    },
+    {
+      "name": "in",
+      "kind": "keyword"
+    },
+    {
+      "name": "of",
+      "kind": "keyword"
+    },
+    {
+      "name": "all",
+      "kind": "keyword"
+    },
+    {
+      "name": "players",
+      "kind": "keyword"
+    },
+    {
+      "name": "true",
+      "kind": "keyword"
+    },
+    {
+      "name": "false",
+      "kind": "keyword"
+    },
+    {
+      "name": "go back",
+      "kind": "keyword"
+    },
+    {
+      "name": "subtitle",
       "kind": "keyword"
     },
     {
@@ -148,10 +348,6 @@
     },
     {
       "name": "for",
-      "kind": "keyword"
-    },
-    {
-      "name": "every",
       "kind": "keyword"
     },
     {
@@ -199,26 +395,6 @@
       "kind": "keyword"
     },
     {
-      "name": "on_click",
-      "kind": "keyword"
-    },
-    {
-      "name": "on_open",
-      "kind": "keyword"
-    },
-    {
-      "name": "on_close",
-      "kind": "keyword"
-    },
-    {
-      "name": "on_change",
-      "kind": "keyword"
-    },
-    {
-      "name": "on_click_fallback",
-      "kind": "keyword"
-    },
-    {
       "name": "source",
       "kind": "keyword"
     },
@@ -251,23 +427,55 @@
       "kind": "keyword"
     },
     {
-      "name": "command",
+      "name": "lore",
+      "kind": "keyword"
+    },
+    {
+      "name": "drops",
+      "kind": "keyword"
+    },
+    {
+      "name": "catch",
+      "kind": "keyword"
+    },
+    {
+      "name": "code",
+      "kind": "keyword"
+    },
+    {
+      "name": "weight",
+      "kind": "keyword"
+    },
+    {
+      "name": "chance",
+      "kind": "keyword"
+    },
+    {
+      "name": "message",
+      "kind": "keyword"
+    },
+    {
+      "name": "permission",
+      "kind": "keyword"
+    },
+    {
+      "name": "description",
+      "kind": "keyword"
+    },
+    {
+      "name": "item",
       "kind": "declaration"
     },
     {
-      "name": "event",
+      "name": "mob",
       "kind": "declaration"
     },
     {
-      "name": "function",
+      "name": "npc",
       "kind": "declaration"
     },
     {
-      "name": "async function",
-      "kind": "declaration"
-    },
-    {
-      "name": "async",
+      "name": "hologram",
       "kind": "declaration"
     },
     {
@@ -291,11 +499,43 @@
       "kind": "declaration"
     },
     {
-      "name": "mob",
+      "name": "storage",
       "kind": "declaration"
     },
     {
-      "name": "item",
+      "name": "persistent",
+      "kind": "declaration"
+    },
+    {
+      "name": "api",
+      "kind": "declaration"
+    },
+    {
+      "name": "fishing_loot",
+      "kind": "declaration"
+    },
+    {
+      "name": "block_handler",
+      "kind": "declaration"
+    },
+    {
+      "name": "placement_rule",
+      "kind": "declaration"
+    },
+    {
+      "name": "command",
+      "kind": "declaration"
+    },
+    {
+      "name": "event",
+      "kind": "declaration"
+    },
+    {
+      "name": "function",
+      "kind": "declaration"
+    },
+    {
+      "name": "async function",
       "kind": "declaration"
     },
     {
@@ -355,6 +595,10 @@
       "kind": "operator"
     },
     {
+      "name": "either",
+      "kind": "operator"
+    },
+    {
       "name": "String",
       "kind": "type"
     },
@@ -368,18 +612,6 @@
     },
     {
       "name": "Boolean",
-      "kind": "type"
-    },
-    {
-      "name": "Number",
-      "kind": "type"
-    },
-    {
-      "name": "int",
-      "kind": "type"
-    },
-    {
-      "name": "bool",
       "kind": "type"
     },
     {
@@ -411,7 +643,27 @@
       "kind": "type"
     },
     {
+      "name": "Display",
+      "kind": "type"
+    },
+    {
       "name": "Vec",
+      "kind": "type"
+    },
+    {
+      "name": "Block",
+      "kind": "type"
+    },
+    {
+      "name": "Schedule",
+      "kind": "type"
+    },
+    {
+      "name": "Song",
+      "kind": "type"
+    },
+    {
+      "name": "Server",
       "kind": "type"
     },
     {
@@ -423,23 +675,11 @@
       "kind": "type"
     },
     {
-      "name": "Song",
+      "name": "list",
       "kind": "type"
     },
     {
-      "name": "Display",
-      "kind": "type"
-    },
-    {
-      "name": "Server",
-      "kind": "type"
-    },
-    {
-      "name": "Schedule",
-      "kind": "type"
-    },
-    {
-      "name": "either",
+      "name": "map",
       "kind": "type"
     },
     {
@@ -447,11 +687,19 @@
       "kind": "type"
     },
     {
-      "name": "list",
+      "name": "either",
       "kind": "type"
     },
     {
-      "name": "map",
+      "name": "Number",
+      "kind": "type"
+    },
+    {
+      "name": "int",
+      "kind": "type"
+    },
+    {
+      "name": "bool",
       "kind": "type"
     },
     {
@@ -555,6 +803,15 @@
         "location(x, y, z, yaw, pitch): Location"
       ],
       "doc": "Build a Location."
+    },
+    {
+      "name": "in_front_of",
+      "kind": "builtin",
+      "signature": "in_front_of(e: Entity, dist: Number): Location",
+      "signatures": [
+        "in_front_of(e: Entity, dist: Number): Location"
+      ],
+      "doc": "Location dist blocks ahead of an entity."
     },
     {
       "name": "item",
@@ -803,6 +1060,15 @@
       "doc": "Block id at a location."
     },
     {
+      "name": "block",
+      "kind": "builtin",
+      "signature": "block(id: String): Block",
+      "signatures": [
+        "block(id: String): Block"
+      ],
+      "doc": "Build a Block from an id."
+    },
+    {
       "name": "skin",
       "kind": "builtin",
       "signature": "skin(texture: String, signature: String): Skin",
@@ -889,7 +1155,7 @@
       "signature": "map_get(m, key): optional",
       "signatures": [
         "map_get(m, key): optional",
-        "map_get syntax: m[key]"
+        "shorthand: m[key]"
       ],
       "doc": "Read a map value."
     },
@@ -1092,6 +1358,411 @@
       "doc": "Sort a map descending by a derived key."
     },
     {
+      "name": "mod",
+      "kind": "builtin",
+      "signature": "mod(a: Number, b: Number): Number",
+      "signatures": [
+        "mod(a: Number, b: Number): Number"
+      ],
+      "doc": "Modulo (remainder)."
+    },
+    {
+      "name": "sqrt",
+      "kind": "builtin",
+      "signature": "sqrt(n: Number): Double",
+      "signatures": [
+        "sqrt(n: Number): Double"
+      ],
+      "doc": "Square root."
+    },
+    {
+      "name": "pow",
+      "kind": "builtin",
+      "signature": "pow(base: Number, exp: Number): Double",
+      "signatures": [
+        "pow(base: Number, exp: Number): Double"
+      ],
+      "doc": "Raise base to a power."
+    },
+    {
+      "name": "round_to",
+      "kind": "builtin",
+      "signature": "round_to(n: Number, places: Integer): Double",
+      "signatures": [
+        "round_to(n: Number, places: Integer): Double"
+      ],
+      "doc": "Round to N decimal places."
+    },
+    {
+      "name": "sin",
+      "kind": "builtin",
+      "signature": "sin(x: Number): Double",
+      "signatures": [
+        "sin(x: Number): Double"
+      ],
+      "doc": "Sine (radians)."
+    },
+    {
+      "name": "cos",
+      "kind": "builtin",
+      "signature": "cos(x: Number): Double",
+      "signatures": [
+        "cos(x: Number): Double"
+      ],
+      "doc": "Cosine (radians)."
+    },
+    {
+      "name": "tan",
+      "kind": "builtin",
+      "signature": "tan(x: Number): Double",
+      "signatures": [
+        "tan(x: Number): Double"
+      ],
+      "doc": "Tangent (radians)."
+    },
+    {
+      "name": "asin",
+      "kind": "builtin",
+      "signature": "asin(x: Number): Double",
+      "signatures": [
+        "asin(x: Number): Double"
+      ],
+      "doc": "Arc sine."
+    },
+    {
+      "name": "acos",
+      "kind": "builtin",
+      "signature": "acos(x: Number): Double",
+      "signatures": [
+        "acos(x: Number): Double"
+      ],
+      "doc": "Arc cosine."
+    },
+    {
+      "name": "atan",
+      "kind": "builtin",
+      "signature": "atan(x: Number): Double",
+      "signatures": [
+        "atan(x: Number): Double"
+      ],
+      "doc": "Arc tangent."
+    },
+    {
+      "name": "atan2",
+      "kind": "builtin",
+      "signature": "atan2(y: Number, x: Number): Double",
+      "signatures": [
+        "atan2(y: Number, x: Number): Double"
+      ],
+      "doc": "Two-argument arc tangent."
+    },
+    {
+      "name": "ln",
+      "kind": "builtin",
+      "signature": "ln(x: Number): Double",
+      "signatures": [
+        "ln(x: Number): Double"
+      ],
+      "doc": "Natural logarithm."
+    },
+    {
+      "name": "log",
+      "kind": "builtin",
+      "signature": "log(x: Number): Double",
+      "signatures": [
+        "log(x: Number): Double"
+      ],
+      "doc": "Natural logarithm."
+    },
+    {
+      "name": "log10",
+      "kind": "builtin",
+      "signature": "log10(x: Number): Double",
+      "signatures": [
+        "log10(x: Number): Double"
+      ],
+      "doc": "Base-10 logarithm."
+    },
+    {
+      "name": "pi",
+      "kind": "builtin",
+      "signature": "pi(): Double",
+      "signatures": [
+        "pi(): Double"
+      ],
+      "doc": "The constant pi."
+    },
+    {
+      "name": "e",
+      "kind": "builtin",
+      "signature": "e(): Double",
+      "signatures": [
+        "e(): Double"
+      ],
+      "doc": "Euler's number."
+    },
+    {
+      "name": "sign",
+      "kind": "builtin",
+      "signature": "sign(n: Number): Integer",
+      "signatures": [
+        "sign(n: Number): Integer"
+      ],
+      "doc": "Sign of a number (-1, 0, 1)."
+    },
+    {
+      "name": "sum",
+      "kind": "builtin",
+      "signature": "sum(coll): Number",
+      "signatures": [
+        "sum(coll): Number"
+      ],
+      "doc": "Sum of a numeric collection."
+    },
+    {
+      "name": "product",
+      "kind": "builtin",
+      "signature": "product(coll): Number",
+      "signatures": [
+        "product(coll): Number"
+      ],
+      "doc": "Product of a numeric collection."
+    },
+    {
+      "name": "format_decimals",
+      "kind": "builtin",
+      "signature": "format_decimals(n: Number, places: Integer): String",
+      "signatures": [
+        "format_decimals(n: Number, places: Integer): String"
+      ],
+      "doc": "Fixed-decimal string."
+    },
+    {
+      "name": "random_int",
+      "kind": "builtin",
+      "signature": "random_int(min, max): Integer",
+      "signatures": [
+        "random_int(min, max): Integer"
+      ],
+      "doc": "Random integer in [min, max]."
+    },
+    {
+      "name": "random_double",
+      "kind": "builtin",
+      "signature": "random_double(min, max): Double",
+      "signatures": [
+        "random_double(min, max): Double"
+      ],
+      "doc": "Random double in [min, max]."
+    },
+    {
+      "name": "chance",
+      "kind": "builtin",
+      "signature": "chance(p: Number): Boolean",
+      "signatures": [
+        "chance(p: Number): Boolean"
+      ],
+      "doc": "True with probability p (0..1)."
+    },
+    {
+      "name": "random_element",
+      "kind": "builtin",
+      "signature": "random_element(coll): optional",
+      "signatures": [
+        "random_element(coll): optional"
+      ],
+      "doc": "Random element of a collection."
+    },
+    {
+      "name": "random_uuid",
+      "kind": "builtin",
+      "signature": "random_uuid(): String",
+      "signatures": [
+        "random_uuid(): String"
+      ],
+      "doc": "A fresh random UUID string."
+    },
+    {
+      "name": "random_seed",
+      "kind": "builtin",
+      "signature": "random_seed(n: Integer)",
+      "signatures": [
+        "random_seed(n: Integer)"
+      ],
+      "doc": "Seed the RNG for reproducible runs."
+    },
+    {
+      "name": "parse",
+      "kind": "builtin",
+      "signature": "parse(s: String): optional<Number>",
+      "signatures": [
+        "parse(s: String): optional<Number>"
+      ],
+      "doc": "Parse a number from a string."
+    },
+    {
+      "name": "matches",
+      "kind": "builtin",
+      "signature": "matches(s: String, regex: String): Boolean",
+      "signatures": [
+        "matches(s: String, regex: String): Boolean"
+      ],
+      "doc": "Regex match test."
+    },
+    {
+      "name": "stripped",
+      "kind": "builtin",
+      "signature": "stripped(s: String): String",
+      "signatures": [
+        "stripped(s: String): String"
+      ],
+      "doc": "String with color/format stripped."
+    },
+    {
+      "name": "formatted",
+      "kind": "builtin",
+      "signature": "formatted(s: String): String",
+      "signatures": [
+        "formatted(s: String): String"
+      ],
+      "doc": "MiniMessage-formatted string."
+    },
+    {
+      "name": "type_of",
+      "kind": "builtin",
+      "signature": "type_of(x): String",
+      "signatures": [
+        "type_of(x): String"
+      ],
+      "doc": "Runtime type name of a value."
+    },
+    {
+      "name": "strip_color",
+      "kind": "builtin",
+      "signature": "strip_color(s: String): String",
+      "signatures": [
+        "strip_color(s: String): String"
+      ],
+      "doc": "Remove color codes."
+    },
+    {
+      "name": "legacy_to_mini",
+      "kind": "builtin",
+      "signature": "legacy_to_mini(s: String): String",
+      "signatures": [
+        "legacy_to_mini(s: String): String"
+      ],
+      "doc": "Convert legacy §-codes to MiniMessage."
+    },
+    {
+      "name": "gradient",
+      "kind": "builtin",
+      "signature": "gradient(from: String, to: String, text: String): String",
+      "signatures": [
+        "gradient(from: String, to: String, text: String): String"
+      ],
+      "doc": "Color a string with a gradient."
+    },
+    {
+      "name": "rainbow",
+      "kind": "builtin",
+      "signature": "rainbow(text: String): String",
+      "signatures": [
+        "rainbow(text: String): String"
+      ],
+      "doc": "Rainbow-color a string."
+    },
+    {
+      "name": "distance",
+      "kind": "builtin",
+      "signature": "distance(a: Location, b: Location): Double",
+      "signatures": [
+        "distance(a: Location, b: Location): Double"
+      ],
+      "doc": "Distance between two locations."
+    },
+    {
+      "name": "direction_from",
+      "kind": "builtin",
+      "signature": "direction_from(a: Location, b: Location): Vec",
+      "signatures": [
+        "direction_from(a: Location, b: Location): Vec"
+      ],
+      "doc": "Unit vector from a toward b."
+    },
+    {
+      "name": "above",
+      "kind": "builtin",
+      "signature": "above(loc: Location, n: Number): Location",
+      "signatures": [
+        "above(loc: Location, n: Number): Location"
+      ],
+      "doc": "Location n blocks above."
+    },
+    {
+      "name": "below",
+      "kind": "builtin",
+      "signature": "below(loc: Location, n: Number): Location",
+      "signatures": [
+        "below(loc: Location, n: Number): Location"
+      ],
+      "doc": "Location n blocks below."
+    },
+    {
+      "name": "is_within",
+      "kind": "builtin",
+      "signature": "is_within(loc: Location, center: Location, radius: Number): Boolean",
+      "signatures": [
+        "is_within(loc: Location, center: Location, radius: Number): Boolean"
+      ],
+      "doc": "Whether loc is within radius of center."
+    },
+    {
+      "name": "blocks_in_radius",
+      "kind": "builtin",
+      "signature": "blocks_in_radius(center: Location, radius: Number): list<Location>",
+      "signatures": [
+        "blocks_in_radius(center: Location, radius: Number): list<Location>"
+      ],
+      "doc": "Block locations within a radius."
+    },
+    {
+      "name": "players_in_radius",
+      "kind": "builtin",
+      "signature": "players_in_radius(center: Location, radius: Number): list<Player>",
+      "signatures": [
+        "players_in_radius(center: Location, radius: Number): list<Player>"
+      ],
+      "doc": "Players within a radius."
+    },
+    {
+      "name": "vec",
+      "kind": "builtin",
+      "signature": "vec(x, y, z): Vec",
+      "signatures": [
+        "vec(x, y, z): Vec"
+      ],
+      "doc": "Build a vector."
+    },
+    {
+      "name": "location_of",
+      "kind": "builtin",
+      "signature": "location_of(e: Entity): Location",
+      "signatures": [
+        "location_of(e: Entity): Location"
+      ],
+      "doc": "An entity current location."
+    },
+    {
+      "name": "is_running",
+      "kind": "builtin",
+      "signature": "is_running(name: String): Boolean",
+      "signatures": [
+        "is_running(name: String): Boolean"
+      ],
+      "doc": "Whether a named schedule is running."
+    },
+    {
       "name": "to_nbt",
       "kind": "builtin",
       "signature": "to_nbt(i: Item): String",
@@ -1108,6 +1779,136 @@
         "from_nbt(s: String): optional<Item>"
       ],
       "doc": "Parse an item stack from NBT."
+    },
+    {
+      "name": "on_attack",
+      "kind": "handler",
+      "doc": "Inline `on_attack` event handler block."
+    },
+    {
+      "name": "on_attack_entity",
+      "kind": "handler",
+      "doc": "Inline `on_attack_entity` event handler block."
+    },
+    {
+      "name": "on_break",
+      "kind": "handler",
+      "doc": "Inline `on_break` event handler block."
+    },
+    {
+      "name": "on_click",
+      "kind": "handler",
+      "doc": "Inline `on_click` event handler block."
+    },
+    {
+      "name": "on_consume",
+      "kind": "handler",
+      "doc": "Inline `on_consume` event handler block."
+    },
+    {
+      "name": "on_death",
+      "kind": "handler",
+      "doc": "Inline `on_death` event handler block."
+    },
+    {
+      "name": "on_destroy",
+      "kind": "handler",
+      "doc": "Inline `on_destroy` event handler block."
+    },
+    {
+      "name": "on_drop",
+      "kind": "handler",
+      "doc": "Inline `on_drop` event handler block."
+    },
+    {
+      "name": "on_hit",
+      "kind": "handler",
+      "doc": "Inline `on_hit` event handler block."
+    },
+    {
+      "name": "on_interact",
+      "kind": "handler",
+      "doc": "Inline `on_interact` event handler block."
+    },
+    {
+      "name": "on_left_click",
+      "kind": "handler",
+      "doc": "Inline `on_left_click` event handler block."
+    },
+    {
+      "name": "on_line_click",
+      "kind": "handler",
+      "doc": "Inline `on_line_click` event handler block."
+    },
+    {
+      "name": "on_pickup",
+      "kind": "handler",
+      "doc": "Inline `on_pickup` event handler block."
+    },
+    {
+      "name": "on_place",
+      "kind": "handler",
+      "doc": "Inline `on_place` event handler block."
+    },
+    {
+      "name": "on_right_click",
+      "kind": "handler",
+      "doc": "Inline `on_right_click` event handler block."
+    },
+    {
+      "name": "on_right_click_block",
+      "kind": "handler",
+      "doc": "Inline `on_right_click_block` event handler block."
+    },
+    {
+      "name": "on_spawn",
+      "kind": "handler",
+      "doc": "Inline `on_spawn` event handler block."
+    },
+    {
+      "name": "on_swap_to",
+      "kind": "handler",
+      "doc": "Inline `on_swap_to` event handler block."
+    },
+    {
+      "name": "on_target",
+      "kind": "handler",
+      "doc": "Inline `on_target` event handler block."
+    },
+    {
+      "name": "on_tick",
+      "kind": "handler",
+      "doc": "Inline `on_tick` event handler block."
+    },
+    {
+      "name": "on_touch",
+      "kind": "handler",
+      "doc": "Inline `on_touch` event handler block."
+    },
+    {
+      "name": "on_update",
+      "kind": "handler",
+      "doc": "Inline `on_update` event handler block."
+    },
+    {
+      "name": "tick",
+      "kind": "handler",
+      "doc": "Inline `tick` event handler block."
+    },
+    {
+      "name": "tags",
+      "kind": "namespace",
+      "doc": "`tags` namespace block."
+    },
+    {
+      "name": "tasks",
+      "kind": "namespace",
+      "doc": "`tasks` namespace block."
+    },
+    {
+      "name": "attributes",
+      "kind": "namespace",
+      "doc": "`attributes` namespace block."
     },
     {
       "name": "PlayerChat",
@@ -1188,6 +1989,11 @@
       "name": "BlockDispense",
       "kind": "event",
       "doc": "Event handler target. Cancellable. Fields: location, block, item, direction, cancelled."
+    },
+    {
+      "name": "EntityDamage",
+      "kind": "event",
+      "doc": "Event handler target. Cancellable. Fields: entity, damage, cancelled."
     },
     {
       "name": "name",
@@ -1350,6 +2156,246 @@
       "doc": "Player.skin: Skin"
     },
     {
+      "name": "on_ground",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Player.on_ground: Boolean (read-only)"
+    },
+    {
+      "name": "is_sprinting",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Player.is_sprinting: Boolean (read-only)"
+    },
+    {
+      "name": "alive_ticks",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Player.alive_ticks: Integer (read-only)"
+    },
+    {
+      "name": "tags",
+      "kind": "property",
+      "owner": "Player",
+      "type": "EntityTags",
+      "writable": false,
+      "doc": "Player.tags: EntityTags (read-only)"
+    },
+    {
+      "name": "tasks",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Tasks",
+      "writable": false,
+      "doc": "Player.tasks: Tasks (read-only)"
+    },
+    {
+      "name": "armor",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.armor: Double"
+    },
+    {
+      "name": "armor_toughness",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.armor_toughness: Double"
+    },
+    {
+      "name": "attack_damage",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.attack_damage: Double"
+    },
+    {
+      "name": "attack_knockback",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.attack_knockback: Double"
+    },
+    {
+      "name": "attack_speed",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.attack_speed: Double"
+    },
+    {
+      "name": "knockback_resistance",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.knockback_resistance: Double"
+    },
+    {
+      "name": "max_absorption",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.max_absorption: Double"
+    },
+    {
+      "name": "absorption",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.absorption: Double"
+    },
+    {
+      "name": "movement_speed",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.movement_speed: Double"
+    },
+    {
+      "name": "fall_damage_multiplier",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.fall_damage_multiplier: Double"
+    },
+    {
+      "name": "safe_fall_distance",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.safe_fall_distance: Double"
+    },
+    {
+      "name": "sweeping_damage_ratio",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.sweeping_damage_ratio: Double"
+    },
+    {
+      "name": "follow_range",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.follow_range: Double"
+    },
+    {
+      "name": "jump_strength",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.jump_strength: Double"
+    },
+    {
+      "name": "scale",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.scale: Double"
+    },
+    {
+      "name": "gravity",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.gravity: Double"
+    },
+    {
+      "name": "step_height",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.step_height: Double"
+    },
+    {
+      "name": "luck",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.luck: Double"
+    },
+    {
+      "name": "block_interaction_range",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.block_interaction_range: Double"
+    },
+    {
+      "name": "entity_interaction_range",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.entity_interaction_range: Double"
+    },
+    {
+      "name": "explosion_knockback_resistance",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": true,
+      "doc": "Player.explosion_knockback_resistance: Double"
+    },
+    {
+      "name": "invulnerable_ticks",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Player.invulnerable_ticks: Integer (read-only)"
+    },
+    {
+      "name": "fall_distance",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Double",
+      "writable": false,
+      "doc": "Player.fall_distance: Double (read-only)"
+    },
+    {
+      "name": "is_climbing",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Player.is_climbing: Boolean (read-only)"
+    },
+    {
+      "name": "active_effects",
+      "kind": "property",
+      "owner": "Player",
+      "type": "list<String>",
+      "writable": false,
+      "doc": "Player.active_effects: list<String> (read-only)"
+    },
+    {
       "name": "x",
       "kind": "property",
       "owner": "Location",
@@ -1502,6 +2548,374 @@
       "doc": "Mob.custom_id: String (read-only)"
     },
     {
+      "name": "uuid",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": false,
+      "doc": "Mob.uuid: String (read-only)"
+    },
+    {
+      "name": "velocity",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Vec",
+      "writable": true,
+      "doc": "Mob.velocity: Vec"
+    },
+    {
+      "name": "custom_name",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": true,
+      "doc": "Mob.custom_name: String"
+    },
+    {
+      "name": "name_visible",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.name_visible: Boolean"
+    },
+    {
+      "name": "glowing",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.glowing: Boolean"
+    },
+    {
+      "name": "invisible",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.invisible: Boolean"
+    },
+    {
+      "name": "gravity",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.gravity: Boolean"
+    },
+    {
+      "name": "on_fire",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.on_fire: Boolean"
+    },
+    {
+      "name": "silent",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.silent: Boolean"
+    },
+    {
+      "name": "pose",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "String",
+      "writable": true,
+      "doc": "Mob.pose: String"
+    },
+    {
+      "name": "sneaking",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "Mob.sneaking: Boolean"
+    },
+    {
+      "name": "passengers",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "list<Entity>",
+      "writable": false,
+      "doc": "Mob.passengers: list<Entity> (read-only)"
+    },
+    {
+      "name": "vehicle",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "Mob.vehicle: optional<Entity> (read-only)"
+    },
+    {
+      "name": "shooter",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "Mob.shooter: optional<Entity> (read-only)"
+    },
+    {
+      "name": "alive",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Mob.alive: Boolean (read-only)"
+    },
+    {
+      "name": "removed",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Mob.removed: Boolean (read-only)"
+    },
+    {
+      "name": "on_ground",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Mob.on_ground: Boolean (read-only)"
+    },
+    {
+      "name": "alive_ticks",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Mob.alive_ticks: Integer (read-only)"
+    },
+    {
+      "name": "is_sprinting",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Mob.is_sprinting: Boolean (read-only)"
+    },
+    {
+      "name": "tags",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "EntityTags",
+      "writable": false,
+      "doc": "Mob.tags: EntityTags (read-only)"
+    },
+    {
+      "name": "tasks",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Tasks",
+      "writable": false,
+      "doc": "Mob.tasks: Tasks (read-only)"
+    },
+    {
+      "name": "armor",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.armor: Double"
+    },
+    {
+      "name": "armor_toughness",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.armor_toughness: Double"
+    },
+    {
+      "name": "attack_damage",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.attack_damage: Double"
+    },
+    {
+      "name": "attack_knockback",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.attack_knockback: Double"
+    },
+    {
+      "name": "attack_speed",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.attack_speed: Double"
+    },
+    {
+      "name": "knockback_resistance",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.knockback_resistance: Double"
+    },
+    {
+      "name": "max_absorption",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.max_absorption: Double"
+    },
+    {
+      "name": "absorption",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.absorption: Double"
+    },
+    {
+      "name": "movement_speed",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.movement_speed: Double"
+    },
+    {
+      "name": "fall_damage_multiplier",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.fall_damage_multiplier: Double"
+    },
+    {
+      "name": "safe_fall_distance",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.safe_fall_distance: Double"
+    },
+    {
+      "name": "sweeping_damage_ratio",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.sweeping_damage_ratio: Double"
+    },
+    {
+      "name": "flying_speed",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.flying_speed: Double"
+    },
+    {
+      "name": "follow_range",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.follow_range: Double"
+    },
+    {
+      "name": "jump_strength",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.jump_strength: Double"
+    },
+    {
+      "name": "scale",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.scale: Double"
+    },
+    {
+      "name": "step_height",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.step_height: Double"
+    },
+    {
+      "name": "luck",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.luck: Double"
+    },
+    {
+      "name": "block_interaction_range",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.block_interaction_range: Double"
+    },
+    {
+      "name": "entity_interaction_range",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.entity_interaction_range: Double"
+    },
+    {
+      "name": "explosion_knockback_resistance",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": true,
+      "doc": "Mob.explosion_knockback_resistance: Double"
+    },
+    {
+      "name": "invulnerable_ticks",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Mob.invulnerable_ticks: Integer (read-only)"
+    },
+    {
+      "name": "fall_distance",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Double",
+      "writable": false,
+      "doc": "Mob.fall_distance: Double (read-only)"
+    },
+    {
+      "name": "is_climbing",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Mob.is_climbing: Boolean (read-only)"
+    },
+    {
+      "name": "active_effects",
+      "kind": "property",
+      "owner": "Mob",
+      "type": "list<String>",
+      "writable": false,
+      "doc": "Mob.active_effects: list<String> (read-only)"
+    },
+    {
       "name": "time",
       "kind": "property",
       "owner": "World",
@@ -1644,6 +3058,14 @@
       "type": "Double",
       "writable": true,
       "doc": "Display.view_range: Double"
+    },
+    {
+      "name": "tasks",
+      "kind": "property",
+      "owner": "Display",
+      "type": "Tasks",
+      "writable": false,
+      "doc": "Display.tasks: Tasks (read-only)"
     },
     {
       "name": "method",
@@ -1926,6 +3348,254 @@
       "doc": "Entity.removed: Boolean (read-only)"
     },
     {
+      "name": "on_ground",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Entity.on_ground: Boolean (read-only)"
+    },
+    {
+      "name": "alive_ticks",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Entity.alive_ticks: Integer (read-only)"
+    },
+    {
+      "name": "is_sprinting",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Entity.is_sprinting: Boolean (read-only)"
+    },
+    {
+      "name": "tags",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "EntityTags",
+      "writable": false,
+      "doc": "Entity.tags: EntityTags (read-only)"
+    },
+    {
+      "name": "tasks",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Tasks",
+      "writable": false,
+      "doc": "Entity.tasks: Tasks (read-only)"
+    },
+    {
+      "name": "armor",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.armor: Double"
+    },
+    {
+      "name": "armor_toughness",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.armor_toughness: Double"
+    },
+    {
+      "name": "attack_damage",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.attack_damage: Double"
+    },
+    {
+      "name": "attack_knockback",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.attack_knockback: Double"
+    },
+    {
+      "name": "attack_speed",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.attack_speed: Double"
+    },
+    {
+      "name": "knockback_resistance",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.knockback_resistance: Double"
+    },
+    {
+      "name": "max_health",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.max_health: Double"
+    },
+    {
+      "name": "max_absorption",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.max_absorption: Double"
+    },
+    {
+      "name": "absorption",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.absorption: Double"
+    },
+    {
+      "name": "movement_speed",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.movement_speed: Double"
+    },
+    {
+      "name": "fall_damage_multiplier",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.fall_damage_multiplier: Double"
+    },
+    {
+      "name": "safe_fall_distance",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.safe_fall_distance: Double"
+    },
+    {
+      "name": "sweeping_damage_ratio",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.sweeping_damage_ratio: Double"
+    },
+    {
+      "name": "flying_speed",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.flying_speed: Double"
+    },
+    {
+      "name": "follow_range",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.follow_range: Double"
+    },
+    {
+      "name": "jump_strength",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.jump_strength: Double"
+    },
+    {
+      "name": "scale",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.scale: Double"
+    },
+    {
+      "name": "step_height",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.step_height: Double"
+    },
+    {
+      "name": "luck",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.luck: Double"
+    },
+    {
+      "name": "block_interaction_range",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.block_interaction_range: Double"
+    },
+    {
+      "name": "entity_interaction_range",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.entity_interaction_range: Double"
+    },
+    {
+      "name": "explosion_knockback_resistance",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": true,
+      "doc": "Entity.explosion_knockback_resistance: Double"
+    },
+    {
+      "name": "invulnerable_ticks",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Integer",
+      "writable": false,
+      "doc": "Entity.invulnerable_ticks: Integer (read-only)"
+    },
+    {
+      "name": "fall_distance",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Double",
+      "writable": false,
+      "doc": "Entity.fall_distance: Double (read-only)"
+    },
+    {
+      "name": "is_climbing",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Entity.is_climbing: Boolean (read-only)"
+    },
+    {
+      "name": "active_effects",
+      "kind": "property",
+      "owner": "Entity",
+      "type": "list<String>",
+      "writable": false,
+      "doc": "Entity.active_effects: list<String> (read-only)"
+    },
+    {
       "name": "x",
       "kind": "property",
       "owner": "Vec",
@@ -1948,6 +3618,22 @@
       "type": "Double",
       "writable": true,
       "doc": "Vec.z: Double"
+    },
+    {
+      "name": "length",
+      "kind": "property",
+      "owner": "Vec",
+      "type": "Double",
+      "writable": false,
+      "doc": "Vec.length: Double (read-only)"
+    },
+    {
+      "name": "normalized",
+      "kind": "property",
+      "owner": "Vec",
+      "type": "Vec",
+      "writable": false,
+      "doc": "Vec.normalized: Vec (read-only)"
     },
     {
       "name": "name",
@@ -2020,6 +3706,22 @@
       "type": "String",
       "writable": true,
       "doc": "event:PlayerChat.message: String"
+    },
+    {
+      "name": "raw_message",
+      "kind": "property",
+      "owner": "event:PlayerChat",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerChat.raw_message: String (read-only)"
+    },
+    {
+      "name": "recipients",
+      "kind": "property",
+      "owner": "event:PlayerChat",
+      "type": "list<Player>",
+      "writable": false,
+      "doc": "event:PlayerChat.recipients: list<Player> (read-only)"
     },
     {
       "name": "cancelled",
@@ -2126,6 +3828,14 @@
       "doc": "event:MobDamage.damage: Double"
     },
     {
+      "name": "attacker",
+      "kind": "property",
+      "owner": "event:MobDamage",
+      "type": "optional<Player>",
+      "writable": false,
+      "doc": "event:MobDamage.attacker: optional<Player> (read-only)"
+    },
+    {
       "name": "cancelled",
       "kind": "property",
       "owner": "event:MobDamage",
@@ -2174,6 +3884,22 @@
       "doc": "event:BlockBreak.location: Location (read-only)"
     },
     {
+      "name": "block_face",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockBreak.block_face: String (read-only)"
+    },
+    {
+      "name": "result_block",
+      "kind": "property",
+      "owner": "event:BlockBreak",
+      "type": "String",
+      "writable": true,
+      "doc": "event:BlockBreak.result_block: String"
+    },
+    {
       "name": "cancelled",
       "kind": "property",
       "owner": "event:BlockBreak",
@@ -2204,6 +3930,30 @@
       "type": "Location",
       "writable": false,
       "doc": "event:BlockPlace.location: Location (read-only)"
+    },
+    {
+      "name": "block_face",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockPlace.block_face: String (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "String",
+      "writable": false,
+      "doc": "event:BlockPlace.hand: String (read-only)"
+    },
+    {
+      "name": "cursor_position",
+      "kind": "property",
+      "owner": "event:BlockPlace",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:BlockPlace.cursor_position: Location (read-only)"
     },
     {
       "name": "cancelled",
@@ -2374,6 +4124,1022 @@
       "doc": "event:BlockDispense.cancelled: Boolean"
     },
     {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityDamage.entity: Entity (read-only)"
+    },
+    {
+      "name": "damage",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "Double",
+      "writable": true,
+      "doc": "event:EntityDamage.damage: Double"
+    },
+    {
+      "name": "attacker",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "event:EntityDamage.attacker: optional<Entity> (read-only)"
+    },
+    {
+      "name": "source_entity",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "optional<Entity>",
+      "writable": false,
+      "doc": "event:EntityDamage.source_entity: optional<Entity> (read-only)"
+    },
+    {
+      "name": "damage_type",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "String",
+      "writable": false,
+      "doc": "event:EntityDamage.damage_type: String (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:EntityDamage",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:EntityDamage.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerDeath",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerDeath.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerDeath",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerDeath.world: World (read-only)"
+    },
+    {
+      "name": "death_text",
+      "kind": "property",
+      "owner": "event:PlayerDeath",
+      "type": "String",
+      "writable": true,
+      "doc": "event:PlayerDeath.death_text: String"
+    },
+    {
+      "name": "chat_message",
+      "kind": "property",
+      "owner": "event:PlayerDeath",
+      "type": "String",
+      "writable": true,
+      "doc": "event:PlayerDeath.chat_message: String"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerRespawn",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerRespawn.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerRespawn",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerRespawn.world: World (read-only)"
+    },
+    {
+      "name": "respawn_position",
+      "kind": "property",
+      "owner": "event:PlayerRespawn",
+      "type": "Location",
+      "writable": true,
+      "doc": "event:PlayerRespawn.respawn_position: Location"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerMove",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerMove.player: Player (read-only)"
+    },
+    {
+      "name": "new_position",
+      "kind": "property",
+      "owner": "event:PlayerMove",
+      "type": "Location",
+      "writable": true,
+      "doc": "event:PlayerMove.new_position: Location"
+    },
+    {
+      "name": "on_ground",
+      "kind": "property",
+      "owner": "event:PlayerMove",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "event:PlayerMove.on_ground: Boolean (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerMove",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerMove.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.player: Player (read-only)"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.block: String (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.location: Location (read-only)"
+    },
+    {
+      "name": "block_face",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.block_face: String (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.hand: String (read-only)"
+    },
+    {
+      "name": "cursor_position",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerBlockInteract.cursor_position: Location (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerBlockInteract",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerBlockInteract.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:InventoryPreClick",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:InventoryPreClick.player: Player (read-only)"
+    },
+    {
+      "name": "slot",
+      "kind": "property",
+      "owner": "event:InventoryPreClick",
+      "type": "Integer",
+      "writable": false,
+      "doc": "event:InventoryPreClick.slot: Integer (read-only)"
+    },
+    {
+      "name": "clicked_item",
+      "kind": "property",
+      "owner": "event:InventoryPreClick",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:InventoryPreClick.clicked_item: Item (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:InventoryPreClick",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:InventoryPreClick.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:InventoryClose",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:InventoryClose.player: Player (read-only)"
+    },
+    {
+      "name": "from_client",
+      "kind": "property",
+      "owner": "event:InventoryClose",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "event:InventoryClose.from_client: Boolean (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:ItemDrop",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:ItemDrop.player: Player (read-only)"
+    },
+    {
+      "name": "item_stack",
+      "kind": "property",
+      "owner": "event:ItemDrop",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:ItemDrop.item_stack: Item (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:ItemDrop",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:ItemDrop.cancelled: Boolean"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:PickupItem",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:PickupItem.entity: Entity (read-only)"
+    },
+    {
+      "name": "item_stack",
+      "kind": "property",
+      "owner": "event:PickupItem",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PickupItem.item_stack: Item (read-only)"
+    },
+    {
+      "name": "item_entity",
+      "kind": "property",
+      "owner": "event:PickupItem",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:PickupItem.item_entity: Entity (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PickupItem",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PickupItem.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerGameModeChange",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerGameModeChange.player: Player (read-only)"
+    },
+    {
+      "name": "new_game_mode",
+      "kind": "property",
+      "owner": "event:PlayerGameModeChange",
+      "type": "String",
+      "writable": true,
+      "doc": "event:PlayerGameModeChange.new_game_mode: String"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerGameModeChange",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerGameModeChange.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerDisconnect",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerDisconnect.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerDisconnect",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerDisconnect.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.player: Player (read-only)"
+    },
+    {
+      "name": "item_stack",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.item_stack: Item (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.location: Location (read-only)"
+    },
+    {
+      "name": "block_face",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.block_face: String (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.hand: String (read-only)"
+    },
+    {
+      "name": "cursor_position",
+      "kind": "property",
+      "owner": "event:PlayerUseItemOnBlock",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerUseItemOnBlock.cursor_position: Location (read-only)"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityDeath",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityDeath.entity: Entity (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:EntityDeath",
+      "type": "World",
+      "writable": false,
+      "doc": "event:EntityDeath.world: World (read-only)"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntitySpawn",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntitySpawn.entity: Entity (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:EntitySpawn",
+      "type": "World",
+      "writable": false,
+      "doc": "event:EntitySpawn.world: World (read-only)"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityAttack",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityAttack.entity: Entity (read-only)"
+    },
+    {
+      "name": "target",
+      "kind": "property",
+      "owner": "event:EntityAttack",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityAttack.target: Entity (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:EntityAttack",
+      "type": "World",
+      "writable": false,
+      "doc": "event:EntityAttack.world: World (read-only)"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityTeleport",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityTeleport.entity: Entity (read-only)"
+    },
+    {
+      "name": "new_position",
+      "kind": "property",
+      "owner": "event:EntityTeleport",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:EntityTeleport.new_position: Location (read-only)"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityShoot.entity: Entity (read-only)"
+    },
+    {
+      "name": "projectile",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityShoot.projectile: Entity (read-only)"
+    },
+    {
+      "name": "to",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:EntityShoot.to: Location (read-only)"
+    },
+    {
+      "name": "power",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Double",
+      "writable": true,
+      "doc": "event:EntityShoot.power: Double"
+    },
+    {
+      "name": "spread",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Double",
+      "writable": true,
+      "doc": "event:EntityShoot.spread: Double"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:EntityShoot",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:EntityShoot.cancelled: Boolean"
+    },
+    {
+      "name": "entity",
+      "kind": "property",
+      "owner": "event:EntityVelocity",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:EntityVelocity.entity: Entity (read-only)"
+    },
+    {
+      "name": "velocity",
+      "kind": "property",
+      "owner": "event:EntityVelocity",
+      "type": "Vec",
+      "writable": true,
+      "doc": "event:EntityVelocity.velocity: Vec"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:EntityVelocity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:EntityVelocity.cancelled: Boolean"
+    },
+    {
+      "name": "target",
+      "kind": "property",
+      "owner": "event:ProjectileCollideWithEntity",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:ProjectileCollideWithEntity.target: Entity (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:ProjectileCollideWithEntity",
+      "type": "World",
+      "writable": false,
+      "doc": "event:ProjectileCollideWithEntity.world: World (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:ProjectileCollideWithEntity",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:ProjectileCollideWithEntity.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerEntityInteract",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerEntityInteract.player: Player (read-only)"
+    },
+    {
+      "name": "target",
+      "kind": "property",
+      "owner": "event:PlayerEntityInteract",
+      "type": "Entity",
+      "writable": false,
+      "doc": "event:PlayerEntityInteract.target: Entity (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:PlayerEntityInteract",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerEntityInteract.hand: String (read-only)"
+    },
+    {
+      "name": "interact_position",
+      "kind": "property",
+      "owner": "event:PlayerEntityInteract",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerEntityInteract.interact_position: Location (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerChangeHeldSlot.player: Player (read-only)"
+    },
+    {
+      "name": "new_slot",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:PlayerChangeHeldSlot.new_slot: Integer"
+    },
+    {
+      "name": "old_slot",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Integer",
+      "writable": false,
+      "doc": "event:PlayerChangeHeldSlot.old_slot: Integer (read-only)"
+    },
+    {
+      "name": "item_in_new_slot",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PlayerChangeHeldSlot.item_in_new_slot: Item (read-only)"
+    },
+    {
+      "name": "item_in_old_slot",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PlayerChangeHeldSlot.item_in_old_slot: Item (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerChangeHeldSlot",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerChangeHeldSlot.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PickupExperience",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PickupExperience.player: Player (read-only)"
+    },
+    {
+      "name": "experience_count",
+      "kind": "property",
+      "owner": "event:PickupExperience",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:PickupExperience.experience_count: Integer"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PickupExperience",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PickupExperience.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerBeginItemUse.player: Player (read-only)"
+    },
+    {
+      "name": "item_stack",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:PlayerBeginItemUse.item_stack: Item (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerBeginItemUse.hand: String (read-only)"
+    },
+    {
+      "name": "item_use_duration",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:PlayerBeginItemUse.item_use_duration: Integer"
+    },
+    {
+      "name": "animation",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerBeginItemUse.animation: String (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerBeginItemUse",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerBeginItemUse.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerSwapItem",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerSwapItem.player: Player (read-only)"
+    },
+    {
+      "name": "main_hand_item",
+      "kind": "property",
+      "owner": "event:PlayerSwapItem",
+      "type": "Item",
+      "writable": true,
+      "doc": "event:PlayerSwapItem.main_hand_item: Item"
+    },
+    {
+      "name": "off_hand_item",
+      "kind": "property",
+      "owner": "event:PlayerSwapItem",
+      "type": "Item",
+      "writable": true,
+      "doc": "event:PlayerSwapItem.off_hand_item: Item"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerSwapItem",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerSwapItem.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerStartDigging",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerStartDigging.player: Player (read-only)"
+    },
+    {
+      "name": "block",
+      "kind": "property",
+      "owner": "event:PlayerStartDigging",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerStartDigging.block: String (read-only)"
+    },
+    {
+      "name": "location",
+      "kind": "property",
+      "owner": "event:PlayerStartDigging",
+      "type": "Location",
+      "writable": false,
+      "doc": "event:PlayerStartDigging.location: Location (read-only)"
+    },
+    {
+      "name": "block_face",
+      "kind": "property",
+      "owner": "event:PlayerStartDigging",
+      "type": "String",
+      "writable": false,
+      "doc": "event:PlayerStartDigging.block_face: String (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:PlayerStartDigging",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:PlayerStartDigging.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:InventoryClick",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:InventoryClick.player: Player (read-only)"
+    },
+    {
+      "name": "slot",
+      "kind": "property",
+      "owner": "event:InventoryClick",
+      "type": "Integer",
+      "writable": false,
+      "doc": "event:InventoryClick.slot: Integer (read-only)"
+    },
+    {
+      "name": "click_type",
+      "kind": "property",
+      "owner": "event:InventoryClick",
+      "type": "String",
+      "writable": false,
+      "doc": "event:InventoryClick.click_type: String (read-only)"
+    },
+    {
+      "name": "clicked_item",
+      "kind": "property",
+      "owner": "event:InventoryClick",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:InventoryClick.clicked_item: Item (read-only)"
+    },
+    {
+      "name": "cursor_item",
+      "kind": "property",
+      "owner": "event:InventoryClick",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:InventoryClick.cursor_item: Item (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:InventoryOpen",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:InventoryOpen.player: Player (read-only)"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:InventoryOpen",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:InventoryOpen.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerLoaded",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerLoaded.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerLoaded",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerLoaded.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerStartSprinting",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerStartSprinting.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerStartSprinting",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerStartSprinting.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerStopSprinting",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerStopSprinting.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerStopSprinting",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerStopSprinting.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerStartFlying",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerStartFlying.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerStartFlying",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerStartFlying.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:PlayerStopFlying",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:PlayerStopFlying.player: Player (read-only)"
+    },
+    {
+      "name": "world",
+      "kind": "property",
+      "owner": "event:PlayerStopFlying",
+      "type": "World",
+      "writable": false,
+      "doc": "event:PlayerStopFlying.world: World (read-only)"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "event:VanillaUseItem",
+      "type": "Player",
+      "writable": false,
+      "doc": "event:VanillaUseItem.player: Player (read-only)"
+    },
+    {
+      "name": "item_stack",
+      "kind": "property",
+      "owner": "event:VanillaUseItem",
+      "type": "Item",
+      "writable": false,
+      "doc": "event:VanillaUseItem.item_stack: Item (read-only)"
+    },
+    {
+      "name": "hand",
+      "kind": "property",
+      "owner": "event:VanillaUseItem",
+      "type": "String",
+      "writable": false,
+      "doc": "event:VanillaUseItem.hand: String (read-only)"
+    },
+    {
+      "name": "item_use_time",
+      "kind": "property",
+      "owner": "event:VanillaUseItem",
+      "type": "Integer",
+      "writable": true,
+      "doc": "event:VanillaUseItem.item_use_time: Integer"
+    },
+    {
+      "name": "cancelled",
+      "kind": "property",
+      "owner": "event:VanillaUseItem",
+      "type": "Boolean",
+      "writable": true,
+      "doc": "event:VanillaUseItem.cancelled: Boolean"
+    },
+    {
+      "name": "player",
+      "kind": "property",
+      "owner": "Player",
+      "type": "optional<Player>",
+      "writable": false,
+      "doc": "Player.player: optional<Player> (read-only)"
+    },
+    {
+      "name": "first_seen",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": false,
+      "doc": "Player.first_seen: String (read-only)"
+    },
+    {
+      "name": "last_seen",
+      "kind": "property",
+      "owner": "Player",
+      "type": "String",
+      "writable": false,
+      "doc": "Player.last_seen: String (read-only)"
+    },
+    {
+      "name": "has_played_before",
+      "kind": "property",
+      "owner": "Player",
+      "type": "Boolean",
+      "writable": false,
+      "doc": "Player.has_played_before: Boolean (read-only)"
+    },
+    {
+      "name": "id",
+      "kind": "property",
+      "owner": "Block",
+      "type": "String",
+      "writable": false,
+      "doc": "Block.id: String (read-only)"
+    },
+    {
+      "name": "properties",
+      "kind": "property",
+      "owner": "Block",
+      "type": "map<String>",
+      "writable": false,
+      "doc": "Block.properties: map<String> (read-only)"
+    },
+    {
+      "name": "nbt",
+      "kind": "property",
+      "owner": "Block",
+      "type": "optional<String>",
+      "writable": false,
+      "doc": "Block.nbt: optional<String> (read-only)"
+    },
+    {
+      "name": "tasks",
+      "kind": "property",
+      "owner": "Block",
+      "type": "Tasks",
+      "writable": false,
+      "doc": "Block.tasks: Tasks (read-only)"
+    },
+    {
       "name": "survival",
       "kind": "enum",
       "owner": "gamemode"
@@ -2394,21 +5160,6 @@
       "owner": "gamemode"
     },
     {
-      "name": "clear",
-      "kind": "enum",
-      "owner": "weather"
-    },
-    {
-      "name": "rain",
-      "kind": "enum",
-      "owner": "weather"
-    },
-    {
-      "name": "thunder",
-      "kind": "enum",
-      "owner": "weather"
-    },
-    {
       "name": "common",
       "kind": "enum",
       "owner": "rarity"
@@ -2427,6 +5178,201 @@
       "name": "epic",
       "kind": "enum",
       "owner": "rarity"
+    },
+    {
+      "name": "melee",
+      "kind": "enum",
+      "owner": "ai"
+    },
+    {
+      "name": "passive",
+      "kind": "enum",
+      "owner": "ai"
+    },
+    {
+      "name": "none",
+      "kind": "enum",
+      "owner": "ai"
+    },
+    {
+      "name": "fixed",
+      "kind": "enum",
+      "owner": "billboard"
+    },
+    {
+      "name": "vertical",
+      "kind": "enum",
+      "owner": "billboard"
+    },
+    {
+      "name": "horizontal",
+      "kind": "enum",
+      "owner": "billboard"
+    },
+    {
+      "name": "center",
+      "kind": "enum",
+      "owner": "billboard"
+    },
+    {
+      "name": "left",
+      "kind": "enum",
+      "owner": "alignment"
+    },
+    {
+      "name": "center",
+      "kind": "enum",
+      "owner": "alignment"
+    },
+    {
+      "name": "right",
+      "kind": "enum",
+      "owner": "alignment"
+    },
+    {
+      "name": "clear",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "rain",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "thunder",
+      "kind": "enum",
+      "owner": "weather"
+    },
+    {
+      "name": "standing",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "fall_flying",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "sleeping",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "swimming",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "spin_attack",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "sneaking",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "long_jumping",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "dying",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "croaking",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "using_tongue",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "sitting",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "roaring",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "sniffing",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "emerging",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "digging",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "sliding",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "shooting",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "inhaling",
+      "kind": "enum",
+      "owner": "pose"
+    },
+    {
+      "name": "main",
+      "kind": "enum",
+      "owner": "hand"
+    },
+    {
+      "name": "off",
+      "kind": "enum",
+      "owner": "hand"
+    },
+    {
+      "name": "bottom",
+      "kind": "enum",
+      "owner": "block_face"
+    },
+    {
+      "name": "top",
+      "kind": "enum",
+      "owner": "block_face"
+    },
+    {
+      "name": "north",
+      "kind": "enum",
+      "owner": "block_face"
+    },
+    {
+      "name": "south",
+      "kind": "enum",
+      "owner": "block_face"
+    },
+    {
+      "name": "west",
+      "kind": "enum",
+      "owner": "block_face"
+    },
+    {
+      "name": "east",
+      "kind": "enum",
+      "owner": "block_face"
     },
     {
       "name": "pink",
@@ -2487,21 +5433,6 @@
       "name": "notched_20",
       "kind": "enum",
       "owner": "bossbar_style"
-    },
-    {
-      "name": "melee",
-      "kind": "enum",
-      "owner": "mob_ai"
-    },
-    {
-      "name": "passive",
-      "kind": "enum",
-      "owner": "mob_ai"
-    },
-    {
-      "name": "none",
-      "kind": "enum",
-      "owner": "mob_ai"
     },
     {
       "name": "black",
@@ -2584,94 +5515,1499 @@
       "owner": "nametag_color"
     },
     {
-      "name": "standing",
+      "name": "GET",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "api_method"
     },
     {
-      "name": "fall_flying",
+      "name": "POST",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "api_method"
     },
     {
-      "name": "sleeping",
+      "name": "PUT",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "api_method"
     },
     {
-      "name": "swimming",
+      "name": "DELETE",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "api_method"
     },
     {
-      "name": "spin_attack",
+      "name": "ANY",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "api_method"
     },
     {
-      "name": "sneaking",
+      "name": "task",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "toast_frame"
     },
     {
-      "name": "long_jumping",
+      "name": "goal",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "toast_frame"
     },
     {
-      "name": "dying",
+      "name": "challenge",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "toast_frame"
     },
     {
-      "name": "croaking",
+      "name": "water",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "fishing_medium"
     },
     {
-      "name": "using_tongue",
+      "name": "lava",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "fishing_medium"
     },
     {
-      "name": "sitting",
+      "name": "arrow",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "projectile_type"
     },
     {
-      "name": "roaring",
+      "name": "spectral_arrow",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "projectile_type"
     },
     {
-      "name": "sniffing",
+      "name": "trident",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "projectile_type"
     },
     {
-      "name": "emerging",
+      "name": "snowball",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "projectile_type"
     },
     {
-      "name": "digging",
+      "name": "egg",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "projectile_type"
     },
     {
-      "name": "sliding",
+      "name": "wither",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "damage_types"
     },
     {
-      "name": "shooting",
+      "name": "wither_skull",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "damage_types"
     },
     {
-      "name": "inhaling",
+      "name": "mace_smash",
       "kind": "enum",
-      "owner": "entity_pose"
+      "owner": "damage_types"
+    },
+    {
+      "name": "trident",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "on_fire",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "campfire",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "falling_stalactite",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "fireball",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "spit",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "sting",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "spear",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "in_fire",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "arrow",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "hot_floor",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "drown",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "generic_kill",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "dragon_breath",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "lava",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "fly_into_wall",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "player_attack",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "freeze",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "falling_anvil",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "sweet_berry_bush",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "fireworks",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "stalagmite",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "generic",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "sonic_boom",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "dry_out",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "ender_pearl",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "fall",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "mob_projectile",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "mob_attack",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "thrown",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "falling_block",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "wind_charge",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "player_explosion",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "unattributed_fireball",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "sulfur_cube_hot",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "in_wall",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "starve",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "mob_attack_no_aggro",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "outside_border",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "lightning_bolt",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "out_of_world",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "magic",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "explosion",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "bad_respawn_point",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "thorns",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "indirect_magic",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "cramming",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "cactus",
+      "kind": "enum",
+      "owner": "damage_types"
+    },
+    {
+      "name": "speed",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "slowness",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "haste",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "mining_fatigue",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "strength",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "instant_health",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "instant_damage",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "jump_boost",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "nausea",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "regeneration",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "resistance",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "fire_resistance",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "water_breathing",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "invisibility",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "blindness",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "night_vision",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "hunger",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "weakness",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "poison",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "wither",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "health_boost",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "absorption",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "saturation",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "glowing",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "levitation",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "luck",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "unluck",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "slow_falling",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "conduit_power",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "dolphins_grace",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "bad_omen",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "hero_of_the_village",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "darkness",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "trial_omen",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "raid_omen",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "wind_charged",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "weaving",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "oozing",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "infested",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "breath_of_the_nautilus",
+      "kind": "enum",
+      "owner": "effect_types"
+    },
+    {
+      "name": "armor",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "armor_toughness",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "attack_damage",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "attack_knockback",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "attack_speed",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "knockback_resistance",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "max_health",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "max_absorption",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "absorption",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "movement_speed",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "fall_damage_multiplier",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "safe_fall_distance",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "sweeping_damage_ratio",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "flying_speed",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "follow_range",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "jump_strength",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "scale",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "gravity",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "step_height",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "luck",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "block_interaction_range",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "entity_interaction_range",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "explosion_knockback_resistance",
+      "kind": "enum",
+      "owner": "attribute_keys"
+    },
+    {
+      "name": "add_value",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "add",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "add_multiplied_base",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "multiply_base",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "add_multiplied_total",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "multiply_total",
+      "kind": "enum",
+      "owner": "modifier_operations"
+    },
+    {
+      "name": "speed",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "max_health",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "attack_damage",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "attack_speed",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "armor",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "knockback_resistance",
+      "kind": "enum",
+      "owner": "item_attribute_keys"
+    },
+    {
+      "name": "ACACIA_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ACACIA_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ALLAY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "AREA_EFFECT_CLOUD",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ARMADILLO",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ARMOR_STAND",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ARROW",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "AXOLOTL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BAMBOO_CHEST_RAFT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BAMBOO_RAFT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BEE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BIRCH_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BIRCH_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BLAZE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BLOCK_DISPLAY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BOGGED",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BREEZE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "BREEZE_WIND_CHARGE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CAMEL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CAMEL_HUSK",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CAVE_SPIDER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CHERRY_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CHERRY_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CHEST_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CHICKEN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "COD",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "COMMAND_BLOCK_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "COPPER_GOLEM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "COW",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CREAKING",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "CREEPER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DARK_OAK_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DARK_OAK_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DOLPHIN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DONKEY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DRAGON_FIREBALL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "DROWNED",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EGG",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ELDER_GUARDIAN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ENDERMAN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ENDERMITE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ENDER_DRAGON",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ENDER_PEARL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "END_CRYSTAL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EVOKER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EVOKER_FANGS",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EXPERIENCE_BOTTLE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EXPERIENCE_ORB",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "EYE_OF_ENDER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FALLING_BLOCK",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FIREBALL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FIREWORK_ROCKET",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FISHING_BOBBER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FOX",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FROG",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "FURNACE_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GHAST",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GIANT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GLOW_ITEM_FRAME",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GLOW_SQUID",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "GUARDIAN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "HAPPY_GHAST",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "HOGLIN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "HOPPER_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "HORSE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "HUSK",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ILLUSIONER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "INTERACTION",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "IRON_GOLEM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ITEM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ITEM_DISPLAY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ITEM_FRAME",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "JUNGLE_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "JUNGLE_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "LEASH_KNOT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "LIGHTNING_BOLT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "LINGERING_POTION",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "LLAMA",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "LLAMA_SPIT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MAGMA_CUBE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MANGROVE_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MANGROVE_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MANNEQUIN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MARKER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MOOSHROOM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "MULE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "NAUTILUS",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "OAK_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "OAK_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "OCELOT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "OMINOUS_ITEM_SPAWNER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PAINTING",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PALE_OAK_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PALE_OAK_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PANDA",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PARCHED",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PARROT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PHANTOM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PIG",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PIGLIN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PIGLIN_BRUTE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PILLAGER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PLAYER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "POLAR_BEAR",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "PUFFERFISH",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "RABBIT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "RAVAGER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SALMON",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SHEEP",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SHULKER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SHULKER_BULLET",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SILVERFISH",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SKELETON",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SKELETON_HORSE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SLIME",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SMALL_FIREBALL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SNIFFER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SNOWBALL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SNOW_GOLEM",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPAWNER_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPECTRAL_ARROW",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPIDER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPLASH_POTION",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPRUCE_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SPRUCE_CHEST_BOAT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SQUID",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "STRAY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "STRIDER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "SULFUR_CUBE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TADPOLE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TEXT_DISPLAY",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TNT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TNT_MINECART",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TRADER_LLAMA",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TRIDENT",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TROPICAL_FISH",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "TURTLE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "VEX",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "VILLAGER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "VINDICATOR",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WANDERING_TRADER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WARDEN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WIND_CHARGE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WITCH",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WITHER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WITHER_SKELETON",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WITHER_SKULL",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "WOLF",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOGLIN",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOMBIE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOMBIE_HORSE",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOMBIE_NAUTILUS",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOMBIE_VILLAGER",
+      "kind": "enum",
+      "owner": "entity_types"
+    },
+    {
+      "name": "ZOMBIFIED_PIGLIN",
+      "kind": "enum",
+      "owner": "entity_types"
     }
   ],
   "enums": {
@@ -2681,16 +7017,64 @@
       "adventure",
       "spectator"
     ],
-    "weather": [
-      "clear",
-      "rain",
-      "thunder"
-    ],
     "rarity": [
       "common",
       "uncommon",
       "rare",
       "epic"
+    ],
+    "ai": [
+      "melee",
+      "passive",
+      "none"
+    ],
+    "billboard": [
+      "fixed",
+      "vertical",
+      "horizontal",
+      "center"
+    ],
+    "alignment": [
+      "left",
+      "center",
+      "right"
+    ],
+    "weather": [
+      "clear",
+      "rain",
+      "thunder"
+    ],
+    "pose": [
+      "standing",
+      "fall_flying",
+      "sleeping",
+      "swimming",
+      "spin_attack",
+      "sneaking",
+      "long_jumping",
+      "dying",
+      "croaking",
+      "using_tongue",
+      "sitting",
+      "roaring",
+      "sniffing",
+      "emerging",
+      "digging",
+      "sliding",
+      "shooting",
+      "inhaling"
+    ],
+    "hand": [
+      "main",
+      "off"
+    ],
+    "block_face": [
+      "bottom",
+      "top",
+      "north",
+      "south",
+      "west",
+      "east"
     ],
     "bossbar_color": [
       "pink",
@@ -2707,11 +7091,6 @@
       "notched_10",
       "notched_12",
       "notched_20"
-    ],
-    "mob_ai": [
-      "melee",
-      "passive",
-      "none"
     ],
     "nametag_color": [
       "black",
@@ -2731,25 +7110,354 @@
       "yellow",
       "white"
     ],
-    "entity_pose": [
-      "standing",
-      "fall_flying",
-      "sleeping",
-      "swimming",
-      "spin_attack",
-      "sneaking",
-      "long_jumping",
-      "dying",
-      "croaking",
-      "using_tongue",
-      "sitting",
-      "roaring",
-      "sniffing",
-      "emerging",
-      "digging",
-      "sliding",
-      "shooting",
-      "inhaling"
+    "api_method": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "ANY"
+    ],
+    "toast_frame": [
+      "task",
+      "goal",
+      "challenge"
+    ],
+    "fishing_medium": [
+      "water",
+      "lava"
+    ],
+    "projectile_type": [
+      "arrow",
+      "spectral_arrow",
+      "trident",
+      "snowball",
+      "egg"
+    ],
+    "damage_types": [
+      "wither",
+      "wither_skull",
+      "mace_smash",
+      "trident",
+      "on_fire",
+      "campfire",
+      "falling_stalactite",
+      "fireball",
+      "spit",
+      "sting",
+      "spear",
+      "in_fire",
+      "arrow",
+      "hot_floor",
+      "drown",
+      "generic_kill",
+      "dragon_breath",
+      "lava",
+      "fly_into_wall",
+      "player_attack",
+      "freeze",
+      "falling_anvil",
+      "sweet_berry_bush",
+      "fireworks",
+      "stalagmite",
+      "generic",
+      "sonic_boom",
+      "dry_out",
+      "ender_pearl",
+      "fall",
+      "mob_projectile",
+      "mob_attack",
+      "thrown",
+      "falling_block",
+      "wind_charge",
+      "player_explosion",
+      "unattributed_fireball",
+      "sulfur_cube_hot",
+      "in_wall",
+      "starve",
+      "mob_attack_no_aggro",
+      "outside_border",
+      "lightning_bolt",
+      "out_of_world",
+      "magic",
+      "explosion",
+      "bad_respawn_point",
+      "thorns",
+      "indirect_magic",
+      "cramming",
+      "cactus"
+    ],
+    "effect_types": [
+      "speed",
+      "slowness",
+      "haste",
+      "mining_fatigue",
+      "strength",
+      "instant_health",
+      "instant_damage",
+      "jump_boost",
+      "nausea",
+      "regeneration",
+      "resistance",
+      "fire_resistance",
+      "water_breathing",
+      "invisibility",
+      "blindness",
+      "night_vision",
+      "hunger",
+      "weakness",
+      "poison",
+      "wither",
+      "health_boost",
+      "absorption",
+      "saturation",
+      "glowing",
+      "levitation",
+      "luck",
+      "unluck",
+      "slow_falling",
+      "conduit_power",
+      "dolphins_grace",
+      "bad_omen",
+      "hero_of_the_village",
+      "darkness",
+      "trial_omen",
+      "raid_omen",
+      "wind_charged",
+      "weaving",
+      "oozing",
+      "infested",
+      "breath_of_the_nautilus"
+    ],
+    "attribute_keys": [
+      "armor",
+      "armor_toughness",
+      "attack_damage",
+      "attack_knockback",
+      "attack_speed",
+      "knockback_resistance",
+      "max_health",
+      "max_absorption",
+      "absorption",
+      "movement_speed",
+      "fall_damage_multiplier",
+      "safe_fall_distance",
+      "sweeping_damage_ratio",
+      "flying_speed",
+      "follow_range",
+      "jump_strength",
+      "scale",
+      "gravity",
+      "step_height",
+      "luck",
+      "block_interaction_range",
+      "entity_interaction_range",
+      "explosion_knockback_resistance"
+    ],
+    "modifier_operations": [
+      "add_value",
+      "add",
+      "add_multiplied_base",
+      "multiply_base",
+      "add_multiplied_total",
+      "multiply_total"
+    ],
+    "item_attribute_keys": [
+      "speed",
+      "max_health",
+      "attack_damage",
+      "attack_speed",
+      "armor",
+      "knockback_resistance"
+    ],
+    "entity_types": [
+      "ACACIA_BOAT",
+      "ACACIA_CHEST_BOAT",
+      "ALLAY",
+      "AREA_EFFECT_CLOUD",
+      "ARMADILLO",
+      "ARMOR_STAND",
+      "ARROW",
+      "AXOLOTL",
+      "BAMBOO_CHEST_RAFT",
+      "BAMBOO_RAFT",
+      "BAT",
+      "BEE",
+      "BIRCH_BOAT",
+      "BIRCH_CHEST_BOAT",
+      "BLAZE",
+      "BLOCK_DISPLAY",
+      "BOGGED",
+      "BREEZE",
+      "BREEZE_WIND_CHARGE",
+      "CAMEL",
+      "CAMEL_HUSK",
+      "CAT",
+      "CAVE_SPIDER",
+      "CHERRY_BOAT",
+      "CHERRY_CHEST_BOAT",
+      "CHEST_MINECART",
+      "CHICKEN",
+      "COD",
+      "COMMAND_BLOCK_MINECART",
+      "COPPER_GOLEM",
+      "COW",
+      "CREAKING",
+      "CREEPER",
+      "DARK_OAK_BOAT",
+      "DARK_OAK_CHEST_BOAT",
+      "DOLPHIN",
+      "DONKEY",
+      "DRAGON_FIREBALL",
+      "DROWNED",
+      "EGG",
+      "ELDER_GUARDIAN",
+      "ENDERMAN",
+      "ENDERMITE",
+      "ENDER_DRAGON",
+      "ENDER_PEARL",
+      "END_CRYSTAL",
+      "EVOKER",
+      "EVOKER_FANGS",
+      "EXPERIENCE_BOTTLE",
+      "EXPERIENCE_ORB",
+      "EYE_OF_ENDER",
+      "FALLING_BLOCK",
+      "FIREBALL",
+      "FIREWORK_ROCKET",
+      "FISHING_BOBBER",
+      "FOX",
+      "FROG",
+      "FURNACE_MINECART",
+      "GHAST",
+      "GIANT",
+      "GLOW_ITEM_FRAME",
+      "GLOW_SQUID",
+      "GOAT",
+      "GUARDIAN",
+      "HAPPY_GHAST",
+      "HOGLIN",
+      "HOPPER_MINECART",
+      "HORSE",
+      "HUSK",
+      "ILLUSIONER",
+      "INTERACTION",
+      "IRON_GOLEM",
+      "ITEM",
+      "ITEM_DISPLAY",
+      "ITEM_FRAME",
+      "JUNGLE_BOAT",
+      "JUNGLE_CHEST_BOAT",
+      "LEASH_KNOT",
+      "LIGHTNING_BOLT",
+      "LINGERING_POTION",
+      "LLAMA",
+      "LLAMA_SPIT",
+      "MAGMA_CUBE",
+      "MANGROVE_BOAT",
+      "MANGROVE_CHEST_BOAT",
+      "MANNEQUIN",
+      "MARKER",
+      "MINECART",
+      "MOOSHROOM",
+      "MULE",
+      "NAUTILUS",
+      "OAK_BOAT",
+      "OAK_CHEST_BOAT",
+      "OCELOT",
+      "OMINOUS_ITEM_SPAWNER",
+      "PAINTING",
+      "PALE_OAK_BOAT",
+      "PALE_OAK_CHEST_BOAT",
+      "PANDA",
+      "PARCHED",
+      "PARROT",
+      "PHANTOM",
+      "PIG",
+      "PIGLIN",
+      "PIGLIN_BRUTE",
+      "PILLAGER",
+      "PLAYER",
+      "POLAR_BEAR",
+      "PUFFERFISH",
+      "RABBIT",
+      "RAVAGER",
+      "SALMON",
+      "SHEEP",
+      "SHULKER",
+      "SHULKER_BULLET",
+      "SILVERFISH",
+      "SKELETON",
+      "SKELETON_HORSE",
+      "SLIME",
+      "SMALL_FIREBALL",
+      "SNIFFER",
+      "SNOWBALL",
+      "SNOW_GOLEM",
+      "SPAWNER_MINECART",
+      "SPECTRAL_ARROW",
+      "SPIDER",
+      "SPLASH_POTION",
+      "SPRUCE_BOAT",
+      "SPRUCE_CHEST_BOAT",
+      "SQUID",
+      "STRAY",
+      "STRIDER",
+      "SULFUR_CUBE",
+      "TADPOLE",
+      "TEXT_DISPLAY",
+      "TNT",
+      "TNT_MINECART",
+      "TRADER_LLAMA",
+      "TRIDENT",
+      "TROPICAL_FISH",
+      "TURTLE",
+      "VEX",
+      "VILLAGER",
+      "VINDICATOR",
+      "WANDERING_TRADER",
+      "WARDEN",
+      "WIND_CHARGE",
+      "WITCH",
+      "WITHER",
+      "WITHER_SKELETON",
+      "WITHER_SKULL",
+      "WOLF",
+      "ZOGLIN",
+      "ZOMBIE",
+      "ZOMBIE_HORSE",
+      "ZOMBIE_NAUTILUS",
+      "ZOMBIE_VILLAGER",
+      "ZOMBIFIED_PIGLIN"
     ]
-  }
+  },
+  "namespaces": [
+    "tags",
+    "tasks",
+    "attributes"
+  ],
+  "handlers": [
+    "on_attack",
+    "on_attack_entity",
+    "on_break",
+    "on_click",
+    "on_consume",
+    "on_death",
+    "on_destroy",
+    "on_drop",
+    "on_hit",
+    "on_interact",
+    "on_left_click",
+    "on_line_click",
+    "on_pickup",
+    "on_place",
+    "on_right_click",
+    "on_right_click_block",
+    "on_spawn",
+    "on_swap_to",
+    "on_target",
+    "on_tick",
+    "on_touch",
+    "on_update",
+    "tick"
+  ]
 }

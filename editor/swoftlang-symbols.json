@@ -1,0 +1,469 @@
+{
+  "keywords": [
+    "command", "event", "on", "every", "schedule", "if", "else", "loop",
+    "while", "times", "function", "return", "call", "import", "export",
+    "var", "set", "send", "broadcast", "reply", "teleport", "spawn",
+    "launch", "give", "show", "hide", "wait", "cancel", "stop", "halt",
+    "place", "remove", "add", "clear", "delete", "create", "open", "close",
+    "play", "move", "go", "save", "load", "unload", "update", "reset",
+    "title", "actionbar", "fill", "clone", "replace", "despawn", "destroy",
+    "mount", "dismount", "dispense", "draw", "repeat", "skin", "name",
+    "line", "entry", "blank", "belowname", "fade", "damage", "knock",
+    "apply", "shoot", "is", "not", "and", "or", "either", "contains", "as",
+    "to", "in", "of", "all", "players", "true", "false"
+  ],
+  "declarations": [
+    "item", "mob", "npc", "hologram", "gui", "scoreboard", "tablist",
+    "bossbar", "server", "storage", "persistent", "api", "fishing_loot",
+    "block_handler", "placement_rule"
+  ],
+  "handlers": [
+    "on_attack", "on_attack_entity", "on_break", "on_click", "on_consume",
+    "on_death", "on_destroy", "on_drop", "on_hit", "on_interact",
+    "on_left_click", "on_line_click", "on_pickup", "on_place",
+    "on_right_click", "on_right_click_block", "on_spawn", "on_swap_to",
+    "on_target", "on_tick", "on_touch", "on_update", "tick"
+  ],
+  "builtins": [
+    "random", "round", "floor", "ceil", "abs", "uppercase", "lowercase",
+    "length", "location", "in_front_of", "item", "player", "all_players",
+    "world", "centered", "prompt_input", "min", "max", "clamp",
+    "format_number", "custom_item", "custom_id", "all_mobs", "velocity",
+    "all_entities", "spawn_text_display", "spawn_item_display",
+    "spawn_block_display", "song", "tps_string", "average_tps_string",
+    "tps_at", "anvil_loader", "polar_loader", "world_exists", "all_worlds",
+    "block_at", "block", "skin", "fetch_skin", "map_canvas",
+    "has_permission", "offline_player", "offline_player_uuid",
+    "fetch_offline_player", "all_seen_players", "new_map", "map_get",
+    "map_set", "map_has", "map_delete", "map_keys", "map_size",
+    "random_float", "random_chance", "random_bool", "random_in", "shuffle",
+    "sort", "sort_by", "sort_by_desc", "reverse", "min_by", "max_by",
+    "sort_by_key", "sort_by_key_desc", "sort_by_value", "sort_by_value_desc",
+    "sort_map_by", "sort_map_by_desc", "mod", "sqrt", "pow", "round_to",
+    "sin", "cos", "tan", "asin", "acos", "atan", "atan2", "ln", "log",
+    "log10", "pi", "e", "sign", "sum", "product", "format_decimals",
+    "random_int", "random_double", "chance", "random_element", "random_uuid",
+    "random_seed", "parse", "matches", "stripped", "formatted", "type_of",
+    "strip_color", "legacy_to_mini", "gradient", "rainbow", "distance",
+    "direction_from", "above", "below", "is_within", "blocks_in_radius",
+    "players_in_radius", "vec", "location_of", "is_running", "to_nbt",
+    "from_nbt"
+  ],
+  "types": [
+    "String", "Integer", "Double", "Boolean", "Player", "OfflinePlayer",
+    "Location", "Item", "World", "Mob", "Entity", "Display", "Vec", "Block",
+    "Schedule", "Song", "Server", "Skin", "Canvas", "list", "map",
+    "optional", "either"
+  ],
+  "namespaces": [ "tags", "tasks", "attributes" ],
+  "properties": {
+    "Player": [
+      { "name": "name", "type": "String", "writable": false },
+      { "name": "uuid", "type": "String", "writable": false },
+      { "name": "health", "type": "Double", "writable": true },
+      { "name": "max_health", "type": "Double", "writable": true },
+      { "name": "food", "type": "Integer", "writable": true },
+      { "name": "food_saturation", "type": "Double", "writable": true },
+      { "name": "level", "type": "Integer", "writable": true },
+      { "name": "exp", "type": "Double", "writable": true },
+      { "name": "gamemode", "type": "String", "writable": true },
+      { "name": "location", "type": "Location", "writable": true },
+      { "name": "world", "type": "World", "writable": true },
+      { "name": "held_item", "type": "Item", "writable": true },
+      { "name": "held_slot", "type": "Integer", "writable": true },
+      { "name": "latency", "type": "Integer", "writable": false },
+      { "name": "display_name", "type": "String", "writable": true },
+      { "name": "flying", "type": "Boolean", "writable": true },
+      { "name": "allow_flying", "type": "Boolean", "writable": true },
+      { "name": "flying_speed", "type": "Double", "writable": true },
+      { "name": "online", "type": "Boolean", "writable": false },
+      { "name": "skin", "type": "Skin", "writable": true },
+      { "name": "on_ground", "type": "Boolean", "writable": false },
+      { "name": "is_sprinting", "type": "Boolean", "writable": false },
+      { "name": "alive_ticks", "type": "Integer", "writable": false },
+      { "name": "tags", "type": "EntityTags", "writable": false },
+      { "name": "tasks", "type": "Tasks", "writable": false },
+      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "first_seen", "type": "String", "writable": false },
+      { "name": "last_seen", "type": "String", "writable": false },
+      { "name": "has_played_before", "type": "Boolean", "writable": false },
+      { "name": "armor", "type": "Double", "writable": true },
+      { "name": "armor_toughness", "type": "Double", "writable": true },
+      { "name": "attack_damage", "type": "Double", "writable": true },
+      { "name": "attack_knockback", "type": "Double", "writable": true },
+      { "name": "attack_speed", "type": "Double", "writable": true },
+      { "name": "knockback_resistance", "type": "Double", "writable": true },
+      { "name": "max_absorption", "type": "Double", "writable": true },
+      { "name": "absorption", "type": "Double", "writable": true },
+      { "name": "movement_speed", "type": "Double", "writable": true },
+      {
+        "name": "fall_damage_multiplier",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "safe_fall_distance", "type": "Double", "writable": true },
+      { "name": "sweeping_damage_ratio", "type": "Double", "writable": true },
+      { "name": "follow_range", "type": "Double", "writable": true },
+      { "name": "jump_strength", "type": "Double", "writable": true },
+      { "name": "scale", "type": "Double", "writable": true },
+      { "name": "gravity", "type": "Double", "writable": true },
+      { "name": "step_height", "type": "Double", "writable": true },
+      { "name": "luck", "type": "Double", "writable": true },
+      {
+        "name": "block_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "entity_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "explosion_knockback_resistance",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
+      { "name": "fall_distance", "type": "Double", "writable": false },
+      { "name": "is_climbing", "type": "Boolean", "writable": false },
+      { "name": "active_effects", "type": "list<String>", "writable": false }
+    ],
+    "OfflinePlayer": [
+      { "name": "name", "type": "String", "writable": false },
+      { "name": "uuid", "type": "String", "writable": false },
+      { "name": "online", "type": "Boolean", "writable": false },
+      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "first_seen", "type": "String", "writable": false },
+      { "name": "last_seen", "type": "String", "writable": false },
+      { "name": "has_played_before", "type": "Boolean", "writable": false }
+    ],
+    "Mob": [
+      { "name": "health", "type": "Double", "writable": true },
+      { "name": "max_health", "type": "Double", "writable": false },
+      { "name": "name", "type": "String", "writable": true },
+      { "name": "location", "type": "Location", "writable": true },
+      { "name": "type", "type": "String", "writable": false },
+      { "name": "custom_id", "type": "String", "writable": false },
+      { "name": "uuid", "type": "String", "writable": false },
+      { "name": "velocity", "type": "Vec", "writable": true },
+      { "name": "custom_name", "type": "String", "writable": true },
+      { "name": "name_visible", "type": "Boolean", "writable": true },
+      { "name": "glowing", "type": "Boolean", "writable": true },
+      { "name": "invisible", "type": "Boolean", "writable": true },
+      { "name": "gravity", "type": "Boolean", "writable": true },
+      { "name": "on_fire", "type": "Boolean", "writable": true },
+      { "name": "silent", "type": "Boolean", "writable": true },
+      { "name": "pose", "type": "String", "writable": true },
+      { "name": "sneaking", "type": "Boolean", "writable": true },
+      { "name": "passengers", "type": "list<Entity>", "writable": false },
+      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "alive", "type": "Boolean", "writable": false },
+      { "name": "removed", "type": "Boolean", "writable": false },
+      { "name": "on_ground", "type": "Boolean", "writable": false },
+      { "name": "alive_ticks", "type": "Integer", "writable": false },
+      { "name": "is_sprinting", "type": "Boolean", "writable": false },
+      { "name": "tags", "type": "EntityTags", "writable": false },
+      { "name": "tasks", "type": "Tasks", "writable": false },
+      { "name": "armor", "type": "Double", "writable": true },
+      { "name": "armor_toughness", "type": "Double", "writable": true },
+      { "name": "attack_damage", "type": "Double", "writable": true },
+      { "name": "attack_knockback", "type": "Double", "writable": true },
+      { "name": "attack_speed", "type": "Double", "writable": true },
+      { "name": "knockback_resistance", "type": "Double", "writable": true },
+      { "name": "max_absorption", "type": "Double", "writable": true },
+      { "name": "absorption", "type": "Double", "writable": true },
+      { "name": "movement_speed", "type": "Double", "writable": true },
+      {
+        "name": "fall_damage_multiplier",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "safe_fall_distance", "type": "Double", "writable": true },
+      { "name": "sweeping_damage_ratio", "type": "Double", "writable": true },
+      { "name": "flying_speed", "type": "Double", "writable": true },
+      { "name": "follow_range", "type": "Double", "writable": true },
+      { "name": "jump_strength", "type": "Double", "writable": true },
+      { "name": "scale", "type": "Double", "writable": true },
+      { "name": "step_height", "type": "Double", "writable": true },
+      { "name": "luck", "type": "Double", "writable": true },
+      {
+        "name": "block_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "entity_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "explosion_knockback_resistance",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
+      { "name": "fall_distance", "type": "Double", "writable": false },
+      { "name": "is_climbing", "type": "Boolean", "writable": false },
+      { "name": "active_effects", "type": "list<String>", "writable": false }
+    ],
+    "Entity": [
+      { "name": "type", "type": "String", "writable": false },
+      { "name": "uuid", "type": "String", "writable": false },
+      { "name": "location", "type": "Location", "writable": true },
+      { "name": "velocity", "type": "Vec", "writable": true },
+      { "name": "custom_name", "type": "String", "writable": true },
+      { "name": "name_visible", "type": "Boolean", "writable": true },
+      { "name": "glowing", "type": "Boolean", "writable": true },
+      { "name": "invisible", "type": "Boolean", "writable": true },
+      { "name": "gravity", "type": "Boolean", "writable": true },
+      { "name": "on_fire", "type": "Boolean", "writable": true },
+      { "name": "silent", "type": "Boolean", "writable": true },
+      { "name": "pose", "type": "String", "writable": true },
+      { "name": "sneaking", "type": "Boolean", "writable": true },
+      { "name": "passengers", "type": "list<Entity>", "writable": false },
+      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "alive", "type": "Boolean", "writable": false },
+      { "name": "removed", "type": "Boolean", "writable": false },
+      { "name": "on_ground", "type": "Boolean", "writable": false },
+      { "name": "alive_ticks", "type": "Integer", "writable": false },
+      { "name": "is_sprinting", "type": "Boolean", "writable": false },
+      { "name": "tags", "type": "EntityTags", "writable": false },
+      { "name": "tasks", "type": "Tasks", "writable": false },
+      { "name": "armor", "type": "Double", "writable": true },
+      { "name": "armor_toughness", "type": "Double", "writable": true },
+      { "name": "attack_damage", "type": "Double", "writable": true },
+      { "name": "attack_knockback", "type": "Double", "writable": true },
+      { "name": "attack_speed", "type": "Double", "writable": true },
+      { "name": "knockback_resistance", "type": "Double", "writable": true },
+      { "name": "max_health", "type": "Double", "writable": true },
+      { "name": "max_absorption", "type": "Double", "writable": true },
+      { "name": "absorption", "type": "Double", "writable": true },
+      { "name": "movement_speed", "type": "Double", "writable": true },
+      {
+        "name": "fall_damage_multiplier",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "safe_fall_distance", "type": "Double", "writable": true },
+      { "name": "sweeping_damage_ratio", "type": "Double", "writable": true },
+      { "name": "flying_speed", "type": "Double", "writable": true },
+      { "name": "follow_range", "type": "Double", "writable": true },
+      { "name": "jump_strength", "type": "Double", "writable": true },
+      { "name": "scale", "type": "Double", "writable": true },
+      { "name": "step_height", "type": "Double", "writable": true },
+      { "name": "luck", "type": "Double", "writable": true },
+      {
+        "name": "block_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "entity_interaction_range",
+        "type": "Double",
+        "writable": true
+      },
+      {
+        "name": "explosion_knockback_resistance",
+        "type": "Double",
+        "writable": true
+      },
+      { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
+      { "name": "fall_distance", "type": "Double", "writable": false },
+      { "name": "is_climbing", "type": "Boolean", "writable": false },
+      { "name": "active_effects", "type": "list<String>", "writable": false }
+    ],
+    "Item": [
+      { "name": "material", "type": "String", "writable": true },
+      { "name": "amount", "type": "Integer", "writable": true },
+      { "name": "name", "type": "String", "writable": true },
+      { "name": "lore", "type": "list<String>", "writable": true },
+      { "name": "tags", "type": "ItemTags", "writable": false }
+    ],
+    "Block": [
+      { "name": "id", "type": "String", "writable": false },
+      { "name": "properties", "type": "map<String>", "writable": false },
+      { "name": "nbt", "type": "optional<String>", "writable": false },
+      { "name": "tasks", "type": "Tasks", "writable": false }
+    ],
+    "Location": [
+      { "name": "x", "type": "Double", "writable": true },
+      { "name": "y", "type": "Double", "writable": true },
+      { "name": "z", "type": "Double", "writable": true },
+      { "name": "yaw", "type": "Double", "writable": true },
+      { "name": "pitch", "type": "Double", "writable": true },
+      { "name": "block_x", "type": "Integer", "writable": false },
+      { "name": "block_y", "type": "Integer", "writable": false },
+      { "name": "block_z", "type": "Integer", "writable": false }
+    ],
+    "World": [
+      { "name": "time", "type": "Integer", "writable": true },
+      { "name": "time_rate", "type": "Integer", "writable": true },
+      { "name": "weather", "type": "String", "writable": true },
+      { "name": "raining", "type": "Boolean", "writable": false },
+      { "name": "thundering", "type": "Boolean", "writable": false }
+    ],
+    "Vec": [
+      { "name": "x", "type": "Double", "writable": true },
+      { "name": "y", "type": "Double", "writable": true },
+      { "name": "z", "type": "Double", "writable": true },
+      { "name": "length", "type": "Double", "writable": false },
+      { "name": "normalized", "type": "Vec", "writable": false }
+    ],
+    "Display": [
+      { "name": "text", "type": "String", "writable": true },
+      { "name": "item", "type": "String", "writable": true },
+      { "name": "block", "type": "String", "writable": true },
+      { "name": "scale", "type": "Double", "writable": true },
+      { "name": "translation", "type": "Location", "writable": true },
+      { "name": "rotation", "type": "Location", "writable": true },
+      { "name": "billboard", "type": "String", "writable": true },
+      { "name": "glow_color", "type": "String", "writable": true },
+      { "name": "background", "type": "String", "writable": true },
+      { "name": "alignment", "type": "String", "writable": true },
+      { "name": "line_width", "type": "Integer", "writable": true },
+      { "name": "see_through", "type": "Boolean", "writable": true },
+      { "name": "view_range", "type": "Double", "writable": true },
+      { "name": "tasks", "type": "Tasks", "writable": false }
+    ],
+    "Skin": [
+      { "name": "texture", "type": "String", "writable": false },
+      { "name": "signature", "type": "String", "writable": false }
+    ],
+    "Song": [
+      { "name": "title", "type": "String", "writable": false },
+      { "name": "author", "type": "String", "writable": false },
+      { "name": "length", "type": "Integer", "writable": false },
+      { "name": "speed", "type": "Double", "writable": false }
+    ],
+    "Server": [
+      { "name": "tps", "type": "Double", "writable": false },
+      { "name": "average_tps", "type": "Double", "writable": false },
+      { "name": "mspt", "type": "Double", "writable": false },
+      { "name": "motd", "type": "String", "writable": true }
+    ],
+    "Canvas": [
+      { "name": "width", "type": "Integer", "writable": false },
+      { "name": "height", "type": "Integer", "writable": false }
+    ],
+    "Request": [
+      { "name": "method", "type": "String", "writable": false },
+      { "name": "path", "type": "String", "writable": false },
+      { "name": "query", "type": "String", "writable": false },
+      { "name": "body", "type": "String", "writable": false },
+      { "name": "params", "type": "RequestParams", "writable": false }
+    ]
+  },
+  "enums": {
+    "gamemode": [ "survival", "creative", "adventure", "spectator" ],
+    "rarity": [ "common", "uncommon", "rare", "epic" ],
+    "ai": [ "melee", "passive", "none" ],
+    "billboard": [ "fixed", "vertical", "horizontal", "center" ],
+    "alignment": [ "left", "center", "right" ],
+    "weather": [ "clear", "rain", "thunder" ],
+    "pose": [
+      "standing", "fall_flying", "sleeping", "swimming", "spin_attack",
+      "sneaking", "long_jumping", "dying", "croaking", "using_tongue",
+      "sitting", "roaring", "sniffing", "emerging", "digging", "sliding",
+      "shooting", "inhaling"
+    ],
+    "hand": [ "main", "off" ],
+    "block_face": [ "bottom", "top", "north", "south", "west", "east" ],
+    "bossbar_color": [
+      "pink", "blue", "red", "green", "yellow", "purple", "white"
+    ],
+    "bossbar_style": [
+      "progress", "notched_6", "notched_10", "notched_12", "notched_20"
+    ],
+    "nametag_color": [
+      "black", "dark_blue", "dark_green", "dark_aqua", "dark_red",
+      "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua",
+      "red", "light_purple", "yellow", "white"
+    ],
+    "api_method": [ "GET", "POST", "PUT", "DELETE", "ANY" ],
+    "toast_frame": [ "task", "goal", "challenge" ],
+    "fishing_medium": [ "water", "lava" ],
+    "projectile_type": [
+      "arrow", "spectral_arrow", "trident", "snowball", "egg"
+    ],
+    "damage_types": [
+      "wither", "wither_skull", "mace_smash", "trident", "on_fire",
+      "campfire", "falling_stalactite", "fireball", "spit", "sting", "spear",
+      "in_fire", "arrow", "hot_floor", "drown", "generic_kill",
+      "dragon_breath", "lava", "fly_into_wall", "player_attack", "freeze",
+      "falling_anvil", "sweet_berry_bush", "fireworks", "stalagmite",
+      "generic", "sonic_boom", "dry_out", "ender_pearl", "fall",
+      "mob_projectile", "mob_attack", "thrown", "falling_block",
+      "wind_charge", "player_explosion", "unattributed_fireball",
+      "sulfur_cube_hot", "in_wall", "starve", "mob_attack_no_aggro",
+      "outside_border", "lightning_bolt", "out_of_world", "magic",
+      "explosion", "bad_respawn_point", "thorns", "indirect_magic",
+      "cramming", "cactus"
+    ],
+    "effect_types": [
+      "speed", "slowness", "haste", "mining_fatigue", "strength",
+      "instant_health", "instant_damage", "jump_boost", "nausea",
+      "regeneration", "resistance", "fire_resistance", "water_breathing",
+      "invisibility", "blindness", "night_vision", "hunger", "weakness",
+      "poison", "wither", "health_boost", "absorption", "saturation",
+      "glowing", "levitation", "luck", "unluck", "slow_falling",
+      "conduit_power", "dolphins_grace", "bad_omen", "hero_of_the_village",
+      "darkness", "trial_omen", "raid_omen", "wind_charged", "weaving",
+      "oozing", "infested", "breath_of_the_nautilus"
+    ],
+    "attribute_keys": [
+      "armor", "armor_toughness", "attack_damage", "attack_knockback",
+      "attack_speed", "knockback_resistance", "max_health", "max_absorption",
+      "absorption", "movement_speed", "fall_damage_multiplier",
+      "safe_fall_distance", "sweeping_damage_ratio", "flying_speed",
+      "follow_range", "jump_strength", "scale", "gravity", "step_height",
+      "luck", "block_interaction_range", "entity_interaction_range",
+      "explosion_knockback_resistance"
+    ],
+    "modifier_operations": [
+      "add_value", "add", "add_multiplied_base", "multiply_base",
+      "add_multiplied_total", "multiply_total"
+    ],
+    "item_attribute_keys": [
+      "speed", "max_health", "attack_damage", "attack_speed", "armor",
+      "knockback_resistance"
+    ],
+    "entity_types": [
+      "ACACIA_BOAT", "ACACIA_CHEST_BOAT", "ALLAY", "AREA_EFFECT_CLOUD",
+      "ARMADILLO", "ARMOR_STAND", "ARROW", "AXOLOTL", "BAMBOO_CHEST_RAFT",
+      "BAMBOO_RAFT", "BAT", "BEE", "BIRCH_BOAT", "BIRCH_CHEST_BOAT", "BLAZE",
+      "BLOCK_DISPLAY", "BOGGED", "BREEZE", "BREEZE_WIND_CHARGE", "CAMEL",
+      "CAMEL_HUSK", "CAT", "CAVE_SPIDER", "CHERRY_BOAT", "CHERRY_CHEST_BOAT",
+      "CHEST_MINECART", "CHICKEN", "COD", "COMMAND_BLOCK_MINECART",
+      "COPPER_GOLEM", "COW", "CREAKING", "CREEPER", "DARK_OAK_BOAT",
+      "DARK_OAK_CHEST_BOAT", "DOLPHIN", "DONKEY", "DRAGON_FIREBALL",
+      "DROWNED", "EGG", "ELDER_GUARDIAN", "ENDERMAN", "ENDERMITE",
+      "ENDER_DRAGON", "ENDER_PEARL", "END_CRYSTAL", "EVOKER", "EVOKER_FANGS",
+      "EXPERIENCE_BOTTLE", "EXPERIENCE_ORB", "EYE_OF_ENDER", "FALLING_BLOCK",
+      "FIREBALL", "FIREWORK_ROCKET", "FISHING_BOBBER", "FOX", "FROG",
+      "FURNACE_MINECART", "GHAST", "GIANT", "GLOW_ITEM_FRAME", "GLOW_SQUID",
+      "GOAT", "GUARDIAN", "HAPPY_GHAST", "HOGLIN", "HOPPER_MINECART",
+      "HORSE", "HUSK", "ILLUSIONER", "INTERACTION", "IRON_GOLEM", "ITEM",
+      "ITEM_DISPLAY", "ITEM_FRAME", "JUNGLE_BOAT", "JUNGLE_CHEST_BOAT",
+      "LEASH_KNOT", "LIGHTNING_BOLT", "LINGERING_POTION", "LLAMA",
+      "LLAMA_SPIT", "MAGMA_CUBE", "MANGROVE_BOAT", "MANGROVE_CHEST_BOAT",
+      "MANNEQUIN", "MARKER", "MINECART", "MOOSHROOM", "MULE", "NAUTILUS",
+      "OAK_BOAT", "OAK_CHEST_BOAT", "OCELOT", "OMINOUS_ITEM_SPAWNER",
+      "PAINTING", "PALE_OAK_BOAT", "PALE_OAK_CHEST_BOAT", "PANDA", "PARCHED",
+      "PARROT", "PHANTOM", "PIG", "PIGLIN", "PIGLIN_BRUTE", "PILLAGER",
+      "PLAYER", "POLAR_BEAR", "PUFFERFISH", "RABBIT", "RAVAGER", "SALMON",
+      "SHEEP", "SHULKER", "SHULKER_BULLET", "SILVERFISH", "SKELETON",
+      "SKELETON_HORSE", "SLIME", "SMALL_FIREBALL", "SNIFFER", "SNOWBALL",
+      "SNOW_GOLEM", "SPAWNER_MINECART", "SPECTRAL_ARROW", "SPIDER",
+      "SPLASH_POTION", "SPRUCE_BOAT", "SPRUCE_CHEST_BOAT", "SQUID", "STRAY",
+      "STRIDER", "SULFUR_CUBE", "TADPOLE", "TEXT_DISPLAY", "TNT",
+      "TNT_MINECART", "TRADER_LLAMA", "TRIDENT", "TROPICAL_FISH", "TURTLE",
+      "VEX", "VILLAGER", "VINDICATOR", "WANDERING_TRADER", "WARDEN",
+      "WIND_CHARGE", "WITCH", "WITHER", "WITHER_SKELETON", "WITHER_SKULL",
+      "WOLF", "ZOGLIN", "ZOMBIE", "ZOMBIE_HORSE", "ZOMBIE_NAUTILUS",
+      "ZOMBIE_VILLAGER", "ZOMBIFIED_PIGLIN"
+    ]
+  }
+}

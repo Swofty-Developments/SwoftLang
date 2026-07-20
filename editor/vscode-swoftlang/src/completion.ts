@@ -1,17 +1,24 @@
 /*
  * Context-aware completion for SwoftLang.
  *
- * Instead of dumping all ~400 symbols on every keystroke, we inspect the text
- * on the line before the cursor and return only the bucket that can legally
- * appear there. This module is deliberately free of any LSP connection state so
- * it can be driven directly from a headless test.
+ * Instead of dumping all ~1100 symbols on every keystroke, we inspect the text
+ * on the line before the cursor (and the enclosing block) and return only the
+ * bucket that can legally appear there. This module is deliberately free of any
+ * LSP connection state so it can be driven directly from a headless test.
  *
- *   - after `.`                       -> property names only
- *   - after `:` / inside `<…>` / `is` -> types only
- *   - inside a "…" string             -> nothing (MiniMessage tags after `<`)
- *   - statement start, inside a block  -> statement keywords + builtins + consts
- *   - statement start, at top level    -> declaration keywords
- *   - any other expression position    -> builtins + consts + word operators
+ *   - after `.`                       -> property names of the receiver's type
+ *   - after `:` / inside `<…>` / `is`  -> types only
+ *   - `<key>:` config value            -> that key's enum/bareword values
+ *   - inside a "…" string              -> MiniMessage tags after `<`, else nothing
+ *   - statement start, top level        -> declaration keywords (snippets)
+ *   - statement start inside `attributes {` -> attribute keys
+ *   - statement start inside a decl body -> config keys + handlers + namespaces
+ *   - statement start inside a block     -> statement keywords + builtins + consts
+ *   - any other expression position      -> locals + builtins + consts + operators
+ *
+ * The full breadth (every keyword / builtin / type / enum group / handler /
+ * namespace / per-owner property) is driven by the bundled symbol dump, so this
+ * file never hard-codes symbol lists that can drift from the compiler.
  */
 import {
   CompletionItem,
@@ -33,14 +40,18 @@ export interface Sym {
 export interface SymData {
   symbols: Sym[];
   enums: Record<string, string[]>;
+  namespaces?: string[];
+  handlers?: string[];
 }
 
 // What the analyzer can work out about the cursor's surroundings, used to infer
-// the type of a `.`-receiver so property completion is owner-precise.
+// the type of a `.`-receiver so property completion is owner-precise, and the
+// enclosing block so config-key/handler/attribute completion is context-precise.
 export interface ScriptContext {
   event?: string; // enclosing `event <Name> { }` handler name, e.g. 'PlayerJoin'
   argTypes?: Record<string, string>; // command `arguments { name: Type }`
   varTypes?: Record<string, string>; // locals with an inferable type
+  block?: string; // innermost enclosing block opener keyword, e.g. 'item', 'attributes', 'execute'
 }
 
 export interface CompletionEngine {
@@ -60,22 +71,72 @@ const SUPERTYPES: Record<string, string[]> = {
   Player: ['OfflinePlayer'],
 };
 
+// Decl-body opener keyword -> the runtime type whose properties double as its
+// config keys (item props: material/amount/name/lore, mob props: type/health…).
+const DECL_TYPE: Record<string, string> = { item: 'Item', mob: 'Mob' };
+
+// Decl bodies where inline `on_<event>` handler blocks and tags/attributes
+// namespaces are legal at statement start.
+const HANDLER_HOST = new Set([
+  'item', 'mob', 'npc', 'hologram', 'block_handler', 'placement_rule', 'slot', 'gui',
+]);
+
 // Snippet templates for constructs where a fill-in-the-blanks body genuinely
 // helps. Trivial keywords (halt/else/true/none/…) stay plain text.
 const SNIPPETS: Record<string, string> = {
+  // --- statements ---
   send: 'send "$1" to ${2:sender}',
   broadcast: 'broadcast "$1"',
   teleport: 'teleport $1 to $2',
   set: 'set ${1:name} to $2',
+  give: 'give item "${1:id}" to ${2:sender} amount ${3:1}',
+  title: 'title "$1" subtitle "$2" to ${3:sender}',
+  actionbar: 'actionbar "$1" to ${2:sender}',
+  damage: 'damage ${1:target} by ${2:1.0} as "${3:generic}"',
+  reply: 'reply with "$1"',
+  wait: 'wait ${1:1} ${2|tick,ticks,second,seconds|}',
   if: 'if $1 {\n\t$0\n}',
   while: 'while $1 {\n\t$0\n}',
-  loop: 'loop ${1:10} times as ${2:i} {\n\t$0\n}',
-  function: 'function ${1:name}(${2:x: Integer}) {\n\t$0\n}',
+  loop: 'loop ${1:all_players()} as ${2:p} {\n\t$0\n}',
+  show: 'show ${1|scoreboard,tablist,bossbar,hologram|} "$2" to ${3:sender}',
+  open: 'open gui "${1:id}" to ${2:sender}',
+  close: 'close gui for ${1:sender}',
+  spawn: 'spawn ${1|mob,entity,particle|} "$2" at $3',
+  // --- declarations / top-level constructs ---
   command: 'command "${1:name}" {\n\texecute {\n\t\t$0\n\t}\n}',
   event: 'event ${1:PlayerJoin} {\n\texecute {\n\t\t$0\n\t}\n}',
-  mob: 'mob "${1:id}" {\n\ttype: "${2:ZOMBIE}"\n\t$0\n}',
-  show: 'show ${1|scoreboard,tablist,bossbar|} "$2" to $3',
-  spawn: 'spawn $1',
+  on: 'on ${1:EntityDamage} {\n\t$0\n}',
+  function: 'function ${1:name}(${2:x: Integer}) {\n\t$0\n}',
+  every: 'every ${1:1} ${2|tick,ticks,second,seconds|} {\n\t$0\n}',
+  schedule: 'schedule "${1:name}" every ${2:1} seconds {\n\t$0\n}',
+  item: 'item "${1:id}" {\n\tmaterial: "${2:DIAMOND}"\n\tname: "$3"\n\trarity: ${4|common,uncommon,rare,epic|}\n\t$0\n}',
+  mob: 'mob "${1:id}" {\n\ttype: "${2:ZOMBIE}"\n\thealth: ${3:20}\n\tai: ${4|melee,passive,none|}\n\t$0\n}',
+  npc: 'npc "${1:id}" {\n\tlocation: location($2)\n\tname: "$3"\n\t$0\n}',
+  hologram: 'hologram "${1:id}" {\n\tlocation: location($2)\n\tlines {\n\t\tline "$3"\n\t}\n}',
+  gui: 'gui "${1:id}" {\n\trows: ${2:6}\n\ttitle: "$3"\n\t$0\n}',
+  scoreboard: 'scoreboard "${1:id}" {\n\ttitle: "$2"\n\tlines {\n\t\tline "$3"\n\t}\n}',
+  tablist: 'tablist "${1:id}" {\n\theader: "$2"\n\tfooter: "$3"\n}',
+  bossbar: 'bossbar "${1:id}" {\n\ttext: "$2"\n\tcolor: ${3|pink,blue,red,green,yellow,purple,white|}\n\tstyle: ${4|progress,notched_6,notched_10,notched_12,notched_20|}\n}',
+  block_handler: 'block_handler "${1:id}" {\n\ton_break {\n\t\t$0\n\t}\n}',
+  placement_rule: 'placement_rule for "${1:block}" {\n\ton_place(loc, face, cursor, against, player) -> Block {\n\t\t$0\n\t}\n}',
+  fishing_loot: 'fishing_loot "${1:id}" {\n\tmedium: ${2|water,lava|}\n\t$0\n}',
+  api: 'api "${1:/path}" {\n\tmethod: ${2|GET,POST,PUT,DELETE,ANY|}\n\texecute {\n\t\t$0\n\t}\n}',
+  server: 'server {\n\tauth: ${1|mojang,velocity,bungeecord,offline|}\n\tport: ${2:25565}\n\t$0\n}',
+  storage: 'storage {\n\tbackend: "${1|sqlite,mysql,mongodb,files|}"\n}',
+  persistent: 'persistent ${1:name} for Player: ${2:Integer} = $3',
+  import: 'import "$1"',
+  export: 'export function ${1:name}(${2}) {\n\t$0\n}',
+  // --- namespaces ---
+  tags: 'tags {\n\t$0\n}',
+  attributes: 'attributes {\n\t$0\n}',
+  tasks: 'tasks {\n\t$0\n}',
+};
+
+// Per-handler override snippets; everything else gets a bare `name { … }` block.
+const HANDLER_SNIPPETS: Record<string, string> = {
+  on_click: 'on_click(${1|left,right,player|}) {\n\t$0\n}',
+  on_place: 'on_place(loc, face, cursor, against, player) -> Block {\n\t$0\n}',
+  on_update: 'on_update(loc, cur, neighbours) -> Block {\n\t$0\n}',
 };
 
 function completionKind(kind: string): CompletionItemKind {
@@ -92,7 +153,10 @@ function completionKind(kind: string): CompletionItemKind {
     case 'builtin':
       return CompletionItemKind.Function;
     case 'event':
+    case 'handler':
       return CompletionItemKind.Event;
+    case 'namespace':
+      return CompletionItemKind.Module;
     case 'property':
       return CompletionItemKind.Property;
     case 'enum':
@@ -102,17 +166,21 @@ function completionKind(kind: string): CompletionItemKind {
   }
 }
 
-// Sub-buckets for the ~62 symbols tagged plainly as `keyword`.
+// Sub-buckets for the symbols tagged plainly as `keyword`.
 const STATEMENT_KEYWORDS = new Set([
   'if', 'else', 'halt', 'loop', 'while', 'return', 'wait', 'spawn', 'call', 'repeat',
   'stop', 'send', 'teleport', 'set', 'cancel', 'broadcast', 'open', 'close', 'replace',
   'show', 'hide', 'update', 'title', 'subtitle', 'actionbar', 'clear', 'line', 'blank',
   'entry', 'fill', 'give', 'dispense', 'mount', 'dismount', 'launch', 'remove', 'reset',
-  'belowname', 'go', 'back',
+  'belowname', 'go', 'back', 'damage', 'knock', 'apply', 'shoot', 'move', 'play', 'draw',
+  'reply', 'save', 'load',
 ]);
-const CONNECTIVE_KEYWORDS = new Set(['to', 'at', 'with', 'for', 'every', 'manual', 'as', 'times']);
-// Declaration keywords that live at top level but are not in the symbol table.
-const EXTRA_TOPLEVEL = ['storage', 'persistent', 'import', 'export', 'fishing_loot'];
+const CONNECTIVE_KEYWORDS = new Set([
+  'to', 'at', 'with', 'for', 'every', 'manual', 'as', 'times', 'in', 'of', 'from', 'by',
+]);
+// Declaration-adjacent top-level keywords not tagged 'declaration' in the dump.
+const EXTRA_TOPLEVEL = ['import', 'export'];
+
 // A small, curated MiniMessage palette offered inside strings after `<`.
 const MINIMESSAGE_TAGS = [
   'red', 'green', 'blue', 'yellow', 'aqua', 'gold', 'gray', 'white', 'black',
@@ -121,35 +189,37 @@ const MINIMESSAGE_TAGS = [
   'reset', 'newline',
 ];
 
-// Config property key -> its exact allowed bareword values. Verified against
-// compiler/lib/registry.ml (and parse_decl.ml/parse_ui.ml for auth/backend/
-// numbers). Keys not in this table (host/port/name/title/…) fall through to the
-// generic context logic rather than the enum bucket.
-const PROPERTY_VALUES: Record<string, string[]> = {
+// Config property key -> exact allowed bareword values that are NOT one of the
+// enum groups in the dump (auth/backend/numbers/etc). Verified against
+// compiler/lib/registry.ml + parse_decl.ml/parse_ui.ml.
+const LITERAL_PROPERTY_VALUES: Record<string, string[]> = {
   numbers: ['hidden', 'shown'],
   auth: ['mojang', 'velocity', 'bungeecord', 'offline'],
   backend: ['files', 'sqlite', 'mysql', 'mongodb'],
-  ai: ['melee', 'passive', 'none'],
-  rarity: ['common', 'uncommon', 'rare', 'epic'],
-  medium: ['water', 'lava'],
   activation: ['right_click', 'left_click'],
-  color: ['pink', 'blue', 'red', 'green', 'yellow', 'purple', 'white'], // bossbar_colors
-  style: ['progress', 'notched_6', 'notched_10', 'notched_12', 'notched_20'], // bossbar_styles
+  filter: ['left', 'right', 'any'], // item on_click filters
   skin: ['green', 'gray', 'cyan', 'blue', 'purple', 'orange'], // tablist_skins
   lighting: ['true', 'false'],
   glint: ['true', 'false'],
+  editable: ['true', 'false'],
+  look_at_players: ['true', 'false'],
   update: ['manual'], // the other form `every <n> ticks|seconds` is left to the user
-  weather: ['clear', 'rain', 'thunder'],
-  gamemode: ['survival', 'creative', 'adventure', 'spectator'],
-  billboard: ['fixed', 'vertical', 'horizontal', 'center'],
-  alignment: ['left', 'center', 'right'],
-  filter: ['left', 'right', 'any'], // item on_click filters
-  method: ['GET', 'POST', 'PUT', 'DELETE', 'ANY'],
-  frame: ['task', 'goal', 'challenge'],
-  glow_color: [
-    'black', 'dark_blue', 'dark_green', 'dark_aqua', 'dark_red', 'dark_purple', 'gold', 'gray',
-    'dark_gray', 'blue', 'green', 'aqua', 'red', 'light_purple', 'yellow', 'white',
-  ], // nametag_colors (NamedTextColor)
+};
+
+// Config property key -> the enum GROUP (in data.enums) supplying its values,
+// for keys whose name differs from the group name. Keys whose name equals a
+// group name (rarity/ai/weather/gamemode/pose/billboard/alignment/hand) resolve
+// directly and need no entry here.
+const KEY_TO_ENUM: Record<string, string> = {
+  style: 'bossbar_style',
+  color: 'bossbar_color',
+  glow_color: 'nametag_color',
+  medium: 'fishing_medium',
+  method: 'api_method',
+  frame: 'toast_frame',
+  face: 'block_face',
+  operation: 'modifier_operations',
+  projectile: 'projectile_type',
 };
 
 // `<key>:` at the start of a config line, cursor in the value position.
@@ -275,7 +345,44 @@ export function collectLocals(text: string): string[] {
   return order;
 }
 
+// Walk the text before the cursor with a brace stack, tracking the opener
+// keyword of each block (the first identifier on the line that carries the `{`).
+// Returns the innermost still-open block keyword, e.g. 'attributes' / 'execute'
+// / 'item', or undefined at top level.
+export function enclosingBlock(textBefore: string): string | undefined {
+  const stack: string[] = [];
+  let inStr = false;
+  let lineStart = 0;
+  for (let i = 0; i < textBefore.length; i++) {
+    const c = textBefore[i];
+    if (c === '\n') lineStart = i + 1;
+    if (inStr) {
+      if (c === '\\') i++;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === '/' && textBefore[i + 1] === '/') {
+      while (i < textBefore.length && textBefore[i] !== '\n') i++;
+      if (i < textBefore.length) lineStart = i + 1;
+    } else if (c === '{') {
+      const seg = textBefore.slice(lineStart, i);
+      const kw = /([A-Za-z_]\w*)/.exec(seg);
+      stack.push(kw ? kw[1] : '');
+    } else if (c === '}') stack.pop();
+  }
+  for (let k = stack.length - 1; k >= 0; k--) if (stack[k]) return stack[k];
+  return undefined;
+}
+
 export function createCompletionEngine(data: SymData): CompletionEngine {
+  const enums = data.enums || {};
+  const namespaces = data.namespaces || ['tags', 'tasks', 'attributes'];
+  const handlerNames =
+    data.handlers && data.handlers.length
+      ? data.handlers
+      : data.symbols.filter((s) => s.kind === 'handler').map((s) => s.name);
+
   const buildItem = (s: Sym, idx: number): CompletionItem => {
     const item: CompletionItem = { label: s.name, kind: completionKind(s.kind), data: idx };
     if (s.kind === 'builtin' && s.signature) item.detail = s.signature;
@@ -284,8 +391,14 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     } else if (s.kind === 'enum' && s.owner) item.detail = `${s.owner} value`;
     else item.detail = s.kind;
     if (s.doc) item.documentation = s.doc;
-    // Snippet body only for statements/declarations — never a like-named property.
-    if ((s.kind === 'keyword' || s.kind === 'declaration') && SNIPPETS[s.name]) {
+    // Snippet body only for statements/declarations/handlers/namespaces — never
+    // a like-named property.
+    if (
+      (s.kind === 'keyword' ||
+        s.kind === 'declaration' ||
+        s.kind === 'namespace') &&
+      SNIPPETS[s.name]
+    ) {
       item.insertText = SNIPPETS[s.name];
       item.insertTextFormat = InsertTextFormat.Snippet;
     }
@@ -299,6 +412,7 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
   const operatorItems: CompletionItem[] = [];
   const statementKwItems: CompletionItem[] = [];
   const connectiveItems: CompletionItem[] = [];
+  const namespaceItems: CompletionItem[] = [];
   // Owner-precise property data for `.`-completion and chain resolution.
   const propsByOwner = new Map<string, CompletionItem[]>();
   const propReturnType = new Map<string, string>(); // `owner\0name` -> value type
@@ -332,19 +446,40 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
       case 'operator':
         operatorItems.push(item);
         break;
+      case 'namespace':
+        namespaceItems.push(item);
+        break;
       // properties are offered owner-filtered via propsByOwner, not here.
       case 'keyword':
         if (STATEMENT_KEYWORDS.has(s.name)) statementKwItems.push(item);
         else if (CONNECTIVE_KEYWORDS.has(s.name)) connectiveItems.push(item);
         break;
-      // events / enums are intentionally not offered from generic contexts.
+      // events / enums / handlers are offered from targeted contexts, not here.
       default:
         break;
     }
   });
   for (const name of EXTRA_TOPLEVEL) {
-    declItems.push({ label: name, kind: CompletionItemKind.Class, detail: 'declaration', data: -1 });
+    declItems.push({
+      label: name,
+      kind: CompletionItemKind.Class,
+      detail: 'declaration',
+      insertText: SNIPPETS[name],
+      insertTextFormat: SNIPPETS[name] ? InsertTextFormat.Snippet : undefined,
+      data: -1,
+    });
   }
+
+  // Inline `on_<event>` handler snippet items (from the dump's handler list).
+  const handlerItems: CompletionItem[] = handlerNames.map((name) => ({
+    label: name,
+    kind: CompletionItemKind.Event,
+    detail: 'event handler',
+    insertText: HANDLER_SNIPPETS[name] || `${name} {\n\t$0\n}`,
+    insertTextFormat: InsertTextFormat.Snippet,
+    data: -1,
+  }));
+
   const minimessageItems: CompletionItem[] = MINIMESSAGE_TAGS.map((t) => ({
     label: t,
     kind: CompletionItemKind.Color,
@@ -373,6 +508,22 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
       detail: 'local variable',
       data: -1,
     }));
+
+  const enumItems = (group: string, values: string[]): CompletionItem[] =>
+    values.map((v) => ({
+      label: v,
+      kind: CompletionItemKind.EnumMember,
+      detail: `${group} value`,
+      data: -1,
+    }));
+
+  // Config value set for a `<key>:` position, or undefined to fall through.
+  const valuesForKey = (key: string): { group: string; values: string[] } | undefined => {
+    if (LITERAL_PROPERTY_VALUES[key]) return { group: key, values: LITERAL_PROPERTY_VALUES[key] };
+    const group = KEY_TO_ENUM[key] && enums[KEY_TO_ENUM[key]] ? KEY_TO_ENUM[key] : key;
+    if (enums[group]) return { group, values: enums[group] };
+    return undefined;
+  };
 
   // Walk supertypes when looking up a property's value type.
   const lookupPropType = (owner: string, name: string): string | undefined => {
@@ -416,6 +567,20 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
       for (const it of propsByOwner.get(o) || []) items.push(it);
     }
     return dedupeByLabel(withGroup(items, '0'));
+  };
+
+  // Config keys for a decl body: the mapped runtime type's properties presented
+  // as `key: ` inserts, deduped.
+  const configKeysFor = (block: string): CompletionItem[] => {
+    const type = DECL_TYPE[block];
+    if (!type) return [];
+    const out: CompletionItem[] = [];
+    for (const o of [type, ...(SUPERTYPES[type] || [])]) {
+      for (const it of propsByOwner.get(o) || []) {
+        out.push({ ...it, insertText: `${it.label}: `, detail: 'config key' });
+      }
+    }
+    return dedupeByLabel(out);
   };
 
   const analyze = (text: string): ScriptContext => {
@@ -477,7 +642,9 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
       if (rt) varTypes[vm[1]] = rt;
     }
 
-    return { event, argTypes, varTypes };
+    const block = enclosingBlock(text);
+
+    return { event, argTypes, varTypes, block };
   };
 
   const getCompletions = (
@@ -498,29 +665,42 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
       if (!type) return []; // can't infer the receiver -> nothing, not the wall
       return propsForType(type);
     }
-    // 3) Config property value: `<key>: ` with a known enum -> only those values.
+    // 3) Config property value: `<key>: ` with known values -> only those.
     const pv = PROP_VALUE_RE.exec(prefix);
-    if (pv && PROPERTY_VALUES[pv[1]]) {
-      const key = pv[1];
-      const items = PROPERTY_VALUES[key].map<CompletionItem>((v) => ({
-        label: v,
-        kind: CompletionItemKind.EnumMember,
-        detail: `${key} value`,
-        data: -1,
-      }));
-      return withGroup(items, '0');
+    if (pv) {
+      const vs = valuesForKey(pv[1]);
+      if (vs) return withGroup(enumItems(vs.group, vs.values), '0');
     }
     // 4) Type position (after `is [a]`, inside `<…>`, or after a `:` annotation).
     if (isTypeContext(prefix)) return withGroup(typeItems, '0');
     // 5) Statement start — only leading whitespace and a partial word.
     if (/^\s*\w*$/.test(prefix)) {
       if (depth <= 0) return dedupeByLabel(withGroup(declItems, '0'));
-      // Inside a block: the user's own variables first, then statement keywords.
+
+      // 5a) Inside an `attributes { }` block: the attribute keys, nothing else.
+      if (ctx.block === 'attributes') {
+        const keys = [...(enums.attribute_keys || []), ...(enums.item_attribute_keys || [])];
+        return dedupeByLabel(withGroup(enumItems('attribute', keys), '0'));
+      }
+
+      // 5b) Inside a declaration body (item/mob/npc/…): config keys + inline
+      //     handlers + tags/attributes namespaces come first, then the usual
+      //     statement palette so nothing is lost.
+      const head: CompletionItem[] = [];
+      if (ctx.block && HANDLER_HOST.has(ctx.block)) {
+        head.push(
+          ...withGroup(configKeysFor(ctx.block), '0'),
+          ...withGroup(handlerItems, '1'),
+          ...withGroup(namespaceItems, '1'),
+        );
+      }
+      // 5c) The user's own variables, then statement keywords / builtins / consts.
       return dedupeByLabel([
-        ...withGroup(localItems(locals), '0'),
-        ...withGroup(statementKwItems, '1'),
-        ...withGroup(builtinItems, '2'),
-        ...withGroup(constantItems, '3'),
+        ...head,
+        ...withGroup(localItems(locals), '2'),
+        ...withGroup(statementKwItems, '3'),
+        ...withGroup(builtinItems, '4'),
+        ...withGroup(constantItems, '5'),
       ]);
     }
     // 6) General expression position — local variables first (what the user wants),

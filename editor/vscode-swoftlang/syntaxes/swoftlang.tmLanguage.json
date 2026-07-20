@@ -13,7 +13,31 @@
       "include": "#strings"
     },
     {
+      "include": "#builtins"
+    },
+    {
+      "include": "#handlers"
+    },
+    {
+      "include": "#namespaces"
+    },
+    {
+      "include": "#namespace-accessor"
+    },
+    {
       "include": "#declarations"
+    },
+    {
+      "include": "#import"
+    },
+    {
+      "include": "#storage-modifiers"
+    },
+    {
+      "include": "#property-accessor"
+    },
+    {
+      "include": "#enums"
     },
     {
       "include": "#property-keys"
@@ -124,7 +148,19 @@
     "interpolation-expression": {
       "patterns": [
         {
+          "include": "#builtins"
+        },
+        {
+          "include": "#namespace-accessor"
+        },
+        {
+          "include": "#property-accessor"
+        },
+        {
           "include": "#operator-words"
+        },
+        {
+          "include": "#types"
         },
         {
           "include": "#constants"
@@ -143,6 +179,70 @@
         },
         {
           "include": "#punctuation"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "comment": "builtin function: name immediately followed by '('",
+          "name": "support.function.builtin.swoftlang",
+          "match": "\\b(fetch_offline_player|offline_player_uuid|spawn_block_display|average_tps_string|sort_by_value_desc|spawn_item_display|spawn_text_display|players_in_radius|all_seen_players|blocks_in_radius|sort_by_key_desc|sort_map_by_desc|format_decimals|direction_from|has_permission|legacy_to_mini|offline_player|random_element|format_number|random_chance|random_double|sort_by_value|all_entities|anvil_loader|polar_loader|prompt_input|random_float|sort_by_desc|world_exists|all_players|custom_item|in_front_of|location_of|random_bool|random_seed|random_uuid|sort_by_key|sort_map_by|strip_color|all_worlds|fetch_skin|is_running|map_canvas|map_delete|random_int|tps_string|custom_id|formatted|is_within|lowercase|random_in|uppercase|all_mobs|block_at|centered|distance|from_nbt|gradient|location|map_keys|map_size|round_to|stripped|velocity|map_get|map_has|map_set|matches|new_map|product|rainbow|reverse|shuffle|sort_by|type_of|chance|length|max_by|min_by|player|random|to_nbt|tps_at|above|atan2|below|block|clamp|floor|log10|parse|round|world|acos|asin|atan|ceil|item|sign|skin|song|sort|sqrt|abs|cos|log|max|min|mod|pow|sin|sum|tan|vec|ln|pi|e)\\b(?=\\s*\\()"
+        }
+      ]
+    },
+    "handlers": {
+      "patterns": [
+        {
+          "comment": "event handler names (on_tick, on_click, tick, ...)",
+          "name": "keyword.other.handler.swoftlang",
+          "match": "\\b(on_right_click_block|on_attack_entity|on_right_click|on_left_click|on_line_click|on_interact|on_consume|on_destroy|on_swap_to|on_attack|on_pickup|on_target|on_update|on_break|on_click|on_death|on_place|on_spawn|on_touch|on_drop|on_tick|on_hit|tick)\\b(?=\\s*[({])"
+        }
+      ]
+    },
+    "namespaces": {
+      "patterns": [
+        {
+          "comment": "namespace block headers: tags { } / tasks { } / attributes { }",
+          "name": "storage.type.namespace.swoftlang",
+          "match": "^\\s*(attributes|tasks|tags)\\b(?=\\s*\\{)",
+          "captures": {
+            "1": {
+              "name": "storage.type.namespace.swoftlang"
+            }
+          }
+        }
+      ]
+    },
+    "namespace-accessor": {
+      "patterns": [
+        {
+          "comment": ".tags / .tasks / .attributes namespace access",
+          "match": "(\\.)(attributes|tasks|tags)\\b",
+          "captures": {
+            "1": {
+              "name": "punctuation.accessor.swoftlang"
+            },
+            "2": {
+              "name": "entity.other.namespace.swoftlang"
+            }
+          }
+        }
+      ]
+    },
+    "property-accessor": {
+      "patterns": [
+        {
+          "comment": "entity property access after '.' (not a method call)",
+          "match": "(\\.)(explosion_knockback_resistance|entity_interaction_range|block_interaction_range|fall_damage_multiplier|sweeping_damage_ratio|knockback_resistance|invulnerable_ticks|safe_fall_distance|has_played_before|attack_knockback|armor_toughness|food_saturation|active_effects|max_absorption|movement_speed|attack_damage|fall_distance|jump_strength|allow_flying|attack_speed|display_name|flying_speed|follow_range|is_sprinting|name_visible|alive_ticks|average_tps|custom_name|is_climbing|see_through|step_height|translation|absorption|background|first_seen|glow_color|line_width|max_health|normalized|passengers|properties|thundering|view_range|alignment|billboard|custom_id|held_item|held_slot|invisible|last_seen|on_ground|signature|time_rate|gamemode|location|material|rotation|sneaking|velocity|block_x|block_y|block_z|glowing|gravity|latency|on_fire|raining|removed|shooter|texture|vehicle|weather|amount|author|flying|health|height|length|method|online|params|player|silent|alive|armor|block|level|pitch|query|scale|speed|title|width|world|body|food|item|lore|luck|motd|mspt|name|path|pose|skin|text|time|type|uuid|exp|nbt|tps|yaw|id|x|y|z)\\b(?!\\s*\\()",
+          "captures": {
+            "1": {
+              "name": "punctuation.accessor.swoftlang"
+            },
+            "2": {
+              "name": "variable.other.property.swoftlang"
+            }
+          }
         }
       ]
     },
@@ -172,14 +272,315 @@
         },
         {
           "name": "storage.type.declaration.swoftlang",
-          "match": "\\b(command|event|event_type|function|gui|scoreboard|tablist|bossbar|server|async|mob|item|storage|persistent|fishing_loot|import|export|hologram|npc|block_handler|placement_rule)\\b(?!\\s*\\.)"
+          "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|storage|tablist|server|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
+        }
+      ]
+    },
+    "import": {
+      "patterns": [
+        {
+          "name": "keyword.control.import.swoftlang",
+          "match": "\\b(export|import)\\b"
+        }
+      ]
+    },
+    "storage-modifiers": {
+      "patterns": [
+        {
+          "name": "storage.modifier.swoftlang",
+          "match": "\\b(persistent|set|var)\\b"
+        }
+      ]
+    },
+    "enums": {
+      "patterns": [
+        {
+          "match": "^\\s*(gamemode)\\s*(:)\\s*(adventure|spectator|creative|survival)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.gamemode.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(rarity)\\s*(:)\\s*(uncommon|common|epic|rare)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.rarity.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(ai)\\s*(:)\\s*(passive|melee|none)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.ai.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(billboard)\\s*(:)\\s*(horizontal|vertical|center|fixed)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.billboard.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(alignment)\\s*(:)\\s*(center|right|left)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.alignment.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(weather)\\s*(:)\\s*(thunder|clear|rain)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.weather.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(pose)\\s*(:)\\s*(long_jumping|using_tongue|fall_flying|spin_attack|croaking|emerging|inhaling|shooting|sleeping|sneaking|sniffing|standing|swimming|digging|roaring|sitting|sliding|dying)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.pose.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(hand)\\s*(:)\\s*(main|off)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.hand.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(face|block_face)\\s*(:)\\s*(bottom|north|south|east|west|top)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.block-face.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(color)\\s*(:)\\s*(purple|yellow|green|white|blue|pink|red)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.bossbar-color.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(style)\\s*(:)\\s*(notched_10|notched_12|notched_20|notched_6|progress)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.bossbar-style.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(color)\\s*(:)\\s*(light_purple|dark_purple|dark_green|dark_aqua|dark_blue|dark_gray|dark_red|yellow|black|green|white|aqua|blue|gold|gray|red)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.nametag-color.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "\\b(skin)\\s+(light_purple|dark_purple|dark_green|dark_aqua|dark_blue|dark_gray|dark_red|yellow|black|green|white|aqua|blue|gold|gray|red)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "constant.other.enum.nametag-color.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(method)\\s*(:)\\s*(DELETE|POST|ANY|GET|PUT)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.api-method.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(frame)\\s*(:)\\s*(challenge|goal|task)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.toast-frame.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(medium)\\s*(:)\\s*(water|lava)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.fishing-medium.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(projectile_type)\\s*(:)\\s*(spectral_arrow|snowball|trident|arrow|egg)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.projectile-type.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(damage_type)\\s*(:)\\s*(unattributed_fireball|mob_attack_no_aggro|falling_stalactite|bad_respawn_point|player_explosion|sweet_berry_bush|sulfur_cube_hot|indirect_magic|lightning_bolt|mob_projectile|outside_border|dragon_breath|falling_anvil|falling_block|fly_into_wall|player_attack|generic_kill|out_of_world|wither_skull|ender_pearl|wind_charge|mace_smash|mob_attack|sonic_boom|stalagmite|explosion|fireworks|hot_floor|campfire|cramming|fireball|dry_out|generic|in_fire|in_wall|on_fire|trident|cactus|freeze|starve|thorns|thrown|wither|arrow|drown|magic|spear|sting|fall|lava|spit)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.damage-types.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(effect|effect_type)\\s*(:)\\s*(breath_of_the_nautilus|hero_of_the_village|fire_resistance|water_breathing|dolphins_grace|instant_damage|instant_health|mining_fatigue|conduit_power|health_boost|invisibility|night_vision|regeneration|slow_falling|wind_charged|absorption|jump_boost|levitation|resistance|saturation|trial_omen|blindness|raid_omen|bad_omen|darkness|infested|slowness|strength|weakness|glowing|weaving|hunger|nausea|oozing|poison|unluck|wither|haste|speed|luck)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.effect-types.swoftlang"
+            }
+          }
+        },
+        {
+          "match": "^\\s*(operation|operations)\\s*(:)\\s*(add_multiplied_total|add_multiplied_base|multiply_total|multiply_base|add_value|add)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.property.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.modifier-operations.swoftlang"
+            }
+          }
+        },
+        {
+          "name": "constant.other.enum.entity-type.swoftlang",
+          "match": "\\b(COMMAND_BLOCK_MINECART|OMINOUS_ITEM_SPAWNER|DARK_OAK_CHEST_BOAT|MANGROVE_CHEST_BOAT|PALE_OAK_CHEST_BOAT|BREEZE_WIND_CHARGE|ACACIA_CHEST_BOAT|AREA_EFFECT_CLOUD|BAMBOO_CHEST_RAFT|CHERRY_CHEST_BOAT|EXPERIENCE_BOTTLE|JUNGLE_CHEST_BOAT|SPRUCE_CHEST_BOAT|BIRCH_CHEST_BOAT|FURNACE_MINECART|LINGERING_POTION|SPAWNER_MINECART|WANDERING_TRADER|ZOMBIFIED_PIGLIN|DRAGON_FIREBALL|FIREWORK_ROCKET|GLOW_ITEM_FRAME|HOPPER_MINECART|WITHER_SKELETON|ZOMBIE_NAUTILUS|ZOMBIE_VILLAGER|CHEST_MINECART|ELDER_GUARDIAN|EXPERIENCE_ORB|FISHING_BOBBER|LIGHTNING_BOLT|OAK_CHEST_BOAT|SHULKER_BULLET|SKELETON_HORSE|SMALL_FIREBALL|SPECTRAL_ARROW|BLOCK_DISPLAY|DARK_OAK_BOAT|FALLING_BLOCK|MANGROVE_BOAT|PALE_OAK_BOAT|SPLASH_POTION|TROPICAL_FISH|COPPER_GOLEM|ENDER_DRAGON|EVOKER_FANGS|EYE_OF_ENDER|ITEM_DISPLAY|PIGLIN_BRUTE|TEXT_DISPLAY|TNT_MINECART|TRADER_LLAMA|WITHER_SKULL|ZOMBIE_HORSE|ACACIA_BOAT|ARMOR_STAND|BAMBOO_RAFT|CAVE_SPIDER|CHERRY_BOAT|ENDER_PEARL|END_CRYSTAL|HAPPY_GHAST|INTERACTION|JUNGLE_BOAT|SPRUCE_BOAT|SULFUR_CUBE|WIND_CHARGE|BIRCH_BOAT|CAMEL_HUSK|GLOW_SQUID|ILLUSIONER|IRON_GOLEM|ITEM_FRAME|LEASH_KNOT|LLAMA_SPIT|MAGMA_CUBE|POLAR_BEAR|PUFFERFISH|SILVERFISH|SNOW_GOLEM|VINDICATOR|ARMADILLO|ENDERMITE|MANNEQUIN|MOOSHROOM|CREAKING|ENDERMAN|FIREBALL|GUARDIAN|MINECART|NAUTILUS|OAK_BOAT|PAINTING|PILLAGER|SKELETON|SNOWBALL|VILLAGER|AXOLOTL|CHICKEN|CREEPER|DOLPHIN|DROWNED|PARCHED|PHANTOM|RAVAGER|SHULKER|SNIFFER|STRIDER|TADPOLE|TRIDENT|BOGGED|BREEZE|DONKEY|EVOKER|HOGLIN|MARKER|OCELOT|PARROT|PIGLIN|PLAYER|RABBIT|SALMON|SPIDER|TURTLE|WARDEN|WITHER|ZOGLIN|ZOMBIE|ALLAY|ARROW|BLAZE|CAMEL|GHAST|GIANT|HORSE|LLAMA|PANDA|SHEEP|SLIME|SQUID|STRAY|WITCH|FROG|GOAT|HUSK|ITEM|MULE|WOLF|BAT|BEE|CAT|COD|COW|EGG|FOX|PIG|TNT|VEX)\\b"
         }
       ]
     },
     "property-keys": {
       "patterns": [
         {
-          "comment": "key: bareword — only when the lowercase word is the whole value (so `every 4 ticks`, strings, numbers and expressions are left alone)",
+          "comment": "key: bareword — value colored as an enum constant when the whole value is one lowercase word",
           "match": "^\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*(:)(?!:)\\s*([a-z][a-z0-9_]*)\\s*(?=$|//)",
           "captures": {
             "1": {
@@ -209,7 +610,7 @@
     "types": {
       "patterns": [
         {
-          "begin": "\\b(either|optional|list|map)\\s*(<)",
+          "begin": "\\b(optional|either|list|map)\\s*(<)",
           "beginCaptures": {
             "1": {
               "name": "support.type.constructor.swoftlang"
@@ -236,7 +637,7 @@
         },
         {
           "name": "support.type.primitive.swoftlang",
-          "match": "\\b(String|Integer|Double|Boolean|Player|Location|Item|World|Number|int|bool|Entity|Mob|Vec|OfflinePlayer|Skin|Schedule|Canvas|Song|Display|Server)\\b"
+          "match": "\\b(OfflinePlayer|Location|Schedule|Boolean|Display|Integer|Canvas|Double|Entity|Number|Player|Server|String|Block|World|Item|Skin|Song|Mob|Vec)\\b"
         }
       ]
     },
@@ -244,7 +645,7 @@
       "patterns": [
         {
           "name": "keyword.operator.word.swoftlang",
-          "match": "\\b(is\\s+not\\s+an?\\b|is\\s+an?\\b|is\\s+not\\b|is\\s+missing\\b|is\\b|contains\\b|and\\b|or\\b|not\\b|exists\\b|otherwise\\b|missing\\b)"
+          "match": "\\b(otherwise|contains|missing|either|exists|and|not|is|or)\\b"
         }
       ]
     },
@@ -252,35 +653,43 @@
       "patterns": [
         {
           "name": "keyword.control.swoftlang",
-          "match": "\\b(if|else|halt|loop|while|times|as|return|wait|spawn|call|go\\s+back|go|back|repeat|stop|is|otherwise|exists)\\b"
+          "match": "\\b(cancel|repeat|return|times|while|call|else|halt|loop|stop|wait|as|go|if)\\b"
         },
         {
           "name": "keyword.other.statement.swoftlang",
-          "match": "\\b(send|teleport|set|cancel|broadcast|open|close|replace|show|hide|move|update|title|subtitle|actionbar|clear|line|blank|entry|fill|place|give|dispense|mount|dismount|launch|projectile|remove|reset|belowname|nametag|prefix|suffix|emit)\\b"
+          "match": "\\b(actionbar|belowname|broadcast|dismount|dispense|teleport|despawn|destroy|replace|create|damage|delete|launch|remove|unload|update|apply|blank|clear|clone|close|entry|knock|mount|place|reply|reset|shoot|spawn|title|draw|fade|fill|give|hide|line|load|move|name|open|play|save|send|show|skin|add)\\b"
         },
         {
-          "name": "keyword.other.connective.swoftlang",
-          "match": "\\b(to|at|of|with|for|every|manual)\\b"
+          "name": "keyword.other.handler.swoftlang",
+          "match": "\\b(on_right_click_block|on_attack_entity|on_right_click|on_left_click|on_line_click|on_interact|on_consume|on_destroy|on_swap_to|on_attack|on_pickup|on_target|on_update|on_break|on_click|on_death|on_place|on_spawn|on_touch|on_drop|on_tick|on_hit|tick)\\b"
         },
         {
           "name": "keyword.other.block.swoftlang",
-          "match": "\\b(execute|arguments|slot|slots|editable|paginate|state|render|lines|column|on_click|on_left_click|on_hit|on_spawn|on_death|on_attack|on_open|on_close|on_change|on_click_fallback|on_place|on_destroy|on_interact|on_update|on_touch|on_tick|billboard|look_at_players|viewable|source|refresh|border|prev_slot|next_slot)\\b(?!\\s*\\.)"
+          "match": "\\b(look_at_players|projectile|arguments|next_slot|prev_slot|editable|paginate|particle|execute|fishing|refresh|border|column|manual|packet|render|source|async|catch|drops|first|lines|slots|state|grid|http|lore|slot)\\b(?!\\s*\\.)"
+        },
+        {
+          "name": "keyword.other.connective.swoftlang",
+          "match": "\\b(strength|subtitle|message|amount|chance|offset|toward|weight|count|away|code|from|into|stay|with|for|at|by|in|of|on|to)\\b"
         },
         {
           "name": "constant.language.unit.swoftlang",
-          "match": "\\b(ticks|seconds|millis)\\b"
+          "match": "\\b(seconds|millis|second|milli|ticks|tick)\\b"
         }
       ]
     },
     "constants": {
       "patterns": [
         {
+          "name": "constant.language.boolean.swoftlang",
+          "match": "\\b(false|true)\\b"
+        },
+        {
           "name": "constant.language.swoftlang",
-          "match": "\\b(true|false|none)\\b"
+          "match": "\\b(none)\\b"
         },
         {
           "name": "constant.language.target.swoftlang",
-          "match": "\\b(all|sender)\\b"
+          "match": "\\b(players|killer|sender|victim|self|all)\\b"
         }
       ]
     },
@@ -324,7 +733,7 @@
       "patterns": [
         {
           "name": "variable.language.swoftlang",
-          "match": "\\b(event|args|state|player|mob|killer|victim|run|item|index|old_item|new_item|reason|click_type)\\b(?=\\.|\\b)"
+          "match": "\\b(event|args|state|player|mob|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet)\\b(?=\\.|\\b)"
         },
         {
           "name": "variable.other.swoftlang",
