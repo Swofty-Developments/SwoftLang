@@ -790,7 +790,7 @@ command "nova" {
 `vec(x: Number, y: Number, z: Number) : Vec`
 
 A raw `Vec` from three components — the value type behind velocity and direction, and
-what `launch projectile ... with velocity <vec>` and [`apply_knockback`](./mobs) consume.
+what `launch projectile ... with velocity <vec>` and [`shoot ... with velocity <vec>`](./combat#combat-verbs) consume.
 It carries `.x`/`.y`/`.z` plus a `.length` (magnitude) and `.normalized` (unit vector).
 
 ```swoftlang

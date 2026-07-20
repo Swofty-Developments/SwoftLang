@@ -1,11 +1,10 @@
 on EntityDamage {
-    set victim to event.entity
-    set iframe to invulnerable_ticks(victim)
-    set last to victim.tags.last_damage otherwise 0.0
-    // honour the 10-tick window: a weaker-or-equal hit inside it is ignored
-    if iframe > 0 and event.damage <= last {
-        cancel event
-        return
+    set attacker to event.attacker
+    if attacker exists {
+        // crit: falling, airborne, not sprinting -> 1.5x + the sparkle
+        if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
+            set event.damage to event.damage * 1.5
+            spawn particle "crit" at event.entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+        }
     }
-    set victim.tags.last_damage to event.damage
 }
