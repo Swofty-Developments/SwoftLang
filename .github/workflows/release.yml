@@ -26,10 +26,11 @@ jobs:
             asset: linux-x64
           - os: macos-14
             asset: macos-arm64
-          - os: macos-13
-            asset: macos-x64
           - os: windows-latest
             asset: windows-x64.exe
+          # macos-x64 (Intel) is intentionally omitted: GitHub's macos-13 runner
+          # pool is heavily backlogged and blocks the release for hours. Intel-Mac
+          # users can set the SWOFTC env var to a locally-built compiler.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
