@@ -12,6 +12,7 @@ import java.util.function.BiFunction;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.ItemStack;
@@ -154,6 +155,12 @@ public final class Builtins {
                 Number x = requireNumberArg(context, name, args, 0);
                 Number lo = requireNumberArg(context, name, args, 1);
                 Number hi = requireNumberArg(context, name, args, 2);
+                // Math.clamp throws a raw IllegalArgumentException when lo > hi;
+                // surface it as a clean, script-level diagnostic instead.
+                if (lo.doubleValue() > hi.doubleValue()) {
+                    throw new ScriptError("clamp() lower bound " + Values.displayString(lo)
+                            + " is greater than upper bound " + Values.displayString(hi));
+                }
                 if (x instanceof Integer && lo instanceof Integer && hi instanceof Integer) {
                     return Math.clamp(x.intValue(), lo.intValue(), hi.intValue());
                 }
@@ -267,6 +274,26 @@ public final class Builtins {
             case "map_canvas":
                 return new net.swofty.maps.MapCanvas();
 
+            // ---------- W-blocks: block value (design §1) ----------
+            case "block": {
+                String rawId = (String) Coercions.toStringValue(evaluateArg(context, args, 0));
+                net.swofty.blocks.BlockValue value = new net.swofty.blocks.BlockValue(
+                        net.swofty.nativebridge.execution.commands.blocks.SetBlockStatement
+                                .resolveBlock(rawId));
+                if (args.size() >= 2) {
+                    Object props = evaluateArg(context, args, 1);
+                    if (!(props instanceof MapValue map)) {
+                        throw new ScriptError("block(): the second argument must be a "
+                                + "property map, got: " + Values.displayString(props));
+                    }
+                    for (Map.Entry<Object, Object> entry : map.entrySet()) {
+                        value = value.with(String.valueOf(entry.getKey()),
+                                (String) Coercions.toStringValue(entry.getValue()));
+                    }
+                }
+                return value;
+            }
+
             // ---------- phase-6: blocks (design 6D) ----------
             case "block_at": {
                 Object where = evaluateArg(context, args, 0);
@@ -304,7 +331,8 @@ public final class Builtins {
                                 + pos.blockX() + ", " + pos.blockZ()
                                 + " is not loaded (auto chunk load is disabled)");
                     }
-                    return chunk.getBlock(pos.blockX(), pos.blockY(), pos.blockZ()).name();
+                    return new net.swofty.blocks.BlockValue(
+                            chunk.getBlock(pos.blockX(), pos.blockY(), pos.blockZ()));
                 });
             }
 
@@ -481,6 +509,225 @@ public final class Builtins {
                 return map.size();
             }
 
+            // ---------- W-pvp: per-entity in-memory state store ----------
+            case "set_state": {
+                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
+                String key = requireStateKey(context, name, args);
+                Object value = evaluateArg(context, args, 2);
+                if (NoneValue.isNone(value)) {
+                    // storing none is a delete, matching map_set / index-assign
+                    net.swofty.entities.EntityStateStore.clear(entity, key);
+                } else {
+                    net.swofty.entities.EntityStateStore.set(entity, key, value);
+                }
+                return NoneValue.INSTANCE;
+            }
+            case "get_state": {
+                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
+                String key = requireStateKey(context, name, args);
+                Object value = net.swofty.entities.EntityStateStore.get(entity, key);
+                // absent key -> none, so get_state integrates with exists/otherwise
+                return value != null ? value : NoneValue.INSTANCE;
+            }
+            case "has_state": {
+                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
+                String key = requireStateKey(context, name, args);
+                return net.swofty.entities.EntityStateStore.has(entity, key);
+            }
+            case "clear_state": {
+                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
+                String key = requireStateKey(context, name, args);
+                net.swofty.entities.EntityStateStore.clear(entity, key);
+                return NoneValue.INSTANCE;
+            }
+
+            // ---------- W-pvp: entity attribute accessors + modifiers --------
+            case "attribute": {
+                net.minestom.server.entity.LivingEntity living =
+                        requireLivingEntityArg(context, name, args, 0);
+                net.minestom.server.entity.attribute.Attribute attr =
+                        attributeFromName(requireStringArg(context, name, args, 1));
+                return living.getAttribute(attr).getBaseValue();
+            }
+            case "set_attribute": {
+                net.minestom.server.entity.LivingEntity living =
+                        requireLivingEntityArg(context, name, args, 0);
+                net.minestom.server.entity.attribute.Attribute attr =
+                        attributeFromName(requireStringArg(context, name, args, 1));
+                double value = requireNumberArg(context, name, args, 2).doubleValue();
+                living.getAttribute(attr).setBaseValue(value);
+                return NoneValue.INSTANCE;
+            }
+            case "add_attribute_modifier": {
+                net.minestom.server.entity.LivingEntity living =
+                        requireLivingEntityArg(context, name, args, 0);
+                net.minestom.server.entity.attribute.Attribute attr =
+                        attributeFromName(requireStringArg(context, name, args, 1));
+                String id = requireStringArg(context, name, args, 2);
+                double amount = requireNumberArg(context, name, args, 3).doubleValue();
+                net.minestom.server.entity.attribute.AttributeOperation op =
+                        attributeOperationFromName(requireStringArg(context, name, args, 4));
+                net.minestom.server.entity.attribute.AttributeInstance inst =
+                        living.getAttribute(attr);
+                String modId = normalizeModifierId(id);
+                // re-adding under the same id would throw; make it idempotent
+                removeModifierById(inst, modId);
+                inst.addModifier(new net.minestom.server.entity.attribute.AttributeModifier(
+                        modId, amount, op));
+                return NoneValue.INSTANCE;
+            }
+            case "remove_attribute_modifier": {
+                net.minestom.server.entity.LivingEntity living =
+                        requireLivingEntityArg(context, name, args, 0);
+                net.minestom.server.entity.attribute.Attribute attr =
+                        attributeFromName(requireStringArg(context, name, args, 1));
+                String id = requireStringArg(context, name, args, 2);
+                removeModifierById(living.getAttribute(attr), normalizeModifierId(id));
+                return NoneValue.INSTANCE;
+            }
+
+            // ---------- W-pvp: combat effects ----------
+            case "apply_damage": {
+                // deal typed damage through the Minestom pipeline (fires
+                // EntityDamageEvent, applies i-frames/health). Returns whether
+                // the hit landed. With a source entity the damage carries an
+                // attacker/source so death messages + knockback direction work.
+                net.minestom.server.entity.LivingEntity target =
+                        requireLivingEntityArg(context, name, args, 0);
+                float amount = requireNumberArg(context, name, args, 1).floatValue();
+                net.minestom.server.registry.RegistryKey<
+                        net.minestom.server.entity.damage.DamageType> typeKey =
+                        damageTypeKeyFromName(requireStringArg(context, name, args, 2));
+                Object src = args.size() > 3 ? evaluateArg(context, args, 3) : null;
+                if (src == null || NoneValue.isNone(src)) {
+                    return target.damage(typeKey, amount);
+                }
+                net.minestom.server.entity.Entity source =
+                        requireEntityArg(context, name, args, 3);
+                net.minestom.server.entity.damage.Damage damage =
+                        new net.minestom.server.entity.damage.Damage(
+                                typeKey, source, source, source.getPosition(), amount);
+                return target.damage(damage);
+            }
+            case "apply_knockback": {
+                net.minestom.server.entity.LivingEntity living =
+                        requireLivingEntityArg(context, name, args, 0);
+                float strength = requireNumberArg(context, name, args, 1).floatValue();
+                double dirX = requireNumberArg(context, name, args, 2).doubleValue();
+                double dirZ = requireNumberArg(context, name, args, 3).doubleValue();
+                living.takeKnockback(strength, dirX, dirZ);
+                return NoneValue.INSTANCE;
+            }
+            case "apply_effect": {
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                net.minestom.server.potion.PotionEffect effect =
+                        potionEffectFromName(requireStringArg(context, name, args, 1));
+                int duration = requireNumberArg(context, name, args, 2).intValue();
+                int amplifier = requireNumberArg(context, name, args, 3).intValue();
+                net.minestom.server.potion.Potion potion;
+                if (args.size() > 4) {
+                    boolean ambient = (Boolean) Coercions.toBoolean(evaluateArg(context, args, 4));
+                    // particles default on; icon always on so the HUD shows it
+                    boolean particles = args.size() <= 5
+                            || (Boolean) Coercions.toBoolean(evaluateArg(context, args, 5));
+                    byte flags = (byte) ((ambient ? net.minestom.server.potion.Potion.AMBIENT_FLAG : 0)
+                            | (particles ? net.minestom.server.potion.Potion.PARTICLES_FLAG : 0)
+                            | net.minestom.server.potion.Potion.ICON_FLAG);
+                    potion = new net.minestom.server.potion.Potion(
+                            effect, amplifier, duration, flags);
+                } else {
+                    potion = new net.minestom.server.potion.Potion(effect, amplifier, duration);
+                }
+                entity.addEffect(potion);
+                return NoneValue.INSTANCE;
+            }
+            case "remove_effect": {
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                entity.removeEffect(potionEffectFromName(requireStringArg(context, name, args, 1)));
+                return NoneValue.INSTANCE;
+            }
+            case "active_effects": {
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                java.util.List<Object> effects = new java.util.ArrayList<>();
+                for (net.minestom.server.potion.TimedPotion timed : entity.getActiveEffects()) {
+                    // the bare effect key (e.g. "speed"), matching apply_effect input
+                    effects.add(timed.potion().effect().key().value());
+                }
+                return effects;
+            }
+            case "spawn_projectile": {
+                String typeName = requireStringArg(context, name, args, 0);
+                net.minestom.server.entity.EntityType projectileType =
+                        net.swofty.mobs.SwoftMob.resolveType(typeName);
+                Pos from = (Pos) Coercions.toPos(evaluateArg(context, args, 1));
+                Vec projVelocity = (Vec) Coercions.toVec(evaluateArg(context, args, 2));
+                Object shooterVal = args.size() > 3 ? evaluateArg(context, args, 3) : null;
+                net.minestom.server.entity.Entity shooter =
+                        (shooterVal == null || NoneValue.isNone(shooterVal))
+                                ? null : requireEntityArg(context, name, args, 3);
+                Instance instance = shooter != null && shooter.getInstance() != null
+                        ? shooter.getInstance()
+                        : InstanceRegistry.get("world");
+                if (instance == null) {
+                    throw new ScriptError("spawn_projectile: no world to spawn the projectile in");
+                }
+                net.minestom.server.entity.EntityProjectile projectile =
+                        new net.minestom.server.entity.EntityProjectile(shooter, projectileType);
+                net.swofty.async.TickDispatch.call(() -> {
+                    // spawning + shooting: fire EntityShootEvent (cancellable,
+                    // handler power rescales) exactly like launch projectile,
+                    // then place + velocity so EntityProjectile.tick fires the
+                    // ProjectileCollide* events on impact
+                    double length = projVelocity.length();
+                    Vec direction = length > 0 ? projVelocity.normalize() : Vec.ZERO;
+                    double power = length / 20.0;
+                    Vec velocity = projVelocity;
+                    if (shooter != null) {
+                        net.minestom.server.event.entity.EntityShootEvent shootEvent =
+                                new net.minestom.server.event.entity.EntityShootEvent(
+                                        shooter, projectile, from.add(direction), power, 0.0);
+                        net.minestom.server.event.EventDispatcher.call(shootEvent);
+                        if (shootEvent.isCancelled()) {
+                            projectile.remove();
+                            return null;
+                        }
+                        if (shootEvent.getPower() != power && length > 0) {
+                            velocity = direction.mul(shootEvent.getPower() * 20.0);
+                        }
+                    }
+                    projectile.setInstance(instance, from);
+                    projectile.setVelocity(velocity);
+                    net.swofty.entities.ScriptEntityRegistry.track(projectile);
+                    return null;
+                });
+                return projectile;
+            }
+
+            // ---------- W-pvp: native trackers Minestom does not expose -------
+            case "invulnerable_ticks": {
+                // remaining vanilla i-frame ticks since the last damage event
+                // (window = 10t). Provided; honouring it is the script's call.
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                return net.swofty.entities.EntityCombatTrackers.invulnerableTicks(entity);
+            }
+            case "fall_distance": {
+                // blocks fallen while airborne (0 on the ground / flying)
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                return net.swofty.entities.EntityCombatTrackers.fallDistance(entity);
+            }
+            case "is_climbing": {
+                // positional heuristic (ladder/vine/scaffolding under the feet):
+                // Minestom exposes no native/meta climbing flag
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                return net.swofty.entities.EntityCombatTrackers.isClimbing(entity);
+            }
+
             // ---------- collections pass: sorting (non-mutating, stable) ----
             case "sort": {
                 List<Object> copy = requireListCopy(name, evaluateArg(context, args, 0));
@@ -612,6 +859,267 @@ public final class Builtins {
                     return NoneValue.INSTANCE;
                 }
             }
+            // ---------- W-stdlib B3: math beyond arithmetic (java.lang.Math) --
+            case "mod": {
+                Number a = requireNumberArg(context, name, args, 0);
+                Number b = requireNumberArg(context, name, args, 1);
+                if (a instanceof Integer && b instanceof Integer) {
+                    int d = b.intValue();
+                    if (d == 0) {
+                        throw new ScriptError("mod() by zero");
+                    }
+                    return Math.floorMod(a.intValue(), d);
+                }
+                double da = a.doubleValue();
+                double db = b.doubleValue();
+                if (db == 0.0) {
+                    throw new ScriptError("mod() by zero");
+                }
+                double r = da % db;
+                // floored modulo: result takes the divisor's sign
+                if (r != 0.0 && ((r < 0) != (db < 0))) {
+                    r += db;
+                }
+                return r;
+            }
+            case "sqrt":
+                return Math.sqrt(requireNumberArg(context, name, args, 0).doubleValue());
+            case "pow":
+                return Math.pow(requireNumberArg(context, name, args, 0).doubleValue(),
+                        requireNumberArg(context, name, args, 1).doubleValue());
+            case "round_to": {
+                double v = requireNumberArg(context, name, args, 0).doubleValue();
+                int places = requireNumberArg(context, name, args, 1).intValue();
+                double factor = Math.pow(10, places);
+                return Math.round(v * factor) / factor;
+            }
+            case "sin":
+                return Math.sin(requireNumberArg(context, name, args, 0).doubleValue());
+            case "cos":
+                return Math.cos(requireNumberArg(context, name, args, 0).doubleValue());
+            case "tan":
+                return Math.tan(requireNumberArg(context, name, args, 0).doubleValue());
+            case "asin":
+                return Math.asin(requireNumberArg(context, name, args, 0).doubleValue());
+            case "acos":
+                return Math.acos(requireNumberArg(context, name, args, 0).doubleValue());
+            case "atan":
+                return Math.atan(requireNumberArg(context, name, args, 0).doubleValue());
+            case "atan2":
+                return Math.atan2(requireNumberArg(context, name, args, 0).doubleValue(),
+                        requireNumberArg(context, name, args, 1).doubleValue());
+            case "ln":
+                return Math.log(requireNumberArg(context, name, args, 0).doubleValue());
+            case "log": {
+                double x = requireNumberArg(context, name, args, 0).doubleValue();
+                if (args.size() >= 2) {
+                    // two-arg form: logarithm of x in the given base
+                    double base = requireNumberArg(context, name, args, 1).doubleValue();
+                    return Math.log(x) / Math.log(base);
+                }
+                return Math.log(x);
+            }
+            case "log10":
+                return Math.log10(requireNumberArg(context, name, args, 0).doubleValue());
+            case "pi":
+                return Math.PI;
+            case "e":
+                return Math.E;
+            case "sign":
+                return (int) Math.signum(requireNumberArg(context, name, args, 0).doubleValue());
+            case "sum":
+            case "product": {
+                List<Object> list = requireListCopy(name, evaluateArg(context, args, 0));
+                boolean product = name.equals("product");
+                boolean allInt = true;
+                double acc = product ? 1.0 : 0.0;
+                long lacc = product ? 1L : 0L;
+                for (Object element : list) {
+                    if (!(element instanceof Number num)) {
+                        throw new ScriptError(name + "() expects a list of numbers, got element: "
+                                + Values.displayString(element));
+                    }
+                    if (!(element instanceof Integer)) {
+                        allInt = false;
+                    }
+                    double d = num.doubleValue();
+                    if (product) {
+                        acc *= d;
+                        lacc *= num.longValue();
+                    } else {
+                        acc += d;
+                        lacc += num.longValue();
+                    }
+                }
+                // Integer list -> Integer result (matches the checker's join)
+                return allInt ? (Object) (int) lacc : (Object) acc;
+            }
+
+            // ---------- W-stdlib B8: decimal-place number formatting ---------
+            case "format_decimals": {
+                double v = requireNumberArg(context, name, args, 0).doubleValue();
+                int places = Math.max(0, requireNumberArg(context, name, args, 1).intValue());
+                return String.format(Locale.US, "%." + places + "f", v);
+            }
+
+            // ---------- W-stdlib B4: random (java.util.Random via rng()) ------
+            case "random_int": {
+                int lo = requireNumberArg(context, name, args, 0).intValue();
+                int hi = requireNumberArg(context, name, args, 1).intValue();
+                if (hi < lo) {
+                    int tmp = lo;
+                    lo = hi;
+                    hi = tmp;
+                }
+                // inclusive on both ends
+                return lo + rng().nextInt(hi - lo + 1);
+            }
+            case "random_double": {
+                double lo = requireNumberArg(context, name, args, 0).doubleValue();
+                double hi = requireNumberArg(context, name, args, 1).doubleValue();
+                if (hi < lo) {
+                    double tmp = lo;
+                    lo = hi;
+                    hi = tmp;
+                }
+                return lo == hi ? lo : lo + rng().nextDouble() * (hi - lo);
+            }
+            case "chance": {
+                double p = requireNumberArg(context, name, args, 0).doubleValue();
+                if (p <= 0) {
+                    return false;
+                }
+                if (p >= 1) {
+                    return true;
+                }
+                return rng().nextDouble() < p;
+            }
+            case "random_element": {
+                List<Object> list = requireListCopy(name, evaluateArg(context, args, 0));
+                if (list.isEmpty()) {
+                    return NoneValue.INSTANCE;
+                }
+                return list.get(rng().nextInt(list.size()));
+            }
+            case "random_uuid":
+                return java.util.UUID.randomUUID().toString();
+            case "random_seed": {
+                long seed = requireNumberArg(context, name, args, 0).longValue();
+                // installs a per-thread seeded generator; subsequent random_int/
+                // random_double/chance/random_element/random_uuid draws are then
+                // reproducible on this thread until re-seeded
+                SEEDED_RNG.set(new java.util.Random(seed));
+                return NoneValue.INSTANCE;
+            }
+
+            // ---------- W-stdlib B1: string free helpers --------------------
+            case "parse": {
+                String source = requireStringArg(context, name, args, 0);
+                if (!(args.size() >= 2
+                        && args.get(1) instanceof net.swofty.nativebridge.execution
+                                .expressions.VariableReference typeRef)) {
+                    throw new ScriptError("parse() expects a type name as its second argument");
+                }
+                return parseAs(source, typeRef.getName());
+            }
+            case "matches": {
+                String source = requireStringArg(context, name, args, 0);
+                String regex = requireStringArg(context, name, args, 1);
+                try {
+                    return source.matches(regex);
+                } catch (java.util.regex.PatternSyntaxException e) {
+                    return false;
+                }
+            }
+            case "stripped":
+            case "strip_color":
+                return stripColor(requireStringArg(context, name, args, 0));
+            case "formatted":
+            case "legacy_to_mini":
+                return legacyToMini(requireStringArg(context, name, args, 0));
+            case "type_of":
+                return typeName(evaluateArg(context, args, 0));
+
+            // ---------- W-stdlib B2: color & format (MiniMessage strings) ----
+            case "gradient": {
+                String text = requireStringArg(context, name, args, 0);
+                String from = normalizeHex(requireStringArg(context, name, args, 1));
+                String to = normalizeHex(requireStringArg(context, name, args, 2));
+                return "<gradient:#" + from + ":#" + to + ">" + text + "</gradient>";
+            }
+            case "rainbow":
+                return "<rainbow>" + requireStringArg(context, name, args, 0) + "</rainbow>";
+
+            // ---------- W-stdlib B7: location / region / vector math ---------
+            case "distance": {
+                Pos a = requireLocationArg(context, name, args, 0);
+                Pos b = requireLocationArg(context, name, args, 1);
+                return a.distance(b);
+            }
+            case "direction_from": {
+                Pos a = requireLocationArg(context, name, args, 0);
+                Pos b = requireLocationArg(context, name, args, 1);
+                Vec dir = new Vec(b.x() - a.x(), b.y() - a.y(), b.z() - a.z());
+                return dir.isZero() ? dir : dir.normalize();
+            }
+            case "above": {
+                Pos loc = requireLocationArg(context, name, args, 0);
+                return loc.add(0, requireNumberArg(context, name, args, 1).doubleValue(), 0);
+            }
+            case "below": {
+                Pos loc = requireLocationArg(context, name, args, 0);
+                return loc.sub(0, requireNumberArg(context, name, args, 1).doubleValue(), 0);
+            }
+            case "is_within": {
+                Pos p = requireLocationArg(context, name, args, 0);
+                Pos c1 = requireLocationArg(context, name, args, 1);
+                Pos c2 = requireLocationArg(context, name, args, 2);
+                return p.x() >= Math.min(c1.x(), c2.x()) && p.x() <= Math.max(c1.x(), c2.x())
+                        && p.y() >= Math.min(c1.y(), c2.y()) && p.y() <= Math.max(c1.y(), c2.y())
+                        && p.z() >= Math.min(c1.z(), c2.z()) && p.z() <= Math.max(c1.z(), c2.z());
+            }
+            case "blocks_in_radius": {
+                Pos loc = requireLocationArg(context, name, args, 0);
+                int radius = Math.max(0, Math.min(64,
+                        requireNumberArg(context, name, args, 1).intValue()));
+                long r2 = (long) radius * radius;
+                int bx = loc.blockX();
+                int by = loc.blockY();
+                int bz = loc.blockZ();
+                List<Object> out = new java.util.ArrayList<>();
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dy = -radius; dy <= radius; dy++) {
+                        for (int dz = -radius; dz <= radius; dz++) {
+                            if ((long) dx * dx + (long) dy * dy + (long) dz * dz <= r2) {
+                                out.add(new Pos(bx + dx, by + dy, bz + dz));
+                            }
+                        }
+                    }
+                }
+                return out;
+            }
+            case "players_in_radius": {
+                Pos loc = requireLocationArg(context, name, args, 0);
+                double radius = requireNumberArg(context, name, args, 1).doubleValue();
+                double r2 = radius * radius;
+                List<Object> out = new java.util.ArrayList<>();
+                for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+                    if (player.getPosition().distanceSquared(loc) <= r2) {
+                        out.add(player);
+                    }
+                }
+                return out;
+            }
+            case "vec":
+                return new Vec(requireNumberArg(context, name, args, 0).doubleValue(),
+                        requireNumberArg(context, name, args, 1).doubleValue(),
+                        requireNumberArg(context, name, args, 2).doubleValue());
+            case "location_of": {
+                net.minestom.server.entity.Entity entity =
+                        requireEntityArg(context, name, args, 0);
+                return entity.getPosition();
+            }
+
             default:
                 System.err.println("Error: Unknown function: " + name);
                 return null;
@@ -646,8 +1154,37 @@ public final class Builtins {
         if (receiver instanceof Collection<?>) {
             return listMethod(context, receiver, name, args);
         }
+        if (receiver instanceof net.swofty.blocks.BlockValue block) {
+            return blockMethod(context, block, name, args);
+        }
         throw new ScriptError("cannot call method '" + name + "' on "
                 + Values.displayString(receiver));
+    }
+
+    // -------------------------- block methods -------------------------
+
+    /**
+     * W-blocks method dispatch on a {@link net.swofty.blocks.BlockValue}: the
+     * immutable {@code with}/{@code with_nbt}/{@code with_tag} builders plus the
+     * {@code property}/{@code get_tag} readers. {@code with} validates the
+     * property/value against the block's own state schema (no silent failure).
+     */
+    private static Object blockMethod(ExecutionContext context,
+            net.swofty.blocks.BlockValue block, String name, List<Expression> args) {
+        switch (name) {
+            case "with":
+                return block.with(strArg(context, args, 0), strArg(context, args, 1));
+            case "with_nbt":
+                return block.withNbt(strArg(context, args, 0));
+            case "with_tag":
+                return block.withTag(strArg(context, args, 0), strArg(context, args, 1));
+            case "property":
+                return block.property(strArg(context, args, 0));
+            case "get_tag":
+                return block.getTag(strArg(context, args, 0));
+            default:
+                throw new ScriptError("unknown block method '" + name + "'");
+        }
     }
 
     // -------------------------- map methods ---------------------------
@@ -904,6 +1441,14 @@ public final class Builtins {
                 return pad(str, intArg(context, name, args, 0), strArg(context, args, 1), true);
             case "padded_right":
                 return pad(str, intArg(context, name, args, 0), strArg(context, args, 1), false);
+            case "first_chars": {
+                int n = Math.clamp(intArg(context, name, args, 0), 0, str.length());
+                return str.substring(0, n);
+            }
+            case "last_chars": {
+                int n = Math.clamp(intArg(context, name, args, 0), 0, str.length());
+                return str.substring(str.length() - n);
+            }
             default:
                 throw new ScriptError("unknown string method '" + name + "'");
         }
@@ -1175,6 +1720,205 @@ public final class Builtins {
         return index < args.size() ? context.evaluate(args.get(index)) : null;
     }
 
+    // ------------------------------------------------------------------
+    // W-stdlib: random / location / color / parse / type helpers
+    // ------------------------------------------------------------------
+
+    /**
+     * Per-thread seeded generator installed by random_seed(); null until then.
+     * When present the design-named random_* draws use it (reproducible tests);
+     * otherwise they fall back to ThreadLocalRandom. The pre-existing random /
+     * random_float / random_in builtins are untouched and always use
+     * ThreadLocalRandom.
+     */
+    private static final ThreadLocal<java.util.Random> SEEDED_RNG = new ThreadLocal<>();
+
+    private static java.util.Random rng() {
+        java.util.Random seeded = SEEDED_RNG.get();
+        return seeded != null ? seeded : ThreadLocalRandom.current();
+    }
+
+    /** Resolve a Location (Pos) argument for the B7 location/vector builtins. */
+    private static Pos requireLocationArg(ExecutionContext context, String function,
+            List<Expression> args, int index) {
+        Object value = evaluateArg(context, args, index);
+        if (value instanceof Pos pos) {
+            return pos;
+        }
+        throw new ScriptError(function + "() expects a location, got: "
+                + Values.displayString(value));
+    }
+
+    /** parse(source, TypeName) -> optional<T>: total, none on any parse failure. */
+    private static Object parseAs(String source, String typeName) {
+        String trimmed = source.trim();
+        try {
+            switch (typeName) {
+                case "Integer":
+                case "Int":
+                case "int":
+                    return Integer.parseInt(trimmed);
+                case "Double":
+                case "double":
+                case "Number":
+                    return Double.parseDouble(trimmed);
+                case "Boolean":
+                case "Bool":
+                case "bool":
+                    if (trimmed.equalsIgnoreCase("true")) {
+                        return true;
+                    }
+                    if (trimmed.equalsIgnoreCase("false")) {
+                        return false;
+                    }
+                    return NoneValue.INSTANCE;
+                case "String":
+                    return source;
+                default:
+                    // non-scalar target types cannot be parsed from a string
+                    return NoneValue.INSTANCE;
+            }
+        } catch (NumberFormatException e) {
+            return NoneValue.INSTANCE;
+        }
+    }
+
+    /** Legacy (&/§) color + format codes, including &#rrggbb hex sequences. */
+    private static final java.util.regex.Pattern LEGACY_CODE =
+            java.util.regex.Pattern.compile("(?i)[&§](#[0-9a-f]{6}|[0-9a-fk-or])");
+
+    /**
+     * Plain text with all formatting removed: MiniMessage tags are dropped by
+     * rendering to a Component and back to plain text, then any remaining legacy
+     * &/§ codes are stripped.
+     */
+    private static String stripColor(String source) {
+        String plain = net.swofty.TextFormat.plain(net.swofty.TextFormat.component(source));
+        return LEGACY_CODE.matcher(plain).replaceAll("");
+    }
+
+    /**
+     * Convert legacy &/§ color and format codes (and &#rrggbb / §#rrggbb hex)
+     * into the MiniMessage tags the send path understands. Unknown codes pass
+     * through untouched.
+     */
+    private static String legacyToMini(String source) {
+        StringBuilder out = new StringBuilder(source.length());
+        int len = source.length();
+        for (int i = 0; i < len; i++) {
+            char c = source.charAt(i);
+            if ((c == '&' || c == '§') && i + 1 < len) {
+                char next = source.charAt(i + 1);
+                if (next == '#' && i + 7 < len) {
+                    String hex = source.substring(i + 2, i + 8);
+                    if (hex.chars().allMatch(ch -> Character.digit(ch, 16) >= 0)) {
+                        out.append("<#").append(hex.toLowerCase(Locale.ROOT)).append('>');
+                        i += 7;
+                        continue;
+                    }
+                }
+                String tag = miniTagFor(Character.toLowerCase(next));
+                if (tag != null) {
+                    out.append(tag);
+                    i++;
+                    continue;
+                }
+            }
+            out.append(c);
+        }
+        return out.toString();
+    }
+
+    private static String miniTagFor(char code) {
+        return switch (code) {
+            case '0' -> "<black>";
+            case '1' -> "<dark_blue>";
+            case '2' -> "<dark_green>";
+            case '3' -> "<dark_aqua>";
+            case '4' -> "<dark_red>";
+            case '5' -> "<dark_purple>";
+            case '6' -> "<gold>";
+            case '7' -> "<gray>";
+            case '8' -> "<dark_gray>";
+            case '9' -> "<blue>";
+            case 'a' -> "<green>";
+            case 'b' -> "<aqua>";
+            case 'c' -> "<red>";
+            case 'd' -> "<light_purple>";
+            case 'e' -> "<yellow>";
+            case 'f' -> "<white>";
+            case 'k' -> "<obfuscated>";
+            case 'l' -> "<bold>";
+            case 'm' -> "<strikethrough>";
+            case 'n' -> "<underlined>";
+            case 'o' -> "<italic>";
+            case 'r' -> "<reset>";
+            default -> null;
+        };
+    }
+
+    /** Normalize a hex color argument ("#rrggbb", "rrggbb", "<#rrggbb>") to rrggbb. */
+    private static String normalizeHex(String raw) {
+        String hex = raw.trim();
+        if (hex.startsWith("<#") && hex.endsWith(">")) {
+            hex = hex.substring(2, hex.length() - 1);
+        }
+        if (hex.startsWith("#")) {
+            hex = hex.substring(1);
+        }
+        return hex.toLowerCase(Locale.ROOT);
+    }
+
+    /** type_of(obj): the language-level type name of a runtime value. */
+    private static String typeName(Object value) {
+        if (value == null || NoneValue.isNone(value)) {
+            return "none";
+        }
+        if (value instanceof Integer || value instanceof Long) {
+            return "Integer";
+        }
+        if (value instanceof Double || value instanceof Float) {
+            return "Double";
+        }
+        if (value instanceof Boolean) {
+            return "Boolean";
+        }
+        if (value instanceof String) {
+            return "String";
+        }
+        if (value instanceof Player) {
+            return "Player";
+        }
+        if (value instanceof Vec) {
+            return "Vec";
+        }
+        if (value instanceof Pos) {
+            return "Location";
+        }
+        if (value instanceof ItemStack) {
+            return "Item";
+        }
+        if (value instanceof net.swofty.blocks.BlockValue) {
+            return "Block";
+        }
+        if (value instanceof net.swofty.displays.SwoftDisplay) {
+            return "Display";
+        }
+        if (value instanceof net.minestom.server.entity.Entity) {
+            return "Entity";
+        }
+        if (value instanceof Instance) {
+            return "World";
+        }
+        if (value instanceof MapValue) {
+            return "map";
+        }
+        if (value instanceof Collection) {
+            return "list";
+        }
+        return value.getClass().getSimpleName();
+    }
+
     private static Number evaluateNumberArg(ExecutionContext context, String function,
             List<Expression> args, int index) {
         Object value = evaluateArg(context, args, index);
@@ -1193,5 +1937,205 @@ public final class Builtins {
         }
         throw new ScriptError(function + "() expects a number argument, got: "
                 + Values.displayString(value));
+    }
+
+    /**
+     * Resolve a state-store entity argument: a live Minestom entity (player,
+     * mob, projectile, plain entity), or a script display unwrapped to its
+     * backing entity, so state can key off displays too.
+     */
+    private static net.minestom.server.entity.Entity requireEntityArg(ExecutionContext context,
+            String function, List<Expression> args, int index) {
+        Object value = evaluateArg(context, args, index);
+        if (value instanceof net.minestom.server.entity.Entity entity) {
+            return entity;
+        }
+        if (value instanceof net.swofty.displays.SwoftDisplay display) {
+            return display.entity();
+        }
+        throw new ScriptError(function + "() expects an entity, got: "
+                + Values.displayString(value));
+    }
+
+    /** Resolve the String key argument (arg 1) of a state-store builtin. */
+    private static String requireStateKey(ExecutionContext context, String function,
+            List<Expression> args) {
+        Object value = Coercions.toStringValue(evaluateArg(context, args, 1));
+        if (value instanceof String key) {
+            return key;
+        }
+        throw new ScriptError(function + "() expects a String key, got: "
+                + Values.displayString(value));
+    }
+
+    /**
+     * Resolve a String argument at {@code index}, coercing non-string values the
+     * same way the language coerces everywhere else.
+     */
+    private static String requireStringArg(ExecutionContext context, String function,
+            List<Expression> args, int index) {
+        Object value = Coercions.toStringValue(evaluateArg(context, args, index));
+        if (value instanceof String s) {
+            return s;
+        }
+        throw new ScriptError(function + "() expects a String argument, got: "
+                + Values.displayString(value));
+    }
+
+    /**
+     * Resolve a living-entity argument (the attribute API lives on LivingEntity):
+     * players, mobs, and other living entities qualify; a script display unwraps
+     * to its backing entity when that entity is living.
+     */
+    private static net.minestom.server.entity.LivingEntity requireLivingEntityArg(
+            ExecutionContext context, String function, List<Expression> args, int index) {
+        net.minestom.server.entity.Entity entity =
+                requireEntityArg(context, function, args, index);
+        if (entity instanceof net.minestom.server.entity.LivingEntity living) {
+            return living;
+        }
+        throw new ScriptError(function + "() expects a living entity (player, mob, ...) with "
+                + "attributes, got: " + entity.getEntityType().key().asString());
+    }
+
+    /**
+     * Map a snake_case attribute key from a script to a Minestom Attribute
+     * constant. Kept in sync with Registry.combat_attribute_names. "absorption"
+     * is an alias for MAX_ABSORPTION (no plain ABSORPTION attribute exists).
+     */
+    private static net.minestom.server.entity.attribute.Attribute attributeFromName(String raw) {
+        String key = raw.trim().toLowerCase(Locale.ROOT);
+        int colon = key.indexOf(':');
+        if (colon >= 0) {
+            key = key.substring(colon + 1);
+        }
+        return switch (key) {
+            case "armor" -> net.minestom.server.entity.attribute.Attribute.ARMOR;
+            case "armor_toughness" ->
+                    net.minestom.server.entity.attribute.Attribute.ARMOR_TOUGHNESS;
+            case "attack_damage" -> net.minestom.server.entity.attribute.Attribute.ATTACK_DAMAGE;
+            case "attack_knockback" ->
+                    net.minestom.server.entity.attribute.Attribute.ATTACK_KNOCKBACK;
+            case "attack_speed" -> net.minestom.server.entity.attribute.Attribute.ATTACK_SPEED;
+            case "knockback_resistance" ->
+                    net.minestom.server.entity.attribute.Attribute.KNOCKBACK_RESISTANCE;
+            case "max_health" -> net.minestom.server.entity.attribute.Attribute.MAX_HEALTH;
+            case "max_absorption", "absorption" ->
+                    net.minestom.server.entity.attribute.Attribute.MAX_ABSORPTION;
+            case "movement_speed" -> net.minestom.server.entity.attribute.Attribute.MOVEMENT_SPEED;
+            case "fall_damage_multiplier" ->
+                    net.minestom.server.entity.attribute.Attribute.FALL_DAMAGE_MULTIPLIER;
+            case "safe_fall_distance" ->
+                    net.minestom.server.entity.attribute.Attribute.SAFE_FALL_DISTANCE;
+            case "sweeping_damage_ratio" ->
+                    net.minestom.server.entity.attribute.Attribute.SWEEPING_DAMAGE_RATIO;
+            case "flying_speed" -> net.minestom.server.entity.attribute.Attribute.FLYING_SPEED;
+            case "follow_range" -> net.minestom.server.entity.attribute.Attribute.FOLLOW_RANGE;
+            case "jump_strength" -> net.minestom.server.entity.attribute.Attribute.JUMP_STRENGTH;
+            case "scale" -> net.minestom.server.entity.attribute.Attribute.SCALE;
+            case "gravity" -> net.minestom.server.entity.attribute.Attribute.GRAVITY;
+            case "step_height" -> net.minestom.server.entity.attribute.Attribute.STEP_HEIGHT;
+            case "luck" -> net.minestom.server.entity.attribute.Attribute.LUCK;
+            case "block_interaction_range" ->
+                    net.minestom.server.entity.attribute.Attribute.BLOCK_INTERACTION_RANGE;
+            case "entity_interaction_range" ->
+                    net.minestom.server.entity.attribute.Attribute.ENTITY_INTERACTION_RANGE;
+            case "explosion_knockback_resistance" ->
+                    net.minestom.server.entity.attribute.Attribute.EXPLOSION_KNOCKBACK_RESISTANCE;
+            default -> throw new ScriptError("unknown attribute '" + raw + "'");
+        };
+    }
+
+    /**
+     * Resolve a script potion-effect key (e.g. "speed", "minecraft:strength") to
+     * a Minestom PotionEffect via the registry. Bare names are namespaced to
+     * "minecraft:". Kept in sync with Registry.potion_effect_names.
+     */
+    private static net.minestom.server.potion.PotionEffect potionEffectFromName(String raw) {
+        String key = raw.trim().toLowerCase(Locale.ROOT);
+        if (key.indexOf(':') < 0) {
+            key = "minecraft:" + key;
+        }
+        net.minestom.server.potion.PotionEffect effect =
+                net.minestom.server.potion.PotionEffect.fromKey(key);
+        if (effect == null) {
+            throw new ScriptError("unknown potion effect '" + raw + "'");
+        }
+        return effect;
+    }
+
+    /**
+     * Build a RegistryKey&lt;DamageType&gt; from a script damage-type key (e.g.
+     * "player_attack", "minecraft:magic"). Bare names are namespaced to
+     * "minecraft:". Kept in sync with Registry.damage_type_names.
+     */
+    private static net.minestom.server.registry.RegistryKey<
+            net.minestom.server.entity.damage.DamageType> damageTypeKeyFromName(String raw) {
+        String key = raw.trim().toLowerCase(Locale.ROOT);
+        if (key.indexOf(':') < 0) {
+            key = "minecraft:" + key;
+        }
+        return net.minestom.server.registry.RegistryKey.unsafeOf(key);
+    }
+
+    /**
+     * Map a script operation name to an AttributeOperation. The vanilla enum is
+     * ADD_VALUE / ADD_MULTIPLIED_BASE / ADD_MULTIPLIED_TOTAL; friendly aliases
+     * (add, multiply_base, multiply_total) are accepted too.
+     */
+    private static net.minestom.server.entity.attribute.AttributeOperation
+            attributeOperationFromName(String raw) {
+        String op = raw.trim().toLowerCase(Locale.ROOT);
+        return switch (op) {
+            case "add_value", "add" ->
+                    net.minestom.server.entity.attribute.AttributeOperation.ADD_VALUE;
+            case "add_multiplied_base", "multiply_base" ->
+                    net.minestom.server.entity.attribute.AttributeOperation.ADD_MULTIPLIED_BASE;
+            case "add_multiplied_total", "multiply_total" ->
+                    net.minestom.server.entity.attribute.AttributeOperation.ADD_MULTIPLIED_TOTAL;
+            default -> throw new ScriptError("unknown attribute operation '" + raw
+                    + "' (valid: add_value, add_multiplied_base, add_multiplied_total)");
+        };
+    }
+
+    /**
+     * Remove any modifier on this attribute whose id matches {@code id}
+     * (comparing both the bare value and the namespaced key form), so
+     * add/remove round-trips regardless of the namespace the key was minted in.
+     */
+    private static void removeModifierById(
+            net.minestom.server.entity.attribute.AttributeInstance inst, String id) {
+        String needle = id.trim().toLowerCase(Locale.ROOT);
+        for (net.minestom.server.entity.attribute.AttributeModifier mod
+                : new ArrayList<>(inst.getModifiers())) {
+            net.kyori.adventure.key.Key key = mod.id();
+            if (key.value().equalsIgnoreCase(needle)
+                    || key.asString().equalsIgnoreCase(needle)) {
+                inst.removeModifier(key);
+            }
+        }
+    }
+
+    /**
+     * Coerce a user modifier id into a valid Adventure key value
+     * ({@code [a-z0-9_.-]}). Uppercase folds to lowercase, spaces and other
+     * characters become underscores; add and remove use the same normalization
+     * so ids round-trip. An id that normalizes to empty is rejected.
+     */
+    private static String normalizeModifierId(String raw) {
+        StringBuilder sb = new StringBuilder(raw.length());
+        for (char c : raw.trim().toLowerCase(Locale.ROOT).toCharArray()) {
+            if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+                    || c == '_' || c == '.' || c == '-') {
+                sb.append(c);
+            } else {
+                sb.append('_');
+            }
+        }
+        if (sb.length() == 0) {
+            throw new ScriptError("attribute modifier id '" + raw + "' is empty after "
+                    + "normalization; use letters, digits, '_', '.', or '-'");
+        }
+        return sb.toString();
     }
 }

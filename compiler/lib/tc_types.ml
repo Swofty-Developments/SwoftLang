@@ -57,6 +57,7 @@ let rec ty_of_dt = function
   | DSimple "SCHEDULE" -> TSchedule
   | DSimple "WORLD_LOADER" -> TWorldLoader
   | DSimple "ENTITY" -> TEntity
+  | DSimple "BLOCK" -> TBlock
   | DSimple "VEC" -> TVec
   | DSimple "OFFLINE_PLAYER" -> TOfflinePlayer
   | DSimple _ -> TAny
@@ -82,6 +83,7 @@ let ty_of_type_name = function
   | "Schedule" -> Some TSchedule
   | "WorldLoader" -> Some TWorldLoader
   | "Entity" -> Some TEntity
+  | "Block" -> Some TBlock
   | "Vec" -> Some TVec
   | "OfflinePlayer" -> Some TOfflinePlayer
   | _ -> None
@@ -89,4 +91,4 @@ let ty_of_type_name = function
 let known_type_names =
   [ "String"; "Integer"; "Int"; "int"; "Double"; "double"; "Boolean"; "Bool"; "bool";
     "Player"; "Location"; "Item"; "World"; "Mob"; "Number"; "Display"; "Song"; "Skin";
-    "Canvas"; "Schedule"; "WorldLoader"; "Entity"; "Vec"; "OfflinePlayer" ]
+    "Canvas"; "Schedule"; "WorldLoader"; "Entity"; "Block"; "Vec"; "OfflinePlayer" ]

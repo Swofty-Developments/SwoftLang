@@ -138,6 +138,72 @@ let check_display_string_literal ctx name value =
     | "glow_color" -> check "glow color" nametag_colors
     | _ -> ())
 
+(* --- W-blocks: literal block id / property name / property value checks ---
+
+   Literal ids/props/values validate against the embedded block-state schema;
+   dynamic (non-literal) arguments skip the static check and are validated at
+   runtime. --- *)
+
+let block_short s =
+  let s = String.lowercase_ascii s in
+  match String.index_opt s ':' with
+  | Some i -> String.sub s (i + 1) (String.length s - i - 1)
+  | None -> s
+
+(* a literal block id used at block("id") / block_handler "id" / placement_rule
+   for "id": unknown ids error with a suggestion drawn from the schema *)
+let check_block_id_literal ctx e ~where =
+  match literal_string e with
+  | Some s when not (block_known s) ->
+    err ctx e.epos "unknown block \"%s\" in %s%s" s where
+      (suggestion (block_short s) (block_id_suggestions ()))
+  | _ -> ()
+
+(* like above but for a raw string id (block_handler / placement_rule decls,
+   where the id is a bare string, not an expr) *)
+let check_block_id_string ctx pos s ~where =
+  if not (block_known s) then
+    err ctx pos "unknown block \"%s\" in %s%s" s where
+      (suggestion (block_short s) (block_id_suggestions ()))
+
+(* validate one property name (and, when the value is a literal, its value)
+   against block [id] (already normalized + known). name_pos/value carry the
+   positions used for the errors. *)
+let check_block_prop ctx ~id ~name ~name_pos ~value =
+  let props = block_prop_names id in
+  if not (List.mem name props) then
+    err ctx name_pos "block \"%s\" has no property '%s'; valid properties: %s%s" id name
+      (String.concat ", " props) (suggestion name props)
+  else
+    match value with
+    | Some (v, vpos) ->
+      let vals = block_prop_values id name in
+      if not (List.mem v vals) then
+        err ctx vpos
+          "'%s' is not a valid value for property '%s' of block \"%s\"; valid values: %s%s" v name
+          id (String.concat ", " vals) (suggestion v vals)
+    | None -> ()
+
+(* the normalized, known block id of a literal id expression, else None *)
+let block_literal_id (e : expr) : string option =
+  match literal_string e with
+  | Some s -> if block_known s then Some (normalize_block_id s) else None
+  | None -> None
+
+(* the statically-known block id of an expression, following the Block-preserving
+   method chain (with / with_nbt / with_tag) back to a block("literal") call.
+   Returns the normalized id only when it names a known block; None means the id
+   is dynamic (or unknown, already flagged elsewhere) and the value check is
+   skipped. *)
+let rec static_block_id (e : expr) : string option =
+  match e.e with
+  | ECall ("block", id :: _) -> (
+    match literal_string id with
+    | Some s -> if block_known s then Some (normalize_block_id s) else None
+    | None -> None)
+  | EMethod (recv, ("with" | "with_nbt" | "with_tag"), _) -> static_block_id recv
+  | _ -> None
+
 (* --- static line counting for sidebar / tablist caps --- *)
 
 let literal_count e =

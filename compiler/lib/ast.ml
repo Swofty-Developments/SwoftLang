@@ -581,6 +581,39 @@ type packet_listener = {
   pk_pos : pos;
 }
 
+(* --- W-blocks: block handlers + placement rules (top-level decls) ---
+
+   A callback of a block_handler / placement_rule: a fixed-name hook whose user
+   binder names bind positionally to the hook's fixed parameter types (defined
+   in registry.ml). cb_ret carries the optional written '-> Type' annotation;
+   the semantic return type is fixed by the hook name and validated by the
+   checker. *)
+type block_cb = {
+  cb_name : string;
+  cb_params : (string * pos) list;
+  cb_ret : data_type option;
+  cb_body : stmt list;
+  cb_pos : pos;
+}
+
+(* block_handler "id" { on_place(...) on_destroy(...) on_interact(...)->Boolean
+   on_touch(...) tick(...) } — routes BlockHandler callbacks through the runtime
+   for blocks of that id. *)
+type block_handler_decl = {
+  bh_id : string;
+  bh_callbacks : block_cb list;
+  bh_pos : pos;
+}
+
+(* placement_rule for "id" { on_place(...)->Block on_update(...)->Block
+   self_replaceable: Bool } — one BlockPlacementRule per block family. *)
+type placement_rule_decl = {
+  pr_id : string;
+  pr_callbacks : block_cb list;
+  pr_self_replaceable : bool;
+  pr_pos : pos;
+}
+
 (* --- phase-8 fishing loot tables --- *)
 
 (* one 'catch item|mob "id" weight N [message "..."]' row of a fishing_loot
@@ -693,6 +726,8 @@ type script = {
   apis : api_decl list;
   schedulers : sched_decl list;
   fishing_loots : fishing_loot list;
+  block_handlers : block_handler_decl list;
+  placement_rules : placement_rule_decl list;
 }
 
 (* Constant-fold a numeric declaration-field expression (mob health/damage/

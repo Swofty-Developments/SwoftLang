@@ -94,6 +94,15 @@ tasks.register<JavaExec>("execHarness") {
     }
 }
 
+tasks.register<JavaExec>("debugSmoke") {
+    mainClass.set("net.swofty.harness.DebugSmoke")
+    classpath = sourceSets.main.get().runtimeClasspath
+    workingDir = rootDir
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    })
+}
+
 tasks.withType<Jar> {
     // Include everything in the final JAR
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })

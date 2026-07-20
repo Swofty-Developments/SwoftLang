@@ -1,0 +1,308 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 24,
+      "col": 1,
+      "names": [ "setspawn" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "spawn",
+            "subject": null,
+            "value": {
+              "line": 26,
+              "col": 29,
+              "kind": "prop",
+              "target": {
+                "line": 26,
+                "col": 22,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "location"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
+              "kind": "string",
+              "value": "Spawn set"
+            },
+            "target": {
+              "line": 27,
+              "col": 29,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "line": 17,
+      "col": 1,
+      "name": "PlayerJoin",
+      "priority": 0,
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "home",
+            "subject": {
+              "line": 19,
+              "col": 22,
+              "kind": "var",
+              "name": "player"
+            },
+            "value": {
+              "line": 19,
+              "col": 39,
+              "kind": "prop",
+              "target": {
+                "line": 19,
+                "col": 32,
+                "kind": "var",
+                "name": "player"
+              },
+              "name": "location"
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "starter",
+            "subject": {
+              "line": 20,
+              "col": 25,
+              "kind": "var",
+              "name": "player"
+            },
+            "value": {
+              "line": 20,
+              "col": 35,
+              "kind": "call",
+              "name": "item",
+              "args": [
+                {
+                  "line": 20,
+                  "col": 40,
+                  "kind": "string",
+                  "value": "compass"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 1,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 6,
+      "col": 1,
+      "name": "spawn",
+      "subject": null,
+      "type": { "base": "LOCATION" },
+      "default": {
+        "line": 6,
+        "col": 30,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 6,
+            "col": 39,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 6,
+            "col": 42,
+            "kind": "number",
+            "value": 100,
+            "integer": true
+          },
+          {
+            "line": 6,
+            "col": 47,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      }
+    },
+    {
+      "line": 7,
+      "col": 1,
+      "name": "warps",
+      "subject": null,
+      "type": { "base": "MAP", "subtypes": [ { "base": "LOCATION" } ] },
+      "default": {
+        "line": 7,
+        "col": 43,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      }
+    },
+    {
+      "line": 9,
+      "col": 1,
+      "name": "home",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "LOCATION" },
+      "default": {
+        "line": 9,
+        "col": 40,
+        "kind": "call",
+        "name": "location",
+        "args": [
+          {
+            "line": 9,
+            "col": 49,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 9,
+            "col": 52,
+            "kind": "number",
+            "value": 64,
+            "integer": true
+          },
+          {
+            "line": 9,
+            "col": 56,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      }
+    },
+    {
+      "line": 10,
+      "col": 1,
+      "name": "last_death",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "OPTIONAL", "subtypes": [ { "base": "LOCATION" } ] },
+      "default": { "line": 10, "col": 56, "kind": "none" }
+    },
+    {
+      "line": 11,
+      "col": 1,
+      "name": "knockback",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "VEC" },
+      "default": {
+        "line": 11,
+        "col": 40,
+        "kind": "call",
+        "name": "velocity",
+        "args": [
+          {
+            "line": 11,
+            "col": 49,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          },
+          {
+            "line": 11,
+            "col": 52,
+            "kind": "number",
+            "value": 0.4,
+            "integer": false
+          },
+          {
+            "line": 11,
+            "col": 57,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        ]
+      }
+    },
+    {
+      "line": 12,
+      "col": 1,
+      "name": "starter",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "ITEM" },
+      "default": {
+        "line": 12,
+        "col": 39,
+        "kind": "call",
+        "name": "item",
+        "args": [
+          { "line": 12, "col": 44, "kind": "string", "value": "stick" }
+        ]
+      }
+    },
+    {
+      "line": 13,
+      "col": 1,
+      "name": "kit",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "LIST", "subtypes": [ { "base": "ITEM" } ] },
+      "default": { "line": 13, "col": 41, "kind": "list", "items": [] }
+    },
+    {
+      "line": 14,
+      "col": 1,
+      "name": "waypoints",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "LIST", "subtypes": [ { "base": "LOCATION" } ] },
+      "default": { "line": 14, "col": 51, "kind": "list", "items": [] }
+    },
+    {
+      "line": 15,
+      "col": 1,
+      "name": "stash",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "MAP", "subtypes": [ { "base": "ITEM" } ] },
+      "default": {
+        "line": 15,
+        "col": 50,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      }
+    }
+  ]
+}

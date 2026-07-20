@@ -1,0 +1,1382 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 7,
+      "col": 1,
+      "names": [ "stdlib" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "assign",
+            "target": "m",
+            "value": {
+              "line": 10,
+              "col": 18,
+              "kind": "call",
+              "name": "mod",
+              "args": [
+                {
+                  "line": 10,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                },
+                {
+                  "line": 10,
+                  "col": 26,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "assign",
+            "target": "r",
+            "value": {
+              "line": 11,
+              "col": 18,
+              "kind": "call",
+              "name": "round_to",
+              "args": [
+                {
+                  "line": 11,
+                  "col": 27,
+                  "kind": "number",
+                  "value": 3.14159,
+                  "integer": false
+                },
+                {
+                  "line": 11,
+                  "col": 36,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "s",
+            "value": {
+              "line": 12,
+              "col": 18,
+              "kind": "call",
+              "name": "sqrt",
+              "args": [
+                {
+                  "line": 12,
+                  "col": 23,
+                  "kind": "number",
+                  "value": 16.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "assign",
+            "target": "p",
+            "value": {
+              "line": 13,
+              "col": 18,
+              "kind": "call",
+              "name": "pow",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                {
+                  "line": 13,
+                  "col": 25,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "assign",
+            "target": "sg",
+            "value": {
+              "line": 14,
+              "col": 19,
+              "kind": "call",
+              "name": "sign",
+              "args": [
+                {
+                  "line": 14,
+                  "col": 24,
+                  "kind": "binary",
+                  "op": "SUBTRACT",
+                  "left": {
+                    "line": 14,
+                    "col": 24,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  },
+                  "right": {
+                    "line": 14,
+                    "col": 28,
+                    "kind": "number",
+                    "value": 5,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "assign",
+            "target": "trig",
+            "value": {
+              "line": 15,
+              "col": 21,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 15,
+                "col": 21,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 15,
+                  "col": 21,
+                  "kind": "call",
+                  "name": "sin",
+                  "args": [
+                    {
+                      "line": 15,
+                      "col": 25,
+                      "kind": "number",
+                      "value": 0.0,
+                      "integer": false
+                    }
+                  ]
+                },
+                "right": {
+                  "line": 15,
+                  "col": 32,
+                  "kind": "call",
+                  "name": "cos",
+                  "args": [
+                    {
+                      "line": 15,
+                      "col": 36,
+                      "kind": "number",
+                      "value": 0.0,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "line": 15,
+                "col": 43,
+                "kind": "call",
+                "name": "tan",
+                "args": [
+                  {
+                    "line": 15,
+                    "col": 47,
+                    "kind": "number",
+                    "value": 0.0,
+                    "integer": false
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "assign",
+            "target": "inv",
+            "value": {
+              "line": 16,
+              "col": 20,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 16,
+                "col": 20,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 16,
+                  "col": 20,
+                  "kind": "binary",
+                  "op": "ADD",
+                  "left": {
+                    "line": 16,
+                    "col": 20,
+                    "kind": "call",
+                    "name": "asin",
+                    "args": [
+                      {
+                        "line": 16,
+                        "col": 25,
+                        "kind": "number",
+                        "value": 0.0,
+                        "integer": false
+                      }
+                    ]
+                  },
+                  "right": {
+                    "line": 16,
+                    "col": 32,
+                    "kind": "call",
+                    "name": "acos",
+                    "args": [
+                      {
+                        "line": 16,
+                        "col": 37,
+                        "kind": "number",
+                        "value": 1.0,
+                        "integer": false
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "line": 16,
+                  "col": 44,
+                  "kind": "call",
+                  "name": "atan",
+                  "args": [
+                    {
+                      "line": 16,
+                      "col": 49,
+                      "kind": "number",
+                      "value": 0.0,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "line": 16,
+                "col": 56,
+                "kind": "call",
+                "name": "atan2",
+                "args": [
+                  {
+                    "line": 16,
+                    "col": 62,
+                    "kind": "number",
+                    "value": 1.0,
+                    "integer": false
+                  },
+                  {
+                    "line": 16,
+                    "col": 67,
+                    "kind": "number",
+                    "value": 1.0,
+                    "integer": false
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 17,
+            "col": 9,
+            "kind": "assign",
+            "target": "logs",
+            "value": {
+              "line": 17,
+              "col": 21,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 17,
+                "col": 21,
+                "kind": "binary",
+                "op": "ADD",
+                "left": {
+                  "line": 17,
+                  "col": 21,
+                  "kind": "call",
+                  "name": "ln",
+                  "args": [
+                    {
+                      "line": 17,
+                      "col": 24,
+                      "kind": "call",
+                      "name": "e",
+                      "args": []
+                    }
+                  ]
+                },
+                "right": {
+                  "line": 17,
+                  "col": 31,
+                  "kind": "call",
+                  "name": "log10",
+                  "args": [
+                    {
+                      "line": 17,
+                      "col": 37,
+                      "kind": "number",
+                      "value": 100.0,
+                      "integer": false
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "line": 17,
+                "col": 46,
+                "kind": "call",
+                "name": "log",
+                "args": [
+                  {
+                    "line": 17,
+                    "col": 50,
+                    "kind": "number",
+                    "value": 8.0,
+                    "integer": false
+                  },
+                  {
+                    "line": 17,
+                    "col": 55,
+                    "kind": "number",
+                    "value": 2.0,
+                    "integer": false
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "line": 18,
+            "col": 9,
+            "kind": "assign",
+            "target": "circ",
+            "value": {
+              "line": 18,
+              "col": 21,
+              "kind": "call",
+              "name": "pi",
+              "args": []
+            }
+          },
+          {
+            "line": 19,
+            "col": 9,
+            "kind": "assign",
+            "target": "total",
+            "value": {
+              "line": 19,
+              "col": 22,
+              "kind": "call",
+              "name": "sum",
+              "args": [
+                {
+                  "line": 19,
+                  "col": 26,
+                  "kind": "list",
+                  "items": [
+                    {
+                      "line": 19,
+                      "col": 27,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    },
+                    {
+                      "line": 19,
+                      "col": 30,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    },
+                    {
+                      "line": 19,
+                      "col": 33,
+                      "kind": "number",
+                      "value": 3,
+                      "integer": true
+                    },
+                    {
+                      "line": 19,
+                      "col": 36,
+                      "kind": "number",
+                      "value": 4,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "assign",
+            "target": "prod",
+            "value": {
+              "line": 20,
+              "col": 21,
+              "kind": "call",
+              "name": "product",
+              "args": [
+                {
+                  "line": 20,
+                  "col": 29,
+                  "kind": "list",
+                  "items": [
+                    {
+                      "line": 20,
+                      "col": 30,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    },
+                    {
+                      "line": 20,
+                      "col": 33,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    },
+                    {
+                      "line": 20,
+                      "col": 36,
+                      "kind": "number",
+                      "value": 3,
+                      "integer": true
+                    },
+                    {
+                      "line": 20,
+                      "col": 39,
+                      "kind": "number",
+                      "value": 4,
+                      "integer": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 21,
+              "col": 14,
+              "kind": "string",
+              "value": "m ${m} r ${r} s ${s} p ${p} sg ${sg}"
+            },
+            "target": {
+              "line": 21,
+              "col": 56,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 22,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 22,
+              "col": 14,
+              "kind": "string",
+              "value": "trig ${trig} inv ${inv} logs ${logs} circ ${circ}"
+            },
+            "target": {
+              "line": 22,
+              "col": 69,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 23,
+              "col": 14,
+              "kind": "string",
+              "value": "sum ${total} product ${prod}"
+            },
+            "target": {
+              "line": 23,
+              "col": 48,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "call",
+            "name": "random_seed",
+            "args": [
+              {
+                "line": 26,
+                "col": 21,
+                "kind": "number",
+                "value": 42,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "assign",
+            "target": "die",
+            "value": {
+              "line": 27,
+              "col": 20,
+              "kind": "call",
+              "name": "random_int",
+              "args": [
+                {
+                  "line": 27,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                {
+                  "line": 27,
+                  "col": 34,
+                  "kind": "number",
+                  "value": 6,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 28,
+            "col": 9,
+            "kind": "assign",
+            "target": "rd",
+            "value": {
+              "line": 28,
+              "col": 19,
+              "kind": "call",
+              "name": "random_double",
+              "args": [
+                {
+                  "line": 28,
+                  "col": 33,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                },
+                {
+                  "line": 28,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 1.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 29,
+              "col": 12,
+              "kind": "call",
+              "name": "chance",
+              "args": [
+                {
+                  "line": 29,
+                  "col": 19,
+                  "kind": "number",
+                  "value": 0.5,
+                  "integer": false
+                }
+              ]
+            },
+            "then": {
+              "line": 29,
+              "col": 24,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 30,
+                  "col": 13,
+                  "kind": "send",
+                  "message": {
+                    "line": 30,
+                    "col": 18,
+                    "kind": "string",
+                    "value": "coin"
+                  },
+                  "target": {
+                    "line": 30,
+                    "col": 28,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "assign",
+            "target": "loot",
+            "value": {
+              "line": 32,
+              "col": 21,
+              "kind": "list",
+              "items": [
+                { "line": 32, "col": 22, "kind": "string", "value": "sword" },
+                {
+                  "line": 32,
+                  "col": 31,
+                  "kind": "string",
+                  "value": "shield"
+                },
+                {
+                  "line": 32,
+                  "col": 41,
+                  "kind": "string",
+                  "value": "potion"
+                }
+              ]
+            }
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "assign",
+            "target": "drop",
+            "value": {
+              "line": 33,
+              "col": 21,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 33,
+                "col": 21,
+                "kind": "call",
+                "name": "random_element",
+                "args": [
+                  { "line": 33, "col": 36, "kind": "var", "name": "loot" }
+                ]
+              },
+              "right": {
+                "line": 33,
+                "col": 52,
+                "kind": "string",
+                "value": "nothing"
+              }
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "assign",
+            "target": "id",
+            "value": {
+              "line": 34,
+              "col": 19,
+              "kind": "call",
+              "name": "random_uuid",
+              "args": []
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 35,
+              "col": 14,
+              "kind": "string",
+              "value": "die ${die} rd ${rd} drop ${drop} id ${id}"
+            },
+            "target": {
+              "line": 35,
+              "col": 61,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "assign",
+            "target": "n",
+            "value": {
+              "line": 38,
+              "col": 18,
+              "kind": "binary",
+              "op": "OR_ELSE",
+              "left": {
+                "line": 38,
+                "col": 18,
+                "kind": "call",
+                "name": "parse",
+                "args": [
+                  { "line": 38, "col": 24, "kind": "string", "value": "42" },
+                  { "line": 38, "col": 30, "kind": "var", "name": "Integer" }
+                ]
+              },
+              "right": {
+                "line": 38,
+                "col": 49,
+                "kind": "number",
+                "value": 0,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "assign",
+            "target": "ok",
+            "value": {
+              "line": 39,
+              "col": 19,
+              "kind": "call",
+              "name": "matches",
+              "args": [
+                {
+                  "line": 39,
+                  "col": 27,
+                  "kind": "string",
+                  "value": "abc123"
+                },
+                {
+                  "line": 39,
+                  "col": 37,
+                  "kind": "string",
+                  "value": "[a-z0-9]+"
+                }
+              ]
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "assign",
+            "target": "bare",
+            "value": {
+              "line": 40,
+              "col": 21,
+              "kind": "call",
+              "name": "stripped",
+              "args": [
+                {
+                  "line": 40,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "&aHello"
+                }
+              ]
+            }
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "assign",
+            "target": "fmt",
+            "value": {
+              "line": 41,
+              "col": 20,
+              "kind": "call",
+              "name": "formatted",
+              "args": [
+                {
+                  "line": 41,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "&aHello"
+                }
+              ]
+            }
+          },
+          {
+            "line": 42,
+            "col": 9,
+            "kind": "assign",
+            "target": "head",
+            "value": {
+              "line": 42,
+              "col": 36,
+              "kind": "method_call",
+              "receiver": {
+                "line": 42,
+                "col": 21,
+                "kind": "string",
+                "value": "Hello, World"
+              },
+              "name": "first_chars",
+              "args": [
+                {
+                  "line": 42,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "assign",
+            "target": "tail",
+            "value": {
+              "line": 43,
+              "col": 36,
+              "kind": "method_call",
+              "receiver": {
+                "line": 43,
+                "col": 21,
+                "kind": "string",
+                "value": "Hello, World"
+              },
+              "name": "last_chars",
+              "args": [
+                {
+                  "line": 43,
+                  "col": 47,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 44,
+              "col": 14,
+              "kind": "string",
+              "value": "n ${n} ok ${ok} bare ${bare} fmt ${fmt}"
+            },
+            "target": {
+              "line": 44,
+              "col": 59,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 45,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 45,
+              "col": 14,
+              "kind": "string",
+              "value": "head ${head} tail ${tail}"
+            },
+            "target": {
+              "line": 45,
+              "col": 45,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 48,
+            "col": 9,
+            "kind": "assign",
+            "target": "nocol",
+            "value": {
+              "line": 48,
+              "col": 22,
+              "kind": "call",
+              "name": "strip_color",
+              "args": [
+                {
+                  "line": 48,
+                  "col": 34,
+                  "kind": "string",
+                  "value": "&aGreen &lBold"
+                }
+              ]
+            }
+          },
+          {
+            "line": 49,
+            "col": 9,
+            "kind": "assign",
+            "target": "mini",
+            "value": {
+              "line": 49,
+              "col": 21,
+              "kind": "call",
+              "name": "legacy_to_mini",
+              "args": [
+                {
+                  "line": 49,
+                  "col": 36,
+                  "kind": "string",
+                  "value": "&aGreen"
+                }
+              ]
+            }
+          },
+          {
+            "line": 50,
+            "col": 9,
+            "kind": "assign",
+            "target": "grad",
+            "value": {
+              "line": 50,
+              "col": 21,
+              "kind": "call",
+              "name": "gradient",
+              "args": [
+                {
+                  "line": 50,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "Rainbow"
+                },
+                {
+                  "line": 50,
+                  "col": 41,
+                  "kind": "string",
+                  "value": "#ff0000"
+                },
+                {
+                  "line": 50,
+                  "col": 52,
+                  "kind": "string",
+                  "value": "#0000ff"
+                }
+              ]
+            }
+          },
+          {
+            "line": 51,
+            "col": 9,
+            "kind": "assign",
+            "target": "rain",
+            "value": {
+              "line": 51,
+              "col": 21,
+              "kind": "call",
+              "name": "rainbow",
+              "args": [
+                { "line": 51, "col": 29, "kind": "string", "value": "Party" }
+              ]
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 52,
+              "col": 14,
+              "kind": "string",
+              "value": "${nocol} ${mini} ${grad} ${rain}"
+            },
+            "target": {
+              "line": 52,
+              "col": 52,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 55,
+            "col": 9,
+            "kind": "assign",
+            "target": "thousands",
+            "value": {
+              "line": 55,
+              "col": 26,
+              "kind": "call",
+              "name": "format_number",
+              "args": [
+                {
+                  "line": 55,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 1234567,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 56,
+            "col": 9,
+            "kind": "assign",
+            "target": "places",
+            "value": {
+              "line": 56,
+              "col": 23,
+              "kind": "call",
+              "name": "format_decimals",
+              "args": [
+                {
+                  "line": 56,
+                  "col": 39,
+                  "kind": "number",
+                  "value": 3.14159,
+                  "integer": false
+                },
+                {
+                  "line": 56,
+                  "col": 48,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 57,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 57,
+              "col": 14,
+              "kind": "string",
+              "value": "thousands ${thousands} places ${places}"
+            },
+            "target": {
+              "line": 57,
+              "col": 59,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 60,
+            "col": 9,
+            "kind": "assign",
+            "target": "tn",
+            "value": {
+              "line": 60,
+              "col": 19,
+              "kind": "call",
+              "name": "type_of",
+              "args": [
+                { "line": 60, "col": 27, "kind": "var", "name": "die" }
+              ]
+            }
+          },
+          {
+            "line": 61,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 61,
+              "col": 14,
+              "kind": "string",
+              "value": "type ${tn}"
+            },
+            "target": {
+              "line": 61,
+              "col": 30,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "assign",
+            "target": "here",
+            "value": {
+              "line": 64,
+              "col": 21,
+              "kind": "call",
+              "name": "location_of",
+              "args": [
+                { "line": 64, "col": 33, "kind": "var", "name": "sender" }
+              ]
+            }
+          },
+          {
+            "line": 65,
+            "col": 9,
+            "kind": "assign",
+            "target": "up",
+            "value": {
+              "line": 65,
+              "col": 19,
+              "kind": "call",
+              "name": "above",
+              "args": [
+                { "line": 65, "col": 25, "kind": "var", "name": "here" },
+                {
+                  "line": 65,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "assign",
+            "target": "down",
+            "value": {
+              "line": 66,
+              "col": 21,
+              "kind": "call",
+              "name": "below",
+              "args": [
+                { "line": 66, "col": 27, "kind": "var", "name": "here" },
+                {
+                  "line": 66,
+                  "col": 33,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "assign",
+            "target": "d",
+            "value": {
+              "line": 67,
+              "col": 18,
+              "kind": "call",
+              "name": "distance",
+              "args": [
+                { "line": 67, "col": 27, "kind": "var", "name": "here" },
+                { "line": 67, "col": 33, "kind": "var", "name": "up" }
+              ]
+            }
+          },
+          {
+            "line": 68,
+            "col": 9,
+            "kind": "assign",
+            "target": "inside",
+            "value": {
+              "line": 68,
+              "col": 23,
+              "kind": "call",
+              "name": "is_within",
+              "args": [
+                { "line": 68, "col": 33, "kind": "var", "name": "here" },
+                { "line": 68, "col": 39, "kind": "var", "name": "down" },
+                { "line": 68, "col": 45, "kind": "var", "name": "up" }
+              ]
+            }
+          },
+          {
+            "line": 69,
+            "col": 9,
+            "kind": "assign",
+            "target": "dir",
+            "value": {
+              "line": 69,
+              "col": 20,
+              "kind": "call",
+              "name": "direction_from",
+              "args": [
+                { "line": 69, "col": 35, "kind": "var", "name": "here" },
+                { "line": 69, "col": 41, "kind": "var", "name": "up" }
+              ]
+            }
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "assign",
+            "target": "nearby",
+            "value": {
+              "line": 70,
+              "col": 23,
+              "kind": "call",
+              "name": "blocks_in_radius",
+              "args": [
+                { "line": 70, "col": 40, "kind": "var", "name": "here" },
+                {
+                  "line": 70,
+                  "col": 46,
+                  "kind": "number",
+                  "value": 3,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 71,
+            "col": 9,
+            "kind": "assign",
+            "target": "folks",
+            "value": {
+              "line": 71,
+              "col": 22,
+              "kind": "call",
+              "name": "players_in_radius",
+              "args": [
+                { "line": 71, "col": 40, "kind": "var", "name": "here" },
+                {
+                  "line": 71,
+                  "col": 46,
+                  "kind": "number",
+                  "value": 8,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 72,
+            "col": 9,
+            "kind": "assign",
+            "target": "v",
+            "value": {
+              "line": 72,
+              "col": 18,
+              "kind": "call",
+              "name": "vec",
+              "args": [
+                {
+                  "line": 72,
+                  "col": 22,
+                  "kind": "number",
+                  "value": 3.0,
+                  "integer": false
+                },
+                {
+                  "line": 72,
+                  "col": 27,
+                  "kind": "number",
+                  "value": 4.0,
+                  "integer": false
+                },
+                {
+                  "line": 72,
+                  "col": 32,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          {
+            "line": 73,
+            "col": 9,
+            "kind": "assign",
+            "target": "len",
+            "value": {
+              "line": 73,
+              "col": 22,
+              "kind": "prop",
+              "target": { "line": 73, "col": 20, "kind": "var", "name": "v" },
+              "name": "length"
+            }
+          },
+          {
+            "line": 74,
+            "col": 9,
+            "kind": "assign",
+            "target": "unit",
+            "value": {
+              "line": 74,
+              "col": 23,
+              "kind": "prop",
+              "target": { "line": 74, "col": 21, "kind": "var", "name": "v" },
+              "name": "normalized"
+            }
+          },
+          {
+            "line": 75,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 75,
+              "col": 14,
+              "kind": "string",
+              "value": "d ${d} inside ${inside} nearby ${nearby.size} folks ${folks.size}"
+            },
+            "target": {
+              "line": 75,
+              "col": 85,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 76,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 76,
+              "col": 14,
+              "kind": "string",
+              "value": "len ${len} unit ${unit.x} dirx ${dir.x}"
+            },
+            "target": {
+              "line": 76,
+              "col": 59,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

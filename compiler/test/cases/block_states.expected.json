@@ -1,0 +1,622 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 1,
+      "col": 1,
+      "names": [ "blocks" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 3,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 3,
+              "col": 18,
+              "kind": "call",
+              "name": "block",
+              "args": [
+                {
+                  "line": 3,
+                  "col": 24,
+                  "kind": "string",
+                  "value": "oak_stairs"
+                }
+              ]
+            }
+          },
+          {
+            "line": 4,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 4,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 4,
+                "col": 18,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "with",
+              "args": [
+                { "line": 4, "col": 25, "kind": "string", "value": "facing" },
+                { "line": 4, "col": 35, "kind": "string", "value": "north" }
+              ]
+            }
+          },
+          {
+            "line": 5,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 5,
+              "col": 18,
+              "kind": "call",
+              "name": "block",
+              "args": [
+                {
+                  "line": 5,
+                  "col": 24,
+                  "kind": "string",
+                  "value": "oak_stairs"
+                },
+                {
+                  "line": 5,
+                  "col": 38,
+                  "kind": "map",
+                  "entries": {
+                    "facing": {
+                      "line": 5,
+                      "col": 47,
+                      "kind": "string",
+                      "value": "north"
+                    },
+                    "half": {
+                      "line": 5,
+                      "col": 62,
+                      "kind": "string",
+                      "value": "top"
+                    },
+                    "waterlogged": {
+                      "line": 5,
+                      "col": 82,
+                      "kind": "string",
+                      "value": "false"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 6,
+            "col": 9,
+            "kind": "assign",
+            "target": "facing",
+            "value": {
+              "line": 6,
+              "col": 25,
+              "kind": "method_call",
+              "receiver": {
+                "line": 6,
+                "col": 23,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "property",
+              "args": [
+                { "line": 6, "col": 34, "kind": "string", "value": "facing" }
+              ]
+            }
+          },
+          {
+            "line": 7,
+            "col": 9,
+            "kind": "assign",
+            "target": "props",
+            "value": {
+              "line": 7,
+              "col": 24,
+              "kind": "prop",
+              "target": { "line": 7, "col": 22, "kind": "var", "name": "b" },
+              "name": "properties"
+            }
+          },
+          {
+            "line": 8,
+            "col": 9,
+            "kind": "assign",
+            "target": "kind",
+            "value": {
+              "line": 8,
+              "col": 23,
+              "kind": "prop",
+              "target": { "line": 8, "col": 21, "kind": "var", "name": "b" },
+              "name": "id"
+            }
+          },
+          {
+            "line": 9,
+            "col": 9,
+            "kind": "assign",
+            "target": "data",
+            "value": {
+              "line": 9,
+              "col": 23,
+              "kind": "prop",
+              "target": { "line": 9, "col": 21, "kind": "var", "name": "b" },
+              "name": "nbt"
+            }
+          },
+          {
+            "line": 10,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 10,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 10,
+                "col": 18,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "with_nbt",
+              "args": [
+                { "line": 10, "col": 29, "kind": "string", "value": "{}" }
+              ]
+            }
+          },
+          {
+            "line": 11,
+            "col": 9,
+            "kind": "assign",
+            "target": "tag",
+            "value": {
+              "line": 11,
+              "col": 22,
+              "kind": "method_call",
+              "receiver": {
+                "line": 11,
+                "col": 20,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "get_tag",
+              "args": [
+                {
+                  "line": 11,
+                  "col": 30,
+                  "kind": "string",
+                  "value": "custom"
+                }
+              ]
+            }
+          },
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "assign",
+            "target": "b",
+            "value": {
+              "line": 12,
+              "col": 20,
+              "kind": "method_call",
+              "receiver": {
+                "line": 12,
+                "col": 18,
+                "kind": "var",
+                "name": "b"
+              },
+              "name": "with_tag",
+              "args": [
+                {
+                  "line": 12,
+                  "col": 29,
+                  "kind": "string",
+                  "value": "custom"
+                },
+                { "line": 12, "col": 39, "kind": "string", "value": "value" }
+              ]
+            }
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "assign",
+            "target": "here",
+            "value": {
+              "line": 13,
+              "col": 21,
+              "kind": "call",
+              "name": "block_at",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 37,
+                  "kind": "prop",
+                  "target": {
+                    "line": 13,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "location"
+                }
+              ]
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "set_block",
+            "at": {
+              "line": 14,
+              "col": 29,
+              "kind": "prop",
+              "target": {
+                "line": 14,
+                "col": 22,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "location"
+            },
+            "block": { "line": 14, "col": 41, "kind": "var", "name": "b" }
+          },
+          {
+            "line": 15,
+            "col": 9,
+            "kind": "set_block",
+            "at": {
+              "line": 15,
+              "col": 29,
+              "kind": "prop",
+              "target": {
+                "line": 15,
+                "col": 22,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "location"
+            },
+            "block": {
+              "line": 15,
+              "col": 41,
+              "kind": "string",
+              "value": "STONE"
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "fill_blocks",
+            "from": {
+              "line": 16,
+              "col": 26,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 16,
+                  "col": 35,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 16,
+                  "col": 38,
+                  "kind": "number",
+                  "value": 63,
+                  "integer": true
+                },
+                {
+                  "line": 16,
+                  "col": 42,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            },
+            "to": {
+              "line": 16,
+              "col": 48,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 16,
+                  "col": 57,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                },
+                {
+                  "line": 16,
+                  "col": 60,
+                  "kind": "number",
+                  "value": 63,
+                  "integer": true
+                },
+                {
+                  "line": 16,
+                  "col": 64,
+                  "kind": "number",
+                  "value": 2,
+                  "integer": true
+                }
+              ]
+            },
+            "block": {
+              "line": 16,
+              "col": 72,
+              "kind": "call",
+              "name": "block",
+              "args": [
+                {
+                  "line": 16,
+                  "col": 78,
+                  "kind": "string",
+                  "value": "oak_slab"
+                },
+                {
+                  "line": 16,
+                  "col": 90,
+                  "kind": "map",
+                  "entries": {
+                    "type": {
+                      "line": 16,
+                      "col": 97,
+                      "kind": "string",
+                      "value": "double"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "block_handlers": [
+    {
+      "line": 20,
+      "col": 1,
+      "id": "oak_sign",
+      "callbacks": [
+        {
+          "line": 21,
+          "col": 5,
+          "name": "on_place",
+          "params": [ "player", "location", "block" ],
+          "body": [
+            {
+              "line": 22,
+              "col": 9,
+              "kind": "send",
+              "message": {
+                "line": 22,
+                "col": 14,
+                "kind": "string",
+                "value": "placed a sign"
+              },
+              "target": {
+                "line": 22,
+                "col": 33,
+                "kind": "var",
+                "name": "player"
+              }
+            }
+          ]
+        },
+        {
+          "line": 24,
+          "col": 5,
+          "name": "on_destroy",
+          "params": [ "location", "block" ],
+          "body": [
+            {
+              "line": 25,
+              "col": 9,
+              "kind": "broadcast",
+              "message": {
+                "line": 25,
+                "col": 19,
+                "kind": "string",
+                "value": "a sign broke"
+              }
+            }
+          ]
+        },
+        {
+          "line": 27,
+          "col": 5,
+          "name": "on_interact",
+          "params": [ "player", "location", "block" ],
+          "body": [
+            {
+              "line": 28,
+              "col": 9,
+              "kind": "send",
+              "message": {
+                "line": 28,
+                "col": 14,
+                "kind": "string",
+                "value": "you clicked the sign"
+              },
+              "target": {
+                "line": 28,
+                "col": 40,
+                "kind": "var",
+                "name": "player"
+              }
+            },
+            {
+              "line": 29,
+              "col": 9,
+              "kind": "return",
+              "value": {
+                "line": 29,
+                "col": 16,
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ]
+        },
+        {
+          "line": 31,
+          "col": 5,
+          "name": "on_touch",
+          "params": [ "entity", "location" ],
+          "body": [
+            {
+              "line": 32,
+              "col": 9,
+              "kind": "broadcast",
+              "message": {
+                "line": 32,
+                "col": 19,
+                "kind": "string",
+                "value": "something touched a sign"
+              }
+            }
+          ]
+        },
+        {
+          "line": 34,
+          "col": 5,
+          "name": "tick",
+          "params": [ "location", "block" ],
+          "body": [
+            {
+              "line": 35,
+              "col": 9,
+              "kind": "broadcast",
+              "message": {
+                "line": 35,
+                "col": 19,
+                "kind": "string",
+                "value": "sign tick"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "placement_rules": [
+    {
+      "line": 39,
+      "col": 1,
+      "id": "oak_stairs",
+      "self_replaceable": false,
+      "callbacks": [
+        {
+          "line": 40,
+          "col": 5,
+          "name": "on_place",
+          "params": [ "location", "face", "cursor", "against", "player" ],
+          "body": [
+            {
+              "line": 41,
+              "col": 9,
+              "kind": "return",
+              "value": {
+                "line": 41,
+                "col": 60,
+                "kind": "method_call",
+                "receiver": {
+                  "line": 41,
+                  "col": 36,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 41,
+                    "col": 16,
+                    "kind": "call",
+                    "name": "block",
+                    "args": [
+                      {
+                        "line": 41,
+                        "col": 22,
+                        "kind": "string",
+                        "value": "oak_stairs"
+                      }
+                    ]
+                  },
+                  "name": "with",
+                  "args": [
+                    {
+                      "line": 41,
+                      "col": 41,
+                      "kind": "string",
+                      "value": "facing"
+                    },
+                    {
+                      "line": 41,
+                      "col": 51,
+                      "kind": "string",
+                      "value": "north"
+                    }
+                  ]
+                },
+                "name": "with",
+                "args": [
+                  {
+                    "line": 41,
+                    "col": 65,
+                    "kind": "string",
+                    "value": "half"
+                  },
+                  { "line": 41, "col": 73, "kind": "string", "value": "top" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "line": 43,
+          "col": 5,
+          "name": "on_update",
+          "params": [ "location", "block", "neighbors" ],
+          "body": [
+            {
+              "line": 44,
+              "col": 9,
+              "kind": "return",
+              "value": {
+                "line": 44,
+                "col": 16,
+                "kind": "var",
+                "name": "block"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

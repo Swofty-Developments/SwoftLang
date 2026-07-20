@@ -79,6 +79,24 @@
     "writable": false
   },
   { "owner": "Player", "name": "skin", "type": "Skin", "writable": true },
+  {
+    "owner": "Player",
+    "name": "on_ground",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "is_sprinting",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "alive_ticks",
+    "type": "Integer",
+    "writable": false
+  },
   { "owner": "Location", "name": "x", "type": "Double", "writable": true },
   { "owner": "Location", "name": "y", "type": "Double", "writable": true },
   { "owner": "Location", "name": "z", "type": "Double", "writable": true },
@@ -184,6 +202,24 @@
   },
   { "owner": "Mob", "name": "alive", "type": "Boolean", "writable": false },
   { "owner": "Mob", "name": "removed", "type": "Boolean", "writable": false },
+  {
+    "owner": "Mob",
+    "name": "on_ground",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "alive_ticks",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "is_sprinting",
+    "type": "Boolean",
+    "writable": false
+  },
   { "owner": "Mob", "name": "tags", "type": "EntityTags", "writable": false },
   { "owner": "World", "name": "time", "type": "Integer", "writable": true },
   {
@@ -405,6 +441,24 @@
   },
   {
     "owner": "Entity",
+    "name": "on_ground",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "alive_ticks",
+    "type": "Integer",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "is_sprinting",
+    "type": "Boolean",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
     "name": "tags",
     "type": "EntityTags",
     "writable": false
@@ -412,6 +466,8 @@
   { "owner": "Vec", "name": "x", "type": "Double", "writable": true },
   { "owner": "Vec", "name": "y", "type": "Double", "writable": true },
   { "owner": "Vec", "name": "z", "type": "Double", "writable": true },
+  { "owner": "Vec", "name": "length", "type": "Double", "writable": false },
+  { "owner": "Vec", "name": "normalized", "type": "Vec", "writable": false },
   {
     "owner": "OfflinePlayer",
     "name": "name",

@@ -16,6 +16,7 @@ import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
 import net.minestom.server.timer.ExecutionType;
+import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.swofty.ScriptError;
 import net.swofty.model.TablistColumnModel;
@@ -54,18 +55,37 @@ public final class SwoftTablistRuntime {
 
     private static final Map<String, TablistModel> DECLS = new ConcurrentHashMap<>();
     private static final Map<UUID, View> VIEWS = new ConcurrentHashMap<>();
+    /**
+     * Live auto-cycle tasks keyed by declaration name. A hot reload cancels
+     * and replaces the previous task (which captured the OLD model / line
+     * numbers) so cycles trace the freshly-parsed code; live viewers are kept.
+     */
+    private static final Map<String, Task> TASKS = new ConcurrentHashMap<>();
 
     private SwoftTablistRuntime() {
     }
 
     public static void register(TablistModel model) {
         DECLS.put(model.name(), model);
+        Task previous = TASKS.remove(model.name());
+        if (previous != null) {
+            previous.cancel();
+        }
         if (model.update().kind() == UpdateCadence.Kind.TICKS) {
-            MinecraftServer.getSchedulerManager().submitTask(() -> {
+            Task task = MinecraftServer.getSchedulerManager().submitTask(() -> {
                 cycleAll(model);
                 return TaskSchedule.tick(model.update().ticks());
             }, ExecutionType.TICK_END);
+            TASKS.put(model.name(), task);
         }
+    }
+
+    /** Cancel every live auto-cycle task (reload teardown); viewers kept. */
+    public static void clearTasks() {
+        for (Task task : TASKS.values()) {
+            task.cancel();
+        }
+        TASKS.clear();
     }
 
     public static void show(String name, Player player) {

@@ -38,6 +38,18 @@ public class SetBlockStatement extends AbstractAstNode implements Statement {
         return resolved;
     }
 
+    /**
+     * Resolve a placement target from either a {@link net.swofty.blocks.BlockValue}
+     * (from {@code block(...)} / {@code block_at(...)}, carrying state + NBT) or a
+     * plain block-id String. Used by {@code set block} / {@code fill blocks}.
+     */
+    public static Block resolveBlock(Object value) {
+        if (value instanceof net.swofty.blocks.BlockValue block) {
+            return block.block();
+        }
+        return resolveBlock((String) Coercions.toStringValue(value));
+    }
+
     /** Instance from an explicit expr, the sender's world, or "world". */
     public static Instance resolveInstance(ExecutionContext context, Expression world,
             String what) {
@@ -62,8 +74,7 @@ public class SetBlockStatement extends AbstractAstNode implements Statement {
             throw new ScriptError("set block expects a location, got: "
                     + Values.displayString(where));
         }
-        Block resolved = resolveBlock(
-                (String) Coercions.toStringValue(context.evaluate(block)));
+        Block resolved = resolveBlock(context.evaluate(block));
         Instance instance = resolveInstance(context, world, "set block");
         TickDispatch.call(() -> {
             instance.setBlock(pos.blockX(), pos.blockY(), pos.blockZ(), resolved);

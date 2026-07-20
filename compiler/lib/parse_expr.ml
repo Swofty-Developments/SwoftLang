@@ -322,6 +322,18 @@ and parse_primary st =
     ignore (advance st);
     ignore (advance st);
     mke p (ECall ("viewers_of", [ parse_postfix st ]))
+  (* W-blocks: block("id") / block("id", { facing: "north", ... }) — the second
+     argument is an ident-keyed property brace (an EMap), not a general
+     expression, so it is parsed here rather than through parse_call_args. *)
+  | Token.IDENT "block" when peek2_tok st = Token.LPAREN ->
+    ignore (advance st);
+    ignore (advance st);
+    let id = parse_expr st in
+    let args =
+      if matches st Token.COMMA then [ id; parse_block_prop_map st ] else [ id ]
+    in
+    expect st Token.RPAREN "')' to close block(...)";
+    mke p (ECall ("block", args))
   | Token.IDENT name when peek2_tok st = Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);
@@ -360,6 +372,27 @@ and parse_lambda st p ~lam_async =
   expect st Token.RPAREN "')' to close parameter list";
   let lam_body = !lambda_body_ref st in
   mke p (ELambda { lam_async; lam_params = List.rev !params; lam_body })
+
+(* '{ prop: value, ... }' block-property brace: ident keys, expression values.
+   Emitted as an EMap so the checker can validate each property against the
+   block-state schema. *)
+and parse_block_prop_map st =
+  let bp = pos_here st in
+  expect st Token.LBRACE "'{' to open the block property map";
+  let entries = ref [] in
+  if peek_tok st <> Token.RBRACE then begin
+    let one () =
+      let k = expect_ident st "block property name" in
+      expect st Token.COLON "':' after block property name";
+      (k, parse_expr st)
+    in
+    entries := [ one () ];
+    while matches st Token.COMMA do
+      if peek_tok st <> Token.RBRACE then entries := one () :: !entries
+    done
+  end;
+  expect st Token.RBRACE "'}' to close the block property map";
+  mke bp (EMap (List.rev !entries))
 
 and parse_call_args st =
   if matches st Token.RPAREN then []

@@ -529,12 +529,12 @@ let rec check_stmt ctx bctx env st : env * bool =
   (* --- phase-6 blocks --- *)
   | SSetBlock { bl_at; bl_block } ->
     check_location_arg ctx bctx env bl_at "the block location";
-    check_string_arg ctx bctx env bl_block "the block name";
+    check_block_value_arg ctx bctx env bl_block "the block";
     (env, false)
   | SFillBlocks { fb_from; fb_to; fb_block } ->
     check_location_arg ctx bctx env fb_from "the fill start";
     check_location_arg ctx bctx env fb_to "the fill end";
-    check_string_arg ctx bctx env fb_block "the block name";
+    check_block_value_arg ctx bctx env fb_block "the block";
     (* design 6D: warn on large literal volumes — big fills freeze the tick
        thread *)
     (match (literal_coords fb_from, literal_coords fb_to) with
@@ -849,6 +849,15 @@ and check_string_arg ctx bctx env e what =
   match t with
   | TString | TAny -> ()
   | _ -> err ctx e.epos "%s must be a String (got %s)" what (ty_to_string t)
+
+(* W-blocks: a block value argument accepts either a String id or a Block value
+   (block(...) / block_at(...)) *)
+and check_block_value_arg ctx bctx env e what =
+  let t = type_of ctx bctx env e in
+  require_present ctx env e t ~use:what;
+  match t with
+  | TString | TBlock | TAny -> ()
+  | _ -> err ctx e.epos "%s must be a block id (String) or a Block value (got %s)" what (ty_to_string t)
 
 and check_num ctx bctx env e what =
   let t = type_of ctx bctx env e in

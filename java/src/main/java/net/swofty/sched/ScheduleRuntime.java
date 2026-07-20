@@ -79,6 +79,9 @@ public final class ScheduleRuntime {
             long everyTicks, int repeatCount, boolean bounded, ExecuteBlock body,
             CommandSender sender, Map<String, Object> captured) {
         ScheduleHandle handle = new ScheduleHandle(description);
+        // track every handle (named or not) so a reload's cancelAll() can tear
+        // down anonymous loops too; named handles additionally claim their slot
+        ScheduleRegistry.track(handle);
         if (name != null) {
             ScheduleRegistry.register(name, handle);
         }

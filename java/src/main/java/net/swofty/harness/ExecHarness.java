@@ -115,6 +115,17 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 1 && args[0].equals("--pvp-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = PvpSmoke.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 2 && args[0].equals("--npc-holo-smoke")) {
             // MinecraftServer.init() starts non-daemon threads: always exit
             int code;
@@ -508,7 +519,7 @@ public class ExecHarness {
         for (PersistentDeclModel decl : keyed) {
             for (String key : keys) {
                 Object previous = store.get(decl.name(), key);
-                Object next = bump(decl.type().getBaseType(), previous);
+                Object next = bump(decl.type(), previous);
                 store.set(decl.name(), key, next);
                 expected.put(decl.name() + " " + key, next);
                 System.out.println("[PERSIST keyed] " + decl.name() + "[" + key + "]: "
@@ -538,13 +549,74 @@ public class ExecHarness {
         return failures == 0 ? 0 : 1;
     }
 
-    private static Object bump(net.swofty.nativebridge.representation.BaseType base,
+    /**
+     * Produce a distinct, type-correct next value for a keyed persistent so the
+     * synthetic round-trip both changes and re-reads it. Rich types (Location,
+     * Vec, Item, list/map of leaves) must yield a value the store accepts —
+     * feeding a String to a Location/Item row would trip the store's coercion
+     * guard and abort the whole check, so each type is bumped in kind.
+     */
+    private static Object bump(net.swofty.nativebridge.representation.DataType type,
             Object previous) {
-        return switch (base) {
+        return switch (type.getBaseType()) {
             case INTEGER -> (Integer) previous + 1;
             case DOUBLE -> (Double) previous + 0.5;
             case BOOLEAN -> !(Boolean) previous;
+            case STRING -> previous + "+";
+            case LOCATION -> {
+                var p = (net.minestom.server.coordinate.Pos) previous;
+                yield p.withCoord(p.x() + 1, p.y(), p.z()).withYaw(p.yaw() + 5f);
+            }
+            case VEC -> {
+                var v = (net.minestom.server.coordinate.Vec) previous;
+                yield v.withX(v.x() + 1);
+            }
+            case ITEM -> {
+                var it = (net.minestom.server.item.ItemStack) previous;
+                yield it.isAir() ? net.minestom.server.item.ItemStack.of(
+                        net.minestom.server.item.Material.STICK, 2)
+                        : it.withAmount(it.amount() + 1);
+            }
+            case LIST -> {
+                List<Object> out = new ArrayList<>(
+                        previous instanceof List<?> l ? l : List.of());
+                out.add(leafSample(type.getSubTypes().isEmpty() ? null
+                        : type.getSubTypes().get(0)));
+                yield out;
+            }
+            case MAP -> {
+                var m = new net.swofty.runtime.MapValue();
+                if (previous instanceof net.swofty.runtime.MapValue prev) {
+                    for (var e : prev.snapshot().entrySet()) {
+                        m.put(e.getKey(), e.getValue());
+                    }
+                }
+                var subs = type.getSubTypes();
+                var valueType = subs.isEmpty() ? null
+                        : subs.size() >= 2 ? subs.get(1) : subs.get(0);
+                m.put("k" + m.size(), leafSample(valueType));
+                yield m;
+            }
+            case OPTIONAL -> leafSample(type.getSubTypes().isEmpty() ? null
+                    : type.getSubTypes().get(0));
             default -> previous + "+";
+        };
+    }
+
+    /** A concrete sample value for a persistable leaf element type. */
+    private static Object leafSample(net.swofty.nativebridge.representation.DataType type) {
+        if (type == null) {
+            return "x";
+        }
+        return switch (type.getBaseType()) {
+            case INTEGER -> 7;
+            case DOUBLE -> 1.5;
+            case BOOLEAN -> true;
+            case LOCATION -> new net.minestom.server.coordinate.Pos(3, 4, 5, 20f, -8f);
+            case VEC -> new net.minestom.server.coordinate.Vec(0.2, 0.3, 0.4);
+            case ITEM -> net.minestom.server.item.ItemStack.of(
+                    net.minestom.server.item.Material.DIAMOND, 4);
+            default -> "x";
         };
     }
 

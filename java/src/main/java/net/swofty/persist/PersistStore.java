@@ -347,6 +347,24 @@ public final class PersistStore {
     }
 
     private Object coerceRuntime(PersistentDeclModel decl, Object value) {
+        // an optional<T> persistent legitimately holds none (its declared
+        // default): none stays the none sentinel (serializes to JSON null),
+        // and a present value coerces against the inner leaf type T. The
+        // typechecker only permits optional of a leaf value type, so the
+        // inner is always a scalar / Location / Vec / Item.
+        if (decl.type().getBaseType() == BaseType.OPTIONAL) {
+            if (NoneValue.isNone(value)) {
+                return NoneValue.INSTANCE;
+            }
+            net.swofty.nativebridge.representation.DataType inner = listElementType(decl.type());
+            BaseType innerBase = inner != null ? inner.getBaseType() : BaseType.UNKNOWN;
+            Object coerced = coerceLeaf(innerBase, value);
+            if (coerced != null) {
+                return coerced;
+            }
+            throw new ScriptError("persistent '" + decl.name() + "' holds " + decl.type()
+                    + ", cannot store: " + value);
+        }
         if (NoneValue.isNone(value)) {
             throw new ScriptError("cannot store none in persistent '" + decl.name() + "'");
         }
@@ -371,6 +389,29 @@ public final class PersistStore {
                     return value;
                 }
                 break;
+            case LOCATION:
+                if (value instanceof net.minestom.server.coordinate.Pos) {
+                    return value;
+                }
+                break;
+            case VEC:
+                if (value instanceof net.minestom.server.coordinate.Vec) {
+                    return value;
+                }
+                if (value instanceof net.minestom.server.coordinate.Pos pos) {
+                    return new net.minestom.server.coordinate.Vec(pos.x(), pos.y(), pos.z());
+                }
+                break;
+            case ITEM:
+                if (value instanceof net.minestom.server.item.ItemStack) {
+                    return value;
+                }
+                break;
+            case LIST:
+                if (value instanceof List<?> list) {
+                    return validateListValues(decl, list);
+                }
+                break;
             case MAP:
                 if (value instanceof net.swofty.runtime.MapValue map) {
                     return validateMapValues(decl, map);
@@ -393,7 +434,7 @@ public final class PersistStore {
         BaseType element = mapElementType(decl.type());
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             Object v = entry.getValue();
-            if (NoneValue.isNone(v) || !matchesScalar(element, v)) {
+            if (NoneValue.isNone(v) || !matchesLeaf(element, v)) {
                 throw new ScriptError("persistent map '" + decl.name() + "' holds "
                         + decl.type() + ", but key '" + entry.getKey()
                         + "' has incompatible value: " + v);
@@ -402,12 +443,75 @@ public final class PersistStore {
         return map;
     }
 
-    private static boolean matchesScalar(BaseType element, Object v) {
+    /**
+     * A persistent {@code list<T>} must hold only values of the declared leaf
+     * element type T (scalar / Location / Vec / Item). Validates in place (no
+     * widening) and returns the same live reference, so a later persist_set of
+     * the mutated list re-flushes the whole JSON array — matching map semantics.
+     */
+    private Object validateListValues(PersistentDeclModel decl, List<?> list) {
+        net.swofty.nativebridge.representation.DataType elemType =
+                listElementType(decl.type());
+        BaseType element = elemType != null ? elemType.getBaseType() : BaseType.UNKNOWN;
+        for (Object v : list) {
+            if (NoneValue.isNone(v) || !matchesLeaf(element, v)) {
+                throw new ScriptError("persistent list '" + decl.name() + "' holds "
+                        + decl.type() + ", but an element has incompatible value: " + v);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Runtime type check for a persistable leaf element: the four scalars plus
+     * the rich value types Location (Pos), Vec, and Item (ItemStack). Numbers
+     * are accepted for INTEGER/DOUBLE without widening (kept as the caller's
+     * boxed type), mirroring the scalar-map validation this replaced.
+     */
+    /**
+     * Coerce a runtime value to a persistable leaf type, or null if it does not
+     * match. Mirrors the leaf cases of {@link #coerceRuntime}: Numbers narrow to
+     * Integer / widen to Double without changing the caller's other types, and a
+     * Pos is accepted as a Vec (its position drops orientation). Used by the
+     * optional&lt;T&gt; store path so a present optional value coerces exactly
+     * like a bare T persistent.
+     */
+    private static Object coerceLeaf(BaseType base, Object value) {
+        switch (base) {
+            case STRING:
+                return value instanceof String ? value : null;
+            case INTEGER:
+                return value instanceof Number n ? (value instanceof Integer ? value : n.intValue()) : null;
+            case DOUBLE:
+                return value instanceof Number n ? n.doubleValue() : null;
+            case BOOLEAN:
+                return value instanceof Boolean ? value : null;
+            case LOCATION:
+                return value instanceof net.minestom.server.coordinate.Pos ? value : null;
+            case VEC:
+                if (value instanceof net.minestom.server.coordinate.Vec) {
+                    return value;
+                }
+                if (value instanceof net.minestom.server.coordinate.Pos pos) {
+                    return new net.minestom.server.coordinate.Vec(pos.x(), pos.y(), pos.z());
+                }
+                return null;
+            case ITEM:
+                return value instanceof net.minestom.server.item.ItemStack ? value : null;
+            default:
+                return null;
+        }
+    }
+
+    private static boolean matchesLeaf(BaseType element, Object v) {
         switch (element) {
             case STRING: return v instanceof String;
             case INTEGER: return v instanceof Number;
             case DOUBLE: return v instanceof Number;
             case BOOLEAN: return v instanceof Boolean;
+            case LOCATION: return v instanceof net.minestom.server.coordinate.Pos;
+            case VEC: return v instanceof net.minestom.server.coordinate.Vec;
+            case ITEM: return v instanceof net.minestom.server.item.ItemStack;
             default: return false;
         }
     }
@@ -427,6 +531,31 @@ public final class PersistStore {
     }
 
     /**
+     * The full VALUE {@link net.swofty.nativebridge.representation.DataType} of a
+     * map (not just its base): {@code map<K, V>} carries [K, V] and yields V;
+     * legacy {@code map<V>} carries [V]. null for a bare map. Needed so a
+     * map&lt;String, Location&gt; deserializes each value by its structured type.
+     */
+    private static net.swofty.nativebridge.representation.DataType mapValueType(
+            net.swofty.nativebridge.representation.DataType type) {
+        List<net.swofty.nativebridge.representation.DataType> subs = type.getSubTypes();
+        if (subs.isEmpty()) {
+            return null;
+        }
+        return subs.size() >= 2 ? subs.get(1) : subs.get(0);
+    }
+
+    /**
+     * The element {@link net.swofty.nativebridge.representation.DataType} of a
+     * {@code list<T>} (subtype[0]); null for a bare {@code list}.
+     */
+    private static net.swofty.nativebridge.representation.DataType listElementType(
+            net.swofty.nativebridge.representation.DataType type) {
+        List<net.swofty.nativebridge.representation.DataType> subs = type.getSubTypes();
+        return subs.isEmpty() ? null : subs.get(0);
+    }
+
+    /**
      * The KEY type of a map: INTEGER for a keyed {@code map<Integer, V>}
      * ([K, V] subtypes), otherwise STRING (legacy {@code map<V>} or a bare
      * map). Determines how JSON string keys coerce back on load.
@@ -443,10 +572,114 @@ public final class PersistStore {
      */
     private static Object coerceStoredValue(
             net.swofty.nativebridge.representation.DataType type, JsonElement element) {
-        if (type.getBaseType() == BaseType.MAP) {
-            return mapFromJson(mapKeyType(type), mapElementType(type), element);
+        switch (type.getBaseType()) {
+            case STRING:
+            case INTEGER:
+            case DOUBLE:
+            case BOOLEAN:
+                return coerceStored(type.getBaseType(), element);
+            case LOCATION:
+                return locationFromJson(element);
+            case VEC:
+                return vecFromJson(element);
+            case ITEM:
+                return itemFromJson(element);
+            case LIST:
+                return listFromJson(listElementType(type), element);
+            case MAP:
+                return mapFromJson(mapKeyType(type), mapValueType(type), element);
+            case OPTIONAL:
+                // a persisted optional is either JSON null (none) or the inner
+                // leaf serialization; null-in-JSON reloads as the none sentinel
+                if (element == null || element.isJsonNull()) {
+                    return NoneValue.INSTANCE;
+                }
+                net.swofty.nativebridge.representation.DataType inner = listElementType(type);
+                return inner == null ? null : coerceStoredValue(inner, element);
+            default:
+                return null;
         }
-        return coerceStored(type.getBaseType(), element);
+    }
+
+    /**
+     * Deserialize a stored Location blob {@code {x,y,z,yaw,pitch,world}} into a
+     * Pos. The optional world name is informational: a script Location is a bare
+     * Pos with no attached instance, so a present name is resolved lazily by the
+     * teleport/spawn sites via InstanceRegistry — a world missing at load simply
+     * keeps the coordinates. Missing x/y/z or a non-object blob is a bad row.
+     */
+    private static Object locationFromJson(JsonElement blob) {
+        if (blob == null || !blob.isJsonObject()) {
+            return null;
+        }
+        com.google.gson.JsonObject object = blob.getAsJsonObject();
+        try {
+            double x = object.get("x").getAsDouble();
+            double y = object.get("y").getAsDouble();
+            double z = object.get("z").getAsDouble();
+            float yaw = object.has("yaw") ? object.get("yaw").getAsFloat() : 0f;
+            float pitch = object.has("pitch") ? object.get("pitch").getAsFloat() : 0f;
+            return new net.minestom.server.coordinate.Pos(x, y, z, yaw, pitch);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** Deserialize a stored Vec blob {@code {x,y,z}}; bad/partial blob = null. */
+    private static Object vecFromJson(JsonElement blob) {
+        if (blob == null || !blob.isJsonObject()) {
+            return null;
+        }
+        com.google.gson.JsonObject object = blob.getAsJsonObject();
+        try {
+            return new net.minestom.server.coordinate.Vec(
+                    object.get("x").getAsDouble(),
+                    object.get("y").getAsDouble(),
+                    object.get("z").getAsDouble());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deserialize a stored Item (an SNBT string via to_nbt/from_nbt) back into an
+     * ItemStack. Malformed SNBT, a non-string blob, or a payload that is not a
+     * valid item all yield null so the caller falls back to the default + warns.
+     */
+    private static Object itemFromJson(JsonElement blob) {
+        if (blob == null || !blob.isJsonPrimitive()) {
+            return null;
+        }
+        try {
+            net.kyori.adventure.nbt.CompoundBinaryTag compound =
+                    net.kyori.adventure.nbt.TagStringIO.tagStringIO()
+                            .asCompound(blob.getAsString());
+            return net.minestom.server.item.ItemStack.fromItemNBT(compound);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deserialize a stored {@code list<T>} JSON array into a live ArrayList,
+     * deserializing each element by the declared element type. A non-array blob,
+     * an unknown element type, or any bad element makes the whole row bad (null),
+     * so the caller falls back to the default (an empty list) + warn.
+     */
+    private static Object listFromJson(
+            net.swofty.nativebridge.representation.DataType elementType, JsonElement blob) {
+        if (blob == null || !blob.isJsonArray() || elementType == null) {
+            return null;
+        }
+        List<Object> out = new java.util.ArrayList<>();
+        for (JsonElement element : blob.getAsJsonArray()) {
+            Object value = coerceStoredValue(elementType, element);
+            if (value == null) {
+                return null;
+            }
+            out.add(value);
+        }
+        return out;
     }
 
     /**
@@ -456,13 +689,14 @@ public final class PersistStore {
      * default (an empty map). This is the read side of the whole-map JSON
      * blob format: {@code {"alice":5,"bob":3}} for a map&lt;Integer&gt;.
      */
-    private static Object mapFromJson(BaseType keyType, BaseType element, JsonElement blob) {
-        if (blob == null || !blob.isJsonObject()) {
+    private static Object mapFromJson(BaseType keyType,
+            net.swofty.nativebridge.representation.DataType valueType, JsonElement blob) {
+        if (blob == null || !blob.isJsonObject() || valueType == null) {
             return null;
         }
         net.swofty.runtime.MapValue map = new net.swofty.runtime.MapValue();
         for (Map.Entry<String, JsonElement> entry : blob.getAsJsonObject().entrySet()) {
-            Object value = coerceStored(element, entry.getValue());
+            Object value = coerceStoredValue(valueType, entry.getValue());
             if (value == null) {
                 return null;
             }
@@ -532,11 +766,62 @@ public final class PersistStore {
     }
 
     private static JsonElement toJson(Object value) {
+        // an optional persistent explicitly set to none serializes as JSON null
+        // and reloads as the none sentinel (coerceStoredValue OPTIONAL branch)
+        if (NoneValue.isNone(value)) {
+            return com.google.gson.JsonNull.INSTANCE;
+        }
         if (value instanceof Boolean bool) {
             return new JsonPrimitive(bool);
         }
         if (value instanceof Number number) {
             return new JsonPrimitive(number);
+        }
+        // Location -> {x,y,z,yaw,pitch}. A script Location is a bare Pos with no
+        // attached world, so no "world" field is emitted (see locationFromJson:
+        // world is a lazy-resolve hint, not part of the value); load reads back
+        // the coordinates + orientation.
+        if (value instanceof net.minestom.server.coordinate.Pos pos) {
+            com.google.gson.JsonObject object = new com.google.gson.JsonObject();
+            object.addProperty("x", pos.x());
+            object.addProperty("y", pos.y());
+            object.addProperty("z", pos.z());
+            object.addProperty("yaw", pos.yaw());
+            object.addProperty("pitch", pos.pitch());
+            return object;
+        }
+        // Vec -> {x,y,z} (velocity/offset value; no orientation).
+        if (value instanceof net.minestom.server.coordinate.Vec vec) {
+            com.google.gson.JsonObject object = new com.google.gson.JsonObject();
+            object.addProperty("x", vec.x());
+            object.addProperty("y", vec.y());
+            object.addProperty("z", vec.z());
+            return object;
+        }
+        // Item -> SNBT string, symmetric with the to_nbt/from_nbt builtins
+        // (ItemStack.toItemNBT + TagStringIO); itemFromJson parses it back.
+        if (value instanceof net.minestom.server.item.ItemStack stack) {
+            try {
+                return new JsonPrimitive(net.kyori.adventure.nbt.TagStringIO.tagStringIO()
+                        .asString(stack.toItemNBT()));
+            } catch (java.io.IOException e) {
+                // in-memory SNBT write should not fail; surface as unchecked so
+                // flush() keeps the row dirty and retries rather than dropping it
+                throw new java.io.UncheckedIOException(e);
+            }
+        }
+        // list<T> -> JSON array of the element serialization. Iterated as a
+        // defensive copy: the live cached list can be mutated by a script thread
+        // (list_add/remove) while the flush thread serializes it, and a raw
+        // iteration would risk ConcurrentModificationException.
+        if (value instanceof List<?> list) {
+            com.google.gson.JsonArray array = new com.google.gson.JsonArray();
+            for (Object element : new java.util.ArrayList<>(list)) {
+                if (!NoneValue.isNone(element)) {
+                    array.add(toJson(element));
+                }
+            }
+            return array;
         }
         // whole-map blob: a persistent map<Scalar> serializes to a single
         // JSON object under its row key, coherent with the scalar rows around
@@ -568,6 +853,12 @@ public final class PersistStore {
             case DOUBLE: return 0.0;
             case BOOLEAN: return false;
             case MAP: return new net.swofty.runtime.MapValue();
+            case LIST: return new java.util.ArrayList<>();
+            case LOCATION: return new net.minestom.server.coordinate.Pos(0, 0, 0);
+            case VEC: return net.minestom.server.coordinate.Vec.ZERO;
+            case ITEM: return net.minestom.server.item.ItemStack.AIR;
+            // an optional persistent's absent/failed default is none, not ""
+            case OPTIONAL: return NoneValue.INSTANCE;
             default: return "";
         }
     }
@@ -578,17 +869,44 @@ public final class PersistStore {
     }
 
     /**
-     * A persistent may hold a scalar or a map of scalars. map&lt;Scalar&gt;
-     * serializes as a whole-map JSON blob per row (design phase-10 §1); nested
-     * maps and maps of non-scalars are not persistable.
+     * A persistable LEAF value type: the four scalars plus the rich value types
+     * Location, Vec, and Item. These all have a clean JSON serialization and are
+     * the only types allowed as the element of a persistent list/map.
+     */
+    private static boolean isLeafPersistable(
+            net.swofty.nativebridge.representation.DataType type) {
+        BaseType base = type.getBaseType();
+        return isScalar(base) || base == BaseType.LOCATION
+                || base == BaseType.VEC || base == BaseType.ITEM;
+    }
+
+    /**
+     * A persistent may hold a leaf value (scalar / Location / Vec / Item) or a
+     * one-level list/map of those leaves. list&lt;T&gt; serializes as a JSON
+     * array and map&lt;K, T&gt; as a whole-map JSON object per row; nested
+     * lists/maps and collections of non-leaf types are not persistable.
      */
     private static boolean isPersistable(
             net.swofty.nativebridge.representation.DataType type) {
         BaseType base = type.getBaseType();
-        if (isScalar(base)) {
+        if (isLeafPersistable(type)) {
             return true;
         }
-        return base == BaseType.MAP && isScalar(mapElementType(type));
+        if (base == BaseType.LIST) {
+            net.swofty.nativebridge.representation.DataType element = listElementType(type);
+            return element != null && isLeafPersistable(element);
+        }
+        if (base == BaseType.MAP) {
+            net.swofty.nativebridge.representation.DataType value = mapValueType(type);
+            return value != null && isLeafPersistable(value);
+        }
+        // optional<T> persists exactly like T (present) or JSON null (none);
+        // the typechecker only allows a leaf T inside the optional
+        if (base == BaseType.OPTIONAL) {
+            net.swofty.nativebridge.representation.DataType inner = listElementType(type);
+            return inner != null && isLeafPersistable(inner);
+        }
+        return false;
     }
 
     private static String rowLabel(String key) {

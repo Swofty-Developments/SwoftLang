@@ -64,6 +64,19 @@ public final class UiRuntime {
         });
     }
 
+    /**
+     * Cancel every live scoreboard/tablist/bossbar auto-refresh task before a
+     * reload re-registers the fresh declaration set. Live viewers are kept;
+     * the register pass re-arms tasks (with freshly-parsed models / line
+     * numbers) for the boards that still exist, so removed boards stop
+     * refreshing instead of leaking a stale-model task on every reload.
+     */
+    public static void clearTasks() {
+        SwoftSidebarRuntime.clearTasks();
+        SwoftTablistRuntime.clearTasks();
+        SwoftBossbarRuntime.clearTasks();
+    }
+
     public static void register(ScoreboardModel scoreboard) {
         SwoftSidebarRuntime.register(scoreboard);
     }

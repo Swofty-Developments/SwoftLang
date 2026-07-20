@@ -11,6 +11,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.scoreboard.Sidebar;
 import net.minestom.server.timer.ExecutionType;
+import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.swofty.ScriptError;
 import net.swofty.model.ScoreboardModel;
@@ -43,18 +44,49 @@ public final class SwoftSidebarRuntime {
 
     private static final Map<String, ScoreboardModel> DECLS = new ConcurrentHashMap<>();
     private static final Map<UUID, View> VIEWS = new ConcurrentHashMap<>();
+    /**
+     * Live auto-refresh tasks keyed by declaration name. A hot reload
+     * re-registers each board from a freshly-parsed model: the previous task
+     * (which captured the OLD model, hence stale line numbers) is cancelled
+     * and replaced so refreshes trace the new code. Never wiped by name, so
+     * live viewers keep their sidebar across a reload.
+     */
+    private static final Map<String, Task> TASKS = new ConcurrentHashMap<>();
 
     private SwoftSidebarRuntime() {
     }
 
     public static void register(ScoreboardModel model) {
         DECLS.put(model.name(), model);
+        Task previous = TASKS.remove(model.name());
+        if (previous != null) {
+            previous.cancel();
+        }
         if (model.update().kind() == UpdateCadence.Kind.TICKS) {
-            MinecraftServer.getSchedulerManager().submitTask(() -> {
+            Task task = MinecraftServer.getSchedulerManager().submitTask(() -> {
                 refreshAll(model);
                 return TaskSchedule.tick(model.update().ticks());
             }, ExecutionType.TICK_END);
+            TASKS.put(model.name(), task);
         }
+    }
+
+    /**
+     * Cancel every live auto-refresh task (reload teardown). Declarations and
+     * live viewers are left intact; the fresh register() pass re-arms the
+     * tasks for boards that still exist, so a removed board simply stops
+     * refreshing instead of leaking a stale-model task forever.
+     */
+    public static void clearTasks() {
+        for (Task task : TASKS.values()) {
+            task.cancel();
+        }
+        TASKS.clear();
+    }
+
+    /** Live auto-refresh task count (diagnostics/tests: one per ticking board). */
+    public static int taskCount() {
+        return TASKS.size();
     }
 
     public static void show(String name, Player player) {

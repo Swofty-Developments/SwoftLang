@@ -69,6 +69,8 @@ let parse ~file source =
   let apis = ref [] in
   let schedulers = ref [] in
   let fishing_loots = ref [] in
+  let block_handlers = ref [] in
+  let placement_rules = ref [] in
   while peek_tok st <> Token.EOF do
     match peek_tok st with
     | Token.COMMAND -> commands := parse_command_group st :: !commands
@@ -113,12 +115,15 @@ let parse ~file source =
     | Token.IDENT "api" -> apis := parse_api_decl st :: !apis
     | Token.IDENT "every" -> schedulers := parse_sched_decl st :: !schedulers
     | Token.IDENT "fishing_loot" -> fishing_loots := parse_fishing_loot st :: !fishing_loots
+    | Token.IDENT "block_handler" -> block_handlers := parse_block_handler st :: !block_handlers
+    | Token.IDENT "placement_rule" -> placement_rules := parse_placement_rule st :: !placement_rules
     | t ->
       error st
         (Printf.sprintf
            "Expected 'import', 'export', 'var', 'command', 'event', 'function', 'gui', \
             'scoreboard', 'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', \
-            'persistent', 'item', 'mob', 'api', 'every', 'fishing_loot', or 'on packet', found %s"
+            'persistent', 'item', 'mob', 'api', 'every', 'fishing_loot', 'block_handler', \
+            'placement_rule', or 'on packet', found %s"
            (Token.describe t))
   done;
   {
@@ -142,4 +147,6 @@ let parse ~file source =
     apis = List.rev !apis;
     schedulers = List.rev !schedulers;
     fishing_loots = List.rev !fishing_loots;
+    block_handlers = List.rev !block_handlers;
+    placement_rules = List.rev !placement_rules;
   }

@@ -373,6 +373,14 @@ let collect_sched_names (script : Ast.script) : string list =
       (match n.n_on_left_click with Some (_, ss) -> List.iter ws ss | None -> ());
       scan_handlers n.n_handlers)
     script.npcs;
+  List.iter
+    (fun (bh : block_handler_decl) ->
+      List.iter (fun (cb : block_cb) -> List.iter ws cb.cb_body) bh.bh_callbacks)
+    script.block_handlers;
+  List.iter
+    (fun (pr : placement_rule_decl) ->
+      List.iter (fun (cb : block_cb) -> List.iter ws cb.cb_body) pr.pr_callbacks)
+    script.placement_rules;
   !names
 
 (* UI + scheduler declaration names are unit-global (unique across the
@@ -511,6 +519,8 @@ let check_module_body ctx (script : Ast.script) =
   List.iter (check_api_decl ctx) script.apis;
   List.iter (check_sched_decl ctx) script.schedulers;
   check_fishing_loots ctx script.fishing_loots;
+  check_block_handlers ctx script.block_handlers;
+  check_placement_rules ctx script.placement_rules;
   check_servers ctx script.servers
 
 let dedupe errors =
@@ -600,7 +610,15 @@ let run_all (modules : module_input list) : Diagnostics.error list =
           s.fishing_loots;
         List.iter
           (fun (pd : persistent_decl) -> claim ms "persistent" pd.pd_name pd.pd_pos)
-          s.persistents)
+          s.persistents;
+        List.iter
+          (fun (bh : block_handler_decl) ->
+            claim ms "block_handler" (normalize_block_id bh.bh_id) bh.bh_pos)
+          s.block_handlers;
+        List.iter
+          (fun (pr : placement_rule_decl) ->
+            claim ms "placement_rule" (normalize_block_id pr.pr_id) pr.pr_pos)
+          s.placement_rules)
       states);
 
   (* --- import injection + import-shadow collisions --- *)

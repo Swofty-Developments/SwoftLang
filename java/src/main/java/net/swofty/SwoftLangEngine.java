@@ -49,6 +49,8 @@ public class SwoftLangEngine {
     private final List<net.swofty.model.FishingLootModel> fishingLoot = new ArrayList<>();
     private final List<net.swofty.model.HologramModel> holograms = new ArrayList<>();
     private final List<net.swofty.model.NpcModel> npcs = new ArrayList<>();
+    private final List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
+    private final List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
     private ServerConfigModel serverConfig;
     private StorageConfigModel storageConfig;
 
@@ -120,8 +122,12 @@ public class SwoftLangEngine {
         net.swofty.holograms.HologramRuntime.teardown();
         net.swofty.npcs.NpcRuntime.teardown();
         net.swofty.handlers.InlineHandlerRuntime.teardown();
+        net.swofty.blocks.BlockHandlerRuntime.teardown();
+        net.swofty.blocks.PlacementRuleRuntime.teardown();
         net.swofty.fishing.FishingRuntime.reset();
         net.swofty.entities.ScriptEntityRegistry.removeAll();
+        net.swofty.entities.EntityStateStore.clearAll();
+        net.swofty.entities.EntityCombatTrackers.clearAll();
         net.swofty.worlds.WorldsRuntime.unloadAll();
         net.swofty.players.SeenPlayersStore.shutdownActive();
         PersistStore.shutdownActive();
@@ -132,8 +138,9 @@ public class SwoftLangEngine {
      * at most one server block across all scripts (extras error + ignore)
      */
     private void collectDeclarations() {
-        // reload wipes named schedules (cancelling any live ones) so the
-        // fresh script's every/schedule-as declarations start clean
+        // reload wipes every live schedule (named AND anonymous, cancelling
+        // any that are running) so the fresh script's every/schedule/repeat
+        // declarations start clean with freshly-stamped line numbers
         net.swofty.sched.ScheduleRegistry.cancelAll();
         guis.clear();
         scoreboards.clear();
@@ -148,6 +155,8 @@ public class SwoftLangEngine {
         fishingLoot.clear();
         holograms.clear();
         npcs.clear();
+        blockHandlers.clear();
+        placementRules.clear();
         serverConfig = null;
         storageConfig = null;
 
@@ -167,6 +176,8 @@ public class SwoftLangEngine {
                 fishingLoot.addAll(parsed.fishingLoot());
                 holograms.addAll(parsed.holograms());
                 npcs.addAll(parsed.npcs());
+                blockHandlers.addAll(parsed.blockHandlers());
+                placementRules.addAll(parsed.placementRules());
                 if (parsed.server() != null) {
                     if (serverConfig != null) {
                         System.err.println("Error: duplicate server block in "
@@ -205,9 +216,13 @@ public class SwoftLangEngine {
         // Register events
         eventProcessor.registerEvents();
 
-        // Wire the gui/ui runtimes and hand them the declarations
+        // Wire the gui/ui runtimes and hand them the declarations. On reload,
+        // cancel the previous auto-refresh tasks first so scoreboards/tablists/
+        // bossbars don't accumulate stale-model tasks tracing OLD line numbers
+        // (no-op on first startup; live viewers are preserved either way).
         GuiRuntime.init();
         UiRuntime.init();
+        UiRuntime.clearTasks();
         for (GuiModel gui : guis) {
             GuiRuntime.register(gui);
         }
@@ -260,11 +275,40 @@ public class SwoftLangEngine {
         // idempotent init, retargeted on reload via the live registries
         net.swofty.handlers.InlineHandlerRuntime.init();
         net.swofty.entities.ProjectileRuntime.init();
+        // W-pvp per-entity in-memory state store: wire the despawn/disconnect
+        // auto-clear listeners once (idempotent), then wipe every entity's
+        // scratch state so the freshly (re)loaded script starts from empty.
+        net.swofty.entities.EntityStateStore.init();
+        net.swofty.entities.EntityStateStore.clearAll();
+        // W-pvp native trackers Minestom lacks (i-frame timer + fall distance):
+        // wire the damage/tick/auto-clear listeners once (idempotent), then wipe
+        // every entity's tracker state so the (re)loaded script starts clean.
+        net.swofty.entities.EntityCombatTrackers.init();
+        net.swofty.entities.EntityCombatTrackers.clearAll();
         NametagRuntime.init();
         net.swofty.entities.EntityNametagRuntime.init();
         // dispenser block-entities: wipe stale inventories/state each reload
         net.swofty.blocks.DispenserRuntime.reset();
         net.swofty.blocks.DispenserRuntime.init();
+
+        // W-blocks: first-class block_handler / placement_rule declarations.
+        // Teardown clears the live model maps (making any handler/rule already
+        // attached to placed blocks inert), then re-register the declared set;
+        // init installs the one-time place listener.
+        net.swofty.blocks.BlockHandlerRuntime.teardown();
+        net.swofty.blocks.PlacementRuleRuntime.teardown();
+        net.swofty.blocks.BlockHandlerRuntime.init();
+        net.swofty.blocks.PlacementRuleRuntime.init();
+        for (net.swofty.model.BlockHandlerModel handler : blockHandlers) {
+            net.swofty.blocks.BlockHandlerRuntime.register(handler);
+        }
+        for (net.swofty.model.PlacementRuleModel rule : placementRules) {
+            net.swofty.blocks.PlacementRuleRuntime.register(rule);
+        }
+        if (!blockHandlers.isEmpty() || !placementRules.isEmpty()) {
+            System.out.println("Registered " + blockHandlers.size() + " block handler(s) and "
+                    + placementRules.size() + " placement rule(s)");
+        }
 
         registerPhase6();
         registerPhase8();
@@ -321,16 +365,41 @@ public class SwoftLangEngine {
     }
 
     /**
-     * Hot-reload the command and event handlers after a script changed on
-     * disk. Tears down the currently registered commands and event listeners,
-     * re-scans + re-parses every script (rebuilding fresh execute blocks and
-     * function definitions), then re-registers the commands and events so the
-     * new code runs. Scoped to commands/events (the tracer's live handlers) to
-     * stay tick-safe and avoid disrupting persistence, HTTP, schedules, and
-     * live GUIs mid-session. MUST run on the tick thread.
+     * Comprehensive hot-reload after a script changed on disk. Tears down
+     * EVERY live registration whose behavior/line numbers come from the old
+     * compiled JSON, re-scans + re-parses every script (so each Statement node
+     * carries freshly-stamped file/line numbers), then re-registers every
+     * declaration kind through the SAME path used at startup. This keeps the
+     * VS Code tracer pulsing on the right lines for scoreboards, tablists,
+     * bossbars, schedulers, mobs and every other decl kind — not just the
+     * commands and events the old scoped reload refreshed.
+     *
+     * <p>Teardown is expressed generically as "drop the old registrations,
+     * then re-run the loader": commands + event listeners are unregistered
+     * here, and the shared {@link #collectDeclarations()} / {@link #register()}
+     * pair does the rest — {@code collectDeclarations()} cancels every live
+     * schedule (named AND anonymous) via {@code ScheduleRegistry.cancelAll()},
+     * and {@code register()} has each content runtime clear/teardown its live
+     * set (UI auto-refresh tasks, spawned mobs, holograms, npcs, packet/block/
+     * item/fishing handlers, GUIs) before re-registering it, and restarts the
+     * HTTP server (which stops the previous one first). Because reload simply
+     * re-runs those two methods, any decl kind added to them in the future is
+     * covered automatically.
+     *
+     * <p>PRESERVED across a reload: persistent variables, the PersistStore
+     * backend, the seen-players store and loaded world data are all left
+     * untouched — {@code initializePersistence()} and {@code WorldsRuntime}
+     * are deliberately NOT re-run — so persistent/session state survives.
+     *
+     * <p>Idempotent and double-register-safe (runtime registries replace by
+     * name / clear-then-add), and tick-safe: the caller applies it on the tick
+     * thread via {@code scheduleNextTick}. MUST run on the tick thread.
      */
     public synchronized void reload() {
-        // 1) tear down the old command registrations and event listeners
+        // 1) tear down the old command registrations and event listeners.
+        //    (The remaining decl kinds are torn down inside the shared
+        //    collectDeclarations()/register() pair invoked below, so their
+        //    teardown stays identical to startup and can never drift.)
         var commandManager = net.minestom.server.MinecraftServer.getCommandManager();
         for (String name : new ArrayList<>(commandProcessor.getCommandMap().keySet())) {
             var existing = commandManager.getCommand(name);
@@ -340,14 +409,21 @@ public class SwoftLangEngine {
         }
         eventProcessor.getEventRegistrar().reset();
 
-        // 2) re-scan + re-parse: fresh execute blocks, functions re-registered
+        // 2) re-scan + re-parse every script: fresh execute blocks, functions,
+        //    and freshly-stamped file/line numbers on every Statement node.
+        //    processCommands/processEvents rebuild the command + event models;
+        //    collectDeclarations re-parses all decl models and, up front,
+        //    cancels every live schedule (named + anonymous) so no old-code
+        //    loop survives.
         scriptLoader.scanScripts();
         commandProcessor.processCommands();
         eventProcessor.processEvents();
+        collectDeclarations();
 
-        // 3) re-register with the new code
-        commandProcessor.register();
-        eventProcessor.registerEvents();
+        // 3) re-register everything from the freshly-parsed JSON via the SAME
+        //    startup registration path (commands + events + all decl kinds).
+        //    Persistence + worlds are intentionally NOT re-initialized here.
+        register();
     }
 
     /**

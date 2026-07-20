@@ -3,6 +3,7 @@ package net.swofty.sched;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -16,8 +17,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ScheduleRegistry {
     private static final Map<String, ScheduleHandle> NAMED = new ConcurrentHashMap<>();
+    /**
+     * Every live schedule handle — named AND anonymous — so a reload/shutdown
+     * {@code cancelAll()} tears down anonymous {@code every}/{@code schedule}/
+     * {@code repeat} loops too (which never land in {@link #NAMED}), instead of
+     * leaking them across a hot reload where they'd keep firing OLD code.
+     */
+    private static final Set<ScheduleHandle> ALL = ConcurrentHashMap.newKeySet();
 
     private ScheduleRegistry() {
+    }
+
+    /**
+     * Record a live handle (called for every schedule at start, named or not)
+     * so {@link #cancelAll()} can reach anonymous loops. The handle drops out
+     * via {@link #release(ScheduleHandle)} when it finishes.
+     */
+    public static void track(ScheduleHandle handle) {
+        if (handle != null) {
+            ALL.add(handle);
+        }
     }
 
     /**
@@ -60,15 +79,22 @@ public final class ScheduleRegistry {
      * evicted by an older handle's teardown).
      */
     static void release(ScheduleHandle handle) {
+        ALL.remove(handle);
         String name = handle.name();
         if (name != null) {
             NAMED.remove(name, handle);
         }
     }
 
-    /** Cancel every named schedule and clear the registry (reload/shutdown). */
+    /**
+     * Cancel every live schedule — named and anonymous — and clear the
+     * registry (reload/shutdown). Draining {@link #ALL} covers the anonymous
+     * {@code every}/{@code schedule}/{@code repeat} loops that {@link #NAMED}
+     * never held, so a hot reload leaves no old-code loop still firing.
+     */
     public static void cancelAll() {
-        List<ScheduleHandle> handles = new ArrayList<>(NAMED.values());
+        List<ScheduleHandle> handles = new ArrayList<>(ALL);
+        ALL.clear();
         NAMED.clear();
         for (ScheduleHandle handle : handles) {
             handle.cancel();
@@ -78,5 +104,20 @@ public final class ScheduleRegistry {
     /** Live named-schedule count (diagnostics/tests). */
     public static int size() {
         return NAMED.size();
+    }
+
+    /**
+     * Total live schedule count — named AND anonymous (diagnostics/tests).
+     * A hot-reload smoke asserts this stays constant across reloads to prove
+     * no {@code every}/{@code schedule}/{@code repeat} loop is doubled up or
+     * leaked (the double-tick regression).
+     */
+    public static int liveCount() {
+        return ALL.size();
+    }
+
+    /** Snapshot of every live handle (diagnostics/tests). */
+    public static java.util.List<ScheduleHandle> liveHandles() {
+        return new ArrayList<>(ALL);
     }
 }

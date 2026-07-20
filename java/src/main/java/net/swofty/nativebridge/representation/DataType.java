@@ -60,6 +60,7 @@ public class DataType {
             case PLAYER: return "Player";
             case OFFLINE_PLAYER: return "OfflinePlayer";
             case LOCATION: return "Location";
+            case BLOCK: return "Block";
             default: return "Unknown";
         }
     }

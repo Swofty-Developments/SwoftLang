@@ -8,7 +8,6 @@ import net.swofty.async.TickDispatch;
 import net.swofty.nativebridge.execution.AbstractAstNode;
 import net.swofty.nativebridge.execution.Expression;
 import net.swofty.nativebridge.execution.Statement;
-import net.swofty.props.Coercions;
 import net.swofty.runtime.ExecutionContext;
 import net.swofty.runtime.Values;
 
@@ -42,8 +41,7 @@ public class FillBlocksStatement extends AbstractAstNode implements Statement {
             throw new ScriptError("fill blocks expects two locations, got: "
                     + Values.displayString(fromValue) + " and " + Values.displayString(toValue));
         }
-        Block resolved = SetBlockStatement.resolveBlock(
-                (String) Coercions.toStringValue(context.evaluate(block)));
+        Block resolved = SetBlockStatement.resolveBlock(context.evaluate(block));
         Instance instance = SetBlockStatement.resolveInstance(context, world, "fill blocks");
 
         int minX = Math.min(a.blockX(), b.blockX());

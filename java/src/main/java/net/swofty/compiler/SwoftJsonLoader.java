@@ -287,6 +287,8 @@ public class SwoftJsonLoader {
         List<net.swofty.model.FishingLootModel> fishingLoot = new ArrayList<>();
         List<HologramModel> holograms = new ArrayList<>();
         List<NpcModel> npcs = new ArrayList<>();
+        List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
+        List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
 
         List<ModuleRegistry.Module> loaded = new ArrayList<>();
         for (StagedModule stagedModule : staged) {
@@ -361,6 +363,8 @@ public class SwoftJsonLoader {
             fishingLoot.addAll(part.fishingLoot());
             holograms.addAll(part.holograms());
             npcs.addAll(part.npcs());
+            blockHandlers.addAll(part.blockHandlers());
+            placementRules.addAll(part.placementRules());
         }
 
         // module vars initialize at load, in dependency order
@@ -371,7 +375,7 @@ public class SwoftJsonLoader {
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs);
+                holograms, npcs, blockHandlers, placementRules);
     }
 
     /**
@@ -515,10 +519,63 @@ public class SwoftJsonLoader {
             npcs.add(buildNpc(element.getAsJsonObject()));
         }
 
+        // W-blocks: first-class block_handler / placement_rule declarations
+        List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
+        for (JsonElement element : optArray(root, "block_handlers")) {
+            blockHandlers.add(buildBlockHandler(element.getAsJsonObject()));
+        }
+        List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
+        for (JsonElement element : optArray(root, "placement_rules")) {
+            placementRules.add(buildPlacementRule(element.getAsJsonObject()));
+        }
+
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs);
+                holograms, npcs, blockHandlers, placementRules);
+    }
+
+    /**
+     * A {@code block_handler "id" { on_place/on_destroy/on_interact/on_touch/
+     * tick(...) { ... } }} declaration (W-blocks). Callback bodies are plain
+     * statement arrays; each keeps its declared positional parameter names.
+     */
+    private static net.swofty.model.BlockHandlerModel buildBlockHandler(JsonObject obj) {
+        return new net.swofty.model.BlockHandlerModel(
+                obj.get("id").getAsString(),
+                buildBlockCallbacks(obj),
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
+    }
+
+    /**
+     * A {@code placement_rule for "id" { on_place/on_update(...) -> Block {...}
+     * self_replaceable: bool }} declaration (W-blocks).
+     */
+    private static net.swofty.model.PlacementRuleModel buildPlacementRule(JsonObject obj) {
+        return new net.swofty.model.PlacementRuleModel(
+                obj.get("id").getAsString(),
+                has(obj, "self_replaceable") && obj.get("self_replaceable").getAsBoolean(),
+                buildBlockCallbacks(obj),
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
+    }
+
+    /** Shared {@code callbacks:[{name, params:[...], body:[...]}]} reader. */
+    private static Map<String, net.swofty.model.BlockCallbackModel> buildBlockCallbacks(
+            JsonObject obj) {
+        Map<String, net.swofty.model.BlockCallbackModel> callbacks = new LinkedHashMap<>();
+        for (JsonElement element : optArray(obj, "callbacks")) {
+            JsonObject cb = element.getAsJsonObject();
+            String name = cb.get("name").getAsString();
+            List<String> params = new ArrayList<>();
+            for (JsonElement param : optArray(cb, "params")) {
+                params.add(param.getAsString());
+            }
+            callbacks.put(name, new net.swofty.model.BlockCallbackModel(
+                    name, params, buildExecuteBlock(cb.get("body"))));
+        }
+        return callbacks;
     }
 
     /**

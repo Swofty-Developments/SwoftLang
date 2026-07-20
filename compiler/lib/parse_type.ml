@@ -18,6 +18,7 @@ let base_of_name = function
   | "Schedule" -> Some "SCHEDULE"
   | "WorldLoader" -> Some "WORLD_LOADER"
   | "Entity" -> Some "ENTITY"
+  | "Block" -> Some "BLOCK"
   | "Vec" -> Some "VEC"
   | "OfflinePlayer" -> Some "OFFLINE_PLAYER"
   | _ -> None

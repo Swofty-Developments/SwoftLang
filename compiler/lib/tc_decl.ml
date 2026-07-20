@@ -343,19 +343,42 @@ let register_persistent ctx (pd : persistent_decl) =
       }
   end
 
+(* W-persist: the value types that persist cleanly. Each has a total value
+   serialization (JSON on the backend): the scalars plus Location, Vec and
+   Item (via to_nbt/from_nbt). Player/Entity are live handles and are rejected
+   with an actionable hint. *)
+let persistable_value = function
+  | TString | TInteger | TDouble | TBoolean | TLocation | TVec | TItem -> true
+  | _ -> false
+
 let check_persistent ctx (pd : persistent_decl) =
   let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
   let declared = ty_of_dt pd.pd_type in
+  let reject_live () =
+    err ctx pd.pd_pos
+      "persistent '%s' cannot store a live Player/Entity value; persist the uuid (String) or a \
+       respawnable snapshot"
+      pd.pd_name
+  in
   (match declared with
-  | TString | TInteger | TDouble | TBoolean -> ()
-  (* phase 10: a persistent may be a map of scalars — serialized as JSON to the
-     backend, making restart-safe key/value stores trivial. Player keys are
-     allowed too (serialized by uuid on the Java side) *)
-  | TMap ((TString | TInteger | TPlayer), (TString | TInteger | TDouble | TBoolean)) -> ()
+  (* bare persistable value, or an optional/list of one *)
+  | t when persistable_value t -> ()
+  | TOptional t when persistable_value t -> ()
+  | TList t when persistable_value t -> ()
+  (* phase 10: a persistent may be a map keyed by String, Integer or Player
+     (Player serialized by uuid on the Java side); values may be any
+     persistable value type. Serialized as JSON to the backend. *)
+  | TMap ((TString | TInteger | TPlayer), v) when persistable_value v -> ()
+  (* live handles anywhere in the value position — actionable hint *)
+  | TPlayer | TEntity
+  | TOptional (TPlayer | TEntity)
+  | TList (TPlayer | TEntity)
+  | TMap (_, (TPlayer | TEntity)) ->
+    reject_live ()
   | TMap ((TString | TInteger | TPlayer), v) ->
     err ctx pd.pd_pos
-      "persistent '%s' must be a map of scalars (map<String>, map<Integer>, map<Double>, or \
-       map<Boolean>), got map values of %s"
+      "persistent '%s' map values must be a persistable value type (String, Integer, Double, \
+       Boolean, Location, Vec, or Item), got %s"
       pd.pd_name (ty_to_string v)
   | TMap (k, _) ->
     err ctx pd.pd_pos
@@ -363,11 +386,15 @@ let check_persistent ctx (pd : persistent_decl) =
       pd.pd_name (ty_to_string k)
   | t ->
     err ctx pd.pd_pos
-      "persistent '%s' must have a scalar type (String, Integer, Double, or Boolean) or a map of \
-       scalars, got %s; store primitive fields instead"
+      "persistent '%s' must be a persistable value type (String, Integer, Double, Boolean, \
+       Location, Vec, Item), or a list/map/optional of those, got %s"
       pd.pd_name (ty_to_string t));
   let dt = type_of ctx bctx empty_env pd.pd_default in
-  require_present ctx empty_env pd.pd_default dt ~use:"the default value";
+  (* an optional-typed persistent legitimately defaults to `none`; only require
+     a present value for non-optional declared types *)
+  (match declared with
+  | TOptional _ -> ()
+  | _ -> require_present ctx empty_env pd.pd_default dt ~use:"the default value");
   if not (param_compat declared dt) then
     err ctx pd.pd_default.epos "the default value of persistent '%s' must be %s (got %s)"
       pd.pd_name (ty_to_string declared) (ty_to_string dt)
@@ -877,6 +904,115 @@ let check_sched_decl ctx (sd : sched_decl) =
     { color = Async; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = true }
   in
   ignore (check_stmts ctx bctx (bind (base_env ctx) "run" TInteger) sd.sd_body)
+
+(* --- W-blocks: block_handler / placement_rule callbacks ---
+
+   Each callback binds its user-chosen parameter names to the hook's fixed
+   types, is sync-colored, and — when the hook has a required return type
+   (on_interact -> Boolean, on_place/on_update -> Block) — must return a value
+   of that type on every path. Hooks without a return type must not return a
+   value. A written '-> Type' annotation is cross-checked against the fixed
+   type. *)
+let check_block_cb ctx kind (sg : Registry.block_cb_sig) (cb : block_cb) =
+  let want = List.length sg.bcb_params in
+  let got = List.length cb.cb_params in
+  if want <> got then
+    err ctx cb.cb_pos "%s callback '%s' expects %d parameter%s (%s), got %d" kind cb.cb_name want
+      (if want = 1 then "" else "s")
+      (String.concat ", "
+         (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.bcb_params))
+      got
+  else begin
+    check_binding_shadows ctx cb.cb_pos
+      (Printf.sprintf "the '%s' callback" cb.cb_name)
+      (List.map fst cb.cb_params);
+    (* a written '-> Type' must agree with the hook's fixed return type *)
+    (match (cb.cb_ret, sg.bcb_ret) with
+    | Some dt, Some expected ->
+      let written = ty_of_dt dt in
+      if not (param_compat expected written || param_compat written expected) then
+        err ctx cb.cb_pos "%s callback '%s' returns %s, but '-> %s' was written" kind cb.cb_name
+          (ty_to_string expected) (ty_to_string written)
+    | Some dt, None ->
+      err ctx cb.cb_pos "%s callback '%s' does not return a value, but '-> %s' was written" kind
+        cb.cb_name (ty_to_string (ty_of_dt dt))
+    | None, _ -> ());
+    let env =
+      List.fold_left2
+        (fun env (pname, _pp) (_cn, pty) -> bind env pname pty)
+        empty_env cb.cb_params sg.bcb_params
+    in
+    let vals = ref [] in
+    let bare = ref false in
+    let bctx =
+      { color = Sync; event = None; args = None; ret_sink = Some (vals, bare); packet = false;
+        api = false; in_schedule = false }
+    in
+    let _, terminates = check_stmts ctx bctx env cb.cb_body in
+    match sg.bcb_ret with
+    | None ->
+      if !vals <> [] || !bare then
+        err ctx cb.cb_pos "%s callback '%s' must not return a value" kind cb.cb_name
+    | Some expected ->
+      List.iter
+        (fun t ->
+          if not (param_compat expected t) then
+            err ctx cb.cb_pos "%s callback '%s' must return %s (got %s)" kind cb.cb_name
+              (ty_to_string expected) (ty_to_string t))
+        !vals;
+      if !bare then
+        err ctx cb.cb_pos "%s callback '%s' must return a %s, not a bare 'return'" kind cb.cb_name
+          (ty_to_string expected)
+      else if not terminates then
+        err ctx cb.cb_pos "%s callback '%s' must return a %s on every path" kind cb.cb_name
+          (ty_to_string expected)
+  end
+
+let check_block_callbacks ctx kind cbs callbacks =
+  let seen = Hashtbl.create 8 in
+  List.iter
+    (fun (cb : block_cb) ->
+      if Hashtbl.mem seen cb.cb_name then
+        err ctx cb.cb_pos "duplicate %s callback '%s'" kind cb.cb_name
+      else Hashtbl.replace seen cb.cb_name ();
+      match find_block_cb cbs cb.cb_name with
+      | None ->
+        err ctx cb.cb_pos "unknown %s callback '%s'; valid callbacks: %s%s" kind cb.cb_name
+          (String.concat ", " (block_cb_names cbs))
+          (suggestion cb.cb_name (block_cb_names cbs))
+      | Some sg -> check_block_cb ctx kind sg cb)
+    callbacks
+
+let check_block_handlers ctx (bhs : block_handler_decl list) =
+  let seen = Hashtbl.create 8 in
+  List.iter
+    (fun (bh : block_handler_decl) ->
+      let key = normalize_block_id bh.bh_id in
+      if Hashtbl.mem seen key then err ctx bh.bh_pos "duplicate block_handler for \"%s\"" bh.bh_id
+      else Hashtbl.replace seen key ();
+      (* a minecraft-namespaced (or bare) id must name a real block; a custom
+         namespace (myplugin:foo) is a user-defined handler key, accepted *)
+      let is_minecraft =
+        match String.index_opt key ':' with
+        | Some i -> String.sub key 0 i = "minecraft"
+        | None -> true
+      in
+      if is_minecraft && not (block_known bh.bh_id) then
+        err ctx bh.bh_pos "unknown block \"%s\" in block_handler%s" bh.bh_id
+          (suggestion (block_short bh.bh_id) (block_id_suggestions ()));
+      check_block_callbacks ctx "block_handler" Registry.block_handler_cbs bh.bh_callbacks)
+    bhs
+
+let check_placement_rules ctx (prs : placement_rule_decl list) =
+  let seen = Hashtbl.create 8 in
+  List.iter
+    (fun (pr : placement_rule_decl) ->
+      let key = normalize_block_id pr.pr_id in
+      if Hashtbl.mem seen key then err ctx pr.pr_pos "duplicate placement_rule for \"%s\"" pr.pr_id
+      else Hashtbl.replace seen key ();
+      check_block_id_string ctx pr.pr_pos pr.pr_id ~where:"placement_rule";
+      check_block_callbacks ctx "placement_rule" Registry.placement_rule_cbs pr.pr_callbacks)
+    prs
 
 let check_servers ctx servers =
   (match servers with

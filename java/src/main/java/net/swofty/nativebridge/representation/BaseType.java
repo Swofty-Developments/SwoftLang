@@ -11,6 +11,7 @@ public enum BaseType {
     WORLD,
     ITEM,
     MOB,
+    BLOCK,
     DISPLAY,
     SONG,
     SKIN,

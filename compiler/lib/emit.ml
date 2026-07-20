@@ -918,6 +918,30 @@ let persistent pd =
    the bundle's "modules" array. In modular mode every symbol declaration
    additionally carries its "exported" flag; flat emission stays byte-
    identical to the pre-module compiler. *)
+(* --- W-blocks: block_handler / placement_rule --- *)
+let block_cb (cb : block_cb) =
+  `Assoc
+    (with_pos cb.cb_pos
+       [
+         ("name", `String cb.cb_name);
+         ("params", `List (List.map (fun (n, _) -> `String n) cb.cb_params));
+         ("body", `List (List.map stmt cb.cb_body));
+       ])
+
+let block_handler_decl (bh : block_handler_decl) =
+  `Assoc
+    (with_pos bh.bh_pos
+       [ ("id", `String bh.bh_id); ("callbacks", `List (List.map block_cb bh.bh_callbacks)) ])
+
+let placement_rule_decl (pr : placement_rule_decl) =
+  `Assoc
+    (with_pos pr.pr_pos
+       [
+         ("id", `String pr.pr_id);
+         ("self_replaceable", `Bool pr.pr_self_replaceable);
+         ("callbacks", `List (List.map block_cb pr.pr_callbacks));
+       ])
+
 let script_fields ~modular (s : Ast.script) =
   (* additive keys: only present when the feature is used, so pre-persistence
      scripts emit byte-identical JSON *)
@@ -953,9 +977,13 @@ let script_fields ~modular (s : Ast.script) =
     @ (if s.apis = [] then [] else [ ("apis", `List (List.map api_decl s.apis)) ])
     @ (if s.schedulers = [] then []
        else [ ("schedulers", `List (List.map sched_decl s.schedulers)) ])
+    @ (if s.fishing_loots = [] then []
+       else [ ("fishing_loot", `List (List.map fishing_loot s.fishing_loots)) ])
+    @ (if s.block_handlers = [] then []
+       else [ ("block_handlers", `List (List.map block_handler_decl s.block_handlers)) ])
     @
-    if s.fishing_loots = [] then []
-    else [ ("fishing_loot", `List (List.map fishing_loot s.fishing_loots)) ]
+    if s.placement_rules = [] then []
+    else [ ("placement_rules", `List (List.map placement_rule_decl s.placement_rules)) ]
   in
   [
     ("commands", `List (List.map command s.commands));

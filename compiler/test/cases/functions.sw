@@ -3,7 +3,7 @@ function ping(target) {
     return
 }
 
-function sum(a: Integer, b: Integer) {
+function add(a: Integer, b: Integer) {
     return a + b
 }
 
@@ -22,7 +22,7 @@ command "use" {
     execute {
         ping(sender)
         call countdown(3)
-        set total to sum(1, 2)
+        set total to add(1, 2)
         nothing()
     }
 }

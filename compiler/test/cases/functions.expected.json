@@ -45,7 +45,7 @@
               "line": 25,
               "col": 22,
               "kind": "call",
-              "name": "sum",
+              "name": "add",
               "args": [
                 {
                   "line": 25,
@@ -102,7 +102,7 @@
     {
       "line": 6,
       "col": 1,
-      "name": "sum",
+      "name": "add",
       "async": false,
       "params": [
         { "line": 6, "col": 14, "name": "a", "type": { "base": "INTEGER" } },

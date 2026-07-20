@@ -25,6 +25,7 @@ type ty =
   | TCanvas (* 128x128 map canvas from map_canvas() *)
   | TSchedule (* cancelable handle from a 'schedule' expression *)
   | TEntity (* any live entity (phase 7); Mob narrows to it, keeping its rows *)
+  | TBlock (* an immutable block value from block(...) / block_at(...) (W-blocks) *)
   | TVec (* an x/y/z velocity vector from velocity(x, y, z) (phase 7) *)
   | TOfflinePlayer (* a seen-store player record (phase 8); Player is a subtype *)
   | TEvent of string
@@ -57,6 +58,7 @@ let rec ty_to_string = function
   | TCanvas -> "Canvas"
   | TSchedule -> "Schedule"
   | TEntity -> "Entity"
+  | TBlock -> "Block"
   | TVec -> "Vec"
   | TOfflinePlayer -> "OfflinePlayer"
   | TEvent name -> "event<" ^ name ^ ">"
@@ -106,6 +108,13 @@ let player_props =
     rw "flying_speed" TDouble;
     ro "online" TBoolean;
     rw "skin" TSkin;
+    (* W-pvp status getters: Player is an Entity, but the checker's Player table
+       does not compose entity_props, so the combat-relevant read-only status
+       rows are listed here explicitly (the runtime resolves them through the
+       Entity superclass walk). food/food_saturation already sit above. *)
+    ro "on_ground" TBoolean;
+    ro "is_sprinting" TBoolean;
+    ro "alive_ticks" TInteger;
   ]
 
 (* OfflinePlayer rows (phase 8): identity + seen-store timestamps, plus the
@@ -188,6 +197,12 @@ let entity_props =
     ro "shooter" (TOptional TEntity);
     ro "alive" TBoolean;
     ro "removed" TBoolean;
+    (* W-pvp status getters (Entity: isOnGround/getAliveTicks/isSprinting).
+       velocity above already covers entity.velocity. These feed crit checks,
+       attack cooldown, and knockback math in userland .sw combat. *)
+    ro "on_ground" TBoolean;
+    ro "alive_ticks" TInteger;
+    ro "is_sprinting" TBoolean;
     (* freeform entity tags: mob.tags.<path> / entity.tags.<path>, same shape as
        item tags — optional<Any> reads, writable, 'set ... to none' deletes *)
     ro "tags" TEntityTags;
@@ -202,7 +217,10 @@ let mob_extra_props =
     entity_props
 
 (* velocity vectors (phase 7): blocks-per-tick components *)
-let vec_props = [ rw "x" TDouble; rw "y" TDouble; rw "z" TDouble ]
+(* W-stdlib B7: .length is the vector magnitude, .normalized the unit vector in
+   the same direction (both computed, read-only) *)
+let vec_props =
+  [ rw "x" TDouble; rw "y" TDouble; rw "z" TDouble; ro "length" TDouble; ro "normalized" TVec ]
 
 (* display entity rows (design 6B): text displays use text/background/
    alignment/line_width/see_through, item displays use item, block displays
@@ -1007,8 +1025,91 @@ let map_props k v =
 
 let string_props = [ ro "length" TInteger ]
 
+(* --- W-blocks: block-state schema, loaded from the embedded
+   data/block_states.json (generated offline from the pinned Minestom jar).
+   Shape: { "blocks": { "<namespaced id>": { "<prop>": ["<value>", ...] } },
+   "block_entity_ids": { ... }, "block_entity_types": [ ... ] }. --- *)
+
+let block_states : (string, (string * string list) list) Hashtbl.t = Hashtbl.create 2048
+let block_entity_ids : (string, string) Hashtbl.t = Hashtbl.create 256
+
+let () =
+  match Yojson.Safe.from_string Block_states_data.json with
+  | exception _ -> ()
+  | `Assoc top ->
+    (match List.assoc_opt "blocks" top with
+    | Some (`Assoc blocks) ->
+      List.iter
+        (fun (bid, props) ->
+          match props with
+          | `Assoc plist ->
+            let ps =
+              List.map
+                (fun (pname, vals) ->
+                  let vlist =
+                    match vals with
+                    | `List vs ->
+                      List.filter_map (function `String s -> Some s | _ -> None) vs
+                    | _ -> []
+                  in
+                  (pname, vlist))
+                plist
+            in
+            Hashtbl.replace block_states bid ps
+          | _ -> ())
+        blocks
+    | _ -> ());
+    (match List.assoc_opt "block_entity_ids" top with
+    | Some (`Assoc bes) ->
+      List.iter
+        (fun (bid, v) -> match v with `String s -> Hashtbl.replace block_entity_ids bid s | _ -> ())
+        bes
+    | _ -> ())
+  | _ -> ()
+
+(* "oak_stairs", "OAK_STAIRS", and "minecraft:oak_stairs" all name the same
+   block; the schema keys are lowercase namespaced ids, default namespace
+   minecraft. *)
+let normalize_block_id s =
+  let s = String.lowercase_ascii s in
+  if String.contains s ':' then s else "minecraft:" ^ s
+
+let block_known id = Hashtbl.mem block_states (normalize_block_id id)
+
+let block_prop_names id =
+  match Hashtbl.find_opt block_states (normalize_block_id id) with
+  | Some ps -> List.map fst ps
+  | None -> []
+
+let block_prop_values id prop =
+  match Hashtbl.find_opt block_states (normalize_block_id id) with
+  | Some ps -> ( match List.assoc_opt prop ps with Some vs -> vs | None -> [])
+  | None -> []
+
+(* short (namespace-stripped) ids for unknown-block suggestions *)
+let block_id_suggestions () =
+  Hashtbl.fold
+    (fun k _ acc ->
+      let short =
+        match String.index_opt k ':' with
+        | Some i -> String.sub k (i + 1) (String.length k - i - 1)
+        | None -> k
+      in
+      short :: acc)
+    block_states []
+
+(* zero-arg accessors on a Block value (method form is the with/property/nbt/tag
+   family in Tc_expr) *)
+let block_props =
+  [
+    ro "id" TString;
+    ro "properties" (TMap (TString, TString));
+    ro "nbt" (TOptional TString);
+  ]
+
 let props_of_ty = function
   | TString -> Some string_props
+  | TBlock -> Some block_props
   | TList elem -> Some (list_props elem)
   | TMap (k, v) -> Some (map_props k v)
   (* Player <: OfflinePlayer (phase 8): the OfflinePlayer-only rows compose
@@ -1152,6 +1253,54 @@ let handlers_for = function
 let find_handler kind name = List.find_opt (fun h -> h.h_event = name) (handlers_for kind)
 let handler_names kind = List.map (fun h -> h.h_event) (handlers_for kind)
 
+(* --- W-blocks: block_handler / placement_rule callback signatures ---
+
+   Each callback has a fixed parameter list (the user chooses binder names, the
+   types are fixed here) and an optional required return type. A callback whose
+   bcb_ret is Some t MUST return a t on every path; one whose bcb_ret is None
+   must not return a value. *)
+type block_cb_sig = {
+  bcb_name : string;
+  bcb_params : (string * ty) list;
+  bcb_ret : ty option;
+}
+
+let block_handler_cbs =
+  [
+    { bcb_name = "on_place";
+      bcb_params = [ ("player", TPlayer); ("location", TLocation); ("block", TBlock) ];
+      bcb_ret = None };
+    { bcb_name = "on_destroy";
+      bcb_params = [ ("location", TLocation); ("block", TBlock) ];
+      bcb_ret = None };
+    { bcb_name = "on_interact";
+      bcb_params = [ ("player", TPlayer); ("location", TLocation); ("block", TBlock) ];
+      bcb_ret = Some TBoolean };
+    { bcb_name = "on_touch"; bcb_params = [ ("entity", TEntity); ("location", TLocation) ];
+      bcb_ret = None };
+    { bcb_name = "tick"; bcb_params = [ ("location", TLocation); ("block", TBlock) ];
+      bcb_ret = None };
+  ]
+
+let placement_rule_cbs =
+  [
+    { bcb_name = "on_place";
+      bcb_params =
+        (* 'player' is the placing player's POSITION (a yaw/pitch-bearing Location),
+           not a Player value: Minestom's PlacementState only exposes
+           playerPosition() (a Pos) — there is no Player in a placement rule. This
+           is the source of orientation-from-look for stairs/doors (player.yaw). *)
+        [ ("location", TLocation); ("face", TString); ("cursor", TVec); ("against", TBlock);
+          ("player", TLocation) ];
+      bcb_ret = Some TBlock };
+    { bcb_name = "on_update";
+      bcb_params = [ ("location", TLocation); ("block", TBlock); ("neighbors", TMap (TString, TBlock)) ];
+      bcb_ret = Some TBlock };
+  ]
+
+let find_block_cb cbs name = List.find_opt (fun c -> c.bcb_name = name) cbs
+let block_cb_names cbs = List.map (fun c -> c.bcb_name) cbs
+
 (* --- builtin functions --- *)
 
 type param_kind =
@@ -1226,7 +1375,11 @@ let builtins =
     b "world_exists" [ ([ PStr; PLoader ], RTy TBoolean) ];
     b "all_worlds" [ ([ PLoader ], RTy (TList TString)) ];
     (* --- phase-6 blocks --- *)
-    b "block_at" [ ([ PLoc ], RTy TString) ];
+    b "block_at" [ ([ PLoc ], RTy TBlock) ];
+    (* W-blocks: block("id") / block("id", { prop: val }) -> Block. The property
+       map form and literal id/prop/value validation are handled specially in
+       Tc_expr; this stub reserves the name for collision checks. *)
+    b "block" [ ([ PStr ], RTy TBlock) ];
     (* --- phase-6 player skins --- *)
     b "skin" [ ([ PStr; PStr ], RTy TSkin) ];
     {
@@ -1267,6 +1420,57 @@ let builtins =
     b "map_delete" [ ([ PStr; PStr ], RTy TAny) ];
     b "map_keys" [ ([ PStr ], RTy (TList TString)) ];
     b "map_size" [ ([ PStr ], RTy TInteger) ];
+    (* --- W-pvp: per-entity in-memory STATE STORE (runtime scratch, distinct
+       from disk persistence and from the NBT-backed entity .tags namespace).
+       Backs i-frame timers, attack cooldowns, exhaustion, combat tags, etc.
+       set_state/get_state/has_state/clear_state resolve here for name-collision
+       and arity, but their real typing is special-cased in Tc_expr
+       (state_builtin_type): the entity arg accepts any live entity, the key is
+       a String, get_state flows to optional<Any>, has_state to Boolean. --- *)
+    b "set_state" [ ([ PPlayer; PStr; PStr ], RTy TAny) ];
+    b "get_state" [ ([ PPlayer; PStr ], RTy (TOptional TAny)) ];
+    b "has_state" [ ([ PPlayer; PStr ], RTy TBoolean) ];
+    b "clear_state" [ ([ PPlayer; PStr ], RTy TAny) ];
+    (* --- W-pvp: entity ATTRIBUTE accessors + modifiers. Like the state store,
+       the entity argument accepts any live entity (Player/Mob/Entity/Display),
+       so the real typing/validation is special-cased in Tc_expr
+       (attr_builtin_type); these entries reserve the names/arities for
+       collision checks. attribute(e, key) -> the attribute's base value;
+       set_attribute(e, key, v) sets the base; add/remove_attribute_modifier
+       manage named modifiers by id. --- *)
+    b "attribute" [ ([ PPlayer; PStr ], RTy TDouble) ];
+    b "set_attribute" [ ([ PPlayer; PStr; PNum ], RTy TAny) ];
+    b "add_attribute_modifier" [ ([ PPlayer; PStr; PStr; PNum; PStr ], RTy TAny) ];
+    b "remove_attribute_modifier" [ ([ PPlayer; PStr; PStr ], RTy TAny) ];
+    (* --- W-pvp: combat EFFECTS. Like the state/attribute builtins, the entity
+       arguments accept any live entity, so the real typing/validation is
+       special-cased in Tc_expr (combat_builtin_type); these entries reserve the
+       names/arities for collision checks only. apply_damage returns a Boolean
+       (whether the hit landed), active_effects flows to list<String>,
+       spawn_projectile flows to the spawned Entity. --- *)
+    b "apply_damage"
+      [ ([ PPlayer; PNum; PStr ], RTy TBoolean); ([ PPlayer; PNum; PStr; PPlayer ], RTy TBoolean) ];
+    b "apply_knockback" [ ([ PPlayer; PNum; PNum; PNum ], RTy TAny) ];
+    b "apply_effect"
+      [
+        ([ PPlayer; PStr; PNum; PNum ], RTy TAny);
+        ([ PPlayer; PStr; PNum; PNum; PStr ], RTy TAny);
+        ([ PPlayer; PStr; PNum; PNum; PStr; PStr ], RTy TAny);
+      ];
+    b "remove_effect" [ ([ PPlayer; PStr ], RTy TAny) ];
+    b "active_effects" [ ([ PPlayer ], RTy (TList TString)) ];
+    b "spawn_projectile"
+      [ ([ PStr; PLoc; PNum ], RTy TEntity); ([ PStr; PLoc; PNum; PPlayer ], RTy TEntity) ];
+    (* --- W-pvp: native trackers Minestom does not expose. Like the other
+       combat builtins the entity argument accepts any live entity, so the real
+       typing/validation is special-cased in Tc_expr (combat_builtin_type); these
+       entries reserve the names/arities for collision checks only.
+       invulnerable_ticks(e) -> remaining vanilla i-frame ticks (window 10),
+       fall_distance(e) -> blocks fallen while airborne, is_climbing(e) -> Boolean
+       (positional heuristic; Minestom exposes no climbing meta). --- *)
+    b "invulnerable_ticks" [ ([ PPlayer ], RTy TInteger) ];
+    b "fall_distance" [ ([ PPlayer ], RTy TDouble) ];
+    b "is_climbing" [ ([ PPlayer ], RTy TBoolean) ];
     (* --- phase-11 random (java.util.concurrent.ThreadLocalRandom at runtime).
        random(min,max) above stays; these are the additive draws. random_in and
        shuffle depend on the list element type, so they are handled specially in
@@ -1291,6 +1495,71 @@ let builtins =
     b "sort_by_value_desc" [ ([ PStr ], RTy (TMap (TAny, TAny))) ];
     b "sort_map_by" [ ([ PStr; PStr ], RTy (TMap (TAny, TAny))) ];
     b "sort_map_by_desc" [ ([ PStr; PStr ], RTy (TMap (TAny, TAny))) ];
+    (* --- W-stdlib B3: math beyond arithmetic (java.lang.Math at runtime).
+       min/max/clamp/abs/round/floor/ceil already exist above. mod/sum/product
+       fold to the operands' numeric join, so they are handled specially in
+       Tc_expr and only listed here to reserve their names. pi()/e() are the
+       constants; sign returns -1/0/1. --- *)
+    b "mod" [ ([ PNum; PNum ], RNumJoin) ];
+    b "sqrt" [ ([ PNum ], RTy TDouble) ];
+    b "pow" [ ([ PNum; PNum ], RTy TDouble) ];
+    b "round_to" [ ([ PNum; PNum ], RTy TDouble) ];
+    b "sin" [ ([ PNum ], RTy TDouble) ];
+    b "cos" [ ([ PNum ], RTy TDouble) ];
+    b "tan" [ ([ PNum ], RTy TDouble) ];
+    b "asin" [ ([ PNum ], RTy TDouble) ];
+    b "acos" [ ([ PNum ], RTy TDouble) ];
+    b "atan" [ ([ PNum ], RTy TDouble) ];
+    b "atan2" [ ([ PNum; PNum ], RTy TDouble) ];
+    b "ln" [ ([ PNum ], RTy TDouble) ];
+    (* natural log by default; the two-arg form is log base b *)
+    b "log" [ ([ PNum ], RTy TDouble); ([ PNum; PNum ], RTy TDouble) ];
+    b "log10" [ ([ PNum ], RTy TDouble) ];
+    b "pi" [ ([], RTy TDouble) ];
+    b "e" [ ([], RTy TDouble) ];
+    b "sign" [ ([ PNum ], RTy TInteger) ];
+    (* sum/product over a list<Number>; result numeric type flows from the
+       element type, so handled specially in Tc_expr (reserved here) *)
+    b "sum" [ ([ PStrOrList ], RTy TDouble) ];
+    b "product" [ ([ PStrOrList ], RTy TDouble) ];
+    (* --- W-stdlib B8: decimal-place number formatting (thousands-sep
+       format_number exists above) --- *)
+    b "format_decimals" [ ([ PNum; PNum ], RTy TString) ];
+    (* --- W-stdlib B4: random design-named forms. random_int/random_double/
+       chance are aliases of random/random_float/random_chance; random_element
+       depends on the list element type (special-cased in Tc_expr). --- *)
+    b "random_int" [ ([ PNum; PNum ], RTy TInteger) ];
+    b "random_double" [ ([ PNum; PNum ], RTy TDouble) ];
+    b "chance" [ ([ PNum ], RTy TBoolean) ];
+    b "random_element" [ ([ PStrOrList ], RTy (TOptional TAny)) ];
+    b "random_uuid" [ ([], RTy TString) ];
+    b "random_seed" [ ([ PNum ], RTy TAny) ];
+    (* --- W-stdlib B1: string free helpers. parse(s, Type) and type_of(obj)
+       take a type/any argument, so they are special-cased in Tc_expr and only
+       reserved here. matches/stripped/formatted are plain String -> value. --- *)
+    b "parse" [ ([ PStr; PStr ], RTy (TOptional TAny)) ];
+    b "matches" [ ([ PStr; PStr ], RTy TBoolean) ];
+    b "stripped" [ ([ PStr ], RTy TString) ];
+    b "formatted" [ ([ PStr ], RTy TString) ];
+    b "type_of" [ ([ PStr ], RTy TString) ];
+    (* --- W-stdlib B2: color & format codes (MiniMessage/legacy at runtime) --- *)
+    b "strip_color" [ ([ PStr ], RTy TString) ];
+    b "legacy_to_mini" [ ([ PStr ], RTy TString) ];
+    b "gradient" [ ([ PStr; PStr; PStr ], RTy TString) ];
+    b "rainbow" [ ([ PStr ], RTy TString) ];
+    (* --- W-stdlib B7: location / region / vector math. distance/direction_from
+       take two Locations; above/below shift on the Y axis; is_within is an AABB
+       test; blocks_in_radius/players_in_radius sample a sphere; vec(x,y,z) makes
+       a Vec; location_of(entity) is special-cased (accepts any live entity). --- *)
+    b "distance" [ ([ PLoc; PLoc ], RTy TDouble) ];
+    b "direction_from" [ ([ PLoc; PLoc ], RTy TVec) ];
+    b "above" [ ([ PLoc; PNum ], RTy TLocation) ];
+    b "below" [ ([ PLoc; PNum ], RTy TLocation) ];
+    b "is_within" [ ([ PLoc; PLoc; PLoc ], RTy TBoolean) ];
+    b "blocks_in_radius" [ ([ PLoc; PNum ], RTy (TList TLocation)) ];
+    b "players_in_radius" [ ([ PLoc; PNum ], RTy (TList TPlayer)) ];
+    b "vec" [ ([ PNum; PNum; PNum ], RTy TVec) ];
+    b "location_of" [ ([ PPlayer ], RTy TLocation) ];
     (* --- phase-11 scheduler v2: liveness check by handle or name --- *)
     b "is_running" [ ([ PSchedOrName ], RTy TBoolean) ];
     (* --- phase-10 item <-> NBT string (persist item stacks) --- *)
@@ -1412,6 +1681,9 @@ let string_methods =
     pe "reversed" [] SStr;
     pe "padded_left" [ SInt; SStr ] SStr;
     pe "padded_right" [ SInt; SStr ] SStr;
+    (* W-stdlib B1: prefix/suffix of length n (clamped to the string length) *)
+    pe "first_chars" [ SInt ] SStr;
+    pe "last_chars" [ SInt ] SStr;
   ]
 
 let find_method methods name = List.find_opt (fun m -> m.me_name = name) methods
@@ -1457,6 +1729,63 @@ let item_click_filters = [ "left"; "right"; "any" ]
 (* real Minestom attributes applicable from an item's attributes{} block (design 5A) *)
 let item_attribute_names =
   [ "speed"; "max_health"; "attack_damage"; "attack_speed"; "armor"; "knockback_resistance" ]
+
+(* W-pvp: attribute keys accepted by the attribute/set_attribute/…_modifier
+   builtins (snake_case of the net.minestom.server.entity.attribute.Attributes
+   constants, javap-verified against 2026.07.12-26.2). "absorption" is an alias
+   for MAX_ABSORPTION (there is no plain ABSORPTION attribute in the jar). This
+   list is the single source of truth mirrored by Builtins.attributeFromName. *)
+let combat_attribute_names =
+  [
+    "armor"; "armor_toughness"; "attack_damage"; "attack_knockback"; "attack_speed";
+    "knockback_resistance"; "max_health"; "max_absorption"; "absorption"; "movement_speed";
+    "fall_damage_multiplier"; "safe_fall_distance"; "sweeping_damage_ratio"; "flying_speed";
+    "follow_range"; "jump_strength"; "scale"; "gravity"; "step_height"; "luck";
+    "block_interaction_range"; "entity_interaction_range"; "explosion_knockback_resistance";
+  ]
+
+(* W-pvp: AttributeOperation names (javap-verified enum ADD_VALUE /
+   ADD_MULTIPLIED_BASE / ADD_MULTIPLIED_TOTAL) plus friendly aliases; mirrored by
+   Builtins.attributeOperationFromName. *)
+let attribute_operations =
+  [
+    "add_value"; "add"; "add_multiplied_base"; "multiply_base"; "add_multiplied_total";
+    "multiply_total";
+  ]
+
+(* W-pvp: PotionEffect keys accepted by apply_effect/remove_effect (snake_case
+   of net.minestom.server.potion.PotionEffects, javap-verified against
+   2026.07.12-26.2). Validated as literals; dynamic strings are checked at
+   runtime by PotionEffect.fromKey. *)
+let potion_effect_names =
+  [
+    "speed"; "slowness"; "haste"; "mining_fatigue"; "strength"; "instant_health";
+    "instant_damage"; "jump_boost"; "nausea"; "regeneration"; "resistance"; "fire_resistance";
+    "water_breathing"; "invisibility"; "blindness"; "night_vision"; "hunger"; "weakness";
+    "poison"; "wither"; "health_boost"; "absorption"; "saturation"; "glowing"; "levitation";
+    "luck"; "unluck"; "slow_falling"; "conduit_power"; "dolphins_grace"; "bad_omen";
+    "hero_of_the_village"; "darkness"; "trial_omen"; "raid_omen"; "wind_charged"; "weaving";
+    "oozing"; "infested"; "breath_of_the_nautilus";
+  ]
+
+(* W-pvp: DamageType registry keys accepted by apply_damage (snake_case of
+   net.minestom.server.entity.damage.DamageTypes, javap-verified). Validated as
+   literals; dynamic strings resolve at runtime. *)
+let damage_type_names =
+  [
+    "wither"; "wither_skull"; "mace_smash"; "trident"; "on_fire"; "campfire";
+    "falling_stalactite"; "fireball"; "spit"; "sting"; "spear"; "in_fire"; "arrow"; "hot_floor";
+    "drown"; "generic_kill"; "dragon_breath"; "lava"; "fly_into_wall"; "player_attack"; "freeze";
+    "falling_anvil"; "sweet_berry_bush"; "fireworks"; "stalagmite"; "generic"; "sonic_boom";
+    "dry_out"; "ender_pearl"; "fall"; "mob_projectile"; "mob_attack"; "thrown"; "falling_block";
+    "wind_charge"; "player_explosion"; "unattributed_fireball"; "sulfur_cube_hot"; "in_wall";
+    "starve"; "mob_attack_no_aggro"; "outside_border"; "lightning_bolt"; "out_of_world"; "magic";
+    "explosion"; "bad_respawn_point"; "thorns"; "indirect_magic"; "cramming"; "cactus";
+  ]
+
+(* W-pvp: projectile EntityType keys accepted by spawn_projectile. These are the
+   thrown/shot combat projectiles; each is a real EntityType in the pinned jar. *)
+let projectile_types = [ "arrow"; "spectral_arrow"; "trident"; "snowball"; "egg" ]
 
 let mob_ais = [ "melee"; "passive"; "none" ]
 

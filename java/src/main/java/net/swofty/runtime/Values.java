@@ -38,6 +38,8 @@ public final class Values {
             return ((SwoftCallable) value).displayString();
         } else if (value instanceof net.minestom.server.entity.PlayerSkin) {
             return "skin";
+        } else if (value instanceof net.swofty.blocks.BlockValue block) {
+            return block.toString();
         } else if (value instanceof MapValue) {
             return value.toString();
         } else if (value == NoneValue.INSTANCE) {

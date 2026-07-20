@@ -429,6 +429,76 @@ let parse_sched_decl st =
   let sd_body = parse_body st in
   { sd_every; sd_name; sd_body; sd_pos }
 
+(* --- W-blocks: block_handler / placement_rule declarations ---
+
+   A callback: 'name(binder, ...) [-> Type] { body }'. The binder names are
+   user-chosen; the parameter and return types are fixed by the callback name
+   (validated in Tc_decl). The written '-> Type' is optional and, when present,
+   recorded for the checker to cross-check against the fixed return type. *)
+let parse_block_cb st =
+  let cb_pos = pos_here st in
+  let cb_name = expect_ident st "callback name" in
+  expect st Token.LPAREN "'(' after callback name";
+  let params = ref [] in
+  if peek_tok st <> Token.RPAREN then begin
+    let one () =
+      let pp = pos_here st in
+      (expect_ident st "callback parameter name", pp)
+    in
+    params := [ one () ];
+    while matches st Token.COMMA do
+      params := one () :: !params
+    done
+  end;
+  expect st Token.RPAREN "')' to close the callback parameter list";
+  let cb_ret = if matches st Token.ARROW then Some (Parse_type.parse_type st) else None in
+  let cb_body = parse_body st in
+  { cb_name; cb_params = List.rev !params; cb_ret; cb_body; cb_pos }
+
+let parse_block_handler st =
+  let bh_pos = pos_here st in
+  ignore (advance st);
+  (* 'block_handler' *)
+  let bh_id = expect_string st "block id after 'block_handler'" in
+  expect st Token.LBRACE "'{' after block_handler id";
+  let cbs = ref [] in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    cbs := parse_block_cb st :: !cbs
+  done;
+  expect st Token.RBRACE "'}' to close block_handler body";
+  { bh_id; bh_callbacks = List.rev !cbs; bh_pos }
+
+let parse_placement_rule st =
+  let pr_pos = pos_here st in
+  ignore (advance st);
+  (* 'placement_rule' *)
+  expect_soft st "for";
+  let pr_id = expect_string st "block id after 'placement_rule for'" in
+  expect st Token.LBRACE "'{' after placement_rule id";
+  let cbs = ref [] in
+  let self_replaceable = ref false in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    (match peek_tok st with
+    | Token.IDENT "self_replaceable" when peek2_tok st = Token.COLON ->
+      ignore (advance st);
+      ignore (advance st);
+      (match peek_tok st with
+      | Token.TRUE ->
+        ignore (advance st);
+        self_replaceable := true
+      | Token.FALSE ->
+        ignore (advance st);
+        self_replaceable := false
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'true' or 'false' after 'self_replaceable:', found %s"
+             (Token.describe t)))
+    | _ -> cbs := parse_block_cb st :: !cbs);
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close placement_rule body";
+  { pr_id; pr_callbacks = List.rev !cbs; pr_self_replaceable = !self_replaceable; pr_pos }
+
 let parse_packet_listener st =
   let pk_pos = pos_here st in
   ignore (advance st);

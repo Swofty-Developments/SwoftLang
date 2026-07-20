@@ -42,6 +42,7 @@ public final class PropertyTables {
         registerPos();
         registerVec();
         registerItemStack();
+        registerBlockValue();
         registerEventWrappers();
 
         // Phase-5 content rows (items/mobs namespaces + event wrappers)
@@ -460,6 +461,15 @@ public final class PropertyTables {
                 entity -> !entity.isRemoved()));
         PropertyRegistry.register(PropertyDef.readOnly("removed", Entity.class,
                 Entity::isRemoved));
+        // W-pvp status getters: combat scripts read these off any entity
+        // (players resolve them through the Entity superclass walk). velocity
+        // sits above; food/food_saturation on the Player rows below.
+        PropertyRegistry.register(PropertyDef.readOnly("on_ground", Entity.class,
+                Entity::isOnGround));
+        PropertyRegistry.register(PropertyDef.readOnly("is_sprinting", Entity.class,
+                Entity::isSprinting));
+        PropertyRegistry.register(PropertyDef.readOnly("alive_ticks", Entity.class,
+                entity -> (int) entity.getAliveTicks()));
         // projectile ownership: the launching entity, none for everything else
         PropertyRegistry.register(PropertyDef.readOnly("shooter", Entity.class,
                 entity -> entity instanceof net.minestom.server.entity.EntityProjectile
@@ -539,6 +549,9 @@ public final class PropertyTables {
                 Coercions::toDouble, ANY));
         PropertyRegistry.register(PropertyDef.readOnly("length", vec,
                 net.minestom.server.coordinate.Vec::length));
+        // W-stdlib B7: the unit vector in the same direction (zero vector -> itself)
+        PropertyRegistry.register(PropertyDef.readOnly("normalized", vec,
+                v -> v.isZero() ? v : v.normalize()));
     }
 
     private static void registerPlayer() {
@@ -680,6 +693,23 @@ public final class PropertyTables {
                     return stack.with(DataComponents.LORE, lore);
                 },
                 Coercions::toComponentList, ANY));
+    }
+
+    /**
+     * W-blocks: read-only accessors on a {@link net.swofty.blocks.BlockValue}
+     * ({@code block.id}, {@code block.properties}, {@code block.nbt}). The
+     * with/property/tag builders come in through method-call dispatch instead.
+     */
+    private static void registerBlockValue() {
+        PropertyRegistry.register(PropertyDef.readOnly("id",
+                net.swofty.blocks.BlockValue.class,
+                net.swofty.blocks.BlockValue::id));
+        PropertyRegistry.register(PropertyDef.readOnly("properties",
+                net.swofty.blocks.BlockValue.class,
+                net.swofty.blocks.BlockValue::properties));
+        PropertyRegistry.register(PropertyDef.readOnly("nbt",
+                net.swofty.blocks.BlockValue.class,
+                net.swofty.blocks.BlockValue::nbt));
     }
 
     private static void registerEventWrappers() {
