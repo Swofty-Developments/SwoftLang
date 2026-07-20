@@ -50,32 +50,30 @@
                       "target": "exhaustion",
                       "value": {
                         "line": 143,
-                        "col": 35,
+                        "col": 42,
                         "kind": "binary",
                         "op": "OR_ELSE",
                         "left": {
                           "line": 143,
-                          "col": 35,
-                          "kind": "call",
-                          "name": "get_state",
-                          "args": [
-                            {
+                          "col": 42,
+                          "kind": "prop",
+                          "target": {
+                            "line": 143,
+                            "col": 37,
+                            "kind": "prop",
+                            "target": {
                               "line": 143,
-                              "col": 45,
+                              "col": 35,
                               "kind": "var",
                               "name": "p"
                             },
-                            {
-                              "line": 143,
-                              "col": 48,
-                              "kind": "string",
-                              "value": "exhaustion"
-                            }
-                          ]
+                            "name": "tags"
+                          },
+                          "name": "exhaustion"
                         },
                         "right": {
                           "line": 143,
-                          "col": 72,
+                          "col": 63,
                           "kind": "number",
                           "value": 0.0,
                           "integer": false
@@ -159,32 +157,30 @@
                             "target": "heal_timer",
                             "value": {
                               "line": 148,
-                              "col": 39,
+                              "col": 46,
                               "kind": "binary",
                               "op": "OR_ELSE",
                               "left": {
                                 "line": 148,
-                                "col": 39,
-                                "kind": "call",
-                                "name": "get_state",
-                                "args": [
-                                  {
+                                "col": 46,
+                                "kind": "prop",
+                                "target": {
+                                  "line": 148,
+                                  "col": 41,
+                                  "kind": "prop",
+                                  "target": {
                                     "line": 148,
-                                    "col": 49,
+                                    "col": 39,
                                     "kind": "var",
                                     "name": "p"
                                   },
-                                  {
-                                    "line": 148,
-                                    "col": 52,
-                                    "kind": "string",
-                                    "value": "regen_timer"
-                                  }
-                                ]
+                                  "name": "tags"
+                                },
+                                "name": "regen_timer"
                               },
                               "right": {
                                 "line": 148,
-                                "col": 77,
+                                "col": 68,
                                 "kind": "number",
                                 "value": 0,
                                 "integer": true
@@ -303,30 +299,28 @@
                                 },
                                 {
                                   "line": 152,
-                                  "col": 25,
-                                  "kind": "call",
-                                  "name": "set_state",
-                                  "args": [
-                                    {
+                                  "col": 36,
+                                  "kind": "set_prop",
+                                  "target": {
+                                    "line": 152,
+                                    "col": 31,
+                                    "kind": "prop",
+                                    "target": {
                                       "line": 152,
-                                      "col": 35,
+                                      "col": 29,
                                       "kind": "var",
                                       "name": "p"
                                     },
-                                    {
-                                      "line": 152,
-                                      "col": 38,
-                                      "kind": "string",
-                                      "value": "regen_timer"
-                                    },
-                                    {
-                                      "line": 152,
-                                      "col": 53,
-                                      "kind": "number",
-                                      "value": 0,
-                                      "integer": true
-                                    }
-                                  ]
+                                    "name": "tags"
+                                  },
+                                  "name": "regen_timer",
+                                  "value": {
+                                    "line": 152,
+                                    "col": 51,
+                                    "kind": "number",
+                                    "value": 0,
+                                    "integer": true
+                                  }
                                 }
                               ]
                             },
@@ -337,42 +331,40 @@
                               "statements": [
                                 {
                                   "line": 154,
-                                  "col": 25,
-                                  "kind": "call",
-                                  "name": "set_state",
-                                  "args": [
-                                    {
+                                  "col": 36,
+                                  "kind": "set_prop",
+                                  "target": {
+                                    "line": 154,
+                                    "col": 31,
+                                    "kind": "prop",
+                                    "target": {
                                       "line": 154,
-                                      "col": 35,
+                                      "col": 29,
                                       "kind": "var",
                                       "name": "p"
                                     },
-                                    {
+                                    "name": "tags"
+                                  },
+                                  "name": "regen_timer",
+                                  "value": {
+                                    "line": 154,
+                                    "col": 51,
+                                    "kind": "binary",
+                                    "op": "ADD",
+                                    "left": {
                                       "line": 154,
-                                      "col": 38,
-                                      "kind": "string",
-                                      "value": "regen_timer"
+                                      "col": 51,
+                                      "kind": "var",
+                                      "name": "heal_timer"
                                     },
-                                    {
+                                    "right": {
                                       "line": 154,
-                                      "col": 53,
-                                      "kind": "binary",
-                                      "op": "ADD",
-                                      "left": {
-                                        "line": 154,
-                                        "col": 53,
-                                        "kind": "var",
-                                        "name": "heal_timer"
-                                      },
-                                      "right": {
-                                        "line": 154,
-                                        "col": 66,
-                                        "kind": "number",
-                                        "value": 1,
-                                        "integer": true
-                                      }
+                                      "col": 64,
+                                      "kind": "number",
+                                      "value": 1,
+                                      "integer": true
                                     }
-                                  ]
+                                  }
                                 }
                               ]
                             }
@@ -453,32 +445,30 @@
                             "target": "starve_timer",
                             "value": {
                               "line": 161,
-                              "col": 41,
+                              "col": 48,
                               "kind": "binary",
                               "op": "OR_ELSE",
                               "left": {
                                 "line": 161,
-                                "col": 41,
-                                "kind": "call",
-                                "name": "get_state",
-                                "args": [
-                                  {
+                                "col": 48,
+                                "kind": "prop",
+                                "target": {
+                                  "line": 161,
+                                  "col": 43,
+                                  "kind": "prop",
+                                  "target": {
                                     "line": 161,
-                                    "col": 51,
+                                    "col": 41,
                                     "kind": "var",
                                     "name": "p"
                                   },
-                                  {
-                                    "line": 161,
-                                    "col": 54,
-                                    "kind": "string",
-                                    "value": "starve_timer"
-                                  }
-                                ]
+                                  "name": "tags"
+                                },
+                                "name": "starve_timer"
                               },
                               "right": {
                                 "line": 161,
-                                "col": 80,
+                                "col": 71,
                                 "kind": "number",
                                 "value": 0,
                                 "integer": true
@@ -542,30 +532,28 @@
                                 },
                                 {
                                   "line": 164,
-                                  "col": 25,
-                                  "kind": "call",
-                                  "name": "set_state",
-                                  "args": [
-                                    {
+                                  "col": 36,
+                                  "kind": "set_prop",
+                                  "target": {
+                                    "line": 164,
+                                    "col": 31,
+                                    "kind": "prop",
+                                    "target": {
                                       "line": 164,
-                                      "col": 35,
+                                      "col": 29,
                                       "kind": "var",
                                       "name": "p"
                                     },
-                                    {
-                                      "line": 164,
-                                      "col": 38,
-                                      "kind": "string",
-                                      "value": "starve_timer"
-                                    },
-                                    {
-                                      "line": 164,
-                                      "col": 54,
-                                      "kind": "number",
-                                      "value": 0,
-                                      "integer": true
-                                    }
-                                  ]
+                                    "name": "tags"
+                                  },
+                                  "name": "starve_timer",
+                                  "value": {
+                                    "line": 164,
+                                    "col": 52,
+                                    "kind": "number",
+                                    "value": 0,
+                                    "integer": true
+                                  }
                                 }
                               ]
                             },
@@ -576,42 +564,40 @@
                               "statements": [
                                 {
                                   "line": 166,
-                                  "col": 25,
-                                  "kind": "call",
-                                  "name": "set_state",
-                                  "args": [
-                                    {
+                                  "col": 36,
+                                  "kind": "set_prop",
+                                  "target": {
+                                    "line": 166,
+                                    "col": 31,
+                                    "kind": "prop",
+                                    "target": {
                                       "line": 166,
-                                      "col": 35,
+                                      "col": 29,
                                       "kind": "var",
                                       "name": "p"
                                     },
-                                    {
+                                    "name": "tags"
+                                  },
+                                  "name": "starve_timer",
+                                  "value": {
+                                    "line": 166,
+                                    "col": 52,
+                                    "kind": "binary",
+                                    "op": "ADD",
+                                    "left": {
                                       "line": 166,
-                                      "col": 38,
-                                      "kind": "string",
-                                      "value": "starve_timer"
+                                      "col": 52,
+                                      "kind": "var",
+                                      "name": "starve_timer"
                                     },
-                                    {
+                                    "right": {
                                       "line": 166,
-                                      "col": 54,
-                                      "kind": "binary",
-                                      "op": "ADD",
-                                      "left": {
-                                        "line": 166,
-                                        "col": 54,
-                                        "kind": "var",
-                                        "name": "starve_timer"
-                                      },
-                                      "right": {
-                                        "line": 166,
-                                        "col": 69,
-                                        "kind": "number",
-                                        "value": 1,
-                                        "integer": true
-                                      }
+                                      "col": 67,
+                                      "kind": "number",
+                                      "value": 1,
+                                      "integer": true
                                     }
-                                  ]
+                                  }
                                 }
                               ]
                             }
@@ -827,29 +813,27 @@
                     },
                     {
                       "line": 181,
-                      "col": 17,
-                      "kind": "call",
-                      "name": "set_state",
-                      "args": [
-                        {
+                      "col": 28,
+                      "kind": "set_prop",
+                      "target": {
+                        "line": 181,
+                        "col": 23,
+                        "kind": "prop",
+                        "target": {
                           "line": 181,
-                          "col": 27,
+                          "col": 21,
                           "kind": "var",
                           "name": "p"
                         },
-                        {
-                          "line": 181,
-                          "col": 30,
-                          "kind": "string",
-                          "value": "exhaustion"
-                        },
-                        {
-                          "line": 181,
-                          "col": 44,
-                          "kind": "var",
-                          "name": "exhaustion"
-                        }
-                      ]
+                        "name": "tags"
+                      },
+                      "name": "exhaustion",
+                      "value": {
+                        "line": 181,
+                        "col": 42,
+                        "kind": "var",
+                        "name": "exhaustion"
+                      }
                     }
                   ]
                 }
@@ -927,27 +911,30 @@
             "target": "last_amt",
             "value": {
               "line": 63,
-              "col": 21,
+              "col": 33,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
                 "line": 63,
-                "col": 21,
-                "kind": "call",
-                "name": "get_state",
-                "args": [
-                  { "line": 63, "col": 31, "kind": "var", "name": "victim" },
-                  {
+                "col": 33,
+                "kind": "prop",
+                "target": {
+                  "line": 63,
+                  "col": 28,
+                  "kind": "prop",
+                  "target": {
                     "line": 63,
-                    "col": 39,
-                    "kind": "string",
-                    "value": "last_damage"
-                  }
-                ]
+                    "col": 21,
+                    "kind": "var",
+                    "name": "victim"
+                  },
+                  "name": "tags"
+                },
+                "name": "last_damage"
               },
               "right": {
                 "line": 63,
-                "col": 64,
+                "col": 55,
                 "kind": "number",
                 "value": 0.0,
                 "integer": false
@@ -1119,27 +1106,30 @@
             "target": "epf",
             "value": {
               "line": 76,
-              "col": 16,
+              "col": 28,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
                 "line": 76,
-                "col": 16,
-                "kind": "call",
-                "name": "get_state",
-                "args": [
-                  { "line": 76, "col": 26, "kind": "var", "name": "victim" },
-                  {
+                "col": 28,
+                "kind": "prop",
+                "target": {
+                  "line": 76,
+                  "col": 23,
+                  "kind": "prop",
+                  "target": {
                     "line": 76,
-                    "col": 34,
-                    "kind": "string",
-                    "value": "protection_epf"
-                  }
-                ]
+                    "col": 16,
+                    "kind": "var",
+                    "name": "victim"
+                  },
+                  "name": "tags"
+                },
+                "name": "protection_epf"
               },
               "right": {
                 "line": 76,
-                "col": 62,
+                "col": 53,
                 "kind": "number",
                 "value": 0.0,
                 "integer": false
@@ -1153,32 +1143,35 @@
             "target": "res_amp",
             "value": {
               "line": 77,
-              "col": 20,
+              "col": 32,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
                 "line": 77,
-                "col": 20,
-                "kind": "call",
-                "name": "get_state",
-                "args": [
-                  { "line": 77, "col": 30, "kind": "var", "name": "victim" },
-                  {
+                "col": 32,
+                "kind": "prop",
+                "target": {
+                  "line": 77,
+                  "col": 27,
+                  "kind": "prop",
+                  "target": {
                     "line": 77,
-                    "col": 38,
-                    "kind": "string",
-                    "value": "resistance_amp"
-                  }
-                ]
+                    "col": 20,
+                    "kind": "var",
+                    "name": "victim"
+                  },
+                  "name": "tags"
+                },
+                "name": "resistance_amp"
               },
               "right": {
                 "line": 77,
-                "col": 66,
+                "col": 57,
                 "kind": "unary",
                 "op": "NEGATE",
                 "operand": {
                   "line": 77,
-                  "col": 67,
+                  "col": 58,
                   "kind": "number",
                   "value": 1.0,
                   "integer": false
@@ -1332,32 +1325,30 @@
                   "target": "last_swing",
                   "value": {
                     "line": 91,
-                    "col": 27,
+                    "col": 41,
                     "kind": "binary",
                     "op": "OR_ELSE",
                     "left": {
                       "line": 91,
-                      "col": 27,
-                      "kind": "call",
-                      "name": "get_state",
-                      "args": [
-                        {
+                      "col": 41,
+                      "kind": "prop",
+                      "target": {
+                        "line": 91,
+                        "col": 36,
+                        "kind": "prop",
+                        "target": {
                           "line": 91,
-                          "col": 37,
+                          "col": 27,
                           "kind": "var",
                           "name": "attacker"
                         },
-                        {
-                          "line": 91,
-                          "col": 47,
-                          "kind": "string",
-                          "value": "last_swing"
-                        }
-                      ]
+                        "name": "tags"
+                      },
+                      "name": "last_swing"
                     },
                     "right": {
                       "line": 91,
-                      "col": 71,
+                      "col": 62,
                       "kind": "number",
                       "value": 0,
                       "integer": true
@@ -1517,35 +1508,33 @@
                 },
                 {
                   "line": 95,
-                  "col": 9,
-                  "kind": "call",
-                  "name": "set_state",
-                  "args": [
-                    {
+                  "col": 27,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 95,
+                    "col": 22,
+                    "kind": "prop",
+                    "target": {
                       "line": 95,
-                      "col": 19,
+                      "col": 13,
                       "kind": "var",
                       "name": "attacker"
                     },
-                    {
+                    "name": "tags"
+                  },
+                  "name": "last_swing",
+                  "value": {
+                    "line": 95,
+                    "col": 50,
+                    "kind": "prop",
+                    "target": {
                       "line": 95,
-                      "col": 29,
-                      "kind": "string",
-                      "value": "last_swing"
+                      "col": 41,
+                      "kind": "var",
+                      "name": "attacker"
                     },
-                    {
-                      "line": 95,
-                      "col": 52,
-                      "kind": "prop",
-                      "target": {
-                        "line": 95,
-                        "col": 43,
-                        "kind": "var",
-                        "name": "attacker"
-                      },
-                      "name": "alive_ticks"
-                    }
-                  ]
+                    "name": "alive_ticks"
+                  }
                 },
                 {
                   "line": 99,
@@ -1831,32 +1820,30 @@
                   "target": "kb_level",
                   "value": {
                     "line": 115,
-                    "col": 25,
+                    "col": 39,
                     "kind": "binary",
                     "op": "OR_ELSE",
                     "left": {
                       "line": 115,
-                      "col": 25,
-                      "kind": "call",
-                      "name": "get_state",
-                      "args": [
-                        {
+                      "col": 39,
+                      "kind": "prop",
+                      "target": {
+                        "line": 115,
+                        "col": 34,
+                        "kind": "prop",
+                        "target": {
                           "line": 115,
-                          "col": 35,
+                          "col": 25,
                           "kind": "var",
                           "name": "attacker"
                         },
-                        {
-                          "line": 115,
-                          "col": 45,
-                          "kind": "string",
-                          "value": "knockback_level"
-                        }
-                      ]
+                        "name": "tags"
+                      },
+                      "name": "knockback_level"
                     },
                     "right": {
                       "line": 115,
-                      "col": 74,
+                      "col": 65,
                       "kind": "number",
                       "value": 0.0,
                       "integer": false
@@ -2105,19 +2092,22 @@
           },
           {
             "line": 126,
-            "col": 5,
-            "kind": "call",
-            "name": "set_state",
-            "args": [
-              { "line": 126, "col": 15, "kind": "var", "name": "victim" },
-              {
+            "col": 21,
+            "kind": "set_prop",
+            "target": {
+              "line": 126,
+              "col": 16,
+              "kind": "prop",
+              "target": {
                 "line": 126,
-                "col": 23,
-                "kind": "string",
-                "value": "last_damage"
+                "col": 9,
+                "kind": "var",
+                "name": "victim"
               },
-              { "line": 126, "col": 38, "kind": "var", "name": "dmg" }
-            ]
+              "name": "tags"
+            },
+            "name": "last_damage",
+            "value": { "line": 126, "col": 36, "kind": "var", "name": "dmg" }
           },
           {
             "line": 127,

@@ -21,10 +21,11 @@ import net.minestom.server.event.player.PlayerDisconnectEvent;
  * attack cooldowns, exhaustion accumulators, combat tags, last-damage
  * timestamps — all written from {@code .sw} on a tick loop.
  *
- * <p>Exposed to scripts through four builtins:
- * {@code set_state(entity, key, value)}, {@code get_state(entity, key)} →
- * optional&lt;V&gt;, {@code has_state(entity, key)} → Boolean, and
- * {@code clear_state(entity, key)}.
+ * <p>Not surfaced to scripts directly: freeform per-entity data now attaches
+ * through the one unified {@code entity.tags.*} / {@code player.tags.*}
+ * namespace (NBT-backed {@link EntityTagsView}). This class stays as the
+ * internal, deliberately-ephemeral primitive for combat bookkeeping that must
+ * never hit disk, driven from Java.
  *
  * <p>Lifecycle: an entity's whole state bag is auto-cleared when it despawns
  * ({@link EntityDespawnEvent}) or a player disconnects

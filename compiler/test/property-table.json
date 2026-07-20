@@ -97,6 +97,12 @@
     "type": "Integer",
     "writable": false
   },
+  {
+    "owner": "Player",
+    "name": "tags",
+    "type": "EntityTags",
+    "writable": false
+  },
   { "owner": "Location", "name": "x", "type": "Double", "writable": true },
   { "owner": "Location", "name": "y", "type": "Double", "writable": true },
   { "owner": "Location", "name": "z", "type": "Double", "writable": true },

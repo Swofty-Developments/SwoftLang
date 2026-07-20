@@ -115,6 +115,10 @@ let player_props =
     ro "on_ground" TBoolean;
     ro "is_sprinting" TBoolean;
     ro "alive_ticks" TInteger;
+    (* freeform player tags: player.tags.<path>, same shape as entity/mob tags —
+       optional<Any> reads, writable, 'set ... to none' deletes. Player is an
+       Entity, so at runtime these go through the same per-entity store. *)
+    ro "tags" TEntityTags;
   ]
 
 (* OfflinePlayer rows (phase 8): identity + seen-store timestamps, plus the
@@ -1420,17 +1424,6 @@ let builtins =
     b "map_delete" [ ([ PStr; PStr ], RTy TAny) ];
     b "map_keys" [ ([ PStr ], RTy (TList TString)) ];
     b "map_size" [ ([ PStr ], RTy TInteger) ];
-    (* --- W-pvp: per-entity in-memory STATE STORE (runtime scratch, distinct
-       from disk persistence and from the NBT-backed entity .tags namespace).
-       Backs i-frame timers, attack cooldowns, exhaustion, combat tags, etc.
-       set_state/get_state/has_state/clear_state resolve here for name-collision
-       and arity, but their real typing is special-cased in Tc_expr
-       (state_builtin_type): the entity arg accepts any live entity, the key is
-       a String, get_state flows to optional<Any>, has_state to Boolean. --- *)
-    b "set_state" [ ([ PPlayer; PStr; PStr ], RTy TAny) ];
-    b "get_state" [ ([ PPlayer; PStr ], RTy (TOptional TAny)) ];
-    b "has_state" [ ([ PPlayer; PStr ], RTy TBoolean) ];
-    b "clear_state" [ ([ PPlayer; PStr ], RTy TAny) ];
     (* --- W-pvp: entity ATTRIBUTE accessors + modifiers. Like the state store,
        the entity argument accepts any live entity (Player/Mob/Entity/Display),
        so the real typing/validation is special-cased in Tc_expr

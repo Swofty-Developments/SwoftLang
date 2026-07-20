@@ -480,49 +480,6 @@ and map_builtin_type ctx bctx env pos name args =
     | _ -> TAny
   end
 
-(* W-pvp: the per-entity state-store builtins. get_state cannot know the stored
-   value's type statically (a heterogeneous scratch bag keyed by String), so it
-   flows to optional<Any>, exactly like map_get over an untyped map. The entity
-   argument accepts any live entity; the key is a String; set_state's value must
-   be a present (non-none) value — storing none is a delete, so scripts use
-   clear_state for that. *)
-and state_builtin_type ctx bctx env pos name args =
-  let arity = match name with "set_state" -> 3 | _ -> 2 in
-  let result () =
-    match name with
-    | "get_state" -> wrap_optional TAny
-    | "has_state" -> TBoolean
-    | _ -> TAny
-  in
-  let got = List.length args in
-  if got <> arity then begin
-    err ctx pos "'%s' expects %d argument(s), got %d" name arity got;
-    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
-    result ()
-  end
-  else begin
-    let ent = List.hd args in
-    let et = type_of ctx bctx env ent in
-    require_present ctx env ent et ~use:(Printf.sprintf "the entity argument of '%s'" name);
-    (match unwrap et with
-    | TEntity | TMob | TPlayer | TDisplay | TAny -> ()
-    | _ ->
-      err ctx ent.epos "'%s' expects an entity (Player, Mob, Entity, or Display) here, got %s" name
-        (ty_to_string et));
-    let key = List.nth args 1 in
-    let kt = type_of ctx bctx env key in
-    require_present ctx env key kt ~use:(Printf.sprintf "the key argument of '%s'" name);
-    (match unwrap kt with
-    | TString | TAny -> ()
-    | _ -> err ctx key.epos "'%s' expects a String key here, got %s" name (ty_to_string kt));
-    (match (name, args) with
-    | "set_state", [ _; _; v ] ->
-      let vt = type_of ctx bctx env v in
-      require_present ctx env v vt ~use:"the value argument of 'set_state'"
-    | _ -> ());
-    result ()
-  end
-
 (* W-pvp: entity attribute accessors + modifiers. Like the state store, the
    entity argument accepts any live entity; the attribute key and (for
    modifiers) the operation are Strings, validated against the registry lists
@@ -940,8 +897,6 @@ and builtin_call_type ctx bctx env pos name args looked =
       TBlock)
   | "map_get" | "map_set" | "map_has" | "map_delete" | "map_keys" | "map_size" ->
     map_builtin_type ctx bctx env pos name args
-  | "set_state" | "get_state" | "has_state" | "clear_state" ->
-    state_builtin_type ctx bctx env pos name args
   | "attribute" | "set_attribute" | "add_attribute_modifier" | "remove_attribute_modifier" ->
     attr_builtin_type ctx bctx env pos name args
   | "apply_damage" | "apply_knockback" | "apply_effect" | "remove_effect" | "active_effects"

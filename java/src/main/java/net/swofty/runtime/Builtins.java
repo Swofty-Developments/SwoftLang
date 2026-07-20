@@ -509,38 +509,6 @@ public final class Builtins {
                 return map.size();
             }
 
-            // ---------- W-pvp: per-entity in-memory state store ----------
-            case "set_state": {
-                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
-                String key = requireStateKey(context, name, args);
-                Object value = evaluateArg(context, args, 2);
-                if (NoneValue.isNone(value)) {
-                    // storing none is a delete, matching map_set / index-assign
-                    net.swofty.entities.EntityStateStore.clear(entity, key);
-                } else {
-                    net.swofty.entities.EntityStateStore.set(entity, key, value);
-                }
-                return NoneValue.INSTANCE;
-            }
-            case "get_state": {
-                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
-                String key = requireStateKey(context, name, args);
-                Object value = net.swofty.entities.EntityStateStore.get(entity, key);
-                // absent key -> none, so get_state integrates with exists/otherwise
-                return value != null ? value : NoneValue.INSTANCE;
-            }
-            case "has_state": {
-                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
-                String key = requireStateKey(context, name, args);
-                return net.swofty.entities.EntityStateStore.has(entity, key);
-            }
-            case "clear_state": {
-                net.minestom.server.entity.Entity entity = requireEntityArg(context, name, args, 0);
-                String key = requireStateKey(context, name, args);
-                net.swofty.entities.EntityStateStore.clear(entity, key);
-                return NoneValue.INSTANCE;
-            }
-
             // ---------- W-pvp: entity attribute accessors + modifiers --------
             case "attribute": {
                 net.minestom.server.entity.LivingEntity living =
@@ -1954,17 +1922,6 @@ public final class Builtins {
             return display.entity();
         }
         throw new ScriptError(function + "() expects an entity, got: "
-                + Values.displayString(value));
-    }
-
-    /** Resolve the String key argument (arg 1) of a state-store builtin. */
-    private static String requireStateKey(ExecutionContext context, String function,
-            List<Expression> args) {
-        Object value = Coercions.toStringValue(evaluateArg(context, args, 1));
-        if (value instanceof String key) {
-            return key;
-        }
-        throw new ScriptError(function + "() expects a String key, got: "
                 + Values.displayString(value));
     }
 

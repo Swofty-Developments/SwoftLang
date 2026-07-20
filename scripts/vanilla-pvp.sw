@@ -8,8 +8,8 @@
 //
 //   * the enriched EntityDamage event    (event.damage / attacker / entity)
 //   * attribute(e, key)                  (armor, toughness, attack_speed, kb-res)
-//   * the per-entity state store          (set_state / get_state — i-frames, cd,
-//                                          exhaustion, cached enchant EPF, timers)
+//   * the unified tags namespace          (entity.tags / player.tags — i-frames,
+//                                          cd, exhaustion, cached enchant EPF, timers)
 //   * the native trackers Minestom hides  (invulnerable_ticks / fall_distance)
 //   * the combat effects                  (apply_knockback / apply_damage)
 //   * spawn particle                      (the crit sparkle)
@@ -32,8 +32,8 @@ function armor_mitigated(raw: Double, armor: Double, toughness: Double) {
 }
 
 // Enchantment protection: the summed EPF (capped at 20) scales the hit by
-// (1 - EPF/25). The EPF is cached per-entity in the state store by whatever
-// equips the armour; here we just read it.
+// (1 - EPF/25). The EPF is cached per-entity in victim.tags.protection_epf by
+// whatever equips the armour; here we just read it.
 function protection_mitigated(dmg: Double, epf: Double) {
     return dmg * (1.0 - clamp(epf, 0.0, 20.0) / 25.0)
 }
@@ -60,7 +60,7 @@ on EntityDamage {
     // A weaker-or-equal hit inside the window is ignored; a stronger hit only
     // deals the surplus over the last hit (Minecraft's "strongest hit wins").
     set iframe to invulnerable_ticks(victim)
-    set last_amt to get_state(victim, "last_damage") otherwise 0.0
+    set last_amt to victim.tags.last_damage otherwise 0.0
     if iframe > 0 and raw <= last_amt {
         cancel event
         return
@@ -73,8 +73,8 @@ on EntityDamage {
     // ---- armor + toughness + enchant protection + resistance ----
     set armor to attribute(victim, "armor")
     set toughness to attribute(victim, "armor_toughness")
-    set epf to get_state(victim, "protection_epf") otherwise 0.0
-    set res_amp to get_state(victim, "resistance_amp") otherwise -1.0
+    set epf to victim.tags.protection_epf otherwise 0.0
+    set res_amp to victim.tags.resistance_amp otherwise -1.0
 
     set dmg to armor_mitigated(incoming, armor, toughness)
     set dmg to protection_mitigated(dmg, epf)
@@ -85,14 +85,14 @@ on EntityDamage {
     if attacker exists {
         // Attack cooldown (1.9+): scale = clamp((ticksSinceSwing + 0.5) /
         // cooldownTicks, 0, 1); damage *= 0.2 + scale^2 * 0.8. cooldownTicks is
-        // 20 / attackSpeed. The last-swing tick lives in the state store.
+        // 20 / attackSpeed. The last-swing tick lives in attacker.tags.
         set speed to attribute(attacker, "attack_speed")
         set cd_ticks to 20.0 / speed
-        set last_swing to get_state(attacker, "last_swing") otherwise 0
+        set last_swing to attacker.tags.last_swing otherwise 0
         set since to attacker.alive_ticks - last_swing
         set charge to clamp((since + 0.5) / cd_ticks, 0.0, 1.0)
         set dmg to dmg * (0.2 + charge * charge * 0.8)
-        set_state(attacker, "last_swing", attacker.alive_ticks)
+        set attacker.tags.last_swing to attacker.alive_ticks
 
         // Critical hit: attacker is falling (fall_distance > 0), airborne, and
         // (1.9+) not sprinting. 1.5x plus the crit sparkle at the victim.
@@ -112,7 +112,7 @@ on EntityDamage {
         if attacker.is_sprinting {
             set sprint_bonus to 1.0
         }
-        set kb_level to get_state(attacker, "knockback_level") otherwise 0.0
+        set kb_level to attacker.tags.knockback_level otherwise 0.0
         set kb_resist to attribute(victim, "knockback_resistance")
         set strength to (0.4 + sprint_bonus * 0.5 + kb_level * 0.5) * (1.0 - kb_resist)
 
@@ -123,7 +123,7 @@ on EntityDamage {
 
     // Remember this hit for the i-frame comparison, then commit the reduced
     // amount back to the event so the engine subtracts the right number.
-    set_state(victim, "last_damage", dmg)
+    set victim.tags.last_damage to dmg
     set event.damage to dmg
 }
 
@@ -131,7 +131,7 @@ on EntityDamage {
 // Natural regeneration, starvation, and the exhaustion accumulator — the tick
 // loop Minestom does not run. Started once; ticks every game tick over every
 // online player. Food/saturation/health are real properties; the exhaustion
-// float and the two heal/starve timers live in the state store.
+// float and the two heal/starve timers live under player.tags.
 // ---------------------------------------------------------------------------
 
 command "pvp-engine" {
@@ -140,30 +140,30 @@ command "pvp-engine" {
     execute {
         repeat 1728000 times every 1 tick {
             loop all_players() as p {
-                set exhaustion to get_state(p, "exhaustion") otherwise 0.0
+                set exhaustion to p.tags.exhaustion otherwise 0.0
 
                 // Natural regen: food >= 18 and below max health -> 1 HP every
                 // 80 ticks, at a cost of 6.0 exhaustion.
                 if p.food >= 18 and p.health < p.max_health {
-                    set heal_timer to get_state(p, "regen_timer") otherwise 0
+                    set heal_timer to p.tags.regen_timer otherwise 0
                     if heal_timer >= 80 {
                         set p.health to min(p.max_health, p.health + 1.0)
                         set exhaustion to exhaustion + 6.0
-                        set_state(p, "regen_timer", 0)
+                        set p.tags.regen_timer to 0
                     } else {
-                        set_state(p, "regen_timer", heal_timer + 1)
+                        set p.tags.regen_timer to heal_timer + 1
                     }
                 }
 
                 // Starvation: food <= 0 -> 1 magic-less damage every 80 ticks,
                 // never below 1 HP (normal difficulty).
                 if p.food <= 0 and p.health > 1.0 {
-                    set starve_timer to get_state(p, "starve_timer") otherwise 0
+                    set starve_timer to p.tags.starve_timer otherwise 0
                     if starve_timer >= 80 {
                         apply_damage(p, 1.0, "starve")
-                        set_state(p, "starve_timer", 0)
+                        set p.tags.starve_timer to 0
                     } else {
-                        set_state(p, "starve_timer", starve_timer + 1)
+                        set p.tags.starve_timer to starve_timer + 1
                     }
                 }
 
@@ -178,7 +178,7 @@ command "pvp-engine" {
                     }
                 }
 
-                set_state(p, "exhaustion", exhaustion)
+                set p.tags.exhaustion to exhaustion
             }
         }
     }

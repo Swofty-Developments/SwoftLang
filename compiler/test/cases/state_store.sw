@@ -1,27 +1,28 @@
-// W-pvp per-entity in-memory state store: set_state / get_state / has_state /
-// clear_state. get_state flows to optional<Any> (integrates with otherwise);
-// has_state is a Boolean; set_state / clear_state are used as statements.
+// Per-entity freeform state via the unified `.tags` namespace. Player is an
+// Entity, so player.tags.<key> reads flow to optional<Any> (integrating with
+// otherwise), `... exists` is a Boolean, and `set ... to none` deletes — the
+// same shape as entity/mob tags.
 
 command "state" {
     execute {
-        set_state(sender, "iframe", 10)
-        set_state(sender, "last_hit", "sword")
+        set sender.tags.iframe to 10
+        set sender.tags.last_hit to "sword"
 
-        if has_state(sender, "iframe") {
-            set ticks to get_state(sender, "iframe") otherwise 0
+        if (sender.tags.iframe exists) {
+            set ticks to sender.tags.iframe otherwise 0
             send "iframe = ${ticks}" to sender
         }
 
-        set weapon to get_state(sender, "last_hit") otherwise "fist"
+        set weapon to sender.tags.last_hit otherwise "fist"
         send "weapon = ${weapon}" to sender
 
-        clear_state(sender, "iframe")
+        set sender.tags.iframe to none
 
         // works over any live entity, not just players
         loop all_entities() as e {
-            set_state(e, "seen", true)
-            if has_state(e, "seen") {
-                clear_state(e, "seen")
+            set e.tags.seen to true
+            if (e.tags.seen exists) {
+                set e.tags.seen to none
             }
         }
     }

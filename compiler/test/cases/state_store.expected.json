@@ -3,7 +3,7 @@
   "version": 2,
   "commands": [
     {
-      "line": 5,
+      "line": 6,
       "col": 1,
       "names": [ "state" ],
       "permission": null,
@@ -13,90 +13,118 @@
         "async": false,
         "statements": [
           {
-            "line": 7,
-            "col": 9,
-            "kind": "call",
-            "name": "set_state",
-            "args": [
-              { "line": 7, "col": 19, "kind": "var", "name": "sender" },
-              { "line": 7, "col": 27, "kind": "string", "value": "iframe" },
-              {
-                "line": 7,
-                "col": 37,
-                "kind": "number",
-                "value": 10,
-                "integer": true
-              }
-            ]
-          },
-          {
             "line": 8,
-            "col": 9,
-            "kind": "call",
-            "name": "set_state",
-            "args": [
-              { "line": 8, "col": 19, "kind": "var", "name": "sender" },
-              { "line": 8, "col": 27, "kind": "string", "value": "last_hit" },
-              { "line": 8, "col": 39, "kind": "string", "value": "sword" }
-            ]
+            "col": 25,
+            "kind": "set_prop",
+            "target": {
+              "line": 8,
+              "col": 20,
+              "kind": "prop",
+              "target": {
+                "line": 8,
+                "col": 13,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "tags"
+            },
+            "name": "iframe",
+            "value": {
+              "line": 8,
+              "col": 35,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            }
           },
           {
-            "line": 10,
+            "line": 9,
+            "col": 25,
+            "kind": "set_prop",
+            "target": {
+              "line": 9,
+              "col": 20,
+              "kind": "prop",
+              "target": {
+                "line": 9,
+                "col": 13,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "tags"
+            },
+            "name": "last_hit",
+            "value": {
+              "line": 9,
+              "col": 37,
+              "kind": "string",
+              "value": "sword"
+            }
+          },
+          {
+            "line": 11,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 10,
-              "col": 12,
-              "kind": "call",
-              "name": "has_state",
-              "args": [
-                { "line": 10, "col": 22, "kind": "var", "name": "sender" },
-                {
-                  "line": 10,
-                  "col": 30,
-                  "kind": "string",
-                  "value": "iframe"
-                }
-              ]
+              "line": 11,
+              "col": 25,
+              "kind": "unary",
+              "op": "EXISTS",
+              "operand": {
+                "line": 11,
+                "col": 25,
+                "kind": "prop",
+                "target": {
+                  "line": 11,
+                  "col": 20,
+                  "kind": "prop",
+                  "target": {
+                    "line": 11,
+                    "col": 13,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "tags"
+                },
+                "name": "iframe"
+              }
             },
             "then": {
-              "line": 10,
+              "line": 11,
               "col": 40,
               "kind": "block",
               "statements": [
                 {
-                  "line": 11,
+                  "line": 12,
                   "col": 13,
                   "kind": "assign",
                   "target": "ticks",
                   "value": {
-                    "line": 11,
-                    "col": 26,
+                    "line": 12,
+                    "col": 38,
                     "kind": "binary",
                     "op": "OR_ELSE",
                     "left": {
-                      "line": 11,
-                      "col": 26,
-                      "kind": "call",
-                      "name": "get_state",
-                      "args": [
-                        {
-                          "line": 11,
-                          "col": 36,
+                      "line": 12,
+                      "col": 38,
+                      "kind": "prop",
+                      "target": {
+                        "line": 12,
+                        "col": 33,
+                        "kind": "prop",
+                        "target": {
+                          "line": 12,
+                          "col": 26,
                           "kind": "var",
                           "name": "sender"
                         },
-                        {
-                          "line": 11,
-                          "col": 44,
-                          "kind": "string",
-                          "value": "iframe"
-                        }
-                      ]
+                        "name": "tags"
+                      },
+                      "name": "iframe"
                     },
                     "right": {
-                      "line": 11,
-                      "col": 64,
+                      "line": 12,
+                      "col": 55,
                       "kind": "number",
                       "value": 0,
                       "integer": true
@@ -104,17 +132,17 @@
                   }
                 },
                 {
-                  "line": 12,
+                  "line": 13,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 12,
+                    "line": 13,
                     "col": 18,
                     "kind": "string",
                     "value": "iframe = ${ticks}"
                   },
                   "target": {
-                    "line": 12,
+                    "line": 13,
                     "col": 41,
                     "kind": "var",
                     "name": "sender"
@@ -125,147 +153,170 @@
             "else": null
           },
           {
-            "line": 15,
+            "line": 16,
             "col": 9,
             "kind": "assign",
             "target": "weapon",
             "value": {
-              "line": 15,
-              "col": 23,
+              "line": 16,
+              "col": 35,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 15,
-                "col": 23,
-                "kind": "call",
-                "name": "get_state",
-                "args": [
-                  { "line": 15, "col": 33, "kind": "var", "name": "sender" },
-                  {
-                    "line": 15,
-                    "col": 41,
-                    "kind": "string",
-                    "value": "last_hit"
-                  }
-                ]
+                "line": 16,
+                "col": 35,
+                "kind": "prop",
+                "target": {
+                  "line": 16,
+                  "col": 30,
+                  "kind": "prop",
+                  "target": {
+                    "line": 16,
+                    "col": 23,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "tags"
+                },
+                "name": "last_hit"
               },
               "right": {
-                "line": 15,
-                "col": 63,
+                "line": 16,
+                "col": 54,
                 "kind": "string",
                 "value": "fist"
               }
             }
           },
           {
-            "line": 16,
+            "line": 17,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 16,
+              "line": 17,
               "col": 14,
               "kind": "string",
               "value": "weapon = ${weapon}"
             },
             "target": {
-              "line": 16,
+              "line": 17,
               "col": 38,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 18,
-            "col": 9,
-            "kind": "call",
-            "name": "clear_state",
-            "args": [
-              { "line": 18, "col": 21, "kind": "var", "name": "sender" },
-              { "line": 18, "col": 29, "kind": "string", "value": "iframe" }
-            ]
+            "line": 19,
+            "col": 25,
+            "kind": "set_prop",
+            "target": {
+              "line": 19,
+              "col": 20,
+              "kind": "prop",
+              "target": {
+                "line": 19,
+                "col": 13,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "tags"
+            },
+            "name": "iframe",
+            "value": { "line": 19, "col": 35, "kind": "none" }
           },
           {
-            "line": 21,
+            "line": 22,
             "col": 9,
             "kind": "foreach",
             "var": "e",
             "limit": null,
             "iterable": {
-              "line": 21,
+              "line": 22,
               "col": 14,
               "kind": "call",
               "name": "all_entities",
               "args": []
             },
             "body": {
-              "line": 21,
+              "line": 22,
               "col": 34,
               "kind": "block",
               "statements": [
                 {
-                  "line": 22,
-                  "col": 13,
-                  "kind": "call",
-                  "name": "set_state",
-                  "args": [
-                    { "line": 22, "col": 23, "kind": "var", "name": "e" },
-                    {
-                      "line": 22,
-                      "col": 26,
-                      "kind": "string",
-                      "value": "seen"
+                  "line": 23,
+                  "col": 24,
+                  "kind": "set_prop",
+                  "target": {
+                    "line": 23,
+                    "col": 19,
+                    "kind": "prop",
+                    "target": {
+                      "line": 23,
+                      "col": 17,
+                      "kind": "var",
+                      "name": "e"
                     },
-                    {
-                      "line": 22,
-                      "col": 34,
-                      "kind": "boolean",
-                      "value": true
-                    }
-                  ]
+                    "name": "tags"
+                  },
+                  "name": "seen",
+                  "value": {
+                    "line": 23,
+                    "col": 32,
+                    "kind": "boolean",
+                    "value": true
+                  }
                 },
                 {
-                  "line": 23,
+                  "line": 24,
                   "col": 13,
                   "kind": "if",
                   "condition": {
-                    "line": 23,
-                    "col": 16,
-                    "kind": "call",
-                    "name": "has_state",
-                    "args": [
-                      { "line": 23, "col": 26, "kind": "var", "name": "e" },
-                      {
-                        "line": 23,
-                        "col": 29,
-                        "kind": "string",
-                        "value": "seen"
-                      }
-                    ]
+                    "line": 24,
+                    "col": 24,
+                    "kind": "unary",
+                    "op": "EXISTS",
+                    "operand": {
+                      "line": 24,
+                      "col": 24,
+                      "kind": "prop",
+                      "target": {
+                        "line": 24,
+                        "col": 19,
+                        "kind": "prop",
+                        "target": {
+                          "line": 24,
+                          "col": 17,
+                          "kind": "var",
+                          "name": "e"
+                        },
+                        "name": "tags"
+                      },
+                      "name": "seen"
+                    }
                   },
                   "then": {
-                    "line": 23,
+                    "line": 24,
                     "col": 37,
                     "kind": "block",
                     "statements": [
                       {
-                        "line": 24,
-                        "col": 17,
-                        "kind": "call",
-                        "name": "clear_state",
-                        "args": [
-                          {
-                            "line": 24,
-                            "col": 29,
+                        "line": 25,
+                        "col": 28,
+                        "kind": "set_prop",
+                        "target": {
+                          "line": 25,
+                          "col": 23,
+                          "kind": "prop",
+                          "target": {
+                            "line": 25,
+                            "col": 21,
                             "kind": "var",
                             "name": "e"
                           },
-                          {
-                            "line": 24,
-                            "col": 32,
-                            "kind": "string",
-                            "value": "seen"
-                          }
-                        ]
+                          "name": "tags"
+                        },
+                        "name": "seen",
+                        "value": { "line": 25, "col": 36, "kind": "none" }
                       }
                     ]
                   },

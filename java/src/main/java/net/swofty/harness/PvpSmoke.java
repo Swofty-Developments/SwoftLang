@@ -1,14 +1,18 @@
 package net.swofty.harness;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
+import net.minestom.server.entity.Player;
 import net.minestom.server.entity.attribute.Attribute;
 import net.minestom.server.entity.damage.Damage;
 import net.minestom.server.event.EventDispatcher;
@@ -16,6 +20,9 @@ import net.minestom.server.event.entity.EntityDamageEvent;
 import net.minestom.server.event.entity.EntityTickEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.player.GameProfile;
+import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.potion.PotionEffect;
 import net.minestom.server.registry.RegistryKey;
 import net.swofty.ASTExecutor;
@@ -24,12 +31,12 @@ import net.swofty.entities.EntityCombatTrackers;
 import net.swofty.entities.EntityStateStore;
 import net.swofty.nativebridge.execution.Expression;
 import net.swofty.nativebridge.execution.expressions.FunctionCallExpression;
-import net.swofty.nativebridge.execution.expressions.NoneLiteral;
 import net.swofty.nativebridge.execution.expressions.NumberLiteral;
 import net.swofty.nativebridge.execution.expressions.StringLiteral;
 import net.swofty.nativebridge.execution.expressions.VariableReference;
-import net.swofty.props.NoneValue;
+import net.swofty.props.PathResolver;
 import net.swofty.props.PropertyTables;
+import net.swofty.props.NoneValue;
 import net.swofty.runtime.ExecutionContext;
 
 /**
@@ -39,7 +46,9 @@ import net.swofty.runtime.ExecutionContext;
  * ({@link FunctionCallExpression} -&gt; {@code ExecutionContext.callFunction}
  * -&gt; {@code Builtins}) exactly as compiled {@code .sw} does, then asserts the
  * observable engine state. Covers: the per-entity state store (round-trip,
- * none-deletes, clear-on-remove), attribute get/set + modifier add/remove,
+ * clear-on-remove), the unified {@code player.tags.*} freeform namespace
+ * (set-on-join / read-a-tick-later round-trip + set-to-none delete),
+ * attribute get/set + modifier add/remove,
  * {@code apply_effect}/{@code remove_effect}/{@code active_effects},
  * {@code apply_damage} through the pipeline, {@code apply_knockback} velocity,
  * the native {@code invulnerable_ticks} timer, and {@code fall_distance}
@@ -109,6 +118,7 @@ public final class PvpSmoke {
         vars.put("e", e);
 
         stateStoreChecks(e);
+        playerTagsChecks(instance);
         attributeChecks(e);
         effectChecks(e);
         damageChecks(instance);
@@ -122,32 +132,73 @@ public final class PvpSmoke {
         return failures == 0 ? 0 : 1;
     }
 
-    /** State store: round-trip, none deletes, clear-on-remove. */
+    /**
+     * State store: round-trip, remove-one-key, clear-on-remove. Exercised
+     * through {@link EntityStateStore}'s public API directly — the scratch store
+     * is no longer surfaced to scripts (freeform per-entity data now lives under
+     * the unified {@code entity.tags.*} / {@code player.tags.*} namespace), but
+     * the class remains as the ephemeral combat-bookkeeping primitive.
+     */
     private static void stateStoreChecks(LivingEntity e) {
         System.out.println("[state store]");
-        bi("set_state", ref("e"), str("hp"), num(5.0));
-        Object got = bi("get_state", ref("e"), str("hp"));
-        check("get_state reflects set", got instanceof Double d && near(d, 5.0), got);
-        check("has_state true", Boolean.TRUE.equals(bi("has_state", ref("e"), str("hp"))), null);
+        EntityStateStore.set(e, "hp", 5.0);
+        Object got = EntityStateStore.get(e, "hp");
+        check("get reflects set", got instanceof Double d && near(d, 5.0), got);
+        check("has true", EntityStateStore.has(e, "hp"), null);
 
-        // storing none is a delete
-        bi("set_state", ref("e"), str("hp"), new NoneLiteral());
-        check("set_state none deletes",
-                Boolean.FALSE.equals(bi("has_state", ref("e"), str("hp"))), null);
-        check("get_state absent -> none",
-                NoneValue.isNone(bi("get_state", ref("e"), str("hp"))), null);
-
-        // clear_state removes one key
-        bi("set_state", ref("e"), str("k2"), num(9.0));
-        bi("clear_state", ref("e"), str("k2"));
-        check("clear_state removes key",
-                Boolean.FALSE.equals(bi("has_state", ref("e"), str("k2"))), null);
+        // clear removes one key
+        EntityStateStore.clear(e, "hp");
+        check("clear removes key", !EntityStateStore.has(e, "hp"), null);
+        check("get absent -> null", EntityStateStore.get(e, "hp") == null, null);
 
         // clears on entity removal
-        bi("set_state", ref("e"), str("survive"), num(1.0));
+        EntityStateStore.set(e, "survive", 1.0);
         EntityStateStore.clearEntity(e);
-        check("state cleared on remove",
-                Boolean.FALSE.equals(bi("has_state", ref("e"), str("survive"))), null);
+        check("state cleared on remove", !EntityStateStore.has(e, "survive"), null);
+    }
+
+    /**
+     * player.tags round-trip through the unified freeform namespace. Player is
+     * an Entity, so {@code player.tags.<key>} resolves through the very same
+     * {@code Entity.class} "tags" pass-through property (EntityTagsView backed by
+     * the entity TagHandler) that mob/entity tags use. Drives the exact runtime
+     * read/write path a compiled {@code set player.tags.k to v} statement takes
+     * (PathResolver), proving values survive a later tick and that
+     * {@code set ... to none} deletes.
+     */
+    private static void playerTagsChecks(InstanceContainer instance) {
+        System.out.println("[player.tags]");
+        Player p = new Player(new FakeConnection(), new GameProfile(UUID.randomUUID(), "Tagged"));
+        p.setInstance(instance, new Pos(0, 42, 0)).join(); // "on join"
+        Map<String, Object> pv = new HashMap<>();
+        pv.put("p", p);
+
+        // set player.tags.combat_tag to 5.0 and player.tags.weapon to "sword"
+        PathResolver.assignVariablePath(pv, "p", List.of("tags", "combat_tag"), 5.0, 0, 0);
+        PathResolver.assignVariablePath(pv, "p", List.of("tags", "weapon"), "sword", 0, 0);
+
+        // ...survive a later tick, then read back through player.tags.<key>
+        EventDispatcher.call(new EntityTickEvent(p));
+        Object ct = PathResolver.getPath(p, List.of("tags", "combat_tag"), 0, 0);
+        check("player.tags numeric round-trips across a tick",
+                ct instanceof Double d && near(d, 5.0), ct);
+        Object wp = PathResolver.getPath(p, List.of("tags", "weapon"), 0, 0);
+        check("player.tags string round-trips", "sword".equals(wp), wp);
+
+        // absent key reads as none, so it integrates with exists/otherwise
+        Object absent = PathResolver.getPath(p, List.of("tags", "nope"), 0, 0);
+        check("player.tags absent key -> none", NoneValue.isNone(absent), absent);
+
+        // set player.tags.combat_tag to none deletes it
+        PathResolver.assignVariablePath(pv, "p", List.of("tags", "combat_tag"),
+                NoneValue.INSTANCE, 0, 0);
+        Object afterDelete = PathResolver.getPath(p, List.of("tags", "combat_tag"), 0, 0);
+        check("player.tags set-to-none deletes", NoneValue.isNone(afterDelete), afterDelete);
+        // the sibling tag survives the delete
+        Object stillWeapon = PathResolver.getPath(p, List.of("tags", "weapon"), 0, 0);
+        check("player.tags sibling survives delete", "sword".equals(stillWeapon), stillWeapon);
+
+        p.remove();
     }
 
     /** Attribute base get/set + modifier add (idempotent) / remove. */
@@ -283,5 +334,17 @@ public final class PvpSmoke {
         Object t1 = bi("fall_distance", ref("f"));
         check("fall_distance accumulates the 3-block drop",
                 t1 instanceof Double d && near(d, 3.0), t1);
+    }
+
+    /** Minimal offline player connection so we can spawn a real Player headless. */
+    private static final class FakeConnection extends PlayerConnection {
+        @Override
+        public void sendPacket(SendablePacket packet) {
+        }
+
+        @Override
+        public SocketAddress getRemoteAddress() {
+            return new InetSocketAddress(0);
+        }
     }
 }
