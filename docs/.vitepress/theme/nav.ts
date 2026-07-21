@@ -160,8 +160,39 @@ export interface DocVersion {
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
   { text: '1.4.0 (latest)', link: '/', label: 'v1.4.0', prefix: '' },
+  { text: '1.3.0', link: '/1.3.0/', label: 'v1.3.0', prefix: '/1.3.0' },
+  { text: '1.2.0', link: '/1.2.0/', label: 'v1.2.0', prefix: '/1.2.0' },
   { text: '1.1.0', link: '/1.1.0/', label: 'v1.1.0', prefix: '/1.1.0' }
 ]
+
+/**
+ * Generate a version-scoped sidebar from the root `navGroups` by prefixing
+ * every link (and each group's `match`) with `prefix` (e.g. `/1.2.0`). This is
+ * correct for releases whose page set matches the current root — 1.2.0, 1.3.0
+ * and later all share the root's page structure, so their sidebars are derived
+ * rather than hand-maintained. (1.1.0 predates the receiver/event redesign and
+ * keeps its own hand-built tree below.)
+ */
+function makeVersionGroups(prefix: string): NavGroup[] {
+  const escaped = prefix.replace(/[.]/g, '\\$&')
+  const prefixMatch = (m: RegExp) =>
+    new RegExp('^' + escaped + m.source.replace(/^\^/, ''))
+  const prefixLink = (l: NavLink): NavLink => ({ ...l, link: prefix + l.link })
+  return navGroups.map((g) => ({
+    text: g.text,
+    link: prefix + g.link,
+    match: prefixMatch(g.match),
+    items: g.items?.map(prefixLink),
+    subgroups: g.subgroups?.map((s) => ({
+      text: s.text,
+      items: s.items.map(prefixLink)
+    }))
+  }))
+}
+
+/** Generated version sidebars (page set matches root). */
+export const navGroups120: NavGroup[] = makeVersionGroups('/1.2.0')
+export const navGroups130: NavGroup[] = makeVersionGroups('/1.3.0')
 
 /** The frozen 1.1.0 tree — its OWN pages under `/1.1.0/`, with 1.1.0 labels. */
 const guideItems110: NavLink[] = guideSteps.map((s) => ({
@@ -271,12 +302,17 @@ export const navGroups110: NavGroup[] = [
   }
 ]
 
-/** Route prefix `/1.1.0/` gets the frozen tree; everything else is latest. */
+/** Frozen-version route prefixes; anything else is the latest (root) tree. */
 const V110 = /^\/1\.1\.0\//
+const V120 = /^\/1\.2\.0\//
+const V130 = /^\/1\.3\.0\//
 
 /** The sidebar tree for a given route (version-aware). */
 export function sidebarForPath(path: string): NavGroup[] {
-  return V110.test(path) ? navGroups110 : navGroups
+  if (V110.test(path)) return navGroups110
+  if (V120.test(path)) return navGroups120
+  if (V130.test(path)) return navGroups130
+  return navGroups
 }
 
 /** The version descriptor a route belongs to (defaults to latest/root). */

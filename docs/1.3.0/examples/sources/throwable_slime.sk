@@ -1,0 +1,102 @@
+on right click with slime ball:
+	make player shoot snowball at velocity 1.2
+	set {_proj} to the shot projectile
+	set {_item} to a slime ball
+	{_proj}.setItem({_item})
+	set {_proj}'s metadata tag "TimeCreated" to now
+	set {_proj}'s metadata tag "CollisionCount" to 0
+	subtract 1 slime ball from player's tool
+
+on dispense of slime ball:
+	cancel event
+	set {_pos} to (event-block's location) ~ (vector from (facing of block))
+	shoot snowball from {_pos} at velocity 1.2 (event-block's facing)
+	set {_proj} to the shot projectile
+	set {_item} to a slime ball
+	{_proj}.setItem({_item})
+	set {_proj}'s metadata tag "TimeCreated" to now
+	set {_proj}'s metadata tag "CollisionCount" to 0
+	remove 1 slime ball from inventory of event-block
+
+on projectile hit:
+	projectile is snowball
+	event-block's block data is not air # hopefully prevents collisions with entities. Have not tested
+	if projectile.getItem() = slime ball:
+		cancel event
+		if all:
+			((projectile's velocity)'s vector length) > 0.4
+			projectile has metadata tag "TimeCreated"
+			projectile has metadata tag "CollisionCount"
+			time since (metadata tag "TimeCreated" of (projectile)) < 60 seconds
+			(metadata tag "CollisionCount" of (projectile)) < 100
+		then:
+			set {_pos} to (the vector from (event-block's location) to ((projectile)'s location))
+			set {_absx} to abs({_pos}'s x)
+			set {_absy} to abs({_pos}'s y)
+			set {_absz} to abs({_pos}'s z)
+			#set (projectile's velocity) to vector((projectile's velocity's x), -(projectile's velocity's y), (projectile's velocity's z))
+			
+			
+			if all:
+				{_absx} > {_absy}
+				{_absx} > {_absz}
+			then:
+				if {_pos}'s x < 0:
+					# excessive use of brakcets decreases compile time. Also makes it harder to read, which means job securtity :D
+					teleport projectile to ((event-location) ~ vector((-0.1 - (((projectile)'s velocity)'s x * 0.1)), 0, 0))
+				else:
+					teleport projectile to ((event-location) ~ vector((0.1 - (((projectile)'s velocity)'s x * 0.1)), 0, 0))
+					
+				set ((projectile's velocity)'s x) to (-1 * (projectile's velocity)'s x)
+				
+			else if all:
+				{_absy} > {_absx}
+				{_absy} > {_absz}
+			then:
+				
+				if {_pos}'s y < 0:
+					teleport projectile to ((event-location) ~ vector(0, (-0.1 - (((projectile)'s velocity)'s y * 0.1)), 0))
+				else:
+					teleport projectile to ((event-location) ~ vector(0, (0.1 - (((projectile)'s velocity)'s y * 0.1)), 0))
+				
+				
+				set ((projectile's velocity)'s y) to (-1 * (projectile's velocity)'s y)
+				
+				
+				
+			else: # if none of the two are the largest then the last one is.
+				if {_pos}'s z < 0:
+					teleport projectile to ((event-location) ~ vector(0, 0, (-0.1 - (((projectile)'s velocity)'s z * 0.1))))
+				else:
+					teleport projectile to ((event-location) ~ vector(0, 0, (0.1 - (((projectile)'s velocity)'s z * 0.1))))
+				
+				set ((projectile's velocity)'s z) to (-1 * (projectile's velocity)'s z)
+			
+			set {_proj} to projectile
+			shoot a snowball from (projectile's location) with speed 0 up:
+				set (projectile)'s velocity to {_proj}'s velocity
+				set {_item} to a slime ball
+				(projectile).setItem({_item})
+				set ((projectile)'s metadata tag "TimeCreated") to (metadata tag "TimeCreated" of ({_proj}))
+				set ((projectile)'s metadata tag "CollisionCount") to (metadata tag "CollisionCount" of ({_proj}) + 1)
+			
+			kill event-projectile
+		else:
+			drop (a slime ball) at ((event-location) ~ (normalized (projectile's velocity))*-0.2) without velocity
+			set velocity of last dropped item to event-projectile's velocity
+			kill event-projectile
+            
+		
+
+on projectile collide:
+	projectile is snowball
+	projectile.getItem() = slime ball
+	
+	if all:
+		event-entity is a player
+		event-entity's gamemode is creative
+	then:
+		stop
+	
+	damage the entity by 1 hearts
+	knock entity (projectile's velocity) with strength ((projectile's velocity)'s vector length*0.5)

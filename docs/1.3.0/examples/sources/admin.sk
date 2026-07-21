@@ -1,0 +1,315 @@
+options:
+    Prefix: &x&F&F&9&3&F&8&lᴀᴅᴍɪɴ+ &7»&r
+    CommandPrefix: admin+
+
+
+    gamemodePermission: minecraft.command.gamemode
+
+    weatherPermission: minecraft.command.weather
+
+    givePermission: minecraft.command.give
+
+    freezePermission: freeze.use
+
+    mutePermission: mute.use
+
+    menuPermission: op
+
+    unfrozenMessage: &dYou have been unfrozen!
+    freezeMessage: &dYou have been frozen!
+
+    PermissionMessage: &cʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴜѕᴇ ᴛʜɪѕ ᴄᴏᴍᴍᴀɴᴅ!
+
+command /gamemode <gamemode> [<player>]:
+    permission: {@gamemodePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        set {_p} to name of player
+        if arg-2 is set:
+            set {_p} to name of arg-2
+        if arg-1 is a gamemode:
+            send "{@Prefix} &dGamemode set to %arg-1% for %{_p} in proper case%."
+            set the gamemode of {_p} parsed as player to arg-1
+        else:
+            send "{@Prefix} &d%arg-1% is not a gamemode!"
+
+command gmc [<player>]:
+    permission: {@gamemodePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        set {_p} to name of player
+        if arg-1 is set:
+            set {_p} to name of arg-1
+        execute player command "gamemode creative %{_p}%"
+
+command gms [<player>]:
+    permission: {@gamemodePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        set {_p} to name of player
+        if arg-1 is set:
+            set {_p} to name of arg-1
+        execute player command "gamemode survival %{_p}%"
+
+command gmsp [<player>]:
+    permission: {@gamemodePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        set {_p} to name of player
+        if arg-1 is set:
+            set {_p} to name of arg-1
+        execute player command "gamemode spectator %{_p}%"
+
+command gma [<player>]:
+    permission: {@gamemodePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        set {_p} to name of player
+        if arg-1 is set:
+            set {_p} to name of arg-1
+        execute player command "gamemode survival %{_p}%"
+
+command /weather <text>:
+    permission: {@weatherPermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        if arg-1 is "sun" or "clear" or "rain" or "storm":
+            set weather to arg-1 parsed as weather
+            send "{@Prefix} &dWeather set to %arg-1%." to player
+        else:
+            send "{@Prefix} &d%arg-1 in proper case% is not a type of weather!" to player
+
+command /give <text> <item> <integer=1>:
+    permission: {@givePermission}
+    permission message: {@PermissionMessage}
+    trigger:
+        set {_item} to arg-2
+        set {_amount} to arg-3
+        
+        if arg-1 is "@a":
+            give {_amount} of {_item} to all players
+            broadcast "{@Prefix} &d%player% gave %{_amount}% %{_item}%(s) to everyone!"
+            
+        else if arg-1 is "@s" or player's name:
+            give {_amount} of {_item} to player
+            send "{@Prefix} &dYou've been given %{_amount}% %{_item}%(s)!" to player
+            
+        else:
+            set {_target} to arg-1 parsed as player
+            if {_target} is online:
+                give {_amount} of {_item} to {_target}
+                send "{@Prefix} &dYou've been given %{_amount}% %{_item}%(s) by %player%!" to {_target}
+                send "{@Prefix} &dGave %{_amount}% %{_item}%(s) to %{_target}%." to player
+            else:
+                send "{@Prefix} &cPlayer '%arg-1%' not found." to player
+
+on tab complete of "/give":
+	set tab completions for position 1 to all players, "@a", and "@s"
+	set tab completions for position 2 to all items
+	set tab completions for position 3 to 1, 2, 3, 4, 5, 6, 7, 8, and 9
+
+on tab complete of "/weather":
+    set tab completions for position 1 to "sun", "rain", and "storm"
+
+on tab complete of "/gamemode":
+    set tab completions for position 1 to all gamemodes
+    set tab completions for position 2 to all players
+
+function Main(p: player):
+    set {_gui} to chest inventory with 3 rows named "&bᴀᴅᴍɪɴ ᴘᴀɴᴇʟ"
+
+    loop 27 times:
+        set slot (loop-number - 1) of {_gui} to gray stained glass pane named " "
+    set slot 12 of {_gui} to skull of {_p} named "&eᴘʟᴀʏᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+    set slot 13 of {_gui} to clock named "&eᴛɪᴍᴇ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+    set slot 14 of {_gui} to sunflower named "&eᴡᴇᴀᴛʜᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+
+    open {_gui} to {_p}
+
+function PManagement(p: player):
+    set {_gui} to chest inventory with 3 rows named "&bᴘʟᴀʏᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+
+    loop 27 times:
+        set slot (loop-number - 1) of {_gui} to gray stained glass pane named " "
+    set {_slot} to 0
+    loop all players:
+        set slot {_slot} of {_gui} to skull of loop-value named "&e%loop-value%"
+        add 1 to {_slot}
+
+    set slot 26 of {_gui} to arrow named "&cʙᴀᴄᴋ"
+
+    open {_gui} to {_p}
+
+function DManagment(p: player):
+    set {_gui} to chest inventory with 3 rows named "&bᴛɪᴍᴇ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+
+    loop 27 times:
+        set slot (loop-number - 1) of {_gui} to gray stained glass pane named " "
+
+    set slot 10 of {_gui} to clock named "&eѕᴜɴʀɪѕᴇ"
+    set slot 11 of {_gui} to clock named "&eᴅᴀʏ"
+    set slot 12 of {_gui} to clock named "&eɴᴏᴏɴ"
+    set slot 13 of {_gui} to clock named "&eᴀꜰᴛᴇʀɴᴏᴏɴ"
+    set slot 14 of {_gui} to clock named "&eꜱᴜɴꜱᴇᴛ"
+    set slot 15 of {_gui} to clock named "&eɴɪɢʜᴛ"
+    set slot 16 of {_gui} to clock named "&eᴍɪᴅɴɪɢʜᴛ"
+    set slot 22 of {_gui} to arrow named "&cʙᴀᴄᴋ"
+
+    open {_gui} to {_p}
+
+function WManagement(p: player):
+    set {_gui} to chest inventory with 3 rows named "&bᴡᴇᴀᴛʜᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ"
+
+    loop 27 times:
+        set slot (loop-number - 1) of {_gui} to gray stained glass pane named " "
+
+    set slot 12 of {_gui} to sunflower named "&eꜱᴜɴɴʏ"
+    set slot 13 of {_gui} to water bucket named "&eʀᴀɪɴʏ"
+    set slot 14 of {_gui} to breeze rod named "&eꜱᴛᴏʀᴍʏ"
+    set slot 22 of {_gui} to arrow named "&cʙᴀᴄᴋ"
+
+    open {_gui} to {_p}
+
+command /adminmenu:
+    aliases: /amenu, /adminpanel, /apanel, /panel, /ap, am
+    permission: {@menuPermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        Main(player)
+
+on inventory click:
+
+    if name of event-inventory is "&bᴀᴅᴍɪɴ ᴘᴀɴᴇʟ":
+        cancel event
+        if event-item is player head:
+            PManagement(player)
+        if event-item is clock:
+            DManagment(player)
+        if event-item is sunflower:
+            WManagement(player)
+
+    if name of event-inventory is "&bᴘʟᴀʏᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ":
+        cancel event
+        if event-item is player head:
+            set {_target} to uncolored name of event-item
+
+            set {_gui} to chest inventory with 3 rows named "&b%{_target}%"
+
+            loop 27 times:
+                set slot (loop-number - 1) of {_gui} to gray stained glass pane named " "
+            set slot 12 of {_gui} to iron sword named "&cᴋɪᴄᴋ"
+            set slot 13 of {_gui} to clock named "&cᴛᴇᴍᴘ-ʙᴀɴ"
+            set slot 14 of {_gui} to barrier named "&cʙᴀɴ"
+            set slot 11 of {_gui} to glass bottle named "&cᴍᴜᴛᴇ"
+            set slot 15 of {_gui} to packed ice named "&cꜰʀᴇᴇᴢᴇ"
+            set slot 22 of {_gui} to arrow named "&cʙᴀᴄᴋ"
+
+            open {_gui} to player
+        if event-item is arrow:
+            Main(player)
+
+    if name of event-inventory is "&bᴛɪᴍᴇ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ":
+        cancel event
+        if event-item is clock:
+            set {_time} to name of event-item
+            if {_time} is "&eѕᴜɴʀɪѕᴇ":
+                execute console command "time set 0"
+            if {_time} is "&eᴅᴀʏ":
+                execute console command "time set 1000"
+            if {_time} is "&eɴᴏᴏɴ":
+                execute console command "time set 6000"
+            if {_time} is "&eᴀꜰᴛᴇʀɴᴏᴏɴ":
+                execute console command "time set 9000"
+            if {_time} is "&eꜱᴜɴꜱᴇᴛ":
+                execute console command "time set 12000"
+            if {_time} is "&eɴɪɢʜᴛ":
+                execute console command "time set 13000"
+            if {_time} is "&eᴍɪᴅɴɪɢʜᴛ":
+                execute console command "time set 18000"
+        if event-item is arrow:
+            Main(player)
+
+    if name of event-inventory is "&bᴡᴇᴀᴛʜᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ":
+        cancel event
+        if event-item is sunflower:
+            set the weather to sun
+        if event-item is water bucket:
+            set the weather to rain
+        if event-item is breeze rod:
+            set the weather to thunder
+
+        if event-item is arrow:
+            Main(player)
+
+    else:
+        loop all players:
+            if name of event-inventory is "&b%loop-value%":
+                cancel event
+                if event-item is iron sword:
+                    kick loop-value
+                if event-item is clock:
+                    ban loop-value's ip for 12 hours
+                if event-item is barrier:
+                    ban loop-value's ip
+                if event-item is glass bottle:
+                    execute console command "mute %loop-value%"
+                if event-item is packed ice:
+                    execute player command "freeze %loop-value%"
+                if event-item is arrow:
+                    PManagement(player)
+
+command freeze <player> [<text>]:
+    permission: {@freezePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        if {Freezed::%uuid of arg-1%} is true:
+            set {Freezed::%uuid of arg-1%} to false
+            send "{@Prefix} {@unfrozenMessage}" to arg-1
+            send "{@Prefix} &dYou have unfrozen %arg-1%!" to player
+        else:
+            set {Freezed::%uuid of arg-1%} to true
+            if arg-2 is set:
+                send "{@Prefix} &dYou have been frozen by %player% for %arg-2%!" to arg-1
+                send "{@Prefix} &dYou have frozen %arg-1%!" to player
+            else:
+                send "{@Prefix} &dYou have been frozen by %player%!" to arg-1
+                send "{@Prefix} &dYou have frozen %arg-1%!" to player
+
+on player move:
+    if {Freezed::%uuid of player%} is true:
+        cancel event
+        send action bar "{@Prefix} &dYou're frozen, there for you cannot move!"
+    else:
+        stop
+
+on command:
+    if {Freezed::%uuid of player%} is true:
+        cancel event
+        send action bar "{@Prefix} &dCommands can not be executed while you're frozen!"
+
+command mute <player>:
+    permission: {@mutePermission}
+    permission message: {@PermissionMessage}
+    prefix: {@CommandPrefix}
+    trigger:
+        if {Muted::%uuid of player%} is true:
+            set {Muted::%uuid of player%} to false
+            send "{@Prefix} &dYou have been unmuted!" to arg-1
+            send "{@Prefix} &dYou have unmuted %arg-1%!" to player
+        else:
+            set {Muted::%uuid of player%} to true
+            send "{@Prefix} &dYou have been muted!" to arg-1
+            send "{@Prefix} &dYou have muted %arg-1%!" to player
+        
+on chat:
+    if {Muted::%uuid of player%} is true:
+        cancel event
+        send action bar "{@Prefix} &dYou cannot talk while being muted!" to player
