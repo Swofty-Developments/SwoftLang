@@ -80,10 +80,12 @@ command "cleanse" {
     }
 }
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            send "<gold>Kill credit: ${event.mob.custom_id}" to event.killer
+Mob {
+    on_death(killer) {
+        if killer exists {
+            if killer is a Player {
+                send "<gold>Kill credit: ${this.custom_id}" to killer
+            }
         }
     }
 }

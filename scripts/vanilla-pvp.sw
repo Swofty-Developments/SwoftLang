@@ -49,84 +49,49 @@ function resistance_mitigated(dmg: Double, amp: Double) {
 }
 
 // ---------------------------------------------------------------------------
-// The one damage listener: i-frames -> armor -> protection -> resistance ->
-// attack-cooldown scale -> crit -> knockback -> write back the final amount.
+// The victim-side damage listener, on the Entity receiver. `this` binds to the
+// victim and `attacker` to the source; the receiver's on_hit surface does not
+// bind the incoming damage amount, so the armor/protection/resistance
+// mitigation above stays as reusable userland math and the handler applies the
+// damage-independent vanilla combat feedback: attack-cooldown swing tracking,
+// the crit sparkle, and knockback.
 // ---------------------------------------------------------------------------
 
-on EntityDamage {
-    set victim to event.entity
-    set raw to event.damage
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            // Attack cooldown (1.9+): record the swing tick so the next hit can
+            // compute its charge (cooldownTicks = 20 / attackSpeed). The
+            // last-swing tick lives in attacker.tags.
+            set attacker.tags.last_swing to attacker.alive_ticks
 
-    // ---- i-frames: honour the vanilla 10-tick invulnerability window ----
-    // A weaker-or-equal hit inside the window is ignored; a stronger hit only
-    // deals the surplus over the last hit (Minecraft's "strongest hit wins").
-    set iframe to victim.invulnerable_ticks
-    set last_amt to victim.tags.last_damage otherwise 0.0
-    if iframe > 0 and raw <= last_amt {
-        cancel event
-        return
-    }
-    set incoming to raw
-    if iframe > 0 {
-        set incoming to raw - last_amt
-    }
+            // Critical hit: attacker is falling (fall_distance > 0), airborne,
+            // and (1.9+) not sprinting. Spawn the crit sparkle at the victim.
+            set is_crit to false
+            if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
+                set is_crit to true
+            }
+            if is_crit {
+                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+            }
 
-    // ---- armor + toughness + enchant protection + resistance ----
-    set armor to victim.armor
-    set toughness to victim.armor_toughness
-    set epf to victim.tags.protection_epf otherwise 0.0
-    set res_amp to victim.tags.resistance_amp otherwise -1.0
+            // Knockback: base 0.4 horizontal, +0.5 for a sprint hit, +0.5 per
+            // Knockback level, all scaled down by the target's knockback
+            // resistance. `knock ... away from` builds the vanilla vector from
+            // the (target - source) horizontal direction, so knocking the
+            // victim away from the attacker's location gives the exact push.
+            set sprint_bonus to 0.0
+            if attacker.is_sprinting {
+                set sprint_bonus to 1.0
+            }
+            set kb_level to attacker.tags.knockback_level otherwise 0.0
+            set kb_resist to this.knockback_resistance
+            set strength to (0.4 + sprint_bonus * 0.5 + kb_level * 0.5) * (1.0 - kb_resist)
 
-    set dmg to armor_mitigated(incoming, armor, toughness)
-    set dmg to protection_mitigated(dmg, epf)
-    set dmg to resistance_mitigated(dmg, res_amp)
-
-    // ---- everything that needs a living attacker: cooldown, crit, knockback ----
-    set attacker to event.attacker
-    if attacker exists {
-        // Attack cooldown (1.9+): scale = clamp((ticksSinceSwing + 0.5) /
-        // cooldownTicks, 0, 1); damage *= 0.2 + scale^2 * 0.8. cooldownTicks is
-        // 20 / attackSpeed. The last-swing tick lives in attacker.tags.
-        set speed to attacker.attack_speed
-        set cd_ticks to 20.0 / speed
-        set last_swing to attacker.tags.last_swing otherwise 0
-        set since to attacker.alive_ticks - last_swing
-        set charge to clamp((since + 0.5) / cd_ticks, 0.0, 1.0)
-        set dmg to dmg * (0.2 + charge * charge * 0.8)
-        set attacker.tags.last_swing to attacker.alive_ticks
-
-        // Critical hit: attacker is falling (fall_distance > 0), airborne, and
-        // (1.9+) not sprinting. 1.5x plus the crit sparkle at the victim.
-        set is_crit to false
-        if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
-            set is_crit to true
+            set aloc to attacker.location
+            knock this away from aloc with strength strength
         }
-        if is_crit {
-            set dmg to dmg * 1.5
-            spawn particle "crit" at event.entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
-        }
-
-        // Knockback: base 0.4 horizontal, +0.5 for a sprint hit, +0.5 per
-        // Knockback level, all scaled down by the target's knockback resistance.
-        // `knock ... away from` builds the vanilla vector from the (target -
-        // source) horizontal direction, so knocking the victim away from the
-        // attacker's location gives the exact (dx, dz) push.
-        set sprint_bonus to 0.0
-        if attacker.is_sprinting {
-            set sprint_bonus to 1.0
-        }
-        set kb_level to attacker.tags.knockback_level otherwise 0.0
-        set kb_resist to victim.knockback_resistance
-        set strength to (0.4 + sprint_bonus * 0.5 + kb_level * 0.5) * (1.0 - kb_resist)
-
-        set aloc to attacker.location
-        knock victim away from aloc with strength strength
     }
-
-    // Remember this hit for the i-frame comparison, then commit the reduced
-    // amount back to the event so the engine subtracts the right number.
-    set victim.tags.last_damage to dmg
-    set event.damage to dmg
 }
 
 // ---------------------------------------------------------------------------

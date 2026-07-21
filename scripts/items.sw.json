@@ -62,37 +62,41 @@
       "commands": [],
       "events": [
         {
-          "line": 103,
-          "col": 1,
+          "line": 105,
+          "col": 5,
           "name": "PlayerUseItem",
+          "receiver": "Item",
           "priority": 0,
+          "params": [ "player" ],
           "execute": {
             "async": false,
             "statements": [
               {
-                "line": 105,
+                "line": 106,
                 "col": 9,
                 "kind": "assign",
                 "target": "id",
                 "value": {
-                  "line": 105,
-                  "col": 25,
+                  "line": 106,
+                  "col": 19,
                   "kind": "binary",
                   "op": "OR_ELSE",
                   "left": {
-                    "line": 105,
-                    "col": 25,
-                    "kind": "prop",
-                    "target": {
-                      "line": 105,
-                      "col": 19,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "custom_id"
+                    "line": 106,
+                    "col": 19,
+                    "kind": "call",
+                    "name": "custom_id",
+                    "args": [
+                      {
+                        "line": 106,
+                        "col": 29,
+                        "kind": "var",
+                        "name": "this"
+                      }
+                    ]
                   },
                   "right": {
-                    "line": 105,
+                    "line": 106,
                     "col": 45,
                     "kind": "string",
                     "value": ""
@@ -100,65 +104,53 @@
                 }
               },
               {
-                "line": 106,
+                "line": 107,
                 "col": 9,
                 "kind": "if",
                 "condition": {
-                  "line": 106,
+                  "line": 107,
                   "col": 12,
                   "kind": "binary",
                   "op": "NOT_EQUALS",
                   "left": {
-                    "line": 106,
+                    "line": 107,
                     "col": 12,
                     "kind": "var",
                     "name": "id"
                   },
                   "right": {
-                    "line": 106,
+                    "line": 107,
                     "col": 22,
                     "kind": "string",
                     "value": ""
                   }
                 },
                 "then": {
-                  "line": 106,
+                  "line": 107,
                   "col": 25,
                   "kind": "block",
                   "statements": [
                     {
-                      "line": 107,
+                      "line": 108,
                       "col": 13,
                       "kind": "call",
                       "name": "ability_dispatch",
                       "args": [
                         {
-                          "line": 107,
-                          "col": 36,
-                          "kind": "prop",
-                          "target": {
-                            "line": 107,
-                            "col": 30,
-                            "kind": "var",
-                            "name": "event"
-                          },
+                          "line": 108,
+                          "col": 30,
+                          "kind": "var",
                           "name": "player"
                         },
                         {
-                          "line": 107,
-                          "col": 50,
-                          "kind": "prop",
-                          "target": {
-                            "line": 107,
-                            "col": 44,
-                            "kind": "var",
-                            "name": "event"
-                          },
-                          "name": "item"
+                          "line": 108,
+                          "col": 38,
+                          "kind": "var",
+                          "name": "this"
                         },
                         {
-                          "line": 107,
-                          "col": 56,
+                          "line": 108,
+                          "col": 44,
                           "kind": "var",
                           "name": "id"
                         }
@@ -1175,24 +1167,26 @@
       ],
       "events": [
         {
-          "line": 103,
-          "col": 1,
+          "line": 106,
+          "col": 5,
           "name": "BlockDispense",
+          "receiver": "Block",
           "priority": 0,
+          "params": [ "item", "direction" ],
           "execute": {
             "async": false,
             "statements": [
               {
-                "line": 105,
+                "line": 107,
                 "col": 9,
                 "kind": "send",
                 "message": {
-                  "line": 105,
+                  "line": 107,
                   "col": 14,
                   "kind": "string",
-                  "value": "<gray>A dispenser fired at ${event.location}."
+                  "value": "<gray>A dispenser fired ${item.name} facing ${direction}."
                 },
-                "target": { "line": 105, "col": 65, "kind": "all_players" }
+                "target": { "line": 107, "col": 77, "kind": "all_players" }
               }
             ]
           }

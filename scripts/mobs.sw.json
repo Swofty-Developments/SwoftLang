@@ -177,10 +177,12 @@
   ],
   "events": [
     {
-      "line": 83,
-      "col": 1,
+      "line": 84,
+      "col": 5,
       "name": "MobDeath",
+      "receiver": "Mob",
       "priority": 0,
+      "params": [ "killer" ],
       "execute": {
         "async": false,
         "statements": [
@@ -190,49 +192,68 @@
             "kind": "if",
             "condition": {
               "line": 85,
-              "col": 18,
+              "col": 12,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
                 "line": 85,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 85,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
+                "col": 12,
+                "kind": "var",
                 "name": "killer"
               }
             },
             "then": {
               "line": 85,
-              "col": 32,
+              "col": 26,
               "kind": "block",
               "statements": [
                 {
                   "line": 86,
                   "col": 13,
-                  "kind": "send",
-                  "message": {
+                  "kind": "if",
+                  "condition": {
                     "line": 86,
-                    "col": 18,
-                    "kind": "string",
-                    "value": "<gold>Kill credit: ${event.mob.custom_id}"
-                  },
-                  "target": {
-                    "line": 86,
-                    "col": 71,
-                    "kind": "prop",
-                    "target": {
+                    "col": 16,
+                    "kind": "binary",
+                    "op": "IS_TYPE",
+                    "left": {
                       "line": 86,
-                      "col": 65,
+                      "col": 16,
                       "kind": "var",
-                      "name": "event"
+                      "name": "killer"
                     },
-                    "name": "killer"
-                  }
+                    "right": {
+                      "line": 86,
+                      "col": 28,
+                      "kind": "type",
+                      "name": "Player"
+                    }
+                  },
+                  "then": {
+                    "line": 86,
+                    "col": 35,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 87,
+                        "col": 17,
+                        "kind": "send",
+                        "message": {
+                          "line": 87,
+                          "col": 22,
+                          "kind": "string",
+                          "value": "<gold>Kill credit: ${this.custom_id}"
+                        },
+                        "target": {
+                          "line": 87,
+                          "col": 64,
+                          "kind": "var",
+                          "name": "killer"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
                 }
               ]
             },

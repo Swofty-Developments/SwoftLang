@@ -40,20 +40,20 @@ mob "zombie" {
     }
 }
 
-event PlayerJoin {
-    execute {
-        send "<green>Hello, <yellow>${event.player.name}<green>! Welcome to the SwoftLang demo." to event.player
-        send "<gray>Punch your zombie 5 times to slay it — each player gets their own." to event.player
+Player {
+    on_join() {
+        send "<green>Hello, <yellow>${this.name}<green>! Welcome to the SwoftLang demo." to this
+        send "<gray>Punch your zombie 5 times to slay it — each player gets their own." to this
 
-        set visits for event.player to (visits for event.player) + 1
+        set visits for this to (visits for this) + 1
 
-        show scoreboard "hud" to event.player
-        show tablist "tab" to event.player
+        show scoreboard "hud" to this
+        show tablist "tab" to this
 
-        spawn mob "zombie" at in_front_of(event.player, 5) as z
-        set name of z to "<gold>Zombie <yellow>0<gray>/5" for event.player
+        spawn mob "zombie" at in_front_of(this, 5) as z
+        set name of z to "<gold>Zombie <yellow>0<gray>/5" for this
         set z.glowing to true
-        show z to event.player
+        show z to this
     }
 }
 

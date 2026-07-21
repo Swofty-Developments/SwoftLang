@@ -99,9 +99,11 @@ command "dispense-demo" {
     }
 }
 
-// The cancellable BlockDispense event: swap or block what comes out.
-event BlockDispense {
-    execute {
-        send "<gray>A dispenser fired at ${event.location}." to all players
+// The cancellable BlockDispense event: swap or block what comes out. `this`
+// binds to the dispensing block; `item` is the ejected stack, `direction` the
+// facing.
+Block {
+    on_dispense(item, direction) {
+        send "<gray>A dispenser fired ${item.name} facing ${direction}." to all players
     }
 }

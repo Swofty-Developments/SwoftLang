@@ -1,26 +1,20 @@
-event PlayerChat {
-    priority: 0
-
-    execute {
+Player {
+    on_chat(message) {
         // Modify the message
-        set event.message to "[Filtered] ${event.message}"
+        set message to "[Filtered] ${message}"
 
         // Send feedback to the player
-        send "You said: ${event.message}" to event.player
+        send "You said: ${message}" to this
 
         // Conditional cancellation
-        if event.message contains "badword" {
-            send "<red>Your message was blocked!" to event.player
+        if message contains "badword" {
+            send "<red>Your message was blocked!" to this
             cancel event
         }
     }
-}
 
-event PlayerJoin {
-    priority: 5
-
-    execute {
-        send "<green>Welcome ${event.player.name}!" to all
-        send "Hello ${event.player.name}!" to event.player
+    on_join() {
+        send "<green>Welcome ${this.name}!" to all
+        send "Hello ${this.name}!" to this
     }
 }

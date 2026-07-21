@@ -4,111 +4,84 @@
   "commands": [],
   "events": [
     {
-      "line": 1,
-      "col": 1,
+      "line": 2,
+      "col": 5,
       "name": "PlayerChat",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "message" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 6,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 6,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "message",
+            "line": 4,
+            "col": 9,
+            "kind": "assign",
+            "target": "message",
             "value": {
-              "line": 6,
-              "col": 30,
+              "line": 4,
+              "col": 24,
               "kind": "string",
-              "value": "[Filtered] ${event.message}"
+              "value": "[Filtered] ${message}"
             }
           },
           {
-            "line": 9,
+            "line": 7,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 9,
+              "line": 7,
               "col": 14,
               "kind": "string",
-              "value": "You said: ${event.message}"
+              "value": "You said: ${message}"
             },
-            "target": {
-              "line": 9,
-              "col": 52,
-              "kind": "prop",
-              "target": {
-                "line": 9,
-                "col": 46,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            }
+            "target": { "line": 7, "col": 40, "kind": "var", "name": "this" }
           },
           {
-            "line": 12,
+            "line": 10,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 12,
-              "col": 18,
+              "line": 10,
+              "col": 12,
               "kind": "binary",
               "op": "CONTAINS",
               "left": {
-                "line": 12,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 12,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
+                "line": 10,
+                "col": 12,
+                "kind": "var",
                 "name": "message"
               },
               "right": {
-                "line": 12,
-                "col": 35,
+                "line": 10,
+                "col": 29,
                 "kind": "string",
                 "value": "badword"
               }
             },
             "then": {
-              "line": 12,
-              "col": 45,
+              "line": 10,
+              "col": 39,
               "kind": "block",
               "statements": [
                 {
-                  "line": 13,
+                  "line": 11,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 13,
+                    "line": 11,
                     "col": 18,
                     "kind": "string",
                     "value": "<red>Your message was blocked!"
                   },
                   "target": {
-                    "line": 13,
-                    "col": 60,
-                    "kind": "prop",
-                    "target": {
-                      "line": 13,
-                      "col": 54,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "line": 11,
+                    "col": 54,
+                    "kind": "var",
+                    "name": "this"
                   }
                 },
-                { "line": 14, "col": 13, "kind": "cancel_event" }
+                { "line": 12, "col": 13, "kind": "cancel_event" }
               ]
             },
             "else": null
@@ -117,51 +90,47 @@
       }
     },
     {
-      "line": 19,
-      "col": 1,
+      "line": 16,
+      "col": 5,
       "name": "PlayerJoin",
-      "priority": 5,
+      "receiver": "Player",
+      "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 23,
+            "line": 17,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 23,
+              "line": 17,
               "col": 14,
               "kind": "string",
-              "value": "<green>Welcome ${event.player.name}!"
+              "value": "<green>Welcome ${this.name}!"
             },
             "target": {
-              "line": 23,
-              "col": 56,
+              "line": 17,
+              "col": 48,
               "kind": "string",
               "value": "all"
             }
           },
           {
-            "line": 24,
+            "line": 18,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 24,
+              "line": 18,
               "col": 14,
               "kind": "string",
-              "value": "Hello ${event.player.name}!"
+              "value": "Hello ${this.name}!"
             },
             "target": {
-              "line": 24,
-              "col": 53,
-              "kind": "prop",
-              "target": {
-                "line": 24,
-                "col": 47,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 18,
+              "col": 39,
+              "kind": "var",
+              "name": "this"
             }
           }
         ]

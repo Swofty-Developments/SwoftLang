@@ -44,43 +44,27 @@ server {
     }
 }
 
-// Cancellable, fires before the bobber exists.
-event PlayerCastRod {
-    execute {
-        if player.world.time > 100000 {
-            send "<gray>The fish are asleep." to player
-            cancel event
+// The four typed fishing events fold onto the rod holder: `this` binds to the
+// Player. Each fires at the matching moment of the cast/bite/catch/reel cycle.
+Player {
+    // fires before the bobber exists
+    on_cast_rod() {
+        if this.world.time > 100000 {
+            send "<gray>The fish are asleep." to this
         }
     }
-}
 
-// The bobber dipped: reel within the window to land the catch.
-event FishBite {
-    execute {
-        send "bite at x=${hook_location.x} z=${hook_location.z}" to player
+    // the bobber dipped: reel within the window to land the catch
+    on_fish_bite() {
+        send "<aqua>Something's biting..." to this
     }
-}
 
-// Pre-delivery: caught_item is read-write (swaps the delivered stack),
-// caught_mob is read-only, and cancel discards the catch entirely.
-event PlayerCatchFish {
-    execute {
-        if event.caught_mob exists {
-            send "<red>brace yourself..." to player
-            halt
-        }
-        if event.caught_item exists {
-            send "you landed ${event.caught_item.name}!" to player
-            if event.caught_item.material is "minecraft:pufferfish" {
-                set event.caught_item to item("COD")
-                send "<gray>...swapped the puffer for a safer cod." to player
-            }
-        }
+    // the catch emerges
+    on_catch_fish() {
+        send "<green>You landed something!" to this
     }
-}
 
-event PlayerReelIn {
-    execute {
-        send "<gray>line reeled in" to player
+    on_reel_in() {
+        send "<gray>line reeled in" to this
     }
 }

@@ -4,671 +4,47 @@
   "commands": [],
   "events": [
     {
-      "line": 56,
-      "col": 1,
+      "line": 61,
+      "col": 5,
       "name": "EntityDamage",
+      "receiver": "Entity",
       "priority": 0,
+      "params": [ "attacker" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 57,
-            "col": 5,
-            "kind": "assign",
-            "target": "victim",
-            "value": {
-              "line": 57,
-              "col": 25,
-              "kind": "prop",
-              "target": {
-                "line": 57,
-                "col": 19,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "entity"
-            }
-          },
-          {
-            "line": 58,
-            "col": 5,
-            "kind": "assign",
-            "target": "raw",
-            "value": {
-              "line": 58,
-              "col": 22,
-              "kind": "prop",
-              "target": {
-                "line": 58,
-                "col": 16,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "damage"
-            }
-          },
-          {
-            "line": 63,
-            "col": 5,
-            "kind": "assign",
-            "target": "iframe",
-            "value": {
-              "line": 63,
-              "col": 26,
-              "kind": "prop",
-              "target": {
-                "line": 63,
-                "col": 19,
-                "kind": "var",
-                "name": "victim"
-              },
-              "name": "invulnerable_ticks"
-            }
-          },
-          {
-            "line": 64,
-            "col": 5,
-            "kind": "assign",
-            "target": "last_amt",
-            "value": {
-              "line": 64,
-              "col": 33,
-              "kind": "binary",
-              "op": "OR_ELSE",
-              "left": {
-                "line": 64,
-                "col": 33,
-                "kind": "prop",
-                "target": {
-                  "line": 64,
-                  "col": 28,
-                  "kind": "prop",
-                  "target": {
-                    "line": 64,
-                    "col": 21,
-                    "kind": "var",
-                    "name": "victim"
-                  },
-                  "name": "tags"
-                },
-                "name": "last_damage"
-              },
-              "right": {
-                "line": 64,
-                "col": 55,
-                "kind": "number",
-                "value": 0.0,
-                "integer": false
-              }
-            }
-          },
-          {
-            "line": 65,
-            "col": 5,
+            "line": 62,
+            "col": 9,
             "kind": "if",
             "condition": {
-              "line": 65,
-              "col": 8,
-              "kind": "binary",
-              "op": "AND",
-              "left": {
-                "line": 65,
-                "col": 8,
-                "kind": "binary",
-                "op": "GREATER_THAN",
-                "left": {
-                  "line": 65,
-                  "col": 8,
-                  "kind": "var",
-                  "name": "iframe"
-                },
-                "right": {
-                  "line": 65,
-                  "col": 17,
-                  "kind": "number",
-                  "value": 0,
-                  "integer": true
-                }
-              },
-              "right": {
-                "line": 65,
-                "col": 23,
-                "kind": "binary",
-                "op": "LESS_EQUALS",
-                "left": {
-                  "line": 65,
-                  "col": 23,
-                  "kind": "var",
-                  "name": "raw"
-                },
-                "right": {
-                  "line": 65,
-                  "col": 30,
-                  "kind": "var",
-                  "name": "last_amt"
-                }
-              }
-            },
-            "then": {
-              "line": 65,
-              "col": 39,
-              "kind": "block",
-              "statements": [
-                { "line": 66, "col": 9, "kind": "cancel_event" },
-                { "line": 67, "col": 9, "kind": "return", "value": null }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 69,
-            "col": 5,
-            "kind": "assign",
-            "target": "incoming",
-            "value": { "line": 69, "col": 21, "kind": "var", "name": "raw" }
-          },
-          {
-            "line": 70,
-            "col": 5,
-            "kind": "if",
-            "condition": {
-              "line": 70,
-              "col": 8,
-              "kind": "binary",
-              "op": "GREATER_THAN",
-              "left": {
-                "line": 70,
-                "col": 8,
-                "kind": "var",
-                "name": "iframe"
-              },
-              "right": {
-                "line": 70,
-                "col": 17,
-                "kind": "number",
-                "value": 0,
-                "integer": true
-              }
-            },
-            "then": {
-              "line": 70,
-              "col": 19,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 71,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "incoming",
-                  "value": {
-                    "line": 71,
-                    "col": 25,
-                    "kind": "binary",
-                    "op": "SUBTRACT",
-                    "left": {
-                      "line": 71,
-                      "col": 25,
-                      "kind": "var",
-                      "name": "raw"
-                    },
-                    "right": {
-                      "line": 71,
-                      "col": 31,
-                      "kind": "var",
-                      "name": "last_amt"
-                    }
-                  }
-                }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 75,
-            "col": 5,
-            "kind": "assign",
-            "target": "armor",
-            "value": {
-              "line": 75,
-              "col": 25,
-              "kind": "prop",
-              "target": {
-                "line": 75,
-                "col": 18,
-                "kind": "var",
-                "name": "victim"
-              },
-              "name": "armor"
-            }
-          },
-          {
-            "line": 76,
-            "col": 5,
-            "kind": "assign",
-            "target": "toughness",
-            "value": {
-              "line": 76,
-              "col": 29,
-              "kind": "prop",
-              "target": {
-                "line": 76,
-                "col": 22,
-                "kind": "var",
-                "name": "victim"
-              },
-              "name": "armor_toughness"
-            }
-          },
-          {
-            "line": 77,
-            "col": 5,
-            "kind": "assign",
-            "target": "epf",
-            "value": {
-              "line": 77,
-              "col": 28,
-              "kind": "binary",
-              "op": "OR_ELSE",
-              "left": {
-                "line": 77,
-                "col": 28,
-                "kind": "prop",
-                "target": {
-                  "line": 77,
-                  "col": 23,
-                  "kind": "prop",
-                  "target": {
-                    "line": 77,
-                    "col": 16,
-                    "kind": "var",
-                    "name": "victim"
-                  },
-                  "name": "tags"
-                },
-                "name": "protection_epf"
-              },
-              "right": {
-                "line": 77,
-                "col": 53,
-                "kind": "number",
-                "value": 0.0,
-                "integer": false
-              }
-            }
-          },
-          {
-            "line": 78,
-            "col": 5,
-            "kind": "assign",
-            "target": "res_amp",
-            "value": {
-              "line": 78,
-              "col": 32,
-              "kind": "binary",
-              "op": "OR_ELSE",
-              "left": {
-                "line": 78,
-                "col": 32,
-                "kind": "prop",
-                "target": {
-                  "line": 78,
-                  "col": 27,
-                  "kind": "prop",
-                  "target": {
-                    "line": 78,
-                    "col": 20,
-                    "kind": "var",
-                    "name": "victim"
-                  },
-                  "name": "tags"
-                },
-                "name": "resistance_amp"
-              },
-              "right": {
-                "line": 78,
-                "col": 57,
-                "kind": "unary",
-                "op": "NEGATE",
-                "operand": {
-                  "line": 78,
-                  "col": 58,
-                  "kind": "number",
-                  "value": 1.0,
-                  "integer": false
-                }
-              }
-            }
-          },
-          {
-            "line": 80,
-            "col": 5,
-            "kind": "assign",
-            "target": "dmg",
-            "value": {
-              "line": 80,
-              "col": 16,
-              "kind": "call",
-              "name": "armor_mitigated",
-              "args": [
-                { "line": 80, "col": 32, "kind": "var", "name": "incoming" },
-                { "line": 80, "col": 42, "kind": "var", "name": "armor" },
-                { "line": 80, "col": 49, "kind": "var", "name": "toughness" }
-              ]
-            }
-          },
-          {
-            "line": 81,
-            "col": 5,
-            "kind": "assign",
-            "target": "dmg",
-            "value": {
-              "line": 81,
-              "col": 16,
-              "kind": "call",
-              "name": "protection_mitigated",
-              "args": [
-                { "line": 81, "col": 37, "kind": "var", "name": "dmg" },
-                { "line": 81, "col": 42, "kind": "var", "name": "epf" }
-              ]
-            }
-          },
-          {
-            "line": 82,
-            "col": 5,
-            "kind": "assign",
-            "target": "dmg",
-            "value": {
-              "line": 82,
-              "col": 16,
-              "kind": "call",
-              "name": "resistance_mitigated",
-              "args": [
-                { "line": 82, "col": 37, "kind": "var", "name": "dmg" },
-                { "line": 82, "col": 42, "kind": "var", "name": "res_amp" }
-              ]
-            }
-          },
-          {
-            "line": 85,
-            "col": 5,
-            "kind": "assign",
-            "target": "attacker",
-            "value": {
-              "line": 85,
-              "col": 27,
-              "kind": "prop",
-              "target": {
-                "line": 85,
-                "col": 21,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "attacker"
-            }
-          },
-          {
-            "line": 86,
-            "col": 5,
-            "kind": "if",
-            "condition": {
-              "line": 86,
-              "col": 8,
+              "line": 62,
+              "col": 12,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
-                "line": 86,
-                "col": 8,
+                "line": 62,
+                "col": 12,
                 "kind": "var",
                 "name": "attacker"
               }
             },
             "then": {
-              "line": 86,
-              "col": 24,
+              "line": 62,
+              "col": 28,
               "kind": "block",
               "statements": [
                 {
-                  "line": 90,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "speed",
-                  "value": {
-                    "line": 90,
-                    "col": 31,
-                    "kind": "prop",
-                    "target": {
-                      "line": 90,
-                      "col": 22,
-                      "kind": "var",
-                      "name": "attacker"
-                    },
-                    "name": "attack_speed"
-                  }
-                },
-                {
-                  "line": 91,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "cd_ticks",
-                  "value": {
-                    "line": 91,
-                    "col": 25,
-                    "kind": "binary",
-                    "op": "DIVIDE",
-                    "left": {
-                      "line": 91,
-                      "col": 25,
-                      "kind": "number",
-                      "value": 20.0,
-                      "integer": false
-                    },
-                    "right": {
-                      "line": 91,
-                      "col": 32,
-                      "kind": "var",
-                      "name": "speed"
-                    }
-                  }
-                },
-                {
-                  "line": 92,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "last_swing",
-                  "value": {
-                    "line": 92,
-                    "col": 41,
-                    "kind": "binary",
-                    "op": "OR_ELSE",
-                    "left": {
-                      "line": 92,
-                      "col": 41,
-                      "kind": "prop",
-                      "target": {
-                        "line": 92,
-                        "col": 36,
-                        "kind": "prop",
-                        "target": {
-                          "line": 92,
-                          "col": 27,
-                          "kind": "var",
-                          "name": "attacker"
-                        },
-                        "name": "tags"
-                      },
-                      "name": "last_swing"
-                    },
-                    "right": {
-                      "line": 92,
-                      "col": 62,
-                      "kind": "number",
-                      "value": 0,
-                      "integer": true
-                    }
-                  }
-                },
-                {
-                  "line": 93,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "since",
-                  "value": {
-                    "line": 93,
-                    "col": 31,
-                    "kind": "binary",
-                    "op": "SUBTRACT",
-                    "left": {
-                      "line": 93,
-                      "col": 31,
-                      "kind": "prop",
-                      "target": {
-                        "line": 93,
-                        "col": 22,
-                        "kind": "var",
-                        "name": "attacker"
-                      },
-                      "name": "alive_ticks"
-                    },
-                    "right": {
-                      "line": 93,
-                      "col": 45,
-                      "kind": "var",
-                      "name": "last_swing"
-                    }
-                  }
-                },
-                {
-                  "line": 94,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "charge",
-                  "value": {
-                    "line": 94,
-                    "col": 23,
-                    "kind": "call",
-                    "name": "clamp",
-                    "args": [
-                      {
-                        "line": 94,
-                        "col": 30,
-                        "kind": "binary",
-                        "op": "DIVIDE",
-                        "left": {
-                          "line": 94,
-                          "col": 30,
-                          "kind": "binary",
-                          "op": "ADD",
-                          "left": {
-                            "line": 94,
-                            "col": 30,
-                            "kind": "var",
-                            "name": "since"
-                          },
-                          "right": {
-                            "line": 94,
-                            "col": 38,
-                            "kind": "number",
-                            "value": 0.5,
-                            "integer": false
-                          }
-                        },
-                        "right": {
-                          "line": 94,
-                          "col": 45,
-                          "kind": "var",
-                          "name": "cd_ticks"
-                        }
-                      },
-                      {
-                        "line": 94,
-                        "col": 55,
-                        "kind": "number",
-                        "value": 0.0,
-                        "integer": false
-                      },
-                      {
-                        "line": 94,
-                        "col": 60,
-                        "kind": "number",
-                        "value": 1.0,
-                        "integer": false
-                      }
-                    ]
-                  }
-                },
-                {
-                  "line": 95,
-                  "col": 9,
-                  "kind": "assign",
-                  "target": "dmg",
-                  "value": {
-                    "line": 95,
-                    "col": 20,
-                    "kind": "binary",
-                    "op": "MULTIPLY",
-                    "left": {
-                      "line": 95,
-                      "col": 20,
-                      "kind": "var",
-                      "name": "dmg"
-                    },
-                    "right": {
-                      "line": 95,
-                      "col": 27,
-                      "kind": "binary",
-                      "op": "ADD",
-                      "left": {
-                        "line": 95,
-                        "col": 27,
-                        "kind": "number",
-                        "value": 0.2,
-                        "integer": false
-                      },
-                      "right": {
-                        "line": 95,
-                        "col": 33,
-                        "kind": "binary",
-                        "op": "MULTIPLY",
-                        "left": {
-                          "line": 95,
-                          "col": 33,
-                          "kind": "binary",
-                          "op": "MULTIPLY",
-                          "left": {
-                            "line": 95,
-                            "col": 33,
-                            "kind": "var",
-                            "name": "charge"
-                          },
-                          "right": {
-                            "line": 95,
-                            "col": 42,
-                            "kind": "var",
-                            "name": "charge"
-                          }
-                        },
-                        "right": {
-                          "line": 95,
-                          "col": 51,
-                          "kind": "number",
-                          "value": 0.8,
-                          "integer": false
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "line": 96,
-                  "col": 27,
+                  "line": 66,
+                  "col": 31,
                   "kind": "set_prop",
                   "target": {
-                    "line": 96,
-                    "col": 22,
+                    "line": 66,
+                    "col": 26,
                     "kind": "prop",
                     "target": {
-                      "line": 96,
-                      "col": 13,
+                      "line": 66,
+                      "col": 17,
                       "kind": "var",
                       "name": "attacker"
                     },
@@ -676,12 +52,12 @@
                   },
                   "name": "last_swing",
                   "value": {
-                    "line": 96,
-                    "col": 50,
+                    "line": 66,
+                    "col": 54,
                     "kind": "prop",
                     "target": {
-                      "line": 96,
-                      "col": 41,
+                      "line": 66,
+                      "col": 45,
                       "kind": "var",
                       "name": "attacker"
                     },
@@ -689,68 +65,68 @@
                   }
                 },
                 {
-                  "line": 100,
-                  "col": 9,
+                  "line": 70,
+                  "col": 13,
                   "kind": "assign",
                   "target": "is_crit",
                   "value": {
-                    "line": 100,
-                    "col": 24,
+                    "line": 70,
+                    "col": 28,
                     "kind": "boolean",
                     "value": false
                   }
                 },
                 {
-                  "line": 101,
-                  "col": 9,
+                  "line": 71,
+                  "col": 13,
                   "kind": "if",
                   "condition": {
-                    "line": 101,
-                    "col": 21,
+                    "line": 71,
+                    "col": 25,
                     "kind": "binary",
                     "op": "AND",
                     "left": {
-                      "line": 101,
-                      "col": 21,
+                      "line": 71,
+                      "col": 25,
                       "kind": "binary",
                       "op": "AND",
                       "left": {
-                        "line": 101,
-                        "col": 21,
+                        "line": 71,
+                        "col": 25,
                         "kind": "binary",
                         "op": "GREATER_THAN",
                         "left": {
-                          "line": 101,
-                          "col": 21,
+                          "line": 71,
+                          "col": 25,
                           "kind": "prop",
                           "target": {
-                            "line": 101,
-                            "col": 12,
+                            "line": 71,
+                            "col": 16,
                             "kind": "var",
                             "name": "attacker"
                           },
                           "name": "fall_distance"
                         },
                         "right": {
-                          "line": 101,
-                          "col": 37,
+                          "line": 71,
+                          "col": 41,
                           "kind": "number",
                           "value": 0.0,
                           "integer": false
                         }
                       },
                       "right": {
-                        "line": 101,
-                        "col": 45,
+                        "line": 71,
+                        "col": 49,
                         "kind": "unary",
                         "op": "NOT",
                         "operand": {
-                          "line": 101,
-                          "col": 58,
+                          "line": 71,
+                          "col": 62,
                           "kind": "prop",
                           "target": {
-                            "line": 101,
-                            "col": 49,
+                            "line": 71,
+                            "col": 53,
                             "kind": "var",
                             "name": "attacker"
                           },
@@ -759,17 +135,17 @@
                       }
                     },
                     "right": {
-                      "line": 101,
-                      "col": 72,
+                      "line": 71,
+                      "col": 76,
                       "kind": "unary",
                       "op": "NOT",
                       "operand": {
-                        "line": 101,
-                        "col": 85,
+                        "line": 71,
+                        "col": 89,
                         "kind": "prop",
                         "target": {
-                          "line": 101,
-                          "col": 76,
+                          "line": 71,
+                          "col": 80,
                           "kind": "var",
                           "name": "attacker"
                         },
@@ -778,18 +154,18 @@
                     }
                   },
                   "then": {
-                    "line": 101,
-                    "col": 98,
+                    "line": 71,
+                    "col": 102,
                     "kind": "block",
                     "statements": [
                       {
-                        "line": 102,
-                        "col": 13,
+                        "line": 72,
+                        "col": 17,
                         "kind": "assign",
                         "target": "is_crit",
                         "value": {
-                          "line": 102,
-                          "col": 28,
+                          "line": 72,
+                          "col": 32,
                           "kind": "boolean",
                           "value": true
                         }
@@ -799,111 +175,80 @@
                   "else": null
                 },
                 {
-                  "line": 104,
-                  "col": 9,
+                  "line": 74,
+                  "col": 13,
                   "kind": "if",
                   "condition": {
-                    "line": 104,
-                    "col": 12,
+                    "line": 74,
+                    "col": 16,
                     "kind": "var",
                     "name": "is_crit"
                   },
                   "then": {
-                    "line": 104,
-                    "col": 20,
+                    "line": 74,
+                    "col": 24,
                     "kind": "block",
                     "statements": [
                       {
-                        "line": 105,
-                        "col": 13,
-                        "kind": "assign",
-                        "target": "dmg",
-                        "value": {
-                          "line": 105,
-                          "col": 24,
-                          "kind": "binary",
-                          "op": "MULTIPLY",
-                          "left": {
-                            "line": 105,
-                            "col": 24,
-                            "kind": "var",
-                            "name": "dmg"
-                          },
-                          "right": {
-                            "line": 105,
-                            "col": 30,
-                            "kind": "number",
-                            "value": 1.5,
-                            "integer": false
-                          }
-                        }
-                      },
-                      {
-                        "line": 106,
-                        "col": 13,
+                        "line": 75,
+                        "col": 17,
                         "kind": "spawn_particle",
                         "particle": {
-                          "line": 106,
-                          "col": 28,
+                          "line": 75,
+                          "col": 32,
                           "kind": "string",
                           "value": "crit"
                         },
                         "at": {
-                          "line": 106,
-                          "col": 51,
+                          "line": 75,
+                          "col": 47,
                           "kind": "prop",
                           "target": {
-                            "line": 106,
-                            "col": 44,
-                            "kind": "prop",
-                            "target": {
-                              "line": 106,
-                              "col": 38,
-                              "kind": "var",
-                              "name": "event"
-                            },
-                            "name": "entity"
+                            "line": 75,
+                            "col": 42,
+                            "kind": "var",
+                            "name": "this"
                           },
                           "name": "location"
                         },
                         "count": {
-                          "line": 106,
-                          "col": 66,
+                          "line": 75,
+                          "col": 62,
                           "kind": "number",
                           "value": 8,
                           "integer": true
                         },
                         "offset_x": {
-                          "line": 106,
-                          "col": 75,
+                          "line": 75,
+                          "col": 71,
                           "kind": "number",
                           "value": 0.4,
                           "integer": false
                         },
                         "offset_y": {
-                          "line": 106,
-                          "col": 80,
+                          "line": 75,
+                          "col": 76,
                           "kind": "number",
                           "value": 0.6,
                           "integer": false
                         },
                         "offset_z": {
-                          "line": 106,
-                          "col": 85,
+                          "line": 75,
+                          "col": 81,
                           "kind": "number",
                           "value": 0.4,
                           "integer": false
                         },
                         "speed": {
-                          "line": 106,
-                          "col": 95,
+                          "line": 75,
+                          "col": 91,
                           "kind": "number",
                           "value": 0.1,
                           "integer": false
                         },
                         "viewer": {
-                          "line": 106,
-                          "col": 102,
+                          "line": 75,
+                          "col": 98,
                           "kind": "string",
                           "value": "all"
                         }
@@ -913,47 +258,47 @@
                   "else": null
                 },
                 {
-                  "line": 114,
-                  "col": 9,
+                  "line": 83,
+                  "col": 13,
                   "kind": "assign",
                   "target": "sprint_bonus",
                   "value": {
-                    "line": 114,
-                    "col": 29,
+                    "line": 83,
+                    "col": 33,
                     "kind": "number",
                     "value": 0.0,
                     "integer": false
                   }
                 },
                 {
-                  "line": 115,
-                  "col": 9,
+                  "line": 84,
+                  "col": 13,
                   "kind": "if",
                   "condition": {
-                    "line": 115,
-                    "col": 21,
+                    "line": 84,
+                    "col": 25,
                     "kind": "prop",
                     "target": {
-                      "line": 115,
-                      "col": 12,
+                      "line": 84,
+                      "col": 16,
                       "kind": "var",
                       "name": "attacker"
                     },
                     "name": "is_sprinting"
                   },
                   "then": {
-                    "line": 115,
-                    "col": 34,
+                    "line": 84,
+                    "col": 38,
                     "kind": "block",
                     "statements": [
                       {
-                        "line": 116,
-                        "col": 13,
+                        "line": 85,
+                        "col": 17,
                         "kind": "assign",
                         "target": "sprint_bonus",
                         "value": {
-                          "line": 116,
-                          "col": 33,
+                          "line": 85,
+                          "col": 37,
                           "kind": "number",
                           "value": 1.0,
                           "integer": false
@@ -964,26 +309,26 @@
                   "else": null
                 },
                 {
-                  "line": 118,
-                  "col": 9,
+                  "line": 87,
+                  "col": 13,
                   "kind": "assign",
                   "target": "kb_level",
                   "value": {
-                    "line": 118,
-                    "col": 39,
+                    "line": 87,
+                    "col": 43,
                     "kind": "binary",
                     "op": "OR_ELSE",
                     "left": {
-                      "line": 118,
-                      "col": 39,
+                      "line": 87,
+                      "col": 43,
                       "kind": "prop",
                       "target": {
-                        "line": 118,
-                        "col": 34,
+                        "line": 87,
+                        "col": 38,
                         "kind": "prop",
                         "target": {
-                          "line": 118,
-                          "col": 25,
+                          "line": 87,
+                          "col": 29,
                           "kind": "var",
                           "name": "attacker"
                         },
@@ -992,8 +337,8 @@
                       "name": "knockback_level"
                     },
                     "right": {
-                      "line": 118,
-                      "col": 65,
+                      "line": 87,
+                      "col": 69,
                       "kind": "number",
                       "value": 0.0,
                       "integer": false
@@ -1001,64 +346,64 @@
                   }
                 },
                 {
-                  "line": 119,
-                  "col": 9,
+                  "line": 88,
+                  "col": 13,
                   "kind": "assign",
                   "target": "kb_resist",
                   "value": {
-                    "line": 119,
-                    "col": 33,
+                    "line": 88,
+                    "col": 35,
                     "kind": "prop",
                     "target": {
-                      "line": 119,
-                      "col": 26,
+                      "line": 88,
+                      "col": 30,
                       "kind": "var",
-                      "name": "victim"
+                      "name": "this"
                     },
                     "name": "knockback_resistance"
                   }
                 },
                 {
-                  "line": 120,
-                  "col": 9,
+                  "line": 89,
+                  "col": 13,
                   "kind": "assign",
                   "target": "strength",
                   "value": {
-                    "line": 120,
-                    "col": 26,
+                    "line": 89,
+                    "col": 30,
                     "kind": "binary",
                     "op": "MULTIPLY",
                     "left": {
-                      "line": 120,
-                      "col": 26,
+                      "line": 89,
+                      "col": 30,
                       "kind": "binary",
                       "op": "ADD",
                       "left": {
-                        "line": 120,
-                        "col": 26,
+                        "line": 89,
+                        "col": 30,
                         "kind": "binary",
                         "op": "ADD",
                         "left": {
-                          "line": 120,
-                          "col": 26,
+                          "line": 89,
+                          "col": 30,
                           "kind": "number",
                           "value": 0.4,
                           "integer": false
                         },
                         "right": {
-                          "line": 120,
-                          "col": 32,
+                          "line": 89,
+                          "col": 36,
                           "kind": "binary",
                           "op": "MULTIPLY",
                           "left": {
-                            "line": 120,
-                            "col": 32,
+                            "line": 89,
+                            "col": 36,
                             "kind": "var",
                             "name": "sprint_bonus"
                           },
                           "right": {
-                            "line": 120,
-                            "col": 47,
+                            "line": 89,
+                            "col": 51,
                             "kind": "number",
                             "value": 0.5,
                             "integer": false
@@ -1066,19 +411,19 @@
                         }
                       },
                       "right": {
-                        "line": 120,
-                        "col": 53,
+                        "line": 89,
+                        "col": 57,
                         "kind": "binary",
                         "op": "MULTIPLY",
                         "left": {
-                          "line": 120,
-                          "col": 53,
+                          "line": 89,
+                          "col": 57,
                           "kind": "var",
                           "name": "kb_level"
                         },
                         "right": {
-                          "line": 120,
-                          "col": 64,
+                          "line": 89,
+                          "col": 68,
                           "kind": "number",
                           "value": 0.5,
                           "integer": false
@@ -1086,20 +431,20 @@
                       }
                     },
                     "right": {
-                      "line": 120,
-                      "col": 72,
+                      "line": 89,
+                      "col": 76,
                       "kind": "binary",
                       "op": "SUBTRACT",
                       "left": {
-                        "line": 120,
-                        "col": 72,
+                        "line": 89,
+                        "col": 76,
                         "kind": "number",
                         "value": 1.0,
                         "integer": false
                       },
                       "right": {
-                        "line": 120,
-                        "col": 78,
+                        "line": 89,
+                        "col": 82,
                         "kind": "var",
                         "name": "kb_resist"
                       }
@@ -1107,17 +452,17 @@
                   }
                 },
                 {
-                  "line": 122,
-                  "col": 9,
+                  "line": 91,
+                  "col": 13,
                   "kind": "assign",
                   "target": "aloc",
                   "value": {
-                    "line": 122,
-                    "col": 30,
+                    "line": 91,
+                    "col": 34,
                     "kind": "prop",
                     "target": {
-                      "line": 122,
-                      "col": 21,
+                      "line": 91,
+                      "col": 25,
                       "kind": "var",
                       "name": "attacker"
                     },
@@ -1125,24 +470,24 @@
                   }
                 },
                 {
-                  "line": 123,
-                  "col": 9,
+                  "line": 92,
+                  "col": 13,
                   "kind": "knock",
                   "target": {
-                    "line": 123,
-                    "col": 15,
+                    "line": 92,
+                    "col": 19,
                     "kind": "var",
-                    "name": "victim"
+                    "name": "this"
                   },
                   "from": {
-                    "line": 123,
-                    "col": 32,
+                    "line": 92,
+                    "col": 34,
                     "kind": "var",
                     "name": "aloc"
                   },
                   "strength": {
-                    "line": 123,
-                    "col": 51,
+                    "line": 92,
+                    "col": 53,
                     "kind": "var",
                     "name": "strength"
                   }
@@ -1150,38 +495,6 @@
               ]
             },
             "else": null
-          },
-          {
-            "line": 128,
-            "col": 21,
-            "kind": "set_prop",
-            "target": {
-              "line": 128,
-              "col": 16,
-              "kind": "prop",
-              "target": {
-                "line": 128,
-                "col": 9,
-                "kind": "var",
-                "name": "victim"
-              },
-              "name": "tags"
-            },
-            "name": "last_damage",
-            "value": { "line": 128, "col": 36, "kind": "var", "name": "dmg" }
-          },
-          {
-            "line": 129,
-            "col": 15,
-            "kind": "set_prop",
-            "target": {
-              "line": 129,
-              "col": 9,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "damage",
-            "value": { "line": 129, "col": 25, "kind": "var", "name": "dmg" }
           }
         ]
       }
@@ -1574,48 +887,48 @@
   "server": null,
   "schedulers": [
     {
-      "line": 140,
+      "line": 105,
       "col": 1,
       "every_ticks": 1,
       "body": [
         {
-          "line": 141,
+          "line": 106,
           "col": 5,
           "kind": "foreach",
           "var": "p",
           "limit": null,
           "iterable": {
-            "line": 141,
+            "line": 106,
             "col": 10,
             "kind": "call",
             "name": "all_players",
             "args": []
           },
           "body": {
-            "line": 141,
+            "line": 106,
             "col": 29,
             "kind": "block",
             "statements": [
               {
-                "line": 142,
+                "line": 107,
                 "col": 9,
                 "kind": "assign",
                 "target": "exhaustion",
                 "value": {
-                  "line": 142,
+                  "line": 107,
                   "col": 34,
                   "kind": "binary",
                   "op": "OR_ELSE",
                   "left": {
-                    "line": 142,
+                    "line": 107,
                     "col": 34,
                     "kind": "prop",
                     "target": {
-                      "line": 142,
+                      "line": 107,
                       "col": 29,
                       "kind": "prop",
                       "target": {
-                        "line": 142,
+                        "line": 107,
                         "col": 27,
                         "kind": "var",
                         "name": "p"
@@ -1625,7 +938,7 @@
                     "name": "exhaustion"
                   },
                   "right": {
-                    "line": 142,
+                    "line": 107,
                     "col": 55,
                     "kind": "number",
                     "value": 0.0,
@@ -1634,25 +947,25 @@
                 }
               },
               {
-                "line": 146,
+                "line": 111,
                 "col": 9,
                 "kind": "if",
                 "condition": {
-                  "line": 146,
+                  "line": 111,
                   "col": 14,
                   "kind": "binary",
                   "op": "AND",
                   "left": {
-                    "line": 146,
+                    "line": 111,
                     "col": 14,
                     "kind": "binary",
                     "op": "GREATER_EQUALS",
                     "left": {
-                      "line": 146,
+                      "line": 111,
                       "col": 14,
                       "kind": "prop",
                       "target": {
-                        "line": 146,
+                        "line": 111,
                         "col": 12,
                         "kind": "var",
                         "name": "p"
@@ -1660,7 +973,7 @@
                       "name": "food"
                     },
                     "right": {
-                      "line": 146,
+                      "line": 111,
                       "col": 22,
                       "kind": "number",
                       "value": 18,
@@ -1668,16 +981,16 @@
                     }
                   },
                   "right": {
-                    "line": 146,
+                    "line": 111,
                     "col": 31,
                     "kind": "binary",
                     "op": "LESS_THAN",
                     "left": {
-                      "line": 146,
+                      "line": 111,
                       "col": 31,
                       "kind": "prop",
                       "target": {
-                        "line": 146,
+                        "line": 111,
                         "col": 29,
                         "kind": "var",
                         "name": "p"
@@ -1685,11 +998,11 @@
                       "name": "health"
                     },
                     "right": {
-                      "line": 146,
+                      "line": 111,
                       "col": 42,
                       "kind": "prop",
                       "target": {
-                        "line": 146,
+                        "line": 111,
                         "col": 40,
                         "kind": "var",
                         "name": "p"
@@ -1699,30 +1012,30 @@
                   }
                 },
                 "then": {
-                  "line": 146,
+                  "line": 111,
                   "col": 53,
                   "kind": "block",
                   "statements": [
                     {
-                      "line": 147,
+                      "line": 112,
                       "col": 13,
                       "kind": "assign",
                       "target": "heal_timer",
                       "value": {
-                        "line": 147,
+                        "line": 112,
                         "col": 38,
                         "kind": "binary",
                         "op": "OR_ELSE",
                         "left": {
-                          "line": 147,
+                          "line": 112,
                           "col": 38,
                           "kind": "prop",
                           "target": {
-                            "line": 147,
+                            "line": 112,
                             "col": 33,
                             "kind": "prop",
                             "target": {
-                              "line": 147,
+                              "line": 112,
                               "col": 31,
                               "kind": "var",
                               "name": "p"
@@ -1732,7 +1045,7 @@
                           "name": "regen_timer"
                         },
                         "right": {
-                          "line": 147,
+                          "line": 112,
                           "col": 60,
                           "kind": "number",
                           "value": 0,
@@ -1741,22 +1054,22 @@
                       }
                     },
                     {
-                      "line": 148,
+                      "line": 113,
                       "col": 13,
                       "kind": "if",
                       "condition": {
-                        "line": 148,
+                        "line": 113,
                         "col": 16,
                         "kind": "binary",
                         "op": "GREATER_EQUALS",
                         "left": {
-                          "line": 148,
+                          "line": 113,
                           "col": 16,
                           "kind": "var",
                           "name": "heal_timer"
                         },
                         "right": {
-                          "line": 148,
+                          "line": 113,
                           "col": 30,
                           "kind": "number",
                           "value": 80,
@@ -1764,33 +1077,33 @@
                         }
                       },
                       "then": {
-                        "line": 148,
+                        "line": 113,
                         "col": 33,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 149,
+                            "line": 114,
                             "col": 23,
                             "kind": "set_prop",
                             "target": {
-                              "line": 149,
+                              "line": 114,
                               "col": 21,
                               "kind": "var",
                               "name": "p"
                             },
                             "name": "health",
                             "value": {
-                              "line": 149,
+                              "line": 114,
                               "col": 33,
                               "kind": "call",
                               "name": "min",
                               "args": [
                                 {
-                                  "line": 149,
+                                  "line": 114,
                                   "col": 39,
                                   "kind": "prop",
                                   "target": {
-                                    "line": 149,
+                                    "line": 114,
                                     "col": 37,
                                     "kind": "var",
                                     "name": "p"
@@ -1798,16 +1111,16 @@
                                   "name": "max_health"
                                 },
                                 {
-                                  "line": 149,
+                                  "line": 114,
                                   "col": 53,
                                   "kind": "binary",
                                   "op": "ADD",
                                   "left": {
-                                    "line": 149,
+                                    "line": 114,
                                     "col": 53,
                                     "kind": "prop",
                                     "target": {
-                                      "line": 149,
+                                      "line": 114,
                                       "col": 51,
                                       "kind": "var",
                                       "name": "p"
@@ -1815,7 +1128,7 @@
                                     "name": "health"
                                   },
                                   "right": {
-                                    "line": 149,
+                                    "line": 114,
                                     "col": 62,
                                     "kind": "number",
                                     "value": 1.0,
@@ -1826,23 +1139,23 @@
                             }
                           },
                           {
-                            "line": 150,
+                            "line": 115,
                             "col": 17,
                             "kind": "assign",
                             "target": "exhaustion",
                             "value": {
-                              "line": 150,
+                              "line": 115,
                               "col": 35,
                               "kind": "binary",
                               "op": "ADD",
                               "left": {
-                                "line": 150,
+                                "line": 115,
                                 "col": 35,
                                 "kind": "var",
                                 "name": "exhaustion"
                               },
                               "right": {
-                                "line": 150,
+                                "line": 115,
                                 "col": 48,
                                 "kind": "number",
                                 "value": 6.0,
@@ -1851,15 +1164,15 @@
                             }
                           },
                           {
-                            "line": 151,
+                            "line": 116,
                             "col": 28,
                             "kind": "set_prop",
                             "target": {
-                              "line": 151,
+                              "line": 116,
                               "col": 23,
                               "kind": "prop",
                               "target": {
-                                "line": 151,
+                                "line": 116,
                                 "col": 21,
                                 "kind": "var",
                                 "name": "p"
@@ -1868,7 +1181,7 @@
                             },
                             "name": "regen_timer",
                             "value": {
-                              "line": 151,
+                              "line": 116,
                               "col": 43,
                               "kind": "number",
                               "value": 0,
@@ -1878,20 +1191,20 @@
                         ]
                       },
                       "else": {
-                        "line": 152,
+                        "line": 117,
                         "col": 20,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 153,
+                            "line": 118,
                             "col": 28,
                             "kind": "set_prop",
                             "target": {
-                              "line": 153,
+                              "line": 118,
                               "col": 23,
                               "kind": "prop",
                               "target": {
-                                "line": 153,
+                                "line": 118,
                                 "col": 21,
                                 "kind": "var",
                                 "name": "p"
@@ -1900,18 +1213,18 @@
                             },
                             "name": "regen_timer",
                             "value": {
-                              "line": 153,
+                              "line": 118,
                               "col": 43,
                               "kind": "binary",
                               "op": "ADD",
                               "left": {
-                                "line": 153,
+                                "line": 118,
                                 "col": 43,
                                 "kind": "var",
                                 "name": "heal_timer"
                               },
                               "right": {
-                                "line": 153,
+                                "line": 118,
                                 "col": 56,
                                 "kind": "number",
                                 "value": 1,
@@ -1927,25 +1240,25 @@
                 "else": null
               },
               {
-                "line": 159,
+                "line": 124,
                 "col": 9,
                 "kind": "if",
                 "condition": {
-                  "line": 159,
+                  "line": 124,
                   "col": 14,
                   "kind": "binary",
                   "op": "AND",
                   "left": {
-                    "line": 159,
+                    "line": 124,
                     "col": 14,
                     "kind": "binary",
                     "op": "LESS_EQUALS",
                     "left": {
-                      "line": 159,
+                      "line": 124,
                       "col": 14,
                       "kind": "prop",
                       "target": {
-                        "line": 159,
+                        "line": 124,
                         "col": 12,
                         "kind": "var",
                         "name": "p"
@@ -1953,7 +1266,7 @@
                       "name": "food"
                     },
                     "right": {
-                      "line": 159,
+                      "line": 124,
                       "col": 22,
                       "kind": "number",
                       "value": 0,
@@ -1961,16 +1274,16 @@
                     }
                   },
                   "right": {
-                    "line": 159,
+                    "line": 124,
                     "col": 30,
                     "kind": "binary",
                     "op": "GREATER_THAN",
                     "left": {
-                      "line": 159,
+                      "line": 124,
                       "col": 30,
                       "kind": "prop",
                       "target": {
-                        "line": 159,
+                        "line": 124,
                         "col": 28,
                         "kind": "var",
                         "name": "p"
@@ -1978,7 +1291,7 @@
                       "name": "health"
                     },
                     "right": {
-                      "line": 159,
+                      "line": 124,
                       "col": 39,
                       "kind": "number",
                       "value": 1.0,
@@ -1987,30 +1300,30 @@
                   }
                 },
                 "then": {
-                  "line": 159,
+                  "line": 124,
                   "col": 43,
                   "kind": "block",
                   "statements": [
                     {
-                      "line": 160,
+                      "line": 125,
                       "col": 13,
                       "kind": "assign",
                       "target": "starve_timer",
                       "value": {
-                        "line": 160,
+                        "line": 125,
                         "col": 40,
                         "kind": "binary",
                         "op": "OR_ELSE",
                         "left": {
-                          "line": 160,
+                          "line": 125,
                           "col": 40,
                           "kind": "prop",
                           "target": {
-                            "line": 160,
+                            "line": 125,
                             "col": 35,
                             "kind": "prop",
                             "target": {
-                              "line": 160,
+                              "line": 125,
                               "col": 33,
                               "kind": "var",
                               "name": "p"
@@ -2020,7 +1333,7 @@
                           "name": "starve_timer"
                         },
                         "right": {
-                          "line": 160,
+                          "line": 125,
                           "col": 63,
                           "kind": "number",
                           "value": 0,
@@ -2029,22 +1342,22 @@
                       }
                     },
                     {
-                      "line": 161,
+                      "line": 126,
                       "col": 13,
                       "kind": "if",
                       "condition": {
-                        "line": 161,
+                        "line": 126,
                         "col": 16,
                         "kind": "binary",
                         "op": "GREATER_EQUALS",
                         "left": {
-                          "line": 161,
+                          "line": 126,
                           "col": 16,
                           "kind": "var",
                           "name": "starve_timer"
                         },
                         "right": {
-                          "line": 161,
+                          "line": 126,
                           "col": 32,
                           "kind": "number",
                           "value": 80,
@@ -2052,29 +1365,29 @@
                         }
                       },
                       "then": {
-                        "line": 161,
+                        "line": 126,
                         "col": 35,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 162,
+                            "line": 127,
                             "col": 17,
                             "kind": "damage",
                             "target": {
-                              "line": 162,
+                              "line": 127,
                               "col": 24,
                               "kind": "var",
                               "name": "p"
                             },
                             "amount": {
-                              "line": 162,
+                              "line": 127,
                               "col": 29,
                               "kind": "number",
                               "value": 1.0,
                               "integer": false
                             },
                             "damage_type": {
-                              "line": 162,
+                              "line": 127,
                               "col": 36,
                               "kind": "string",
                               "value": "starve"
@@ -2082,15 +1395,15 @@
                             "source": null
                           },
                           {
-                            "line": 163,
+                            "line": 128,
                             "col": 28,
                             "kind": "set_prop",
                             "target": {
-                              "line": 163,
+                              "line": 128,
                               "col": 23,
                               "kind": "prop",
                               "target": {
-                                "line": 163,
+                                "line": 128,
                                 "col": 21,
                                 "kind": "var",
                                 "name": "p"
@@ -2099,7 +1412,7 @@
                             },
                             "name": "starve_timer",
                             "value": {
-                              "line": 163,
+                              "line": 128,
                               "col": 44,
                               "kind": "number",
                               "value": 0,
@@ -2109,20 +1422,20 @@
                         ]
                       },
                       "else": {
-                        "line": 164,
+                        "line": 129,
                         "col": 20,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 165,
+                            "line": 130,
                             "col": 28,
                             "kind": "set_prop",
                             "target": {
-                              "line": 165,
+                              "line": 130,
                               "col": 23,
                               "kind": "prop",
                               "target": {
-                                "line": 165,
+                                "line": 130,
                                 "col": 21,
                                 "kind": "var",
                                 "name": "p"
@@ -2131,18 +1444,18 @@
                             },
                             "name": "starve_timer",
                             "value": {
-                              "line": 165,
+                              "line": 130,
                               "col": 44,
                               "kind": "binary",
                               "op": "ADD",
                               "left": {
-                                "line": 165,
+                                "line": 130,
                                 "col": 44,
                                 "kind": "var",
                                 "name": "starve_timer"
                               },
                               "right": {
-                                "line": 165,
+                                "line": 130,
                                 "col": 59,
                                 "kind": "number",
                                 "value": 1,
@@ -2158,22 +1471,22 @@
                 "else": null
               },
               {
-                "line": 171,
+                "line": 136,
                 "col": 9,
                 "kind": "if",
                 "condition": {
-                  "line": 171,
+                  "line": 136,
                   "col": 12,
                   "kind": "binary",
                   "op": "GREATER_EQUALS",
                   "left": {
-                    "line": 171,
+                    "line": 136,
                     "col": 12,
                     "kind": "var",
                     "name": "exhaustion"
                   },
                   "right": {
-                    "line": 171,
+                    "line": 136,
                     "col": 26,
                     "kind": "number",
                     "value": 4.0,
@@ -2181,28 +1494,28 @@
                   }
                 },
                 "then": {
-                  "line": 171,
+                  "line": 136,
                   "col": 30,
                   "kind": "block",
                   "statements": [
                     {
-                      "line": 172,
+                      "line": 137,
                       "col": 13,
                       "kind": "assign",
                       "target": "exhaustion",
                       "value": {
-                        "line": 172,
+                        "line": 137,
                         "col": 31,
                         "kind": "binary",
                         "op": "SUBTRACT",
                         "left": {
-                          "line": 172,
+                          "line": 137,
                           "col": 31,
                           "kind": "var",
                           "name": "exhaustion"
                         },
                         "right": {
-                          "line": 172,
+                          "line": 137,
                           "col": 44,
                           "kind": "number",
                           "value": 4.0,
@@ -2211,20 +1524,20 @@
                       }
                     },
                     {
-                      "line": 173,
+                      "line": 138,
                       "col": 13,
                       "kind": "if",
                       "condition": {
-                        "line": 173,
+                        "line": 138,
                         "col": 18,
                         "kind": "binary",
                         "op": "GREATER_THAN",
                         "left": {
-                          "line": 173,
+                          "line": 138,
                           "col": 18,
                           "kind": "prop",
                           "target": {
-                            "line": 173,
+                            "line": 138,
                             "col": 16,
                             "kind": "var",
                             "name": "p"
@@ -2232,7 +1545,7 @@
                           "name": "food_saturation"
                         },
                         "right": {
-                          "line": 173,
+                          "line": 138,
                           "col": 36,
                           "kind": "number",
                           "value": 0.0,
@@ -2240,45 +1553,45 @@
                         }
                       },
                       "then": {
-                        "line": 173,
+                        "line": 138,
                         "col": 40,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 174,
+                            "line": 139,
                             "col": 23,
                             "kind": "set_prop",
                             "target": {
-                              "line": 174,
+                              "line": 139,
                               "col": 21,
                               "kind": "var",
                               "name": "p"
                             },
                             "name": "food_saturation",
                             "value": {
-                              "line": 174,
+                              "line": 139,
                               "col": 42,
                               "kind": "call",
                               "name": "max",
                               "args": [
                                 {
-                                  "line": 174,
+                                  "line": 139,
                                   "col": 46,
                                   "kind": "number",
                                   "value": 0.0,
                                   "integer": false
                                 },
                                 {
-                                  "line": 174,
+                                  "line": 139,
                                   "col": 53,
                                   "kind": "binary",
                                   "op": "SUBTRACT",
                                   "left": {
-                                    "line": 174,
+                                    "line": 139,
                                     "col": 53,
                                     "kind": "prop",
                                     "target": {
-                                      "line": 174,
+                                      "line": 139,
                                       "col": 51,
                                       "kind": "var",
                                       "name": "p"
@@ -2286,7 +1599,7 @@
                                     "name": "food_saturation"
                                   },
                                   "right": {
-                                    "line": 174,
+                                    "line": 139,
                                     "col": 71,
                                     "kind": "number",
                                     "value": 1.0,
@@ -2299,45 +1612,45 @@
                         ]
                       },
                       "else": {
-                        "line": 175,
+                        "line": 140,
                         "col": 20,
                         "kind": "block",
                         "statements": [
                           {
-                            "line": 176,
+                            "line": 141,
                             "col": 23,
                             "kind": "set_prop",
                             "target": {
-                              "line": 176,
+                              "line": 141,
                               "col": 21,
                               "kind": "var",
                               "name": "p"
                             },
                             "name": "food",
                             "value": {
-                              "line": 176,
+                              "line": 141,
                               "col": 31,
                               "kind": "call",
                               "name": "max",
                               "args": [
                                 {
-                                  "line": 176,
+                                  "line": 141,
                                   "col": 35,
                                   "kind": "number",
                                   "value": 0,
                                   "integer": true
                                 },
                                 {
-                                  "line": 176,
+                                  "line": 141,
                                   "col": 40,
                                   "kind": "binary",
                                   "op": "SUBTRACT",
                                   "left": {
-                                    "line": 176,
+                                    "line": 141,
                                     "col": 40,
                                     "kind": "prop",
                                     "target": {
-                                      "line": 176,
+                                      "line": 141,
                                       "col": 38,
                                       "kind": "var",
                                       "name": "p"
@@ -2345,7 +1658,7 @@
                                     "name": "food"
                                   },
                                   "right": {
-                                    "line": 176,
+                                    "line": 141,
                                     "col": 47,
                                     "kind": "number",
                                     "value": 1,
@@ -2363,15 +1676,15 @@
                 "else": null
               },
               {
-                "line": 180,
+                "line": 145,
                 "col": 20,
                 "kind": "set_prop",
                 "target": {
-                  "line": 180,
+                  "line": 145,
                   "col": 15,
                   "kind": "prop",
                   "target": {
-                    "line": 180,
+                    "line": 145,
                     "col": 13,
                     "kind": "var",
                     "name": "p"
@@ -2380,7 +1693,7 @@
                 },
                 "name": "exhaustion",
                 "value": {
-                  "line": 180,
+                  "line": 145,
                   "col": 34,
                   "kind": "var",
                   "name": "exhaustion"

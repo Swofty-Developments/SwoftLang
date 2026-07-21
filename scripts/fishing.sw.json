@@ -4,292 +4,71 @@
   "commands": [],
   "events": [
     {
-      "line": 48,
-      "col": 1,
+      "line": 51,
+      "col": 5,
       "name": "PlayerCastRod",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 50,
+            "line": 52,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 50,
-              "col": 25,
+              "line": 52,
+              "col": 23,
               "kind": "binary",
               "op": "GREATER_THAN",
               "left": {
-                "line": 50,
-                "col": 25,
+                "line": 52,
+                "col": 23,
                 "kind": "prop",
                 "target": {
-                  "line": 50,
-                  "col": 19,
+                  "line": 52,
+                  "col": 17,
                   "kind": "prop",
                   "target": {
-                    "line": 50,
+                    "line": 52,
                     "col": 12,
                     "kind": "var",
-                    "name": "player"
+                    "name": "this"
                   },
                   "name": "world"
                 },
                 "name": "time"
               },
               "right": {
-                "line": 50,
-                "col": 32,
+                "line": 52,
+                "col": 30,
                 "kind": "number",
                 "value": 100000,
                 "integer": true
               }
             },
             "then": {
-              "line": 50,
-              "col": 39,
+              "line": 52,
+              "col": 37,
               "kind": "block",
               "statements": [
                 {
-                  "line": 51,
+                  "line": 53,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 51,
+                    "line": 53,
                     "col": 18,
                     "kind": "string",
                     "value": "<gray>The fish are asleep."
                   },
                   "target": {
-                    "line": 51,
+                    "line": 53,
                     "col": 50,
                     "kind": "var",
-                    "name": "player"
+                    "name": "this"
                   }
-                },
-                { "line": 52, "col": 13, "kind": "cancel_event" }
-              ]
-            },
-            "else": null
-          }
-        ]
-      }
-    },
-    {
-      "line": 58,
-      "col": 1,
-      "name": "FishBite",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 60,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 60,
-              "col": 14,
-              "kind": "string",
-              "value": "bite at x=${hook_location.x} z=${hook_location.z}"
-            },
-            "target": {
-              "line": 60,
-              "col": 69,
-              "kind": "var",
-              "name": "player"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "line": 66,
-      "col": 1,
-      "name": "PlayerCatchFish",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 68,
-            "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 68,
-              "col": 18,
-              "kind": "unary",
-              "op": "EXISTS",
-              "operand": {
-                "line": 68,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 68,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "caught_mob"
-              }
-            },
-            "then": {
-              "line": 68,
-              "col": 36,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 69,
-                  "col": 13,
-                  "kind": "send",
-                  "message": {
-                    "line": 69,
-                    "col": 18,
-                    "kind": "string",
-                    "value": "<red>brace yourself..."
-                  },
-                  "target": {
-                    "line": 69,
-                    "col": 46,
-                    "kind": "var",
-                    "name": "player"
-                  }
-                },
-                { "line": 70, "col": 13, "kind": "halt" }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 72,
-            "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 72,
-              "col": 18,
-              "kind": "unary",
-              "op": "EXISTS",
-              "operand": {
-                "line": 72,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 72,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "caught_item"
-              }
-            },
-            "then": {
-              "line": 72,
-              "col": 37,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 73,
-                  "col": 13,
-                  "kind": "send",
-                  "message": {
-                    "line": 73,
-                    "col": 18,
-                    "kind": "string",
-                    "value": "you landed ${event.caught_item.name}!"
-                  },
-                  "target": {
-                    "line": 73,
-                    "col": 61,
-                    "kind": "var",
-                    "name": "player"
-                  }
-                },
-                {
-                  "line": 74,
-                  "col": 13,
-                  "kind": "if",
-                  "condition": {
-                    "line": 74,
-                    "col": 34,
-                    "kind": "binary",
-                    "op": "EQUALS",
-                    "left": {
-                      "line": 74,
-                      "col": 34,
-                      "kind": "prop",
-                      "target": {
-                        "line": 74,
-                        "col": 22,
-                        "kind": "prop",
-                        "target": {
-                          "line": 74,
-                          "col": 16,
-                          "kind": "var",
-                          "name": "event"
-                        },
-                        "name": "caught_item"
-                      },
-                      "name": "material"
-                    },
-                    "right": {
-                      "line": 74,
-                      "col": 46,
-                      "kind": "string",
-                      "value": "minecraft:pufferfish"
-                    }
-                  },
-                  "then": {
-                    "line": 74,
-                    "col": 69,
-                    "kind": "block",
-                    "statements": [
-                      {
-                        "line": 75,
-                        "col": 27,
-                        "kind": "set_prop",
-                        "target": {
-                          "line": 75,
-                          "col": 21,
-                          "kind": "var",
-                          "name": "event"
-                        },
-                        "name": "caught_item",
-                        "value": {
-                          "line": 75,
-                          "col": 42,
-                          "kind": "call",
-                          "name": "item",
-                          "args": [
-                            {
-                              "line": 75,
-                              "col": 47,
-                              "kind": "string",
-                              "value": "COD"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "line": 76,
-                        "col": 17,
-                        "kind": "send",
-                        "message": {
-                          "line": 76,
-                          "col": 22,
-                          "kind": "string",
-                          "value": "<gray>...swapped the puffer for a safer cod."
-                        },
-                        "target": {
-                          "line": 76,
-                          "col": 72,
-                          "kind": "var",
-                          "name": "player"
-                        }
-                      }
-                    ]
-                  },
-                  "else": null
                 }
               ]
             },
@@ -299,28 +78,90 @@
       }
     },
     {
-      "line": 82,
-      "col": 1,
-      "name": "PlayerReelIn",
+      "line": 58,
+      "col": 5,
+      "name": "FishBite",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 84,
+            "line": 59,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 84,
+              "line": 59,
+              "col": 14,
+              "kind": "string",
+              "value": "<aqua>Something's biting..."
+            },
+            "target": {
+              "line": 59,
+              "col": 47,
+              "kind": "var",
+              "name": "this"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 63,
+      "col": 5,
+      "name": "PlayerCatchFish",
+      "receiver": "Player",
+      "priority": 0,
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 64,
+              "col": 14,
+              "kind": "string",
+              "value": "<green>You landed something!"
+            },
+            "target": {
+              "line": 64,
+              "col": 48,
+              "kind": "var",
+              "name": "this"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 67,
+      "col": 5,
+      "name": "PlayerReelIn",
+      "receiver": "Player",
+      "priority": 0,
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 68,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 68,
               "col": 14,
               "kind": "string",
               "value": "<gray>line reeled in"
             },
             "target": {
-              "line": 84,
+              "line": 68,
               "col": 40,
               "kind": "var",
-              "name": "player"
+              "name": "this"
             }
           }
         ]

@@ -4,63 +4,117 @@
   "commands": [],
   "events": [
     {
-      "line": 14,
-      "col": 1,
-      "name": "PlayerBeginItemUse",
-      "priority": 2,
+      "line": 12,
+      "col": 5,
+      "name": "EntityShoot",
+      "receiver": "Entity",
+      "priority": 0,
+      "params": [ "projectile", "dest", "power", "spread" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 18,
+            "line": 14,
             "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 18,
-              "col": 14,
-              "kind": "string",
-              "value": "casting ${event.item_stack} (${event.animation})"
-            },
-            "target": {
-              "line": 18,
-              "col": 74,
-              "kind": "prop",
-              "target": {
-                "line": 18,
-                "col": 68,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+            "kind": "assign",
+            "target": "power",
+            "value": {
+              "line": 14,
+              "col": 22,
+              "kind": "number",
+              "value": 1.5,
+              "integer": false
             }
           },
           {
-            "line": 20,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 20,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "item_use_duration",
+            "line": 15,
+            "col": 9,
+            "kind": "assign",
+            "target": "spread",
             "value": {
-              "line": 20,
-              "col": 40,
+              "line": 15,
+              "col": 23,
               "kind": "number",
-              "value": 30,
-              "integer": true
+              "value": 0.0,
+              "integer": false
+            }
+          },
+          {
+            "line": 16,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 16,
+              "col": 14,
+              "kind": "string",
+              "value": "line out: ${projectile} towards ${dest}"
+            },
+            "target": {
+              "line": 16,
+              "col": 59,
+              "kind": "string",
+              "value": "all"
             }
           }
         ]
       }
     },
     {
-      "line": 26,
-      "col": 1,
-      "name": "PlayerFinishItemUse",
+      "line": 20,
+      "col": 5,
+      "name": "EntityVelocity",
+      "receiver": "Entity",
       "priority": 0,
+      "params": [ "velocity" ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "assign",
+            "target": "velocity",
+            "value": {
+              "line": 21,
+              "col": 25,
+              "kind": "call",
+              "name": "velocity",
+              "args": [
+                {
+                  "line": 21,
+                  "col": 34,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                },
+                {
+                  "line": 21,
+                  "col": 39,
+                  "kind": "number",
+                  "value": 1.0,
+                  "integer": false
+                },
+                {
+                  "line": 21,
+                  "col": 44,
+                  "kind": "number",
+                  "value": 0.0,
+                  "integer": false
+                }
+              ]
+            }
+          },
+          { "line": 22, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 27,
+      "col": 5,
+      "name": "ProjectileCollideWithBlock",
+      "receiver": "Projectile",
+      "priority": 0,
+      "params": [ "block", "world" ],
       "execute": {
         "async": false,
         "statements": [
@@ -72,83 +126,42 @@
               "line": 28,
               "col": 14,
               "kind": "string",
-              "value": "reeled in after ${event.use_duration} ticks"
+              "value": "splash! landed on ${block}"
             },
             "target": {
               "line": 28,
-              "col": 69,
-              "kind": "prop",
-              "target": {
-                "line": 28,
-                "col": 63,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "col": 46,
+              "kind": "string",
+              "value": "all"
             }
-          }
+          },
+          { "line": 30, "col": 9, "kind": "cancel_event" }
         ]
       }
     },
     {
       "line": 33,
-      "col": 1,
-      "name": "EntityShoot",
+      "col": 5,
+      "name": "ProjectileCollideWithEntity",
+      "receiver": "Projectile",
       "priority": 0,
+      "params": [ "target" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 36,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 36,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "power",
-            "value": {
-              "line": 36,
-              "col": 28,
-              "kind": "number",
-              "value": 1.5,
-              "integer": false
-            }
-          },
-          {
-            "line": 37,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 37,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "spread",
-            "value": {
-              "line": 37,
-              "col": 29,
-              "kind": "number",
-              "value": 0.0,
-              "integer": false
-            }
-          },
-          {
-            "line": 38,
+            "line": 34,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 38,
+              "line": 34,
               "col": 14,
               "kind": "string",
-              "value": "line out: ${event.projectile} towards ${event.to}"
+              "value": "snagged ${target}"
             },
             "target": {
-              "line": 38,
-              "col": 69,
+              "line": 34,
+              "col": 37,
               "kind": "string",
               "value": "all"
             }
@@ -157,57 +170,90 @@
       }
     },
     {
-      "line": 42,
-      "col": 1,
-      "name": "ProjectileCollideWithBlock",
+      "line": 40,
+      "col": 5,
+      "name": "PickupItem",
+      "receiver": "Item",
       "priority": 0,
+      "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 44,
+            "line": 41,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 44,
+              "line": 41,
               "col": 14,
               "kind": "string",
-              "value": "splash! landed on ${event.block}"
+              "value": "caught the drop for ${player.name}"
             },
             "target": {
-              "line": 44,
-              "col": 52,
+              "line": 41,
+              "col": 54,
               "kind": "string",
               "value": "all"
             }
-          },
-          { "line": 46, "col": 9, "kind": "cancel_event" }
+          }
         ]
       }
     },
     {
-      "line": 50,
-      "col": 1,
-      "name": "ProjectileCollideWithEntity",
+      "line": 47,
+      "col": 5,
+      "name": "PlayerBeginItemUse",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 52,
+            "line": 48,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 52,
+              "line": 48,
               "col": 14,
               "kind": "string",
-              "value": "snagged ${event.target}"
+              "value": "casting..."
             },
             "target": {
-              "line": 52,
-              "col": 43,
+              "line": 48,
+              "col": 30,
+              "kind": "var",
+              "name": "this"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 52,
+      "col": 5,
+      "name": "PlayerFinishItemUse",
+      "receiver": "Player",
+      "priority": 0,
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 53,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 53,
+              "col": 14,
               "kind": "string",
-              "value": "all"
+              "value": "reeled in"
+            },
+            "target": {
+              "line": 53,
+              "col": 29,
+              "kind": "var",
+              "name": "this"
             }
           }
         ]
@@ -215,177 +261,32 @@
     },
     {
       "line": 57,
-      "col": 1,
-      "name": "PickupItem",
-      "priority": 1,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 61,
-            "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 61,
-              "col": 18,
-              "kind": "prop",
-              "target": {
-                "line": 61,
-                "col": 12,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "cancelled"
-            },
-            "then": {
-              "line": 61,
-              "col": 28,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 62,
-                  "col": 13,
-                  "kind": "send",
-                  "message": {
-                    "line": 62,
-                    "col": 18,
-                    "kind": "string",
-                    "value": "too slow, the catch is gone"
-                  },
-                  "target": {
-                    "line": 62,
-                    "col": 51,
-                    "kind": "string",
-                    "value": "all"
-                  }
-                }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 64,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 64,
-              "col": 14,
-              "kind": "string",
-              "value": "caught ${event.item_stack}"
-            },
-            "target": {
-              "line": 64,
-              "col": 46,
-              "kind": "string",
-              "value": "all"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "line": 69,
-      "col": 1,
-      "name": "EntityVelocity",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 71,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 71,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "velocity",
-            "value": {
-              "line": 71,
-              "col": 31,
-              "kind": "call",
-              "name": "velocity",
-              "args": [
-                {
-                  "line": 71,
-                  "col": 40,
-                  "kind": "number",
-                  "value": 0.0,
-                  "integer": false
-                },
-                {
-                  "line": 71,
-                  "col": 45,
-                  "kind": "number",
-                  "value": 1.0,
-                  "integer": false
-                },
-                {
-                  "line": 71,
-                  "col": 50,
-                  "kind": "number",
-                  "value": 0.0,
-                  "integer": false
-                }
-              ]
-            }
-          },
-          { "line": 72, "col": 9, "kind": "cancel_event" }
-        ]
-      }
-    },
-    {
-      "line": 81,
-      "col": 1,
+      "col": 5,
       "name": "PlayerUseItemEvent",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "item", "hand" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 83,
+            "line": 58,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 83,
+              "line": 58,
               "col": 14,
               "kind": "string",
-              "value": "engine item use: ${event.item_stack}"
+              "value": "engine item use: ${item} in ${hand}"
             },
             "target": {
-              "line": 83,
-              "col": 62,
-              "kind": "prop",
-              "target": {
-                "line": 83,
-                "col": 56,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 58,
+              "col": 55,
+              "kind": "var",
+              "name": "this"
             }
           },
-          {
-            "line": 84,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 84,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "item_use_time",
-            "value": {
-              "line": 84,
-              "col": 36,
-              "kind": "number",
-              "value": 100,
-              "integer": true
-            }
-          }
+          { "line": 59, "col": 9, "kind": "cancel_event" }
         ]
       }
     }
