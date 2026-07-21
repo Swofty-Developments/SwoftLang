@@ -289,9 +289,9 @@ def main():
     repo["namespaces"] = {
         "patterns": [
             {
-                "comment": "namespace block headers: tags { } / tasks { } / attributes { }",
+                "comment": "namespace block headers: tags: { } / tasks: { } / attributes: { } (canonical colon form; bare form still accepted)",
                 "name": "storage.type.namespace.swoftlang",
-                "match": r"^\s*(" + alt(namespaces) + r")\b(?=\s*\{)",
+                "match": r"^\s*(" + alt(namespaces) + r")\b(?=\s*:?\s*\{)",
                 "captures": {
                     "1": {"name": "storage.type.namespace.swoftlang"}
                 },

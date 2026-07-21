@@ -20,7 +20,7 @@ mob "zombie" {
     ai: none
     viewable: false                   
 
-    tags { hits: map<Player, Integer> }
+    tags: { hits: map<Player, Integer> }
 
     on_hit(attacker) {
         if attacker exists {

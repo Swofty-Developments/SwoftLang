@@ -1,7 +1,7 @@
 item "aspect" {
     material: "DIAMOND_SWORD"
     rarity: rare
-    attributes {
+    attributes: {
         mana: 5
     }
 }

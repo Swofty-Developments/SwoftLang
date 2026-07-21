@@ -21,7 +21,7 @@ item "aspect_of_the_end" {
     rarity: rare
     glint: true
 
-    tags {
+    tags: {
         damage: 100,
         meta: { tier: 3, keywords: ["end", "sword"] }
     }
@@ -136,7 +136,7 @@ item "crypt_key" {
     name: "<gold>Crypt Key"
     rarity: epic
 
-    tags {
+    tags: {
         uses: 3
     }
 
@@ -167,7 +167,7 @@ item "rotten_scimitar" {
     name: "<gray>Rotten Scimitar"
     rarity: uncommon
 
-    tags {
+    tags: {
         damage: 40
     }
 }

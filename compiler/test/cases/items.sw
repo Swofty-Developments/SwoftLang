@@ -20,12 +20,12 @@ item "aspect_of_the_end" {
         }
     }
 
-    attributes {
+    attributes: {
         speed: 0.05
         max_health: 10
     }
 
-    tags {
+    tags: {
         soulbound: true
         tier: 3
         meta: {
@@ -46,7 +46,7 @@ item "aspect_of_the_end" {
 item "grappling_hook" {
     skull: "abc123texturehash"
     rarity: epic
-    tags {
+    tags: {
         uses: 0
     }
 }

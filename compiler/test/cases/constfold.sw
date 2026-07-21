@@ -1,7 +1,7 @@
 item "folded_blade" {
     material: "IRON_SWORD"
     amount: 1 + 1
-    attributes {
+    attributes: {
         speed: 1.0 / 20
         attack_damage: 50 * 2
     }

@@ -1,6 +1,6 @@
 item "ASPECT_OF_DOOM" {
     material: "DIAMOND_SWORD"
-    attributes {
+    attributes: {
         speed: 0.05
     }
 }

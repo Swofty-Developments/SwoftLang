@@ -31,7 +31,7 @@ item "aspect_of_the_end" {
     glint: true
 
     // Your stat system — arbitrary data, yours to design.
-    tags {
+    tags: {
         damage: 100,
         strength: 80,
         crit_damage: 25,

@@ -10,7 +10,7 @@ item "rotten_scimitar" {
 
     // Combat stats are userland data now (phase 9): attach them as NBT tags
     // and read them back from your own damage-event handler.
-    tags {
+    tags: {
         damage: 40,
         strength: 10
     }

@@ -3,7 +3,7 @@ item "rotten_scimitar" {
     name: "<gray>Rotten Scimitar"
     rarity: uncommon
 
-    tags {
+    tags: {
         damage: 40
     }
 }

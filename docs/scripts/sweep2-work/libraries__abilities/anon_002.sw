@@ -10,4 +10,4 @@ command "wire" {
     }
 }
 
-item "aspect_of_the_end" { material: "DIAMOND_SWORD" tags { damage: 100 } }
+item "aspect_of_the_end" { material: "DIAMOND_SWORD" tags: { damage: 100 } }

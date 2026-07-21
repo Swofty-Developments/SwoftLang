@@ -2,7 +2,7 @@ mob "zombie" {
     type: "ZOMBIE"
     viewable: false
 
-    tags { hits: map<Player, Integer> }      // typed, keyed by Player
+    tags: { hits: map<Player, Integer> }      // typed, keyed by Player
 
     on_hit(attacker) {
         if attacker exists {

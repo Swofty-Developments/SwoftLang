@@ -1,0 +1,29 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "items": [
+    {
+      "line": 3,
+      "col": 1,
+      "id": "colon_item",
+      "material": "STICK",
+      "skull": null,
+      "name": null,
+      "rarity": null,
+      "glint": null,
+      "amount": null,
+      "lore": null,
+      "attributes": {},
+      "tags": {},
+      "on_click": []
+    }
+  ]
+}

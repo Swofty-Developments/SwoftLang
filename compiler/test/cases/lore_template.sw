@@ -20,7 +20,7 @@ item "flame_blade" {
             line "<yellow>*"
         }
     }
-    tags {
+    tags: {
         damage: 120
         soulbound: true
         meta: {

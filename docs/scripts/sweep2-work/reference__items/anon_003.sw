@@ -3,7 +3,7 @@ item "crypt_key" {
     name: "<gold>Crypt Key"
     rarity: epic
 
-    tags {
+    tags: {
         uses: 3,
         meta: { engraving: "unclaimed" }
     }

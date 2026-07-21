@@ -1,7 +1,7 @@
 item "rotten_scimitar" {
     material: "GOLDEN_SWORD"
     rarity: uncommon
-    attributes {
+    attributes: {
         attack_damage: 8
     }
 }

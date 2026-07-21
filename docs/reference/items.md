@@ -20,7 +20,7 @@ item "aspect_of_the_end" {
         line "<dark_gray>Soulbound"
     }
 
-    tags {
+    tags: {
         damage: 100,
         meta: { tier: 3, keywords: ["end", "sword"] }
     }
@@ -108,7 +108,7 @@ item "farmer_boots" {
     name: "<green>Farmer Boots"
     rarity: uncommon
 
-    attributes {
+    attributes: {
         speed: 0.02
         max_health: 4
     }
@@ -149,7 +149,7 @@ item "crypt_key" {
     name: "<gold>Crypt Key"
     rarity: epic
 
-    tags {
+    tags: {
         uses: 3,
         meta: { engraving: "unclaimed" }
     }
@@ -189,7 +189,7 @@ command "c" {
     }
 }
 
-item "k" { material: "STICK" tags { uses: 3 } }
+item "k" { material: "STICK" tags: { uses: 3 } }
 ```
 
 ```txt
@@ -201,7 +201,7 @@ tagopt.sw:4:26: error: the left operand of '+' is optional<Any> and may be missi
 The two fixes are the familiar ones — `otherwise` for a fallback, `exists` to narrow:
 
 ```swoftlang
-item "crypt_key" { material: "TRIPWIRE_HOOK" tags { uses: 3 } }
+item "crypt_key" { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
 
 command "use-key" {
     execute {
@@ -231,7 +231,7 @@ item "crypt_key" {
     name: "<gold>Crypt Key"
     rarity: epic
 
-    tags {
+    tags: {
         uses: 3
     }
 

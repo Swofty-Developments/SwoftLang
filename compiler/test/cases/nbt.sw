@@ -5,7 +5,7 @@
 
 item "mystic_blade" {
     material: "DIAMOND_SWORD"
-    tags {
+    tags: {
         tier: 1
         meta: {
             origin: "vault"

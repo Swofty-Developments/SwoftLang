@@ -93,6 +93,9 @@ let parse_item_decl st =
     | Token.IDENT "attributes" ->
       ignore (advance st);
       if !attributes <> [] then dup "attributes";
+      (* record-valued field: 'attributes: {' is canonical, bare 'attributes {'
+         is accepted as legacy (design: value-bearing block fields take a colon) *)
+      ignore (matches st Token.COLON);
       attributes := parse_kv_block st ~what:"attribute"
     | Token.IDENT "tags" ->
       ignore (advance st);
@@ -100,6 +103,8 @@ let parse_item_decl st =
       (* nested NBT: values may be scalars, '[ ... ]' lists, or '{ ... }'
          compounds (design 9 §2). parse_packet_fields is the nested-capable
          key:value reader shared with 'send packet'. *)
+      (* record-valued field: 'tags: {' is canonical, bare 'tags {' legacy *)
+      ignore (matches st Token.COLON);
       expect st Token.LBRACE "'{' after 'tags'";
       tags := parse_packet_fields st;
       expect st Token.RBRACE "'}' to close tags block"
@@ -264,6 +269,8 @@ let parse_mob_decl st =
     | Token.IDENT "tags" ->
       ignore (advance st);
       if !tags <> [] then dup "tags";
+      (* record-valued field: 'tags: {' is canonical, bare 'tags {' legacy *)
+      ignore (matches st Token.COLON);
       tags := parse_mob_tags st
     | Token.IDENT "drops" ->
       ignore (advance st);

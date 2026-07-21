@@ -3,7 +3,7 @@ item "farmer_boots" {
     name: "<green>Farmer Boots"
     rarity: uncommon
 
-    attributes {
+    attributes: {
         speed: 0.02
         max_health: 4
     }

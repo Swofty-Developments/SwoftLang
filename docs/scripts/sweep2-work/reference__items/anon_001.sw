@@ -11,7 +11,7 @@ item "aspect_of_the_end" {
         line "<dark_gray>Soulbound"
     }
 
-    tags {
+    tags: {
         damage: 100,
         meta: { tier: 3, keywords: ["end", "sword"] }
     }
