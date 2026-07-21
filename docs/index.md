@@ -101,9 +101,9 @@ on join:
 
 ```swoftlang
 Player {
-    on_join() {
-        send "<green>Welcome, ${this.name}!" to this
-        send "<gray>${this.name} joined" to all
+    on_join {
+        send "<green>Welcome, ${player.name}!" to player
+        send "<gray>${player.name} joined" to all
     }
 }
 ```
@@ -127,7 +127,7 @@ on death of monster:
 persistent kills for Player: Integer = 0
 
 Mob {
-    on_death(killer) {
+    on_death {
         if killer exists {
             set k to player(killer.uuid)
             if k exists {
@@ -203,8 +203,8 @@ laggy server.
 
 ```swoftlang
 Player {
-    on_join() {
-        send "hi ${this.nmae}" to this // [!code error]
+    on_join {
+        send "hi ${player.nmae}" to player // [!code error]
     }
 }
 ```
@@ -214,7 +214,7 @@ Player {
 
 ```txt
 welcome.sw:3:14: error: unknown property 'nmae' on Player; did you mean 'name'?
-        send "hi ${this.nmae}" to this
+        send "hi ${player.nmae}" to player
              ^
 ```
 
@@ -305,9 +305,9 @@ command "menu" {
 persistent visits for Player: Integer = 0
 
 Player {
-    on_join() {
-        set visits for this to visits for this + 1
-        send "<gray>Visit #${visits for this}" to this
+    on_join {
+        set visits for player to visits for player + 1
+        send "<gray>Visit #${visits for player}" to player
     }
 }
 ```

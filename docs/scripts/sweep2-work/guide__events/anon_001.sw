@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        broadcast "<yellow>${this.name} joined the game"
+    on_join {
+        broadcast "<yellow>${player.name} joined the game"
     }
 }

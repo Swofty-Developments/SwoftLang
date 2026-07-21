@@ -1,5 +1,5 @@
 Player {
-    on_chat(message) async {
+    on_chat async {
         wait 1 ticks
         cancel event
     }

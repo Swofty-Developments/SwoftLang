@@ -1,7 +1,7 @@
 Player {
-    on_chat(message) {
-        set this.health to this.max_health
-        set this.gamemode to "creative"
-        set this.held_item.amount to 32
+    on_chat {
+        set player.health to player.max_health
+        set player.gamemode to "creative"
+        set player.held_item.amount to 32
     }
 }

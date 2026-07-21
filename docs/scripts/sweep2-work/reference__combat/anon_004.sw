@@ -1,7 +1,7 @@
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
-            knock this away from attacker.location with strength 0.5
+            knock entity away from attacker.location with strength 0.5
         }
     }
 }

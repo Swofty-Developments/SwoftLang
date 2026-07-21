@@ -102,10 +102,10 @@ function ability_dispatch(user: Player, held: Item, id: String) {
 // the single generic surface: every custom-item use flows through here. `this`
 // binds to the used ItemStack, `player` to the user.
 Item {
-    on_use(player) {
-        set id to custom_id(this) otherwise ""
+    on_use {
+        set id to custom_id(item) otherwise ""
         if id is not "" {
-            ability_dispatch(player, this, id)
+            ability_dispatch(player, item, id)
         }
     }
 }

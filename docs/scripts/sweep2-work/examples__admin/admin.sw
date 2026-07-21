@@ -4,7 +4,7 @@
 var prefix = "<#FF93F8><bold>ᴀᴅᴍɪɴ+</bold> <gray>»</gray>"
 var permission_message = "<red>ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴜѕᴇ ᴛʜɪѕ ᴄᴏᴍᴍᴀɴᴅ!"
 
-// gui and receiver-method bodies run against their own scope (this/player/
+// gui and receiver-method bodies run against their own scope (player/
 // state/slot), not module vars — prefixed output always goes through a helper
 function tell(target: Player, msg: String) {
     send "${prefix} ${msg}" to target
@@ -405,10 +405,10 @@ every 2 ticks {
 // 'on command: cancel event' while frozen — on_command fires before a
 // command dispatches and is cancellable, so the freeze veto is a direct port
 Player {
-    on_command(cmd) {
-        if frozen for this {
+    on_command {
+        if frozen for player {
             cancel event
-            warn(this, "<light_purple>Commands can not be executed while you're frozen!")
+            warn(player, "<light_purple>Commands can not be executed while you're frozen!")
         }
     }
 }
@@ -440,10 +440,10 @@ command "mute" {
 }
 
 Player {
-    on_chat(message) {
-        if muted for this {
+    on_chat {
+        if muted for player {
             cancel event
-            warn(this, "<light_purple>You cannot talk while being muted!")
+            warn(player, "<light_purple>You cannot talk while being muted!")
         }
     }
 }

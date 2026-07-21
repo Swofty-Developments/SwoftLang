@@ -123,8 +123,6 @@ const SNIPPETS: Record<string, string> = {
   spawn: 'spawn ${1|mob,entity,particle|} "$2" at $3',
   // --- declarations / top-level constructs ---
   command: 'command "${1:name}" {\n\texecute {\n\t\t$0\n\t}\n}',
-  event: 'event ${1:PlayerJoin} {\n\texecute {\n\t\t$0\n\t}\n}',
-  on: 'on ${1:EntityDamage} {\n\t$0\n}',
   function: 'function ${1:name}(${2:x: Integer}) {\n\t$0\n}',
   every: 'every ${1:1} ${2|tick,ticks,second,seconds|} {\n\t$0\n}',
   schedule: 'schedule "${1:name}" every ${2:1} seconds {\n\t$0\n}',
@@ -137,7 +135,7 @@ const SNIPPETS: Record<string, string> = {
   tablist: 'tablist "${1:id}" {\n\theader: "$2"\n\tfooter: "$3"\n}',
   bossbar: 'bossbar "${1:id}" {\n\ttext: "$2"\n\tcolor: ${3|pink,blue,red,green,yellow,purple,white|}\n\tstyle: ${4|progress,notched_6,notched_10,notched_12,notched_20|}\n}',
   block_handler: 'block_handler "${1:id}" {\n\ton_break {\n\t\t$0\n\t}\n}',
-  placement_rule: 'placement_rule for "${1:block}" {\n\ton_place(loc, face, cursor, against, player) -> Block {\n\t\t$0\n\t}\n}',
+  placement_rule: 'placement_rule for "${1:block}" {\n\ton_place -> Block {\n\t\t$0\n\t}\n}',
   fishing_loot: 'fishing_loot "${1:id}" {\n\tmedium: ${2|water,lava|}\n\t$0\n}',
   api: 'api "${1:/path}" {\n\tmethod: ${2|GET,POST,PUT,DELETE,ANY|}\n\texecute {\n\t\t$0\n\t}\n}',
   server: 'server {\n\tauth: ${1|mojang,velocity,bungeecord,offline|}\n\tport: ${2:25565}\n\t$0\n}',
@@ -153,9 +151,9 @@ const SNIPPETS: Record<string, string> = {
 
 // Per-handler override snippets; everything else gets a bare `name { … }` block.
 const HANDLER_SNIPPETS: Record<string, string> = {
-  on_click: 'on_click(${1|left,right,player|}) {\n\t$0\n}',
-  on_place: 'on_place(loc, face, cursor, against, player) -> Block {\n\t$0\n}',
-  on_update: 'on_update(loc, cur, neighbours) -> Block {\n\t$0\n}',
+  on_click: 'on_click(${1|left,right,any|}) {\n\t$0\n}',
+  on_place: 'on_place -> Block {\n\t$0\n}',
+  on_update: 'on_update -> Block {\n\t$0\n}',
 };
 
 function completionKind(kind: string): CompletionItemKind {
@@ -492,6 +490,15 @@ export function createCompletionEngine(
     switch (s.kind) {
       case 'declaration':
         declItems.push(item);
+        break;
+      // OOP receiver block heads (Player { }, Mob { }, Packet { }, ...): offer a
+      // scaffold for the new event system (flat `event`/`on` forms were removed).
+      case 'receiver':
+        declItems.push({
+          ...item,
+          insertText: `${s.name} {\n\t$0\n}`,
+          insertTextFormat: InsertTextFormat.Snippet,
+        });
         break;
       case 'type':
         typeItems.push(item);

@@ -209,7 +209,7 @@ list:
 
 ```swoftlang
 Server {
-    on_list_ping(status) {
+    on_list_ping {
         set status to "<green>${length(all_players())} adventurers online"
     }
 }
@@ -239,7 +239,7 @@ server {
 }
 
 Server {
-    on_list_ping(status) {
+    on_list_ping {
         set status to "<green>${length(all_players())} adventurers online"
     }
 }

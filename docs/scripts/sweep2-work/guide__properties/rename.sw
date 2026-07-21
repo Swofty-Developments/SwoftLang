@@ -1,5 +1,5 @@
 Player {
-    on_chat(message) {
-        set this.name to "Somebody"
+    on_chat {
+        set player.name to "Somebody"
     }
 }

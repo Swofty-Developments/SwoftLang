@@ -7,7 +7,7 @@ item "crypt_key" {
         uses: 3
     }
 
-    on_click(left) {
+    on_click {
         set item.tags.uses to (item.tags.uses otherwise 0) - 1
         send "<light_purple>The key turns..." to player
     }

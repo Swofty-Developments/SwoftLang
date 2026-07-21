@@ -38,21 +38,21 @@ server {
 }
 
 Player {
-    on_cast_rod() {
-        if this.world.time > 100000 {
-            send "<gray>The fish are asleep." to this
+    on_cast_rod {
+        if player.world.time > 100000 {
+            send "<gray>The fish are asleep." to player
         }
     }
 
-    on_fish_bite() {
-        send "<aqua>Something's biting..." to this
+    on_fish_bite {
+        send "<aqua>Something's biting..." to player
     }
 
-    on_catch_fish() {
-        send "<green>You landed something!" to this
+    on_catch_fish {
+        send "<green>You landed something!" to player
     }
 
-    on_reel_in() {
-        send "<gray>line reeled in" to this
+    on_reel_in {
+        send "<gray>line reeled in" to player
     }
 }

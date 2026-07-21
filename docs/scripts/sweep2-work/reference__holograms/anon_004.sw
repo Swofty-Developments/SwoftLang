@@ -3,7 +3,7 @@ hologram "clock" {
     lines {
         line "<aqua>Clock"
     }
-    on_tick() {
-        set this.text to "<aqua>Clock"
+    on_tick {
+        set hologram.text to "<aqua>Clock"
     }
 }

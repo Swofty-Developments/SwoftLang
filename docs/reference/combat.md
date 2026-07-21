@@ -18,9 +18,9 @@ written this way.
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
-        // veto a hit entirely — this is the victim, attacker is the source
-        if this.tags.invulnerable exists {
+    on_hit {
+        // veto a hit entirely — entity is the victim, attacker is the source
+        if entity.tags.invulnerable exists {
             cancel event
         }
     }
@@ -29,12 +29,12 @@ Entity {
 
 ## The `Entity.on_hit` method
 
-Every hit flows through the cancellable [`Entity.on_hit`](./events#entity) method. `this`
+Every hit flows through the cancellable [`Entity.on_hit`](./events#entity) method. `entity`
 is the victim and `attacker` is the source — the entry points for a combat system:
 
 | Binding | Type | Access | Meaning |
 |---|---|---|---|
-| `this` | `Entity` | — | the victim taking the hit |
+| `entity` | `Entity` | — | the victim taking the hit |
 | `attacker` | `optional<Entity>` | ro | the direct attacker, when there is one |
 | `cancel event` | — | — | negate the hit outright |
 
@@ -117,9 +117,9 @@ from the attacker's position:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
-            knock this away from attacker.location with strength 0.5
+            knock entity away from attacker.location with strength 0.5
         }
     }
 }
@@ -157,11 +157,11 @@ properties — they are what an i-frame check and a crit check need:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             // crit: falling, airborne, not sprinting -> the sparkle
             if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
-                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+                spawn particle "crit" at entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
             }
         }
     }
@@ -179,16 +179,16 @@ narrow it with `if … exists` or give a fallback with `otherwise`:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
+    on_hit {
         // honour a short custom i-frame window: ignore hits while it is live
-        set iframe to this.invulnerable_ticks
+        set iframe to entity.invulnerable_ticks
         if iframe > 0 {
             cancel event
             return
         }
         // count hits taken on the victim's own scratch state
-        set hits to this.tags.hits_taken otherwise 0
-        set this.tags.hits_taken to hits + 1
+        set hits to entity.tags.hits_taken otherwise 0
+        set entity.tags.hits_taken to hits + 1
     }
 }
 ```
@@ -205,21 +205,21 @@ The shipped `scripts/vanilla-pvp.sw` reimplements vanilla melee combat end-to-en
 only the surface above — the same job MinestomPvP does in Java, but in-language. It has
 two parts.
 
-**One hit listener.** `Entity { on_hit(attacker) }` applies the vanilla combat feedback on
+**One hit listener.** `Entity { on_hit }` applies the vanilla combat feedback on
 every hit — attack-cooldown swing tracking, the crit sparkle, and knockback — reading its
 inputs from attribute properties and `.tags` and writing its scratch state back to `.tags`.
-`this` is the victim; the attacker-dependent steps run only `if attacker exists`:
+`entity` is the victim; the attacker-dependent steps run only `if attacker exists`:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             // attack cooldown: record the swing tick for the next hit's charge
             set attacker.tags.last_swing to attacker.alive_ticks
 
             // crit: falling, airborne, not sprinting -> the sparkle
             if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
-                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+                spawn particle "crit" at entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
             }
 
             // knockback: base + sprint bonus, scaled by the target's resistance
@@ -227,9 +227,9 @@ Entity {
             if attacker.is_sprinting {
                 set sprint_bonus to 1.0
             }
-            set kb_resist to this.knockback_resistance
+            set kb_resist to entity.knockback_resistance
             set strength to (0.4 + sprint_bonus * 0.5) * (1.0 - kb_resist)
-            knock this away from attacker.location with strength strength
+            knock entity away from attacker.location with strength strength
         }
     }
 }
@@ -240,8 +240,8 @@ armour + toughness + protection + resistance **reduction math** stays as reusabl
 functions, applied where the script itself deals damage with `damage … by`. The
 attack-cooldown curve reads `attacker.attack_speed` and the last-swing tick from
 `attacker.tags.last_swing` (compared against `attacker.alive_ticks`), the crit check reads
-`attacker.fall_distance`, and knockback folds in the target's `this.knockback_resistance`
-before the `knock this away from attacker.location` push.
+`attacker.fall_distance`, and knockback folds in the target's `entity.knockback_resistance`
+before the `knock entity away from attacker.location` push.
 
 **A tick loop for regen, starvation, and exhaustion** — the loop Minestom does not run.
 A top-level `every 1 tick` schedule runs each game tick over every online player. Food,
@@ -287,10 +287,10 @@ on damage:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
-            set kb_resist to this.knockback_resistance
-            knock this away from attacker.location with strength (0.5 * (1.0 - kb_resist))
+            set kb_resist to entity.knockback_resistance
+            knock entity away from attacker.location with strength (0.5 * (1.0 - kb_resist))
         }
     }
 }
@@ -299,7 +299,7 @@ Entity {
 </template>
 <template #note>
 
-The victim is `this`, the source is `attacker`, and `knockback_resistance` is a plain
+The victim is `entity`, the source is `attacker`, and `knockback_resistance` is a plain
 property, so a resistance-aware push is a few lines of arithmetic plus the `knock … away
 from` verb. Skript reaches for a compiled combat addon because the language exposes neither
 the attribute nor a directional knockback hook.

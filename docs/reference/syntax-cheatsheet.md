@@ -65,11 +65,11 @@ command "teleport" {                          // aliases share one body
 ## Receivers & events
 
 Events are handled by **receiver** blocks — a Capitalized subject with fixed-name methods.
-`this` is the subject; method parameters bind the rest of the event's data:
+The subject is a bare variable named after its type; the event's data is bound alongside it:
 
 ```swoftlang
 Player {
-    on_chat(message) {
+    on_chat {
         set message to "[Filtered] ${message}"
         if message contains "badword" {
             cancel event
@@ -81,21 +81,21 @@ Player {
 The base receivers (methods fire for every instance; the full catalog is on the
 [Receivers & Events](./events) page):
 
-| Receiver | `this` | Example methods |
+| Receiver | Subject variable | Example methods |
 |---|---|---|
-| `Player` | the player | `on_join()`, `on_chat(message)`, `on_command(command)`, `on_death(...)` |
-| `Entity` | the entity | `on_hit(attacker)`, `on_death()`, `on_attack(target)` |
-| `Mob` | the mob | `on_spawn()`, `on_death(killer)`, `on_click(player)` |
-| `Item` | the item stack | `on_use(player)`, `on_drop(player)`, `on_consume(player)` |
-| `Block` | the block | `on_place(...)`, `on_break(player)`, `on_dispense(item, direction)` |
-| `Projectile` | the projectile | `on_hit_block(...)`, `on_hit_entity(target)` |
-| `Inventory` | the inventory | `on_pre_click(...)`, `on_open(player)`, `on_close(...)` |
-| `World` | the world | `on_tick(duration)`, `on_chunk_load(...)`, `on_entity_add(entity)` |
-| `Server` | the server | `on_list_ping(status)`, `on_tps_change(past, current)` |
+| `Player` | `player` | `on_join`, `on_chat`, `on_command`, `on_death` |
+| `Entity` | `entity` | `on_hit`, `on_death`, `on_attack` |
+| `Mob` | `mob` | `on_spawn`, `on_death`, `on_click` |
+| `Item` | `item` | `on_use`, `on_drop`, `on_consume` |
+| `Block` | `block` | `on_place`, `on_break`, `on_dispense` |
+| `Projectile` | `projectile` | `on_hit_block`, `on_hit_entity` |
+| `Inventory` | `inventory` | `on_pre_click`, `on_open`, `on_close` |
+| `World` | `world` | `on_tick`, `on_chunk_load`, `on_entity_add` |
+| `Server` | `server` | `on_list_ping`, `on_tps_change` |
 | `Packet` | — | `on "PacketClass" { }` raw-packet handlers |
 
 A lowercase `mob "id" { }` / `item "id" { }` / `block_handler "id" { }` declaration carries
-the same method set for one id and overrides the base (`default()` / `super` reach it).
+the same method set for one id and overrides the base (`call original method` reaches it).
 `cancel event` in a non-cancellable method is a compile error:
 
 ```
@@ -524,7 +524,7 @@ persistent total_joins: Integer = 0            // global scalar, default require
 persistent kills for Player: Integer = 0       // keyed by subject
 
 Player {
-    on_join() {
+    on_join {
         set total_joins to total_joins + 1
     }
 }

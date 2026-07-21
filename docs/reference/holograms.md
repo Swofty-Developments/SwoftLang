@@ -41,7 +41,7 @@ player or `all`.
 | `billboard:` | mode | no | facing mode — `center` (default), `vertical`, `horizontal`, `fixed` |
 | `scale:` | `Number` | no | display scale factor (`1.0` = default) |
 | `update:` | `every <dur>` | no | re-render cadence for dynamic and per-viewer lines |
-| `on_tick() { ... }` | handler | no | runs every tick with `this` bound to the line stack |
+| `on_tick { ... }` | handler | no | runs every tick with `hologram` bound to the line stack |
 | `lines { ... }` | block | **yes** | the line DSL — see below |
 
 The billboard mode is an enum, checked at compile time — `center`, `vertical`,
@@ -123,7 +123,7 @@ manual refresh loop.
 
 ## Per-tick handler
 
-An `on_tick()` handler runs every tick with `this` bound to the hologram's text-display
+An `on_tick` handler runs every tick with `hologram` bound to the hologram's text-display
 stack, a lower-level companion to `update: every <dur>` when you need per-frame control
 over the line displays rather than a fixed re-render cadence:
 
@@ -133,16 +133,16 @@ hologram "clock" {
     lines {
         line "<aqua>Clock"
     }
-    on_tick() {
-        set this.text to "<aqua>Clock"
+    on_tick {
+        set hologram.text to "<aqua>Clock"
     }
 }
 ```
 
 ::: tip Per-hologram timers
-Inside a hologram handler `this` is the hologram, and it carries a
+Inside a hologram handler `hologram` is the hologram, and it carries a
 [task registry](./schedulers#obj-tasks):
-`set this.tasks.<id> to schedule every N ticks { }` binds a named task that auto-cancels
+`set hologram.tasks.<id> to schedule every N ticks { }` binds a named task that auto-cancels
 when the hologram is removed.
 :::
 

@@ -3,7 +3,7 @@ npc "guide" {
     name: "<green>Village Guide"
     skin: "Notch"
     look_at_players: true
-    on_click(player) {
+    on_click {
         send "<yellow>Hello ${player.name}!" to player
     }
 }

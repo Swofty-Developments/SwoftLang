@@ -527,10 +527,6 @@
       "kind": "declaration"
     },
     {
-      "name": "event",
-      "kind": "declaration"
-    },
-    {
       "name": "function",
       "kind": "declaration"
     },

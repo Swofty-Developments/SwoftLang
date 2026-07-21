@@ -87,12 +87,12 @@ on chat:
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        if staffchat for this {
+    on_chat {
+        if staffchat for player {
             cancel event
-            send_staff(this, message)
+            send_staff(player, message)
         } else {
-            broadcast "${this.display_name}<white>: ${message}"
+            broadcast "${player.display_name}<white>: ${message}"
         }
     }
 }
@@ -101,7 +101,7 @@ Player {
 </template>
 <template #note>
 
-`on chat` → `Player { on_chat(message) }`, with the sender bound as `this` and the text as `message`. `cancel event` compiles only because `on_chat` is cancellable — in `on_join` the same line is a compile error. `%player's displayname%` → `${this.display_name}`, and `&`-codes become MiniMessage tags throughout.
+`on chat` → `Player { on_chat }`, with the sender bound as `player` and the text as `message`. `cancel event` compiles only because `on_chat` is cancellable — in `on_join` the same line is a compile error. `%player's displayname%` → `${player.display_name}`, and `&`-codes become MiniMessage tags throughout.
 
 </template>
 </MappedPair>

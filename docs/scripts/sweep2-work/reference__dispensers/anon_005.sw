@@ -1,6 +1,6 @@
 Block {
-    on_dispense(item, direction) {
-        if this.id is "minecraft:dropper" {
+    on_dispense {
+        if block.id is "minecraft:dropper" {
             cancel event
         }
     }

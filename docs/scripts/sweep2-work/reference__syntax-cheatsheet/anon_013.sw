@@ -7,7 +7,7 @@ persistent total_joins: Integer = 0            // global scalar, default require
 persistent kills for Player: Integer = 0       // keyed by subject
 
 Player {
-    on_join() {
+    on_join {
         set total_joins to total_joins + 1
     }
 }

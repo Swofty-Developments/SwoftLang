@@ -1,7 +1,7 @@
 Player {
-    on_chat(message) {
-        set spot to this.location
+    on_chat {
+        set spot to player.location
         set spot.y to 300.0
-        send "spot.y = ${spot.y}, and you have not moved" to this
+        send "spot.y = ${spot.y}, and you have not moved" to player
     }
 }

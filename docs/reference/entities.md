@@ -168,7 +168,7 @@ mob "zombie" {
 
     tags: { hits: map<Player, Integer> }      // typed per-entity state, keyed by player
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
             set count to mob.tags.hits[attacker] otherwise 0
@@ -185,16 +185,16 @@ mob "zombie" {
 }
 
 Player {
-    on_join() {
-        spawn mob "zombie" at in_front_of(this, 5) as z
-        set name of z to "<red>Zombie <gray>0/5" for this
-        show z to this                                    // reveal it to just this player
+    on_join {
+        spawn mob "zombie" at in_front_of(player, 5) as z
+        set name of z to "<red>Zombie <gray>0/5" for player
+        show z to player                                    // reveal it to just this player
     }
 }
 ```
 
 Because the zombie is `viewable: false`, the `spawn` puts it in the world seen by nobody;
-the `show z to this` line is what makes it appear, and only for the joining
+the `show z to player` line is what makes it appear, and only for the joining
 player. Two players standing side by side each punch their *own* zombie: the tag map is
 keyed by `Player`, so `mob.tags.hits[attacker]` counts per attacker, and the
 `set name … for attacker` nameplate updates for that attacker alone.

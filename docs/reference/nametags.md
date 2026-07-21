@@ -6,11 +6,11 @@ being watched" markers: all one statement each.
 
 ```swoftlang
 Player {
-    on_join() {
-        set nametag of this to "<red>[ADMIN] ${this.name}"
-        set nametag prefix of this to "&6[VIP] "
-        set nametag suffix of this to " &7(AFK)"
-        set nametag color of this to red
+    on_join {
+        set nametag of player to "<red>[ADMIN] ${player.name}"
+        set nametag prefix of player to "&6[VIP] "
+        set nametag suffix of player to " &7(AFK)"
+        set nametag color of player to red
     }
 }
 ```

@@ -33,10 +33,10 @@ command "race" {
 }
 
 Player {
-    on_join() {
+    on_join {
         async {                                             // 4. async block
             wait 60 ticks
-            send "<gold>Tip: type /help to get started" to this
+            send "<gold>Tip: type /help to get started" to player
         }
     }
 }
@@ -53,8 +53,8 @@ time:
 |---|---|
 | `execute { }` (command) | sync |
 | `execute async { }` (command) | async |
-| receiver method body (`on_join() { }`) | sync |
-| receiver method marked async (`on_join() async { }`) | async |
+| receiver method body (`on_join { }`) | sync |
+| receiver method marked async (`on_join async { }`) | async |
 | `async function` body | async |
 | `async { }` block body | async |
 | plain `function` body | sync — even when called from async code |

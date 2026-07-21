@@ -1,6 +1,6 @@
 Player {
-    on_join() {
-        broadcast "<yellow>${this.name} joined the game"
-        send "<green>Welcome, ${this.name}!" to this
+    on_join {
+        broadcast "<yellow>${player.name} joined the game"
+        send "<green>Welcome, ${player.name}!" to player
     }
 }

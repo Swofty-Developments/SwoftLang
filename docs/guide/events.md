@@ -12,30 +12,30 @@ do lives in a `Player { }` block; each method is a specific event:
 
 ```swoftlang
 Player {
-    on_join() {
-        broadcast "<yellow>${this.name} joined the game"
+    on_join {
+        broadcast "<yellow>${player.name} joined the game"
     }
 }
 ```
 
-Inside a method, `this` is the subject — here, the player who joined. Each method has a
-fixed name and a fixed set of parameters, both checked at compile time, so a handler that
-binds the wrong data is a compile error:
+Inside a method the subject is a bare variable named after its type — here `player`, the
+one who just joined. Each method binds a fixed set of variables, settled at compile time,
+so a handler that reaches for data the event never binds is a compile error:
 
-<!-- swoftc name=badchat.sw expect=error -->
+<!-- swoftc name=badjoin.sw expect=error -->
 
 ```swoftlang
 Player {
-    on_chat() {            // [!code error]
-        broadcast "hi"
+    on_join {
+        send "<red>Under attack!" to attacker    // [!code error]
     }
 }
 ```
 
 ```txt
-badchat.sw:2:5: error: Player method 'on_chat' expects 1 parameter (message: String), got 0
-    on_chat() {
-    ^
+badjoin.sw:3:38: error: variable 'attacker' is never assigned
+        send "<red>Under attack!" to attacker
+                                     ^
 ```
 
 The two shapes you'll write most map straight from Skript:
@@ -55,9 +55,9 @@ on join:
 
 ```swoftlang
 Player {
-    on_join() {
-        broadcast "<yellow>${this.name} joined the game"
-        send "<green>Welcome, ${this.name}!" to this
+    on_join {
+        broadcast "<yellow>${player.name} joined the game"
+        send "<green>Welcome, ${player.name}!" to player
     }
 }
 ```
@@ -65,10 +65,10 @@ Player {
 </template>
 <template #note>
 
-`on join:` becomes `Player { on_join() { } }`, and the player is `this`. `this.name` is
-checked against a real property table at compile time — misspell it and the compiler
-suggests the fix ([Step 08](/guide/properties)). `broadcast "..."` is shorthand for
-`send "..." to all`.
+`on join:` becomes `Player { on_join { } }`, and the player is the bare variable `player`.
+`player.name` is checked against a real property table at compile time — misspell it and
+the compiler suggests the fix ([Step 08](/guide/properties)). `broadcast "..."` is
+shorthand for `send "..." to all`.
 
 </template>
 </MappedPair>
@@ -87,10 +87,10 @@ on chat:
 
 ```swoftlang
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "badword" {
             cancel event
-            send "<red>Watch your language" to this
+            send "<red>Watch your language" to player
         }
     }
 }
@@ -99,8 +99,8 @@ Player {
 </template>
 <template #note>
 
-`on chat:` becomes `Player { on_chat(message) { } }` — the chat text arrives as the
-`message` parameter, `this` is the sender. `contains` and `cancel event` exist in both.
+`on chat:` becomes `Player { on_chat { } }` — the chat text is the bound variable
+`message`, and `player` is the sender. `contains` and `cancel event` exist in both.
 The difference is what the compiler knows: SwoftLang only allows `cancel event` on events
 that are actually cancellable, and only *before* the handler goes async (both enforced
 below).
@@ -111,14 +111,14 @@ below).
 
 ## Rewriting event data
 
-Some method parameters are writable — assigning to them rewrites the event before anyone
+Some bound variables are writable — assigning to them rewrites the event before anyone
 sees it. Reassigning `message` rewrites the chat line:
 
 ```swoftlang
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "badword" {
-            send "<red>Watch your language." to this
+            send "<red>Watch your language." to player
             cancel event
             halt
         }
@@ -127,32 +127,33 @@ Player {
 }
 ```
 
-Which parameters are writable is fixed per method (the [receiver tables](/reference/events)
-mark them `rw`) — `message` is writable, `this` is not.
+Which bound variables are writable is fixed per method (the
+[receiver tables](/reference/events) mark them `rw`) — `message` is writable, `player` is
+not.
 
-::: tip `this` is the subject
-Every method binds `this` to what the block is about — the player in a `Player` method, the
-mob in a `Mob` method, the block in a `Block` method. Reach the rest of the event's data
-through the method's parameters.
+::: tip The subject is a bare variable
+Every method binds what the block is about to a variable named after its type — `player` in
+a `Player` method, `mob` in a `Mob` method, `block` in a `Block` method. The rest of the
+event's data is bound alongside it as bare variables.
 :::
 
 ## The receiver tables {#the-event-table}
 
 The full catalog — every receiver, every method, and the data each binds — lives in the
 [Receivers & Events reference](/reference/events). The headline `Player` methods this guide
-leans on:
+leans on (`player` is always bound; the extra bound variables are listed):
 
-| Method | Cancellable | Parameters |
+| Method | Cancellable | Bound variables |
 |---|---|---|
-| `on_join()` | no | — |
-| `on_chat(message)` | yes | `message` (String, rw) |
-| `on_move(new_position)` | yes | `new_position` (Location, rw) |
-| `on_death(death_text, chat_message)` | no | `death_text` (rw), `chat_message` (rw) |
-| `on_command(command)` | yes | `command` (String, rw) |
-| `on_break_block(block, location, face)` | yes | `block`, `location`, `face` |
+| `on_join` | no | — |
+| `on_chat` | yes | `message` (String, rw) |
+| `on_move` | yes | `new_position` (Location, rw) |
+| `on_death` | no | `death_text` (rw), `chat_message` (rw) |
+| `on_command` | yes | `command` (String, rw) |
+| `on_break_block` | yes | `block`, `location`, `face` |
 
 Custom [items and mobs](/guide/items-and-mobs) get their own methods on top of the base
-receivers; `Server { on_list_ping(status) }` powers dynamic MOTDs in
+receivers; `Server { on_list_ping }` powers dynamic MOTDs in
 [Step 16](/guide/ship-it#a-dynamic-motd).
 
 ## Cancelling events
@@ -167,7 +168,7 @@ nothing to veto:
 
 ```swoftlang
 Player {
-    on_join() {
+    on_join {
         cancel event
     }
 }
@@ -188,7 +189,7 @@ out, and cancelling would be a silent no-op. SwoftLang makes it a compile error 
 
 ```swoftlang
 Player {
-    on_chat(message) async {
+    on_chat async {
         wait 1 ticks
         cancel event
     }
@@ -205,10 +206,10 @@ The canonical pattern: decide and cancel synchronously, then hand slow work to a
 
 ```swoftlang
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "spoiler" {
             cancel event
-            spawn warn_later(this)
+            spawn warn_later(player)
         }
     }
 }

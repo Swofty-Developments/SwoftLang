@@ -183,12 +183,6 @@
   font-weight: 600;
 }
 
-.sw-ver-catch {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-}
-
 .sw-icon-btn {
   display: grid;
   place-items: center;

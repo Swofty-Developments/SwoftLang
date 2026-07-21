@@ -100,14 +100,14 @@ The `motd:` key is the static server-list text. Two runtime surfaces make it dyn
 |---|---|
 | `set server motd to <string>` | statement — change the MOTD from any handler |
 | `server.motd` | read/write property, same thing as an lvalue |
-| `Server { on_list_ping(status) }` | per-ping rewrite of the status line |
+| `Server { on_list_ping }` | per-ping rewrite of the status line |
 
 `Server.on_list_ping` fires for each server-list ping, with a writable `status` line —
 a dynamic MOTD, computed per ping:
 
 ```swoftlang
 Server {
-    on_list_ping(status) {
+    on_list_ping {
         set status to "<green>${length(all_players())} heroes online right now"
     }
 }

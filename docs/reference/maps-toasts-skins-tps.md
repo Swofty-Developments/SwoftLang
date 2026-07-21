@@ -41,8 +41,8 @@ The advancement popup in the top-right corner, without declaring an advancement:
 
 ```swoftlang
 Player {
-    on_join() {
-        show toast "<gold>Welcome!" description "Have a look around" icon "COMPASS" frame task to this
+    on_join {
+        show toast "<gold>Welcome!" description "Have a look around" icon "COMPASS" frame task to player
     }
 }
 ```
@@ -123,7 +123,7 @@ changes (crossing 19→18 fires; 19.4→19.1 doesn't):
 
 ```swoftlang
 Server {
-    on_tps_change(past, current) {
+    on_tps_change {
         if current < 15.0 {
             broadcast "<red>Server struggling: ${past} -> ${current} TPS"
         }

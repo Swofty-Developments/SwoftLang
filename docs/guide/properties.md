@@ -6,7 +6,7 @@ title: Player & World Properties
 a <code>/wall</code> command that teleports with a one-line write — plus three real compile errors that never reach your server.
 </StepHeader>
 
-Dotted chains — `this.location.y`, `args.target.held_item.amount` — are how
+Dotted chains — `player.location.y`, `args.target.held_item.amount` — are how
 scripts read and write game state. They look like field access; under the hood every hop
 goes through a **property registry**: a closed, typed table of what each kind of value
 exposes, which hops are writable, how values are coerced, and which thread the real
@@ -20,14 +20,14 @@ server.
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        send "you are ${this.name} at y=${this.location.y}" to this
-        send "holding ${this.held_item.material}" to this
+    on_chat {
+        send "you are ${player.name} at y=${player.location.y}" to player
+        send "holding ${player.held_item.material}" to player
     }
 }
 ```
 
-Chains resolve left to right: `this` → the `Player` the method is about, `.location` → a
+Chains resolve left to right: `player` → the `Player` the method is about, `.location` → a
 `Location` snapshot, `.y` → a `Double`. Interpolated `${...}` paths are the same chains
 with the same checks.
 
@@ -37,15 +37,15 @@ Misspell a hop and the compiler answers with a suggestion:
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        send "ping: ${this.latencey}ms" to this   // [!code error]
+    on_chat {
+        send "ping: ${player.latencey}ms" to player   // [!code error]
     }
 }
 ```
 
 ```txt
 ping.sw:3:14: error: unknown property 'latencey' on Player; did you mean 'latency'?
-        send "ping: ${this.latencey}ms" to this
+        send "ping: ${player.latencey}ms" to player
              ^
 ```
 
@@ -55,10 +55,10 @@ ping.sw:3:14: error: unknown property 'latencey' on Player; did you mean 'latenc
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        set this.health to this.max_health
-        set this.gamemode to "creative"
-        set this.held_item.amount to 32
+    on_chat {
+        set player.health to player.max_health
+        set player.gamemode to "creative"
+        set player.held_item.amount to 32
     }
 }
 ```
@@ -91,16 +91,16 @@ Read-only properties refuse writes the same way:
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        set this.name to "Somebody"   // [!code error]
+    on_chat {
+        set player.name to "Somebody"   // [!code error]
     }
 }
 ```
 
 ```txt
-rename.sw:3:18: error: property 'name' on Player is read-only
-        set this.name to "Somebody"
-                 ^
+rename.sw:3:20: error: property 'name' on Player is read-only
+        set player.name to "Somebody"
+                   ^
 ```
 
 In Skript each property has its own expression syntax, and a wrong guess fails at
@@ -175,17 +175,17 @@ and nothing else:
 
 ```swoftlang
 Player {
-    on_chat(message) {
-        set spot to this.location
+    on_chat {
+        set spot to player.location
         set spot.y to 300.0
-        send "spot.y = ${spot.y}, and you have not moved" to this
+        send "spot.y = ${spot.y}, and you have not moved" to player
     }
 }
 ```
 
 Here the anchor is the local variable `spot`, so the copy lands back in the variable. To
-actually move someone using a snapshot: `set this.location to spot` (or
-`teleport this to spot`).
+actually move someone using a snapshot: `set player.location to spot` (or
+`teleport player to spot`).
 :::
 
 ## World properties

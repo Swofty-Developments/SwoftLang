@@ -1,5 +1,5 @@
 Player {
-    on_chat(message) {
-        send "ping: ${this.latencey}ms" to this
+    on_chat {
+        send "ping: ${player.latencey}ms" to player
     }
 }

@@ -1,9 +1,9 @@
 Player {
-    on_join() {
-        broadcast "<yellow>${this.name} joined the game"
+    on_join {
+        broadcast "<yellow>${player.name} joined the game"
     }
 
-    on_chat(message) {
-        send "<gray>You said: ${message}" to this
+    on_chat {
+        send "<gray>You said: ${message}" to player
     }
 }

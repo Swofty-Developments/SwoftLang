@@ -3,7 +3,7 @@ mob "guardian" {
     name: "<gold>Guardian"
     health: 100
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             send "<red>You struck the ${mob.custom_id}!" to attacker
         }

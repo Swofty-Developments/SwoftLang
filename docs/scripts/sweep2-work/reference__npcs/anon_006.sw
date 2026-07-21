@@ -3,10 +3,10 @@ npc "sentry" {
     name: "<gold>Sentry (${player.name})"
     skin: "Notch"
     viewable: false
-    on_click(player) {
+    on_click {
         send "<yellow>Halt, ${player.name}!" to player
     }
-    on_tick() {
-        set this.glowing to true
+    on_tick {
+        set npc.glowing to true
     }
 }

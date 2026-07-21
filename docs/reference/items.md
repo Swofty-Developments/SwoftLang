@@ -235,7 +235,7 @@ item "crypt_key" {
         uses: 3
     }
 
-    on_click(left) {
+    on_click {
         set item.tags.uses to (item.tags.uses otherwise 0) - 1
         send "<light_purple>The key turns..." to player
     }
@@ -309,15 +309,15 @@ you want left/right separation.
 
 ```swoftlang
 Item {
-    on_use(player) {
-        if custom_id(this) otherwise "" is "aspect_of_the_end" {
+    on_use {
+        if custom_id(item) otherwise "" is "aspect_of_the_end" {
             send "<gray>You used the Aspect!" to player
         }
     }
 }
 ```
 
-`this` is the used `Item`, `player` is the `Player` who used it, and `custom_id(this)`
+`item` is the used `Item`, `player` is the `Player` who used it, and `custom_id(item)`
 reads the declaration id as an `optional<String>`; the method is cancellable.
 
 ::: tip Build a gameplay system

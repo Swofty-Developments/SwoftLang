@@ -12,11 +12,11 @@ mob "sentinel" {
 npc "guide" {
     location: location(5, 64, 5)
     skin: "Notch"
-    on_tick() {
-        set this.tasks.follow to schedule after 2 seconds every 1 seconds {
+    on_tick {
+        set npc.tasks.follow to schedule after 2 seconds every 1 seconds {
             broadcast "<yellow>following"
         }
-        if this.tasks.follow is running broadcast "following on"
-        stop this.tasks.follow
+        if npc.tasks.follow is running broadcast "following on"
+        stop npc.tasks.follow
     }
 }

@@ -1,6 +1,6 @@
 Mob {
-    on_click(player) {
-        send "<gray>You poke a ${this.type}." to player
+    on_click {
+        send "<gray>You poke a ${mob.type}." to player
     }
 }
 
@@ -9,12 +9,12 @@ mob "ghoul" {
     name: "<dark_green>Ghoul"
     health: 40
 
-    on_click(player) {
+    on_click {
         send "<green>You poke the ghoul." to player
-        default()                       // also run base Mob.on_click
+        call original method            // also run base Mob.on_click
     }
 
-    on_target(target) {
-        super.on_target(target)
+    on_target {
+        call original method with arguments target
     }
 }

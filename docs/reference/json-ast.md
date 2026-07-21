@@ -118,14 +118,14 @@ Binary `op` values: `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `GREATER_THAN`,
 `IS_NOT_TYPE`, `CONTAINS`, `CONCATENATE`, `ADD`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`,
 `MODULO`.
 
-`this.location.y` compiles to nested `prop` nodes over a root `var`:
+`player.location.y` compiles to nested `prop` nodes over a root `var`:
 
 ```json
 {
   "kind": "prop", "name": "y",
   "target": {
     "kind": "prop", "name": "location",
-    "target": { "kind": "var", "name": "this", "line": 3, "col": 12 },
+    "target": { "kind": "var", "name": "player", "line": 3, "col": 12 },
     "line": 3, "col": 17
   },
   "line": 3, "col": 26

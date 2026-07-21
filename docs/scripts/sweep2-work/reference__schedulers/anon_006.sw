@@ -1,6 +1,6 @@
 Player {
-    on_join() {
-        set handle to this.tasks.welcome        // optional<Schedule>
-        if this.tasks.welcome exists broadcast "welcome is bound"
+    on_join {
+        set handle to player.tasks.welcome        // optional<Schedule>
+        if player.tasks.welcome exists broadcast "welcome is bound"
     }
 }

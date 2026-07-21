@@ -29,12 +29,12 @@ command "staffchat" {
 }
 
 Player {
-    on_chat(message) {
-        if staffchat for this {
+    on_chat {
+        if staffchat for player {
             cancel event
-            send_staff(this, message)
+            send_staff(player, message)
         } else {
-            broadcast "${this.display_name}<white>: ${message}"
+            broadcast "${player.display_name}<white>: ${message}"
         }
     }
 }

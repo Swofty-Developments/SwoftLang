@@ -61,9 +61,9 @@ per-variable regex patterns in a config file.
 persistent total_joins: Integer = 0
 
 Player {
-    on_join() {
+    on_join {
         set total_joins to total_joins + 1
-        broadcast "<green>${this.name} is join #${total_joins}"
+        broadcast "<green>${player.name} is join #${total_joins}"
     }
 }
 ```
@@ -94,15 +94,15 @@ persistent kills for Player: Integer = 0
 persistent last_seen for Player: String = "never"
 
 Player {
-    on_join() {
-        send "kills on record: ${kills for this}" to this
-        set last_seen for this to "today"
+    on_join {
+        send "kills on record: ${kills for player}" to player
+        set last_seen for player to "today"
     }
 }
 ```
 
 Access is `kills for <expr>`, where the expression must typecheck to the subject type.
-Assignment mirrors it: `set kills for this to ...`.
+Assignment mirrors it: `set kills for player to ...`.
 
 The checker keeps the two shapes apart — bare access to a keyed variable doesn't
 compile:

@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        send "hi ${this.nmae}" to this
+    on_join {
+        send "hi ${player.nmae}" to player
     }
 }

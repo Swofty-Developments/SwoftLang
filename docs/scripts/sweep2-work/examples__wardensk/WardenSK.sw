@@ -166,14 +166,14 @@ export function disturb(w: Mob, from: Location) {
 // a non-player, so the nearest player takes the blame.
 
 Mob {
-    on_hit(attacker) {
-        if this.custom_id is "warden" {
+    on_hit {
+        if mob.custom_id is "warden" {
             set best to 999999999.0
             set nearest to player("")
             loop all players as p {
-                set dx to p.location.x - this.location.x
-                set dy to p.location.y - this.location.y
-                set dz to p.location.z - this.location.z
+                set dx to p.location.x - mob.location.x
+                set dy to p.location.y - mob.location.y
+                set dz to p.location.z - mob.location.z
                 set d to dx * dx + dy * dy + dz * dz
                 if d < best {
                     set best to d
@@ -181,7 +181,7 @@ Mob {
                 }
             }
             if nearest exists {
-                increase_warden_anger(this, nearest, 100)
+                increase_warden_anger(mob, nearest, 100)
             }
         }
     }

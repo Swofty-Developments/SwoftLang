@@ -1,7 +1,7 @@
 persistent kills for Player: Integer = 0
 
 Mob {
-    on_death(killer) {
+    on_death {
         if killer exists {
             set k to player(killer.uuid)
             if k exists {

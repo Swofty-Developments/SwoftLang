@@ -146,10 +146,10 @@ world from an event handler:
 
 ```swoftlang
 Player {
-    on_join() {
-        place block("minecraft:sea_lantern") at this.location
-        place "minecraft:oak_log" at this.location
-        remove block at this.location
+    on_join {
+        place block("minecraft:sea_lantern") at player.location
+        place "minecraft:oak_log" at player.location
+        remove block at player.location
     }
 }
 ```
@@ -178,32 +178,32 @@ Each callback is optional; declare only the ones you need. `on_interact` returns
 
 ```swoftlang
 block_handler "oak_sign" {
-    on_place(player, location, block) {
+    on_place {
         send "placed a sign" to player
     }
-    on_destroy(location, block) {
+    on_destroy {
         broadcast "a sign broke"
     }
-    on_interact(player, location, block) -> Boolean {
+    on_interact -> Boolean {
         send "you clicked the sign" to player
         return true
     }
-    on_touch(entity, location) {
+    on_touch {
         broadcast "something touched a sign"
     }
-    tick(location, block) {
+    tick {
         broadcast "sign tick"
     }
 }
 ```
 
-| Callback | Parameters | Fires when |
+| Callback | Bound variables | Fires when |
 |---|---|---|
-| `on_place` | `(player, location, block)` | a player places the block |
-| `on_destroy` | `(location, block)` | the block is broken |
-| `on_interact` | `(player, location, block) -> Boolean` | a player right-clicks it |
-| `on_touch` | `(entity, location)` | an entity walks into it |
-| `tick` | `(location, block)` | the block ticks |
+| `on_place` | `player`, `location`, `block` | a player places the block |
+| `on_destroy` | `location`, `block` | the block is broken |
+| `on_interact` | `player`, `location`, `block` (returns `Boolean`) | a player right-clicks it |
+| `on_touch` | `entity`, `location` | an entity walks into it |
+| `tick` | `location`, `block` | the block ticks |
 
 ## `placement_rule` — decide the placed state
 
@@ -215,19 +215,19 @@ stacking into a double, for instance).
 
 ```swoftlang
 placement_rule for "oak_stairs" {
-    on_place(location, face, cursor, against, player) -> Block {
+    on_place -> Block {
         return block("oak_stairs").with("facing", "north").with("half", "top")
     }
-    on_update(location, block, neighbors) -> Block {
+    on_update -> Block {
         return block
     }
     self_replaceable: false
 }
 ```
 
-The `on_place` callback is handed the placement context:
+The `on_place` callback binds the placement context:
 
-| Parameter | Type | Meaning |
+| Bound variable | Type | Meaning |
 |---|---|---|
 | `location` | `Location` | the cell being placed into |
 | `face` | `String` | the clicked face — `"top"`, `"north"`, … |
@@ -237,7 +237,7 @@ The `on_place` callback is handed the placement context:
 
 Minestom's placement state exposes a position, not a `Player`, so `player` is a
 `Location` — read `player.yaw` to orient stairs and doors from the look direction.
-`on_update(location, block, neighbors)` receives `neighbors` as a `map<String, Block>`
+`on_update` binds `neighbors` as a `map<String, Block>`
 keyed by the six face names, and returns the block's recomputed state (fence connections,
 stair shapes) whenever an adjacent block changes.
 
@@ -274,7 +274,7 @@ on place of oak log:
 
 ```swoftlang
 placement_rule for "oak_log" {
-    on_place(location, face, cursor, against, player) -> Block {
+    on_place -> Block {
         set axis to "y"
         if (face is "north") or (face is "south") set axis to "z"
         if (face is "east") or (face is "west") set axis to "x"

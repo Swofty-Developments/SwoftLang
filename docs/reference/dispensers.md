@@ -53,18 +53,18 @@ the statement is a no-op at that position (nothing to fire).
 
 Every fire — lever, redstone, or `dispense from` — calls the [`Block`](/reference/events#block)
 receiver's `on_dispense` method *before* the item moves, so a handler can watch it, swap
-what comes out, or stop it entirely. `this` is the dispenser block (its type is
-`this.id`), and the method is cancellable.
+what comes out, or stop it entirely. `block` is the dispenser block (its type is
+`block.id`), and the method is cancellable.
 
 | Binding | Type | Access | Meaning |
 |---|---|---|---|
-| `this` | `Block` | — | the dispenser block; `this.id` is the type (`minecraft:dispenser` / `minecraft:dropper`) |
+| `block` | `Block` | — | the dispenser block; `block.id` is the type (`minecraft:dispenser` / `minecraft:dropper`) |
 | `item` | `Item` | rw | the item about to be dispensed |
 | `direction` | `String` | ro | the facing direction the item will take |
 
 ```swoftlang
 Block {
-    on_dispense(item, direction) {
+    on_dispense {
         send "<gray>A dispenser fired, facing ${direction}." to all players
     }
 }
@@ -74,7 +74,7 @@ Because `item` is read-write, you can substitute the payload:
 
 ```swoftlang
 Block {
-    on_dispense(item, direction) {
+    on_dispense {
         if item.material is "minecraft:arrow" {
             // turn every dispensed arrow into a snowball
             set item to item("SNOWBALL")
@@ -87,8 +87,8 @@ Cancel to jam the block — nothing leaves it:
 
 ```swoftlang
 Block {
-    on_dispense(item, direction) {
-        if this.id is "minecraft:dropper" {
+    on_dispense {
+        if block.id is "minecraft:dropper" {
             cancel event
         }
     }

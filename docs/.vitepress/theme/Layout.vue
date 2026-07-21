@@ -19,6 +19,26 @@ const version = computed(() => versionForPath(route.path))
 // route prefix to keep the top-bar sections inside the active version
 const versionBase = computed(() => version.value.prefix)
 const verOpen = ref(false)
+const verSwitch = ref<HTMLElement | null>(null)
+
+// close the version menu on an outside click or Escape (no overlay — an overlay
+// would sit above the sticky top-bar's stacking context and swallow item clicks)
+function onDocPointer(e: MouseEvent) {
+  if (verOpen.value && verSwitch.value && !verSwitch.value.contains(e.target as Node)) {
+    verOpen.value = false
+  }
+}
+function onDocKey(e: KeyboardEvent) {
+  if (e.key === 'Escape') verOpen.value = false
+}
+onMounted(() => {
+  document.addEventListener('click', onDocPointer)
+  document.addEventListener('keydown', onDocKey)
+})
+onUnmounted(() => {
+  document.removeEventListener('click', onDocPointer)
+  document.removeEventListener('keydown', onDocKey)
+})
 
 /* ---------- top-bar sections (version-aware) ---------- */
 
@@ -161,7 +181,7 @@ const nextStep = computed(() =>
         </nav>
 
         <div class="sw-tools">
-          <div class="sw-verswitch">
+          <div class="sw-verswitch" ref="verSwitch">
             <button
               class="sw-ver-btn"
               :aria-expanded="verOpen"
@@ -314,7 +334,6 @@ const nextStep = computed(() =>
       </div>
     </footer>
 
-    <div v-if="verOpen" class="sw-ver-catch" aria-hidden="true" @click="verOpen = false" />
 
     <SearchBox v-if="searchLoaded && showSearch" @close="showSearch = false" />
   </div>

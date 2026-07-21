@@ -1,8 +1,8 @@
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "spoiler" {
             cancel event
-            spawn warn_later(this)
+            spawn warn_later(player)
         }
     }
 }

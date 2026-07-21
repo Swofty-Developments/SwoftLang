@@ -7,7 +7,7 @@ hologram "welcome" {
 }
 
 Player {
-    on_join() {
-        show hologram "welcome" to this
+    on_join {
+        show hologram "welcome" to player
     }
 }

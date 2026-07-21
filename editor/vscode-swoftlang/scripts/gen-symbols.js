@@ -216,7 +216,7 @@ function build() {
   const symbols = [];
 
   const keywords = uniq([...(dump.keywords || []), ...EXTRA_KEYWORDS]);
-  const declarations = uniq([...(dump.declarations || []), 'command', 'event', 'function', 'async function']);
+  const declarations = uniq([...(dump.declarations || []), 'command', 'function', 'async function']);
   const types = uniq([...(dump.types || []), ...EXTRA_TYPES]);
   const builtins = dump.builtins || [];
   const handlers = dump.handlers || [];

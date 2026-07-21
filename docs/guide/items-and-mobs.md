@@ -103,8 +103,8 @@ items, so [Step 07](/guide/options) discipline applies:
 
 ```swoftlang
 Item {
-    on_use(player) {
-        if custom_id(this) otherwise "" is "aspect_of_the_end" {
+    on_use {
+        if custom_id(item) otherwise "" is "aspect_of_the_end" {
             send "<gray>You used the Aspect!" to player
         }
     }
@@ -140,7 +140,7 @@ item "crypt_key" {
         uses: 3
     }
 
-    on_click(left) {
+    on_click {
         set item.tags.uses to (item.tags.uses otherwise 0) - 1
         send "<light_purple>The key turns... (${item.tags.uses otherwise 0} uses left)" to player
     }
@@ -254,12 +254,12 @@ story, while `Mob { }` drives global systems:
 persistent mob_kills for Player: Integer = 0
 
 Mob {
-    on_death(killer) {
+    on_death {
         if killer exists {
             set k to player(killer.uuid)
             if k exists {
                 set mob_kills for k to (mob_kills for k) + 1
-                send "<gold>Kill #${mob_kills for k}: ${this.custom_id}" to k
+                send "<gold>Kill #${mob_kills for k}: ${mob.custom_id}" to k
             }
         }
     }

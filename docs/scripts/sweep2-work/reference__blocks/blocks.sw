@@ -313,74 +313,74 @@ function bl_place_door(id: String, loc: Location, cursor: Vec, player: Location)
 
 // ---- stairs ----
 placement_rule for "oak_stairs" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_stairs("oak_stairs", loc, face, cursor, player)
+    on_place -> Block {
+        return bl_place_stairs("oak_stairs", location, face, cursor, player)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_update_stairs(current, neighbours)
+    on_update -> Block {
+        return bl_update_stairs(block, neighbors)
     }
     self_replaceable: false
 }
 
 placement_rule for "stone_stairs" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_stairs("stone_stairs", loc, face, cursor, player)
+    on_place -> Block {
+        return bl_place_stairs("stone_stairs", location, face, cursor, player)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_update_stairs(current, neighbours)
+    on_update -> Block {
+        return bl_update_stairs(block, neighbors)
     }
     self_replaceable: false
 }
 
 placement_rule for "cobblestone_stairs" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_stairs("cobblestone_stairs", loc, face, cursor, player)
+    on_place -> Block {
+        return bl_place_stairs("cobblestone_stairs", location, face, cursor, player)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_update_stairs(current, neighbours)
+    on_update -> Block {
+        return bl_update_stairs(block, neighbors)
     }
     self_replaceable: false
 }
 
 // ---- slabs (self_replaceable so clicking one stacks it to a double) ----
 placement_rule for "oak_slab" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_slab("oak_slab", loc, face, cursor)
+    on_place -> Block {
+        return bl_place_slab("oak_slab", location, face, cursor)
     }
     self_replaceable: true
 }
 
 placement_rule for "stone_slab" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_slab("stone_slab", loc, face, cursor)
+    on_place -> Block {
+        return bl_place_slab("stone_slab", location, face, cursor)
     }
     self_replaceable: true
 }
 
 placement_rule for "cobblestone_slab" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_slab("cobblestone_slab", loc, face, cursor)
+    on_place -> Block {
+        return bl_place_slab("cobblestone_slab", location, face, cursor)
     }
     self_replaceable: true
 }
 
 // ---- logs / pillars ----
 placement_rule for "oak_log" {
-    on_place(loc, face, cursor, against, player) -> Block {
+    on_place -> Block {
         return bl_place_log("oak_log", face)
     }
     self_replaceable: false
 }
 
 placement_rule for "birch_log" {
-    on_place(loc, face, cursor, against, player) -> Block {
+    on_place -> Block {
         return bl_place_log("birch_log", face)
     }
     self_replaceable: false
 }
 
 placement_rule for "bamboo_block" {
-    on_place(loc, face, cursor, against, player) -> Block {
+    on_place -> Block {
         return bl_place_log("bamboo_block", face)
     }
     self_replaceable: false
@@ -388,67 +388,67 @@ placement_rule for "bamboo_block" {
 
 // ---- fences / glass panes / iron bars ----
 placement_rule for "oak_fence" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_fence("oak_fence", loc)
+    on_place -> Block {
+        return bl_place_fence("oak_fence", location)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_apply_fence(neighbours, current)
+    on_update -> Block {
+        return bl_apply_fence(neighbors, block)
     }
     self_replaceable: false
 }
 
 placement_rule for "spruce_fence" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_fence("spruce_fence", loc)
+    on_place -> Block {
+        return bl_place_fence("spruce_fence", location)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_apply_fence(neighbours, current)
+    on_update -> Block {
+        return bl_apply_fence(neighbors, block)
     }
     self_replaceable: false
 }
 
 placement_rule for "glass_pane" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_fence("glass_pane", loc)
+    on_place -> Block {
+        return bl_place_fence("glass_pane", location)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_apply_fence(neighbours, current)
+    on_update -> Block {
+        return bl_apply_fence(neighbors, block)
     }
     self_replaceable: false
 }
 
 placement_rule for "iron_bars" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_fence("iron_bars", loc)
+    on_place -> Block {
+        return bl_place_fence("iron_bars", location)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_apply_fence(neighbours, current)
+    on_update -> Block {
+        return bl_apply_fence(neighbors, block)
     }
     self_replaceable: false
 }
 
 // ---- walls ----
 placement_rule for "cobblestone_wall" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_wall("cobblestone_wall", loc)
+    on_place -> Block {
+        return bl_place_wall("cobblestone_wall", location)
     }
-    on_update(loc, current, neighbours) -> Block {
-        return bl_apply_wall(neighbours, current)
+    on_update -> Block {
+        return bl_apply_wall(neighbors, block)
     }
     self_replaceable: false
 }
 
 // ---- doors (facing + hinge + paired upper/lower) ----
 placement_rule for "oak_door" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_door("oak_door", loc, cursor, player)
+    on_place -> Block {
+        return bl_place_door("oak_door", location, cursor, player)
     }
     self_replaceable: false
 }
 
 placement_rule for "iron_door" {
-    on_place(loc, face, cursor, against, player) -> Block {
-        return bl_place_door("iron_door", loc, cursor, player)
+    on_place -> Block {
+        return bl_place_door("iron_door", location, cursor, player)
     }
     self_replaceable: false
 }

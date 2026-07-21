@@ -35,21 +35,21 @@ function slime_cos_deg(a: Double) {
 }
 
 Player {
-    on_use_item(item, hand) {
+    on_use_item {
         if item.material is "SLIME_BALL" {
             cancel event
 
             // yaw/pitch -> unit direction (what 'make player shoot' hid)
-            set yaw to this.location.yaw
-            set pitch to this.location.pitch
+            set yaw to player.location.yaw
+            set pitch to player.location.pitch
             set dx to 0.0 - slime_sin_deg(yaw) * slime_cos_deg(pitch)
             set dy to 0.0 - slime_sin_deg(pitch)
             set dz to slime_cos_deg(yaw) * slime_cos_deg(pitch)
 
             set eye to location(
-                this.location.x,
-                this.location.y + 1.6,
-                this.location.z)
+                player.location.x,
+                player.location.y + 1.6,
+                player.location.z)
             set disp to spawn_item_display("SLIME_BALL", eye)
 
             // velocity 1.2, like 'shoot snowball at velocity 1.2'
@@ -58,7 +58,7 @@ Player {
                 dx * 1.2, dy * 1.2, dz * 1.2)
 
             // 'subtract 1 slime ball from player's tool'
-            set this.held_item.amount to this.held_item.amount - 1
+            set player.held_item.amount to player.held_item.amount - 1
         }
     }
 }

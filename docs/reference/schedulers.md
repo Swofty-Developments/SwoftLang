@@ -174,22 +174,22 @@ object, so the same id means "that object's task" from anywhere.
 
 ```swoftlang
 Player {
-    on_join() {
+    on_join {
         // bind two named tasks to the joining player
-        set this.tasks.welcome to schedule every 20 ticks {
-            send "<gray>tick" to this
+        set player.tasks.welcome to schedule every 20 ticks {
+            send "<gray>tick" to player
         }
-        set this.tasks.reminder to schedule after 1 seconds every 2 seconds {
-            send "<yellow>reminder" to this
+        set player.tasks.reminder to schedule after 1 seconds every 2 seconds {
+            send "<yellow>reminder" to player
         }
 
         // query by id: 'is running' / 'is not running' is a Boolean
-        if this.tasks.welcome is running send "<green>welcome running" to this
-        if this.tasks.reminder is not running send "<red>reminder stopped" to this
+        if player.tasks.welcome is running send "<green>welcome running" to player
+        if player.tasks.reminder is not running send "<red>reminder stopped" to player
 
         // cancel by id — 'cancel' and 'stop' are interchangeable here
-        cancel this.tasks.welcome
-        stop this.tasks.reminder
+        cancel player.tasks.welcome
+        stop player.tasks.reminder
     }
 }
 ```
@@ -214,9 +214,9 @@ so it composes with the [option operators](/guide/options):
 
 ```swoftlang
 Player {
-    on_join() {
-        set handle to this.tasks.welcome        // optional<Schedule>
-        if this.tasks.welcome exists broadcast "welcome is bound"
+    on_join {
+        set handle to player.tasks.welcome        // optional<Schedule>
+        if player.tasks.welcome exists broadcast "welcome is bound"
     }
 }
 ```
@@ -231,15 +231,15 @@ per-object task never outlives the thing it belongs to.
 
 | Owner | How the object is in scope |
 |---|---|
-| `Player` | any `Player` value — `this` in a `Player` method, `sender`, a loop variable |
+| `Player` | any `Player` value — `player` in a `Player` method, `sender`, a loop variable |
 | `Mob` | `mob` inside [`on_spawn`](/reference/mobs), a `Mob` value elsewhere |
 | `Entity` | any [`Entity`](/reference/entities) value |
-| `Npc` | `this` inside an [npc](/reference/npcs) handler (`on_click`, `on_tick`) |
-| `Hologram` | `this` inside a [hologram](/reference/holograms) handler |
+| `Npc` | `npc` inside an [npc](/reference/npcs) handler (`on_click`, `on_tick`) |
+| `Hologram` | `hologram` inside a [hologram](/reference/holograms) handler |
 | `block_at(<location>)` | the block at a position — the registry is keyed by that position |
 
-Binding a task from inside a construct's own handler uses `this` (or `mob` in
-`on_spawn`), so the task's lifetime is naturally the construct's:
+Binding a task from inside a construct's own handler uses the construct's bound variable
+(`player`, `mob`, `npc`, `hologram`, …), so the task's lifetime is naturally the construct's:
 
 ```swoftlang
 mob "sentinel" {
@@ -256,12 +256,12 @@ mob "sentinel" {
 npc "guide" {
     location: location(5, 64, 5)
     skin: "Notch"
-    on_tick() {
-        set this.tasks.follow to schedule after 2 seconds every 1 seconds {
+    on_tick {
+        set npc.tasks.follow to schedule after 2 seconds every 1 seconds {
             broadcast "<yellow>following"
         }
-        if this.tasks.follow is running broadcast "following on"
-        stop this.tasks.follow
+        if npc.tasks.follow is running broadcast "following on"
+        stop npc.tasks.follow
     }
 }
 ```
@@ -272,13 +272,13 @@ task bound to that position:
 
 ```swoftlang
 Player {
-    on_join() {
-        place block("minecraft:sea_lantern") at this.location
-        set block_at(this.location).tasks.pulse to schedule every 5 ticks {
+    on_join {
+        place block("minecraft:sea_lantern") at player.location
+        set block_at(player.location).tasks.pulse to schedule every 5 ticks {
             broadcast "<aqua>pulse"
         }
-        if block_at(this.location).tasks.pulse is running broadcast "pulsing"
-        remove block at this.location      // also cancels the 'pulse' task
+        if block_at(player.location).tasks.pulse is running broadcast "pulsing"
+        remove block at player.location      // also cancels the 'pulse' task
     }
 }
 ```

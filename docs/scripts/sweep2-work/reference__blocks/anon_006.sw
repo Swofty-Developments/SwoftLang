@@ -1,7 +1,7 @@
 Player {
-    on_join() {
-        place block("minecraft:sea_lantern") at this.location
-        place "minecraft:oak_log" at this.location
-        remove block at this.location
+    on_join {
+        place block("minecraft:sea_lantern") at player.location
+        place "minecraft:oak_log" at player.location
+        remove block at player.location
     }
 }

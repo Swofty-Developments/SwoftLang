@@ -16,7 +16,7 @@ npc "guide" {
     name: "<green>Village Guide"
     skin: "Notch"
     look_at_players: true
-    on_click(player) {
+    on_click {
         send "<yellow>Hello ${player.name}!" to player
     }
 }
@@ -31,13 +31,13 @@ npc "guide" {
 | `skin:` | skin source | no | a username `String` or `skin(texture, signature)` |
 | `look_at_players:` | `Boolean` | no | head tracks the nearest player (default `false`) |
 | `viewable:` | `Boolean` | no | whether every player sees it by default (default `true`) |
-| `on_click(p) { ... }` | handler | no | right-click interact; binds the clicking `Player` |
-| `on_left_click(p) { ... }` | handler | no | left-click / attack; binds the clicking `Player` |
-| `on_tick() { ... }` | handler | no | runs every tick with `this` bound to the NPC's fake-player entity |
+| `on_click { ... }` | handler | no | right-click interact; binds the clicking `Player` |
+| `on_left_click { ... }` | handler | no | left-click / attack; binds the clicking `Player` |
+| `on_tick { ... }` | handler | no | runs every tick with `npc` bound to the NPC's fake-player entity |
 
-The click parameter is yours to name — `on_click(player)`, `on_left_click(clicker)` —
-and is a `Player`, bound for the duration of the handler exactly like a command body.
-Both handlers run on the tick thread.
+The clicking player is bound as `player` — a `Player`, in scope for the duration of the
+handler exactly like a command body — and the NPC itself as `npc`. Both handlers run on the
+tick thread.
 
 ## Skins
 
@@ -67,16 +67,16 @@ npc "greeter" {
     location: location(5, 64, 5)
     name: "<green>Guide (${player.name})"
     skin: "Notch"
-    on_click(clicker) {
-        send "<yellow>Welcome, ${clicker.name}!" to clicker
+    on_click {
+        send "<yellow>Welcome, ${player.name}!" to player
     }
 }
 ```
 
 ::: tip Per-NPC timers
-Inside an NPC handler `this` is bound to the NPC, which carries a
+Inside an NPC handler `npc` is bound to the NPC, which carries a
 [task registry](./schedulers#obj-tasks):
-`set this.tasks.<id> to schedule after 2 seconds every 1 seconds { }` binds a named task
+`set npc.tasks.<id> to schedule after 2 seconds every 1 seconds { }` binds a named task
 that auto-cancels when the NPC is removed.
 :::
 
@@ -125,7 +125,7 @@ command "who_sees" {
 
 ## Per-tick handler
 
-An `on_tick()` handler runs every tick with `this` bound to the NPC's fake-player
+An `on_tick` handler runs every tick with `npc` bound to the NPC's fake-player
 entity, so you can drive per-frame behaviour — glow, position nudges, entity properties —
 straight from the declaration:
 
@@ -135,11 +135,11 @@ npc "sentry" {
     name: "<gold>Sentry (${player.name})"
     skin: "Notch"
     viewable: false
-    on_click(player) {
+    on_click {
         send "<yellow>Halt, ${player.name}!" to player
     }
-    on_tick() {
-        set this.glowing to true
+    on_tick {
+        set npc.glowing to true
     }
 }
 ```
@@ -197,7 +197,7 @@ npc "guide" {
     name: "<green>Village Guide"
     skin: "Notch"
     look_at_players: true
-    on_click(player) {
+    on_click {
         send "<yellow>Hello ${player.name}!" to player
     }
 }

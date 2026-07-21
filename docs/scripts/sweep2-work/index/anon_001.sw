@@ -1,6 +1,6 @@
 Player {
-    on_join() {
-        send "<green>Welcome, ${this.name}!" to this
-        send "<gray>${this.name} joined" to all
+    on_join {
+        send "<green>Welcome, ${player.name}!" to player
+        send "<gray>${player.name} joined" to all
     }
 }

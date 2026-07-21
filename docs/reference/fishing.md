@@ -92,23 +92,23 @@ bite and nothing happens; reel during the bite window and the catch is resolved.
 ## The fishing methods
 
 Four methods on the [`Player`](/reference/events#player) receiver cover the lifecycle.
-`this` is the angler, and each fires at the matching moment of the cast/bite/catch/reel
+`player` is the angler, and each fires at the matching moment of the cast/bite/catch/reel
 cycle.
 
 | Method | Fires |
 |---|---|
-| `on_cast_rod()` | before the bobber spawns |
-| `on_fish_bite()` | when the bobber dips |
-| `on_catch_fish()` | just before the catch is delivered |
-| `on_reel_in()` | when the line comes back in |
+| `on_cast_rod` | before the bobber spawns |
+| `on_fish_bite` | when the bobber dips |
+| `on_catch_fish` | just before the catch is delivered |
+| `on_reel_in` | when the line comes back in |
 
 `on_cast_rod` is the moment to greet or notify the angler as the line goes out:
 
 ```swoftlang
 Player {
-    on_cast_rod() {
-        if this.world.time > 100000 {
-            send "<gray>The fish are asleep." to this
+    on_cast_rod {
+        if player.world.time > 100000 {
+            send "<gray>The fish are asleep." to player
         }
     }
 }
@@ -119,8 +119,8 @@ Player {
 
 ```swoftlang
 Player {
-    on_catch_fish() {
-        send "<green>You landed something!" to this
+    on_catch_fish {
+        send "<green>You landed something!" to player
     }
 }
 ```
@@ -173,22 +173,22 @@ server {
 }
 
 Player {
-    on_cast_rod() {
-        if this.world.time > 100000 {
-            send "<gray>The fish are asleep." to this
+    on_cast_rod {
+        if player.world.time > 100000 {
+            send "<gray>The fish are asleep." to player
         }
     }
 
-    on_fish_bite() {
-        send "<aqua>Something's biting..." to this
+    on_fish_bite {
+        send "<aqua>Something's biting..." to player
     }
 
-    on_catch_fish() {
-        send "<green>You landed something!" to this
+    on_catch_fish {
+        send "<green>You landed something!" to player
     }
 
-    on_reel_in() {
-        send "<gray>line reeled in" to this
+    on_reel_in {
+        send "<gray>line reeled in" to player
     }
 }
 ```

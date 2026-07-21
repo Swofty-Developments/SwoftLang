@@ -4,7 +4,7 @@ mob "zombie" {
 
     tags: { hits: map<Player, Integer> }      // typed per-entity state, keyed by player
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
             set count to mob.tags.hits[attacker] otherwise 0
@@ -21,9 +21,9 @@ mob "zombie" {
 }
 
 Player {
-    on_join() {
-        spawn mob "zombie" at in_front_of(this, 5) as z
-        set name of z to "<red>Zombie <gray>0/5" for this
-        show z to this                                    // reveal it to just this player
+    on_join {
+        spawn mob "zombie" at in_front_of(player, 5) as z
+        set name of z to "<red>Zombie <gray>0/5" for player
+        show z to player                                    // reveal it to just this player
     }
 }

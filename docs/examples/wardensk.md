@@ -559,14 +559,14 @@ on WardenAngerChangeEvent:
 // a non-player, so the nearest player takes the blame.
 
 Mob {
-    on_hit(attacker) {
-        if this.custom_id is "warden" {
+    on_hit {
+        if mob.custom_id is "warden" {
             set best to 999999999.0
             set nearest to player("")
             loop all players as p {
-                set dx to p.location.x - this.location.x
-                set dy to p.location.y - this.location.y
-                set dz to p.location.z - this.location.z
+                set dx to p.location.x - mob.location.x
+                set dy to p.location.y - mob.location.y
+                set dz to p.location.z - mob.location.z
                 set d to dx * dx + dy * dy + dz * dz
                 if d < best {
                     set best to d
@@ -574,7 +574,7 @@ Mob {
                 }
             }
             if nearest exists {
-                increase_warden_anger(this, nearest, 100)
+                increase_warden_anger(mob, nearest, 100)
             }
         }
     }
@@ -584,7 +584,7 @@ Mob {
 </template>
 <template #note>
 
-The .sk registers a custom event, listens to the Bukkit one, copies event-values into a list var and re-fires. Here `set_warden_anger` calls the listener chain directly, and gameplay feeds the same registry: `Mob { on_hit }` bumps anger by 100 like vanilla. The mob is `this` and the hit's source may be a non-player, so the port picks the nearest player as the aggressor — a small deliberate heuristic, and the registry it feeds is the one the listeners already watch.
+The .sk registers a custom event, listens to the Bukkit one, copies event-values into a list var and re-fires. Here `set_warden_anger` calls the listener chain directly, and gameplay feeds the same registry: `Mob { on_hit }` bumps anger by 100 like vanilla. The mob is bound as `mob` and the hit's source may be a non-player, so the port picks the nearest player as the aggressor — a small deliberate heuristic, and the registry it feeds is the one the listeners already watch.
 
 </template>
 </MappedPair>

@@ -49,7 +49,7 @@ command "ghoul" {
 | `on_spawn { ... }` | statements | no | binds `mob` |
 | `on_death { ... }` | statements | no | binds `mob`, `killer` (`optional<Player>`) |
 | `on_attack { ... }` | statements | no | binds `mob`, `victim` (`Player`) |
-| `on_hit(attacker) { ... }` | statements | no | the mob is damaged; binds `mob` and the named `attacker` (`optional<Player>`) |
+| `on_hit { ... }` | statements | no | the mob is damaged; binds `mob` and `attacker` (`optional<Player>`) |
 
 The `type:` is validated against the real EntityType registry of the pinned Minestom
 snapshot — all 149 constants, with a suggestion when you're close:
@@ -158,8 +158,8 @@ named repeating task that auto-cancels when the mob despawns.
 
 ## The `on_hit` handler {#on-hit}
 
-`on_hit(<name>) { ... }` runs when the mob takes damage, inline in the declaration. It
-binds `mob` and an `attacker` parameter you name — an `optional<Player>`, `none` when the
+`on_hit { ... }` runs when the mob takes damage, inline in the declaration. It
+binds `mob` and `attacker` — an `optional<Player>`, `none` when the
 damage has no player source (fall, fire, another mob):
 
 ```swoftlang
@@ -168,7 +168,7 @@ mob "guardian" {
     name: "<gold>Guardian"
     health: 100
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             send "<red>You struck the ${mob.custom_id}!" to attacker
         }
@@ -224,7 +224,7 @@ mob "zombie" {
 
     tags: { hits: map<Player, Integer> }      // typed, keyed by Player
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
         }
@@ -241,24 +241,24 @@ single mob. A typed tag and a freeform `mob.tags.<other>` can coexist on the sam
 ## Mob events
 
 The base [`Mob`](/reference/events#mob) receiver is the global counterpart to the
-per-declaration handlers — its methods fire for **every** mob, and `this` is the mob:
+per-declaration handlers — its methods fire for **every** mob, and `mob` is the mob:
 
-| Method | Cancellable | Parameters |
+| Method | Cancellable | Bound variables |
 |---|---|---|
-| `on_spawn()` | no | — |
-| `on_death(killer)` | no | `killer` (`optional<Entity>`) |
-| `on_hit(attacker)` | no | `attacker` (Entity) |
+| `on_spawn` | no | — |
+| `on_death` | no | `killer` (`optional<Entity>`) |
+| `on_hit` | no | `attacker` (Entity) |
 
 ```swoftlang
 persistent kills for Player: Integer = 0
 
 Mob {
-    on_death(killer) {
+    on_death {
         if killer exists {
             set k to player(killer.uuid)
             if k exists {
                 set kills for k to (kills for k) + 1
-                send "<gold>${this.custom_id} down — ${kills for k} kills" to k
+                send "<gold>${mob.custom_id} down — ${kills for k} kills" to k
             }
         }
     }
@@ -270,8 +270,8 @@ it fires for every live entity and can `cancel event`:
 
 ```swoftlang
 Entity {
-    on_hit(attacker) {
-        if this.type is "SHEEP" {
+    on_hit {
+        if entity.type is "SHEEP" {
             cancel event                    // sheep take no damage
         }
     }

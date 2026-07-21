@@ -1,7 +1,7 @@
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "badword" {
-            send "<red>Watch your language." to this
+            send "<red>Watch your language." to player
             cancel event
             halt
         }
