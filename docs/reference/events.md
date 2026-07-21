@@ -18,8 +18,12 @@ Player {
 ```
 
 Inside every method the subject is a bare variable named after its type — `player`, `mob`,
-`block`, and so on. The rest of the event's data is bound alongside it as bare variables,
-with types fixed by the catalog and the names listed in each receiver's table below.
+`block`, and so on. Each section states its subject once ("The subject is bound as
+`…`."), so the **Bound variables** column lists only the *additional* event data — the
+subject itself is never repeated there. The rest of the event's data is bound alongside the
+subject as bare variables, with types fixed by the catalog and the names listed in each
+receiver's table below. A variable tagged `rw` may be reassigned to change what the engine
+does (e.g. rewrite a chat `message`); untagged variables are read-only inputs.
 
 ## The receiver catalog
 
@@ -150,9 +154,9 @@ bound as `entity`.
 
 ## Mob
 
-`Mob <: Entity` — narrows Entity to server-spawned mobs. A lowercase `mob "id" { }`
-declaration ([Mobs](./mobs)) carries the same method set for one mob type and overrides
-the base.
+`Mob <: Entity` — narrows Entity to server-spawned mobs. The subject is bound as `mob`. A
+lowercase `mob "id" { }` declaration ([Mobs](./mobs)) carries the same method set for one
+mob type and overrides the base.
 
 | Method | Cancellable | Bound variables |
 |---|---|---|
@@ -169,8 +173,14 @@ the base.
 
 ## Item
 
-The item stack involved in an interaction. A lowercase `item "id" { }` declaration
-([Items](./items)) carries the same method set for one item and overrides the base.
+The item stack involved in an interaction. The subject is bound as `item`. A lowercase
+`item "id" { }` declaration ([Items](./items)) carries the same method set for one item and
+overrides the base.
+
+`item` is the base `ItemStack`, so it carries the base-Item properties (`material`, `amount`,
+`name`, `lore`, read-only `tags`). A custom id is not a base-Item property — it is reached as
+`custom_id(item)`, whose type is `optional<String>`: empty for a vanilla stack, set only when
+the stack is a custom `item "id"`.
 
 | Method | Cancellable | Bound variables |
 |---|---|---|
@@ -190,8 +200,9 @@ The item stack involved in an interaction. A lowercase `item "id" { }` declarati
 
 ## Block
 
-The positioned block value. A lowercase `block_handler "id" { }` declaration
-([Blocks](./blocks)) carries the same method set for one block id and overrides the base.
+The positioned block value. The subject is bound as `block`. A lowercase
+`block_handler "id" { }` declaration ([Blocks](./blocks)) carries the same method set for
+one block id and overrides the base.
 
 | Method | Cancellable | Bound variables |
 |---|---|---|
@@ -217,7 +228,7 @@ shooter side is reachable via [`Entity.on_shoot`](#entity).)
 
 ## Inventory
 
-Open-inventory and GUI interactions.
+Open-inventory and GUI interactions. The subject is bound as `inventory`.
 
 | Method | Cancellable | Bound variables |
 |---|---|---|
@@ -267,12 +278,24 @@ object — they carry only a raw connection, which is why they live on `Server` 
 ## Npc & Hologram
 
 The [NPC](./npcs) and [hologram](./holograms) receivers reuse the same method set as their
-lowercase `npc "id" { }` / `hologram "id" { }` declarations:
+lowercase `npc "id" { }` / `hologram "id" { }` declarations. None of these methods are
+cancellable.
 
-| Receiver | Methods |
-|---|---|
-| `Npc` | `on_click`, `on_left_click`, `on_tick` |
-| `Hologram` | `on_click`, `on_line_click`, `on_tick` |
+For `Npc` the subject is bound as `npc` (the NPC's fake-player entity):
+
+| Method | Cancellable | Bound variables |
+|---|---|---|
+| `on_click` | — | `player` (Player) |
+| `on_left_click` | — | `player` (Player) |
+| `on_tick` | — | — |
+
+For `Hologram` the subject is bound as `hologram` (the hologram's text-display stack):
+
+| Method | Cancellable | Bound variables |
+|---|---|---|
+| `on_click` | — | `player` (Player) |
+| `on_line_click` | — | `player` (Player), `line` (Integer) |
+| `on_tick` | — | — |
 
 ## Fan-out — one event, several receivers
 
