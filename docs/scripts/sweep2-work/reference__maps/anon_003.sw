@@ -1,13 +1,13 @@
-command "pmap" {
+command "intkeys" {
     execute {
-        set wins to new_map()
+        set names to { 1: "one", 2: "two", 3: "three" }
 
-        set wins at sender to 10         // first insertion fixes K = Player, V = Integer
-        set mine to wins[sender] otherwise 0
-        send "you have ${mine}" to sender
+        set names at 4 to "four"             // Integer key
+        set first to names[1] otherwise "none"
+        send "first ${first}" to sender
 
-        loop wins as who -> pts {         // key is a Player
-            send "${who.name}: ${pts}" to sender
+        loop names as num -> word {          // key is an Integer, value a String
+            send "${num} = ${word}" to sender
         }
     }
 }

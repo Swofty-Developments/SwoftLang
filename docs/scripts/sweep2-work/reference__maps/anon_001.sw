@@ -3,12 +3,13 @@ command "counts" {
         // literal — V is inferred as Integer from the values
         set counts to { "a": 1, "b": 2, "c": 3 }
 
-        map_set(counts, "d", 4)          // builtin write
-        set counts at "e" to 5           // index-set sugar for the same thing
+        set counts at "d" to 4               // write
+        set a to counts["a"] otherwise 0     // index-read yields optional<V>
+        send "a is ${a}, size is ${size of counts}" to sender
 
-        set a to counts["a"] otherwise 0 // index-read yields optional<V>
-        send "a is ${a}, size is ${map_size(counts)}" to sender
-
-        map_delete(counts, "b")
+        delete counts at "b"                 // remove one entry
+        if counts has "c" {                  // membership test
+            send "still counting c" to sender
+        }
     }
 }

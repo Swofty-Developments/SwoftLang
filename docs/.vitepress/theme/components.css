@@ -475,6 +475,130 @@
 }
 
 /* ------------------------------------------------------------------ */
+/*  DialectSwitch / DialectCode — natural-language vs method toggle     */
+/* ------------------------------------------------------------------ */
+
+/* shared pill-switch chrome for both the page-level control and each card */
+.dsw-switch,
+.dc-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--sw-line);
+  border-radius: 999px;
+  background: var(--sw-bg);
+}
+
+.dsw-switch button,
+.dc-switch button {
+  padding: 3px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sw-font-code);
+  font-size: 11px;
+  color: var(--sw-text-3);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.dsw-switch button:hover,
+.dc-switch button:hover {
+  color: var(--sw-text-1);
+}
+
+.dsw-switch button.on,
+.dc-switch button.on {
+  background: var(--sw-brand-soft);
+  color: var(--sw-brand);
+}
+
+/* page-level switcher: a small sticky-ish banner near the top of the page */
+.dsw {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin: var(--sp-6) 0;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--sw-line);
+  border-radius: 999px;
+  background: var(--sw-bg-raise);
+}
+
+.dsw-label {
+  font-family: var(--sw-font-code);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sw-text-2);
+  margin-right: auto;
+}
+
+/* per-example card holding both dialect variants */
+.dc {
+  margin: var(--sp-6) 0;
+  border: 1px solid var(--sw-line);
+  border-radius: var(--sw-radius-lg);
+  background: var(--sw-bg-code);
+  overflow: hidden;
+}
+
+.dc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid var(--sw-line);
+  background: var(--sw-bg-raise);
+}
+
+.dc-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.dc-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sw-text-1);
+}
+
+.dc-file {
+  font-family: var(--sw-font-code);
+  font-size: 12px;
+  color: var(--sw-text-3);
+}
+
+.dc-pane div[class*='language-'] {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.dc-pane .lang,
+.dc-pane button.copy {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .dc-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dc-switch,
+  .dsw-switch {
+    justify-content: center;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Landing page — hero + asymmetric pillar flow                       */
 /* ------------------------------------------------------------------ */
 

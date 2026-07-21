@@ -324,7 +324,8 @@ A lowercase custom declaration (`mob "id" { }`, `item "id" { }`, `block_handler 
 { }`) carries the same method set as its base receiver, and **most-specific wins**: when a
 custom method and the base method both exist, the custom one replaces the base for that
 id. To keep the base behavior, write `call original method` from inside the overriding
-method — optionally with `with arguments <expr>, ...` to forward values to it:
+method. It re-runs the base method with the current bound-variable values, so mutate a
+bound variable before the call to forward a changed value to it:
 
 ```swoftlang
 Mob {
@@ -344,7 +345,7 @@ mob "ghoul" {
     }
 
     on_target {
-        call original method with arguments target
+        call original method            // re-run base Mob.on_target with the current target
     }
 }
 ```

@@ -148,6 +148,10 @@ def main():
     namespaces = sym["namespaces"]
     # capitalized OOP receiver block heads (Player { }, Npc { }, Packet { }, ...)
     receivers = sym.get("receivers", [])
+    # natural-language collection operators (size of / m has k / sorted l / ...).
+    # Soft keywords in the compiler, advertised under their own dump key so they
+    # get a distinct grammar scope without being globally reserved.
+    collection_ops = sym.get("collection_ops", [])
 
     # type primitives = all declared types minus the generic containers
     containers = ["either", "optional", "list", "map"]
@@ -263,6 +267,7 @@ def main():
             {"include": "#numbers"},
             {"include": "#operators"},
             {"include": "#function-calls"},
+            *([{"include": "#collection-ops"}] if collection_ops else []),
             {"include": "#variables"},
             {"include": "#punctuation"},
         ]
@@ -439,6 +444,22 @@ def main():
         ]
     }
 
+    # natural-language collection operators. Emitted only when the dump carries
+    # them; placed after #keywords in the include order so words that are also
+    # general connectives/section words (of, first) keep their established scope
+    # and the collection-specific words (has, sorted, reversed, last) pick up
+    # this scope. All are still present in the text for the coverage assertion.
+    if collection_ops:
+        repo["collection-ops"] = {
+            "patterns": [
+                {
+                    "comment": "collection ops: size/keys/values of m, m has k, sorted/reversed l, first/last of l",
+                    "name": "keyword.operator.collection.swoftlang",
+                    "match": r"\b(" + alt(collection_ops) + r")\b",
+                }
+            ]
+        }
+
     repo["keywords"] = {
         "patterns": [
             kw_pattern("keyword.control.swoftlang", CONTROL_KW),
@@ -540,6 +561,7 @@ def main():
             {"include": "#types"},
             {"include": "#operator-words"},
             {"include": "#keywords"},
+            *([{"include": "#collection-ops"}] if collection_ops else []),
             {"include": "#constants"},
             {"include": "#numbers"},
             {"include": "#operators"},
@@ -561,6 +583,7 @@ def main():
                 missing.append(it)
 
     check(sym["keywords"])
+    check(collection_ops)
     check(sym["declarations"])
     check(receivers)
     check(sym["handlers"])

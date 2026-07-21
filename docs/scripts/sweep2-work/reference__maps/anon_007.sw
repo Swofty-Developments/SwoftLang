@@ -1,27 +1,14 @@
-storage {
-    backend: files "data/stash"
-    flush: every 10 seconds
-}
-
-persistent stash: map<String> = new_map()
-
-command "stow" {
+command "lookup" {
     execute {
-        map_set(stash, sender.name, to_nbt(sender.held_item))
-        send "stowed your held item" to sender
-    }
-}
+        set prices to { "diamond": 800, "iron": 40 }
 
-command "recall" {
-    execute {
-        set raw to stash[sender.name]
-        if raw exists {
-            set restored to from_nbt(raw)
-            if restored exists {
-                send "you stowed ${restored.material} x${restored.amount}" to sender
-            }
-        } else {
-            send "nothing stowed" to sender
+        // fall back to a default
+        set p to prices["gold"] otherwise 0
+        send "gold costs ${p}" to sender
+
+        // ...or narrow with 'exists'
+        if prices["diamond"] exists {
+            send "diamond is priced" to sender
         }
     }
 }

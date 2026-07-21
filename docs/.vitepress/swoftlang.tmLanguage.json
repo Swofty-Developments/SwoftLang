@@ -55,6 +55,9 @@
       "include": "#keywords"
     },
     {
+      "include": "#collection-ops"
+    },
+    {
       "include": "#constants"
     },
     {
@@ -178,6 +181,9 @@
           "include": "#function-calls"
         },
         {
+          "include": "#collection-ops"
+        },
+        {
           "include": "#variables"
         },
         {
@@ -190,7 +196,7 @@
         {
           "comment": "builtin function: name immediately followed by '('",
           "name": "support.function.builtin.swoftlang",
-          "match": "\\b(fetch_offline_player|offline_player_uuid|spawn_block_display|average_tps_string|sort_by_value_desc|spawn_item_display|spawn_text_display|players_in_radius|all_seen_players|blocks_in_radius|sort_by_key_desc|sort_map_by_desc|format_decimals|direction_from|has_permission|legacy_to_mini|offline_player|random_element|format_number|random_chance|random_double|sort_by_value|all_entities|anvil_loader|polar_loader|prompt_input|random_float|sort_by_desc|world_exists|all_players|custom_item|in_front_of|location_of|random_bool|random_seed|random_uuid|sort_by_key|sort_map_by|strip_color|all_worlds|fetch_skin|is_running|map_canvas|map_delete|random_int|tps_string|custom_id|formatted|is_within|lowercase|random_in|uppercase|all_mobs|block_at|centered|distance|from_nbt|gradient|location|map_keys|map_size|round_to|stripped|velocity|map_get|map_has|map_set|matches|new_map|product|rainbow|reverse|shuffle|sort_by|type_of|chance|length|max_by|min_by|player|random|to_nbt|tps_at|above|atan2|below|block|clamp|floor|log10|parse|round|world|acos|asin|atan|ceil|item|sign|skin|song|sort|sqrt|abs|cos|log|max|min|mod|pow|sin|sum|tan|vec|ln|pi|e)\\b(?=\\s*\\()"
+          "match": "\\b(fetch_offline_player|offline_player_uuid|spawn_block_display|average_tps_string|sort_by_value_desc|spawn_item_display|spawn_text_display|players_in_radius|all_seen_players|blocks_in_radius|sort_by_key_desc|sort_map_by_desc|format_decimals|direction_from|has_permission|legacy_to_mini|offline_player|random_element|format_number|random_chance|random_double|sort_by_value|all_entities|anvil_loader|polar_loader|prompt_input|random_float|sort_by_desc|world_exists|all_players|custom_item|in_front_of|location_of|random_bool|random_seed|random_uuid|sort_by_key|sort_map_by|strip_color|all_worlds|fetch_skin|is_running|map_canvas|random_int|tps_string|custom_id|formatted|is_within|lowercase|random_in|uppercase|all_mobs|block_at|centered|distance|from_nbt|gradient|location|round_to|stripped|velocity|matches|new_map|product|rainbow|reverse|shuffle|sort_by|type_of|chance|length|max_by|min_by|player|random|to_nbt|tps_at|above|atan2|below|block|clamp|floor|log10|parse|round|world|acos|asin|atan|ceil|item|sign|skin|song|sort|sqrt|abs|cos|log|max|min|mod|pow|sin|sum|tan|vec|ln|pi|e)\\b(?=\\s*\\()"
         }
       ]
     },
@@ -658,6 +664,15 @@
         {
           "name": "keyword.operator.word.swoftlang",
           "match": "\\b(otherwise|contains|missing|either|exists|and|not|is|or)\\b"
+        }
+      ]
+    },
+    "collection-ops": {
+      "patterns": [
+        {
+          "comment": "collection ops: size/keys/values of m, m has k, sorted/reversed l, first/last of l",
+          "name": "keyword.operator.collection.swoftlang",
+          "match": "\\b(reversed|sorted|first|last|has|of)\\b"
         }
       ]
     },

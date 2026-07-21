@@ -1,14 +1,13 @@
-storage {
-    backend: files "data/game"
-    flush: every 10 seconds
-}
-
-persistent leaderboard: map<Integer> = new_map()
-
-command "score" {
-    arguments { amount: Integer }
+command "pmap" {
     execute {
-        set leaderboard at sender.name to (leaderboard[sender.name] otherwise 0) + args.amount
-        send "total ${leaderboard[sender.name] otherwise 0}" to sender
+        set wins to new_map()
+
+        wins.set(sender, 10)                 // first insertion fixes K = Player, V = Integer
+        set mine to wins.get(sender) otherwise 0
+        send "you have ${mine}" to sender
+
+        loop wins as who -> pts {            // key is a Player
+            send "${who.name}: ${pts}" to sender
+        }
     }
 }

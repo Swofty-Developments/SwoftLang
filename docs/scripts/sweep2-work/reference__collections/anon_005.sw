@@ -1,12 +1,13 @@
-command "strings" {
+command "list-query" {
     execute {
-        set greeting to "  Hello, World  "
-        set clean to greeting.trimmed()
-        set parts to clean.split(", ")
-        set up to clean.upper()
-        set rep to "ab".repeated(3)
-        set starts to clean.starts_with("Hello")
-        send "clean '${up}' len ${clean.length()}" to sender
-        send "parts ${parts.size}, rep ${rep}, starts ${starts}" to sender
+        set nums to [3, 1, 2]
+
+        if nums contains 3 {
+            send "has 3" to sender
+        }
+        set up to sorted nums
+        set ranked to sorted nums by function(n: Integer) { return 0 - n }
+        set down to reversed nums
+        send "sorted ${up.size}, ranked ${ranked.size}, reversed ${down.size}" to sender
     }
 }

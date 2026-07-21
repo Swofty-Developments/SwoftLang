@@ -143,9 +143,9 @@ gui "vault" {
         on_change {
             set key to vault_key("${state.owner}", state.vaultnum, slot)
             if new_item.material is "AIR" {
-                map_delete(vault, key)
+                delete vault at key
             } else {
-                map_set(vault, key, to_nbt(new_item))
+                set vault at key to to_nbt(new_item)
             }
         }
     }
@@ -159,7 +159,7 @@ gui "vault" {
 </template>
 <template #note>
 
-The .sk loops all 54 slots on close, hand-diffing air. An `editable` region fires `on_change` per *changed* slot with `slot`, `old_item`, `new_item` bound — the runtime does the diffing. Each change writes straight through to the persistent map: `to_nbt(new_item)` serializes the stack, `map_delete` clears a slot emptied back to `AIR`. Because the map is persistent, the whole vault is on disk the moment it changes — no close-time sweep required.
+The .sk loops all 54 slots on close, hand-diffing air. An `editable` region fires `on_change` per *changed* slot with `slot`, `old_item`, `new_item` bound — the runtime does the diffing. Each change writes straight through to the persistent map: `to_nbt(new_item)` serializes the stack, `delete vault at key` clears a slot emptied back to `AIR`. Because the map is persistent, the whole vault is on disk the moment it changes — no close-time sweep required.
 
 </template>
 </MappedPair>
@@ -199,7 +199,7 @@ command "pvpeek" {
 </template>
 <template #note>
 
-Two optionals, two `exists` gates — both enforced by the compiler, not by discipline. `vault[key]` is the index-read sugar for `map_get`; it yields `optional<String>` (the slot may be empty). `from_nbt` turns the stored NBT string back into an `Item`, and it is *also* optional — malformed data is provably `missing`, never a crash. The full round-trip, `to_nbt` on write and `from_nbt` on read, is what lets a scalar map hold real item stacks.
+Two optionals, two `exists` gates — both enforced by the compiler, not by discipline. `vault[key]` is the index-read form (equivalently `vault.get(key)`); it yields `optional<String>` (the slot may be empty). `from_nbt` turns the stored NBT string back into an `Item`, and it is *also* optional — malformed data is provably `missing`, never a crash. The full round-trip, `to_nbt` on write and `from_nbt` on read, is what lets a scalar map hold real item stacks.
 
 </template>
 </MappedPair>

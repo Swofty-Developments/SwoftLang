@@ -1,15 +1,15 @@
-command "intkeys" {
+command "counts" {
     execute {
-        set names to { 1: "one", 2: "two", 3: "three" }
+        // literal — V is inferred as Integer from the values
+        set counts to { "a": 1, "b": 2, "c": 3 }
 
-        map_set(names, 4, "four")        // Integer key
-        set names at 5 to "five"         // index-set sugar, Integer key
+        counts.set("d", 4)                   // write
+        set a to counts.get("a") otherwise 0 // .get yields optional<V>
+        send "a is ${a}, size is ${counts.size}" to sender
 
-        set first to names[1] otherwise "none"
-        send "first ${first}" to sender
-
-        loop names as num -> word {      // key is an Integer, value a String
-            send "${num} = ${word}" to sender
+        counts.delete("b")                   // remove one entry
+        if counts.has("c") {                 // membership test
+            send "still counting c" to sender
         }
     }
 }

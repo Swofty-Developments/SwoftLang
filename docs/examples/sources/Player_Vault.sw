@@ -55,9 +55,9 @@ gui "vault" {
         on_change {
             set key to vault_key("${state.owner}", state.vaultnum, slot)
             if new_item.material is "AIR" {
-                map_delete(vault, key)
+                delete vault at key
             } else {
-                map_set(vault, key, to_nbt(new_item))
+                set vault at key to to_nbt(new_item)
             }
         }
     }

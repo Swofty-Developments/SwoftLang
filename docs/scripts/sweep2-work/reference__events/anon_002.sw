@@ -15,6 +15,6 @@ mob "ghoul" {
     }
 
     on_target {
-        call original method with arguments target
+        call original method            // re-run base Mob.on_target with the current target
     }
 }

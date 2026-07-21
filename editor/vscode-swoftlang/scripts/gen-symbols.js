@@ -116,12 +116,11 @@ const BUILTIN_SIGS = {
   offline_player_uuid: [['offline_player_uuid(uuid: String): OfflinePlayer'], 'Construct an OfflinePlayer identity.'],
   fetch_offline_player: [['fetch_offline_player(name: String): optional<OfflinePlayer>'], 'async only: resolve name->uuid via Mojang.'],
   all_seen_players: [['all_seen_players(): list<OfflinePlayer>'], 'Every seen-store player.'],
-  map_get: [['map_get(m, key): optional', 'shorthand: m[key]'], 'Read a map value.'],
-  map_set: [['map_set(m, key, value)'], 'Write a map value.'],
-  map_has: [['map_has(m, key): Boolean'], 'Whether a key exists.'],
-  map_delete: [['map_delete(m, key)'], 'Remove a key.'],
-  map_keys: [['map_keys(m): list'], 'Keys of a map.'],
-  map_size: [['map_size(m): Integer'], 'Entry count of a map.'],
+  // map_get/map_set/map_has/map_delete/map_keys/map_size were REMOVED as free
+  // builtins: use the natural dialect (m[k], set m at k to v, m has k, delete m
+  // at k, keys of m, size of m) or the method dialect (m.get/.set/.has/.delete/
+  // .keys/.size). They no longer appear in the dump's builtins list, so no
+  // signature entry belongs here. map_canvas (below) is unrelated and stays.
   random_float: [['random_float(min, max): Double'], 'Random double in [min, max].'],
   random_double: [['random_double(min, max): Double'], 'Random double in [min, max].'],
   random_int: [['random_int(min, max): Integer'], 'Random integer in [min, max].'],
@@ -226,6 +225,23 @@ function build() {
 
   for (const k of keywords) symbols.push({ name: k, kind: 'keyword' });
   for (const d of declarations) symbols.push({ name: d, kind: 'declaration' });
+
+  // natural-language collection operators (from the dump's collection_ops key).
+  // These are the surface sugar for the map/list/String ops; offered as keyword
+  // completions with a doc. Dedupe against keywords so 'of' isn't listed twice.
+  const COLLECTION_OP_DOCS = {
+    of: 'collection accessor: `size of m`, `keys of m`, `values of m`, `first of l`, `last of l`, `length of s`, `uppercase of s`, `lowercase of s`.',
+    has: 'map membership: `m has k` -> Boolean (same as `m.has(k)`).',
+    sorted: 'sorted copy of a list: `sorted l` / `sorted l by <lambda>` (same as `l.sorted()` / `l.sorted_by(f)`).',
+    reversed: 'reversed copy of a list: `reversed l` (same as `l.reversed()`).',
+    first: 'first element of a list: `first of l` -> optional<T> (same as `l.first`).',
+    last: 'last element of a list: `last of l` -> optional<T> (same as `l.last`).',
+  };
+  const kwSet = new Set(keywords);
+  for (const op of (dump.collection_ops || [])) {
+    if (kwSet.has(op)) continue;
+    symbols.push({ name: op, kind: 'keyword', doc: COLLECTION_OP_DOCS[op] || `Collection operator \`${op}\`.` });
+  }
   for (const r of receivers) symbols.push({ name: r, kind: 'receiver', doc: `\`${r} { }\` OOP receiver block.` });
   for (const o of operators) symbols.push({ name: o, kind: 'operator' });
   for (const t of types) symbols.push({ name: t, kind: 'type' });

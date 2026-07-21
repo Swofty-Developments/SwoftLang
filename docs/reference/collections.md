@@ -1,35 +1,57 @@
 # Collections & Strings
 
-Lists, maps, and Strings all carry **methods** you call with `receiver.method(args)`. A
-method resolves by the receiver's static type — the compiler knows a `list<Integer>` from
-a `map<String, V>` from a `String` and offers only that type's methods, checking argument
-types and arity at compile time.
+Lists, maps, and Strings each speak **two coexisting dialects** for the operations they
+share. A *natural-language* phrasing reads like English — `add x to l`, `size of l`,
+`sorted l`, `uppercase of s` — and a *method* phrasing calls `receiver.method(args)`. Both
+compile to exactly the same runtime; reach for whichever reads better at the call site.
+The switch below flips every example on this page between the two.
 
-Methods come in two kinds:
+A method resolves by the receiver's static type — the compiler knows a `list<Integer>`
+from a `map<String, V>` from a `String` and offers only that type's methods, checking
+argument types and arity at compile time. Operations split into two shapes:
 
-- **Pure expression methods** return a value and never touch the receiver — `nums.sorted()`,
-  `scores.get("k")`, `name.upper()`. Use them anywhere an expression is allowed.
-- **Mutating statement methods** change the receiver in place and are written as bare
-  statements — `nums.add(4)`, `scores.delete("bob")`. They have no result, so they cannot
+- **Pure / query forms** return a value and never touch the receiver — `sorted l` /
+  `l.sorted()`, `size of m` / `m.size`, `uppercase of s` / `s.upper()`. Use them anywhere
+  an expression is allowed.
+- **Mutating forms** change the receiver in place and are written as bare statements —
+  `add x to l` / `l.add(x)`, `clear l` / `l.clear()`. They have no result, so they cannot
   appear inside an expression.
 
-The method forms are a second entry point to the same runtime as the free builtins
-([`sort`](./builtins#sorting), [`map_get`](./maps#operations), [`uppercase`](./builtins#uppercase-lowercase),
-…), which keep working. Reach for whichever reads better at the call site.
+The richer transforms (`.filtered`, `.mapped`, `.joined`, `.get_or`, …) have no
+natural-language spelling and stay in method form — they are listed in the reference
+tables below.
+
+<DialectSwitch />
 
 ## Accessors {#accessors}
 
-The zero-argument accessors stay in **property form** — no parentheses:
+The size and endpoint accessors read a collection without changing it:
 
-| Property | On | Returns | Notes |
+| Natural language | Method / property | On | Returns |
 |---|---|---|---|
-| `.size` | list, map, String | `Integer` | element / entry / character count |
-| `.is_empty` | list, map | `Boolean` | |
-| `.first` | list | `optional<T>` | `none` when empty |
-| `.last` | list | `optional<T>` | `none` when empty |
-| `.keys` | map | `list<K>` | insertion order |
-| `.values` | map | `list<V>` | insertion order |
-| `.length` | String | `Integer` | same as `.size`; also spelled `.length()` |
+| `size of c` | `c.size` | list, map, String | `Integer` |
+| `first of l` | `l.first` | list | `optional<T>` |
+| `last of l` | `l.last` | list | `optional<T>` |
+| `keys of m` | `m.keys` | map | `list<K>` |
+| `values of m` | `m.values` | map | `list<V>` |
+| `length of s` | `s.length` | String | `Integer` |
+| — | `c.is_empty` | list, map | `Boolean` |
+
+<DialectCode title="Peek at a list" file="accessors.sw">
+<template #natural>
+
+```swoftlang
+command "accessors" {
+    execute {
+        set nums to [10, 20, 30]
+        send "size ${size of nums}, empty ${nums.is_empty}" to sender
+        send "first ${first of nums otherwise 0}, last ${last of nums otherwise 0}" to sender
+    }
+}
+```
+
+</template>
+<template #code>
 
 ```swoftlang
 command "accessors" {
@@ -41,21 +63,120 @@ command "accessors" {
 }
 ```
 
+</template>
+</DialectCode>
+
 ## Lists {#lists}
 
-### Expression methods {#list-expr}
+### Mutating a list {#list-mut}
+
+The four in-place edits with a natural spelling:
+
+| Natural language | Method | Effect |
+|---|---|---|
+| `add x to l` | `l.add(x)` | append `x` |
+| `remove x from l` | `l.remove(x)` | remove the first occurrence of `x` |
+| `clear l` | `l.clear()` | remove everything |
+
+<DialectCode title="Build up a list" file="list-mut.sw">
+<template #natural>
+
+```swoftlang
+command "list-mut" {
+    execute {
+        set nums to [3, 1, 2]
+        add 4 to nums
+        remove 1 from nums
+        add 9 to nums
+        send "size ${size of nums}" to sender
+    }
+}
+```
+
+</template>
+<template #code>
+
+```swoftlang
+command "list-mut" {
+    execute {
+        set nums to [3, 1, 2]
+        nums.add(4)
+        nums.remove(1)
+        nums.add(9)
+        send "size ${nums.size}" to sender
+    }
+}
+```
+
+</template>
+</DialectCode>
+
+The remaining mutators are method-only: `l.add_all(other)` appends every element of
+another list, `l.remove_at(i)` drops the element at an index, and `l.insert(i, x)` splices
+`x` in at position `i`.
+
+### Querying & transforming {#list-expr}
+
+Membership, sorting, and reversal each have a natural form; the rest are method-only:
+
+| Natural language | Method | Returns |
+|---|---|---|
+| `l contains x` | `l.contains(x)` | `Boolean` |
+| `sorted l` | `l.sorted()` | `list<T>` |
+| `sorted l by <fn>` | `l.sorted_by(fn)` | `list<T>` |
+| `reversed l` | `l.reversed()` | `list<T>` |
+
+<DialectCode title="Sort and search" file="list-query.sw">
+<template #natural>
+
+```swoftlang
+command "list-query" {
+    execute {
+        set nums to [3, 1, 2]
+
+        if nums contains 3 {
+            send "has 3" to sender
+        }
+        set up to sorted nums
+        set ranked to sorted nums by function(n: Integer) { return 0 - n }
+        set down to reversed nums
+        send "sorted ${up.size}, ranked ${ranked.size}, reversed ${down.size}" to sender
+    }
+}
+```
+
+</template>
+<template #code>
+
+```swoftlang
+command "list-query" {
+    execute {
+        set nums to [3, 1, 2]
+
+        if nums.contains(3) {
+            send "has 3" to sender
+        }
+        set up to nums.sorted()
+        set ranked to nums.sorted_by(function(n: Integer) { return 0 - n })
+        set down to nums.reversed()
+        send "sorted ${up.size}, ranked ${ranked.size}, reversed ${down.size}" to sender
+    }
+}
+```
+
+</template>
+</DialectCode>
+
+These further transforms are method-only — each returns a new value and leaves the
+receiver alone:
 
 | Method | Returns | Notes |
 |---|---|---|
-| `.contains(x)` | `Boolean` | membership test |
 | `.index_of(x)` | `optional<Integer>` | position of `x`, or `none` |
 | `.get(i)` | `optional<T>` | element at index `i`, or `none` |
 | `.count(x)` | `Integer` | how many times `x` occurs |
 | `.joined(sep)` | `String` | join elements with `sep` |
-| `.sorted()` | `list<T>` | natural ascending copy |
-| `.sorted_by(key)` | `list<T>` | by a `key(elem)` lambda, ascending |
-| `.sorted_by_desc(key)` | `list<T>` | same, descending |
-| `.reversed()` | `list<T>` | reversed copy |
+| `.sorted_by_desc(key)` | `list<T>` | by a `key(elem)` lambda, descending |
 | `.shuffled()` | `list<T>` | randomly shuffled copy |
 | `.filtered(pred)` | `list<T>` | elements where `pred(elem)` is true |
 | `.mapped(fn)` | `list<U>` | `fn(elem)` over every element |
@@ -64,121 +185,106 @@ command "accessors" {
 | `.min_by(key)` | `optional<T>` | element with the smallest key |
 | `.max_by(key)` | `optional<T>` | element with the largest key |
 
-All of these are non-mutating — they return a new value and leave the receiver alone. The
-lambda methods take the element type; `.filtered` needs a `Boolean` lambda, `.sorted_by` /
-`.min_by` / `.max_by` a comparable (number or String) key, and `.mapped` may return any
+The lambda methods take the element type; `.filtered` needs a `Boolean` lambda, `.sorted_by`
+/ `.min_by` / `.max_by` a comparable (number or String) key, and `.mapped` may return any
 type, which becomes the new list's element type.
 
 ```swoftlang
-command "list-expr" {
+command "list-methods" {
     execute {
         set nums to [3, 1, 2]
 
-        if nums.contains(3) {
-            send "has 3" to sender
-        }
         set idx to nums.index_of(2) otherwise 0 - 1
-        set third to nums.get(2) otherwise 0
         set joined to nums.joined(", ")
-        send "third ${third}, idx ${idx}, joined ${joined}" to sender
-
-        set sorted to nums.sorted()
-        set ranked to nums.sorted_by(function(n: Integer) { return n })
         set evens to nums.filtered(function(n: Integer) { return n % 2 == 0 })
         set doubled to nums.mapped(function(n: Integer) { return n * 2 })
         set top to nums.max_by(function(n: Integer) { return n }) otherwise 0
         set some to nums.taken(2)
-        send "sorted ${sorted.size}, evens ${evens.size}, doubled ${doubled.size}" to sender
-        send "top ${top}, some ${some.size}" to sender
-    }
-}
-```
-
-### Mutating methods {#list-mut}
-
-These change the list in place and are written as statements:
-
-| Statement | Effect |
-|---|---|
-| `list.add(x)` | append `x` |
-| `list.add_all(other)` | append every element of another list |
-| `list.remove(x)` | remove the first occurrence of `x` |
-| `list.remove_at(i)` | remove the element at index `i` |
-| `list.insert(i, x)` | insert `x` at index `i` |
-| `list.clear()` | remove everything |
-
-```swoftlang
-command "list-mut" {
-    execute {
-        set nums to [3, 1, 2]
-        nums.add(4)
-        nums.add_all([5, 6])
-        nums.remove(1)
-        nums.insert(0, 9)
-        send "size ${nums.size}" to sender
+        send "idx ${idx}, joined ${joined}, top ${top}" to sender
+        send "evens ${evens.size}, doubled ${doubled.size}, some ${some.size}" to sender
     }
 }
 ```
 
 ## Maps {#maps}
 
-Method forms complement the [`map_*` builtins and index sugar](./maps). Reads return an
-`optional<V>` because the key may be absent — narrow with `exists` or supply an `otherwise`;
-`.get_or(k, default)` bakes the fallback in and returns a plain `V`.
-
-### Expression methods {#map-expr}
+The full set of map operations — reads, writes, membership, `keys of` / `values of`,
+deletion, and `clear` — is covered in both dialects on the [Maps page](./maps#operations).
+Beyond those, maps carry method-only helpers. Reads return an `optional<V>` because the key
+may be absent — narrow with `exists` or supply an `otherwise`; `.get_or(k, default)` bakes
+the fallback in and returns a plain `V`.
 
 | Method | Returns | Notes |
 |---|---|---|
-| `.get(k)` | `optional<V>` | value for `k`, or `none` |
 | `.get_or(k, default)` | `V` | value for `k`, else `default` |
-| `.has(k)` | `Boolean` | key present |
+| `.put_all(other)` | — | copy every entry of another map |
 | `.sorted_by_key()` | `map<K, V>` | new map, ordered by key ascending |
 | `.sorted_by_key_desc()` | `map<K, V>` | ordered by key descending |
 | `.sorted_by_value()` | `map<K, V>` | ordered by value ascending |
 | `.sorted_by_value_desc()` | `map<K, V>` | ordered by value descending |
 | `.sorted_by(key)` | `map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
 
-### Mutating methods {#map-mut}
-
-| Statement | Effect |
-|---|---|
-| `map.set(k, v)` | insert or overwrite the entry for `k` |
-| `map.delete(k)` | remove the entry for `k` |
-| `map.put_all(other)` | copy every entry of another map |
-| `map.clear()` | remove every entry |
-
 ```swoftlang
 command "map-methods" {
     execute {
         set scores to { "alice": 10, "bob": 7 }
-        scores.set("carol", 3)
-        scores.delete("bob")
         scores.put_all({ "dan": 1 })
 
-        set alice to scores.get("alice") otherwise 0
         set safe to scores.get_or("zoe", 0)
-        if scores.has("alice") {
-            send "has alice" to sender
-        }
         set byval to scores.sorted_by_value_desc()
         set bykey to scores.sorted_by(function(k: String, v: Integer) { return v })
-        send "map ${scores.size}, keys ${scores.keys.size}, values ${scores.values.size}" to sender
-        send "alice ${alice}, safe ${safe}, byval ${byval.size}, bykey ${bykey.size}" to sender
+        send "safe ${safe}, keys ${keys of scores}, values ${values of scores}" to sender
+        send "byval ${byval.size}, bykey ${bykey.size}" to sender
     }
 }
 ```
 
 ## Strings {#strings}
 
-Every String method is a pure expression — Strings are immutable, so each method returns a
-new String, list, or scalar.
+Strings are immutable, so every String operation is a pure expression that returns a new
+String, list, or scalar. Case conversion and length carry a natural spelling:
+
+| Natural language | Method | Returns |
+|---|---|---|
+| `uppercase of s` | `s.upper()` | `String` |
+| `lowercase of s` | `s.lower()` | `String` |
+| `length of s` | `s.length()` | `Integer` |
+
+<DialectCode title="Normalise a string" file="strings.sw">
+<template #natural>
+
+```swoftlang
+command "strings" {
+    execute {
+        set greeting to "  Hello, World  "
+        set clean to greeting.trimmed()
+        set up to uppercase of clean
+        send "clean '${up}' len ${length of clean}" to sender
+    }
+}
+```
+
+</template>
+<template #code>
+
+```swoftlang
+command "strings" {
+    execute {
+        set greeting to "  Hello, World  "
+        set clean to greeting.trimmed()
+        set up to clean.upper()
+        send "clean '${up}' len ${clean.length()}" to sender
+    }
+}
+```
+
+</template>
+</DialectCode>
+
+Everything else is method-only:
 
 | Method | Returns | Notes |
 |---|---|---|
-| `.length()` | `Integer` | character count (or the `.length` / `.size` property) |
-| `.upper()` | `String` | uppercase |
-| `.lower()` | `String` | lowercase |
 | `.trimmed()` | `String` | strip leading/trailing whitespace |
 | `.contains(s)` | `Boolean` | substring test |
 | `.starts_with(s)` | `Boolean` | prefix test |
@@ -195,15 +301,12 @@ new String, list, or scalar.
 | `.last_chars(n)` | `String` | last `n` characters (clamped) |
 
 ```swoftlang
-command "strings" {
+command "string-methods" {
     execute {
-        set greeting to "  Hello, World  "
-        set clean to greeting.trimmed()
+        set clean to "Hello, World"
         set parts to clean.split(", ")
-        set up to clean.upper()
         set rep to "ab".repeated(3)
         set starts to clean.starts_with("Hello")
-        send "clean '${up}' len ${clean.length()}" to sender
         send "parts ${parts.size}, rep ${rep}, starts ${starts}" to sender
     }
 }

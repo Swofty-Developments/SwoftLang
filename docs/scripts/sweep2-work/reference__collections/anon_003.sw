@@ -1,10 +1,9 @@
 command "list-mut" {
     execute {
         set nums to [3, 1, 2]
-        nums.add(4)
-        nums.add_all([5, 6])
-        nums.remove(1)
-        nums.insert(0, 9)
-        send "size ${nums.size}" to sender
+        add 4 to nums
+        remove 1 from nums
+        add 9 to nums
+        send "size ${size of nums}" to sender
     }
 }

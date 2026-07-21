@@ -535,6 +535,31 @@
       "kind": "declaration"
     },
     {
+      "name": "has",
+      "kind": "keyword",
+      "doc": "map membership: `m has k` -> Boolean (same as `m.has(k)`)."
+    },
+    {
+      "name": "sorted",
+      "kind": "keyword",
+      "doc": "sorted copy of a list: `sorted l` / `sorted l by <lambda>` (same as `l.sorted()` / `l.sorted_by(f)`)."
+    },
+    {
+      "name": "reversed",
+      "kind": "keyword",
+      "doc": "reversed copy of a list: `reversed l` (same as `l.reversed()`)."
+    },
+    {
+      "name": "first",
+      "kind": "keyword",
+      "doc": "first element of a list: `first of l` -> optional<T> (same as `l.first`)."
+    },
+    {
+      "name": "last",
+      "kind": "keyword",
+      "doc": "last element of a list: `last of l` -> optional<T> (same as `l.last`)."
+    },
+    {
       "name": "Player",
       "kind": "receiver",
       "doc": "`Player { }` OOP receiver block."
@@ -1204,61 +1229,6 @@
         "new_map(): map"
       ],
       "doc": "Create an empty map (typed by context)."
-    },
-    {
-      "name": "map_get",
-      "kind": "builtin",
-      "signature": "map_get(m, key): optional",
-      "signatures": [
-        "map_get(m, key): optional",
-        "shorthand: m[key]"
-      ],
-      "doc": "Read a map value."
-    },
-    {
-      "name": "map_set",
-      "kind": "builtin",
-      "signature": "map_set(m, key, value)",
-      "signatures": [
-        "map_set(m, key, value)"
-      ],
-      "doc": "Write a map value."
-    },
-    {
-      "name": "map_has",
-      "kind": "builtin",
-      "signature": "map_has(m, key): Boolean",
-      "signatures": [
-        "map_has(m, key): Boolean"
-      ],
-      "doc": "Whether a key exists."
-    },
-    {
-      "name": "map_delete",
-      "kind": "builtin",
-      "signature": "map_delete(m, key)",
-      "signatures": [
-        "map_delete(m, key)"
-      ],
-      "doc": "Remove a key."
-    },
-    {
-      "name": "map_keys",
-      "kind": "builtin",
-      "signature": "map_keys(m): list",
-      "signatures": [
-        "map_keys(m): list"
-      ],
-      "doc": "Keys of a map."
-    },
-    {
-      "name": "map_size",
-      "kind": "builtin",
-      "signature": "map_size(m): Integer",
-      "signatures": [
-        "map_size(m): Integer"
-      ],
-      "doc": "Entry count of a map."
     },
     {
       "name": "random_float",
