@@ -8,24 +8,24 @@ command "leaderboard" {
         // map<Integer, Integer> from its integer keys.
         set kills to { 101: 12, 102: 30, 103: 7, 104: 21 }
 
-        // record more kills two ways: index-set sugar and the builtin. Both
-        // take an Integer key because the map is Integer-keyed.
+        // record more kills with the 'set m at k to v' natural form. It takes
+        // an Integer key because the map is Integer-keyed.
         set kills at 103 to 8
-        map_set(kills, 105, 30)
+        set kills at 105 to 30
 
         // ONE call sorts the whole map into descending-by-value iteration
         // order -- this is the leaderboard. Ties keep prior order, so 102
         // ranks before 105 (both 30).
         set ranked to sort_by_value_desc(kills)
 
-        send "leaderboard (${map_size(ranked)} players):" to sender
+        send "leaderboard (${size of ranked} players):" to sender
         loop ranked as id -> score {
             send "player ${id}: ${score} kills" to sender
         }
 
         // top of the board without a full sort: max_by over the Integer keys,
         // scoring each by its value. kills[id] is optional<Integer>.
-        set best to max_by(map_keys(kills), function(id) return kills[id] otherwise 0)
+        set best to max_by(keys of kills, function(id) return kills[id] otherwise 0)
         send "leader is player ${best otherwise 0}" to sender
     }
 }
@@ -51,12 +51,12 @@ command "loot" {
         // one-call descending sort so the commonest tier iterates first.
         set weights to { 1: 60, 2: 30, 3: 9, 4: 1 }
         set by_weight to sort_by_value_desc(weights)
-        loop map_keys(by_weight) as tier {
+        loop keys of by_weight as tier {
             send "tier ${tier} weight ${by_weight[tier] otherwise 0}" to sender
         }
 
-        // pick a random rarity tier by composing random_in with map_keys
-        set rolled to random_in(map_keys(weights)) otherwise 1
+        // pick a random rarity tier by composing random_in with 'keys of'
+        set rolled to random_in(keys of weights) otherwise 1
         send "rolled tier ${rolled}" to sender
     }
 }

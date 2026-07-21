@@ -47,11 +47,11 @@ command "map_ops" {
         set r to m.keys.joined(",")
         send "m.pure ${r}" to sender                                  // b,a,c
 
-        // deprecated free-builtin map_get MUST equal the method
+        // the m[k] index-read natural form MUST equal the method
         set r to m.get("a") otherwise -1
         send "alias.method ${r}" to sender                            // 1
-        set r to map_get(m, "a") otherwise -1
-        send "alias.builtin ${r}" to sender                           // 1
+        set r to m["a"] otherwise -1
+        send "alias.natural ${r}" to sender                           // 1
 
         // --- mutating statement methods (live map) ---
         set mm to { "x": 1 }

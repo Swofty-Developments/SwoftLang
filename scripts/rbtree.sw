@@ -7,7 +7,7 @@
 //   "left"/"right"/"parent"  — child/parent nodes, ABSENT when nil
 //
 // There is no null in the language, so a missing child is simply an absent
-// map key; we reach for it with map_get / index-read (optional<Any>) and prove
+// map key; we reach for it with the m[k] index-read (optional<Any>) and prove
 // presence with `exists` / `is missing` before use. The tree itself lives in a
 // holder map `t` with keys "root" (absent when empty) and "next_id".
 //
@@ -57,7 +57,7 @@ function is_left(x) {
 
 // Colour of a possibly-absent child (nil counts as black).
 function child_is_red(node, key) {
-    set c to map_get(node, key)
+    set c to node[key]
     if c is missing {
         return false
     }
@@ -82,7 +82,7 @@ function left_rotate(t, x) {
         set x at "right" to yl
         set yl at "parent" to x
     } else {
-        map_delete(x, "right")
+        delete x at "right"
     }
 
     // y takes x's place under x's parent
@@ -96,7 +96,7 @@ function left_rotate(t, x) {
             set xp at "right" to y
         }
     } else {
-        map_delete(y, "parent")
+        delete y at "parent"
         set t at "root" to y
     }
 
@@ -118,7 +118,7 @@ function right_rotate(t, x) {
         set x at "left" to yr
         set yr at "parent" to x
     } else {
-        map_delete(x, "left")
+        delete x at "left"
     }
 
     // y takes x's place under x's parent
@@ -132,7 +132,7 @@ function right_rotate(t, x) {
             set xp at "right" to y
         }
     } else {
-        map_delete(y, "parent")
+        delete y at "parent"
         set t at "root" to y
     }
 
@@ -344,7 +344,7 @@ function check_no_red_red(node) {
 // (b) every root-to-nil path has the same number of black nodes.
 // Returns the black-height, or -1 if the two subtrees disagree.
 function bh_of_child(node, key) {
-    set c to map_get(node, key)
+    set c to node[key]
     if c is missing {
         return 1                     // a nil leaf is black
     }

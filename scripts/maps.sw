@@ -1,9 +1,10 @@
 // Phase-10 showcase: the map<V> type — String-keyed dictionaries with a
-// restart-safe persistent variant. Covers map literals, the map_* builtins
-// (map_get returns optional<V>), the 'set m at k to v' index-set sugar, the
-// m[k] index-read sugar (also optional<V>, so it pairs with otherwise/exists),
-// both foreach forms, and a persistent map<Scalar> serialized as one JSON blob
-// so it survives a restart — the player-vault pattern made trivial.
+// restart-safe persistent variant. Covers map literals, the natural-language
+// dialect ('set m at k to v', 'm has k', 'size of m', 'keys of m', 'delete m at
+// k'), the m[k] index-read sugar (optional<V>, so it pairs with
+// otherwise/exists), both foreach forms, and a persistent map<Scalar> serialized
+// as one JSON blob so it survives a restart — the player-vault pattern made
+// trivial.
 
 storage {
     backend: files "data/swoftlang"
@@ -20,11 +21,11 @@ command "inventory" {
         // Map literal — V is inferred as Integer from the values.
         set counts to { "diamond": 3, "emerald": 1, "gold": 7 }
 
-        // The builtin and the 'set m at k to v' sugar both write entries.
-        map_set(counts, "iron", 12)
+        // The 'set m at k to v' natural form writes entries.
+        set counts at "iron" to 12
         set counts at "diamond" to 5      // overwrite an existing key
 
-        send "size is ${map_size(counts)}" to sender
+        send "size is ${size of counts}" to sender
 
         // Index read yields optional<V>: combine with 'otherwise' for a default.
         set gold to counts["gold"] otherwise 0
@@ -37,12 +38,12 @@ command "inventory" {
             send "no ruby" to sender
         }
 
-        if map_has(counts, "iron") {
+        if counts has "iron" {
             send "has iron" to sender
         }
 
-        // map_keys returns a fresh insertion-ordered list<String>.
-        loop map_keys(counts) as material {
+        // 'keys of m' returns a fresh insertion-ordered list<String>.
+        loop keys of counts as material {
             send "key ${material}" to sender
         }
 
@@ -51,9 +52,9 @@ command "inventory" {
             send "${name} x${amount}" to sender
         }
 
-        // Storing none (or map_delete) removes a row.
-        map_delete(counts, "emerald")
-        send "after delete size is ${map_size(counts)}" to sender
+        // 'delete m at k' removes a row.
+        delete counts at "emerald"
+        send "after delete size is ${size of counts}" to sender
     }
 }
 
@@ -68,6 +69,6 @@ command "record-score" {
 
         set red to scores["team-red"] otherwise 0
         send "team-red has ${red}" to sender
-        send "teams recorded: ${map_size(scores)}" to sender
+        send "teams recorded: ${size of scores}" to sender
     }
 }
