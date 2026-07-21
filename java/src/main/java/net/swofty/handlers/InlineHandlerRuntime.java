@@ -170,8 +170,8 @@ public final class InlineHandlerRuntime {
         if (handler == null) {
             return;
         }
-        HandlerDispatch.dispatch(handler, mob, null,
-                "mob '" + mob.getDef().id() + "' " + event, normalize(args));
+        HandlerDispatch.dispatchOverride(handler, mob, null,
+                "mob '" + mob.getDef().id() + "' " + event, "Mob", event, normalize(args));
     }
 
     /**
@@ -215,8 +215,8 @@ public final class InlineHandlerRuntime {
         if (handler == null) {
             return null;
         }
-        HandlerDispatch.dispatch(handler, stack, cancellable,
-                "item '" + id + "' " + event, args);
+        HandlerDispatch.dispatchOverride(handler, stack, cancellable,
+                "item '" + id + "' " + event, "Item", event, args);
         return def;
     }
 

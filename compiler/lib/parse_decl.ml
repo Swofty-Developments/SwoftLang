@@ -77,42 +77,6 @@ let parse_command_group st =
     cmd_pos;
   }
 
-let parse_event st =
-  let ev_pos = pos_here st in
-  expect st Token.EVENT "'event'";
-  let ev_name = expect_ident st "event name" in
-  expect st Token.LBRACE "'{' after event name";
-  let priority = ref 0 in
-  let execute = ref None in
-  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
-    match peek st with
-    | Token.IDENT "priority", _, _ ->
-      ignore (advance st);
-      expect st Token.COLON "':' after 'priority'";
-      priority := parse_int_number st "priority value"
-    | Token.IDENT "execute", _, _ ->
-      ignore (advance st);
-      execute := Some (parse_execute st)
-    | Token.IDENT name, _, _ ->
-      error st (Printf.sprintf "Unknown event property: %s" name)
-    | t, _, _ ->
-      error st (Printf.sprintf "Expected event property, found %s" (Token.describe t))
-  done;
-  expect st Token.RBRACE "'}' to close event body";
-  { ev_name; priority = !priority; ev_execute = !execute; ev_pos }
-
-(* 'on <EventName> [async] { body }' — shorthand for
-   'event <EventName> { execute [async] { body } }'. The statement body is the
-   handler's execute block directly (no nested 'execute { }' or 'priority'). *)
-let parse_event_shorthand st =
-  let ev_pos = pos_here st in
-  ignore (advance st);
-  (* 'on' *)
-  let ev_name = expect_ident st "event name after 'on'" in
-  let ex_async = eat_soft st "async" in
-  let ex_stmts = parse_body st in
-  { ev_name; priority = 0; ev_execute = Some { ex_async; ex_stmts }; ev_pos }
-
 let parse_function st ~fn_async =
   let fn_pos = pos_here st in
   expect st Token.FUNCTION "'function'";

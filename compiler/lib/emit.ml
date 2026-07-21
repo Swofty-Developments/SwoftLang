@@ -488,15 +488,6 @@ let command c =
          ("arguments", `List (List.map argument c.arguments));
          ("execute", opt exec_block c.execute) ])
 
-let event e =
-  (* phase 7: the runtime registers handlers by canonical short catalog name;
-     curated names and catalog short names pass through unchanged, only the
-     simple-class spelling ("EntityShootEvent") is rewritten *)
-  `Assoc
-    (with_pos e.ev_pos
-       [ ("name", `String (Registry.canonical_event_name e.ev_name));
-         ("priority", `Int e.priority); ("execute", opt exec_block e.ev_execute) ])
-
 let func f =
   `Assoc
     (with_pos f.fn_pos
@@ -991,6 +982,39 @@ let placement_rule_decl (pr : placement_rule_decl) =
          ("callbacks", `List (List.map block_cb pr.pr_callbacks));
        ])
 
+(* OOP receiver blocks compile DOWN to the same event-dispatch JSON the removed
+   flat `event { }` form emitted, so the runtime EventRegistrar target is
+   unchanged. Each receiver method becomes one entry in the top-level "events"
+   array carrying { name, priority, execute } exactly as the flat form did, plus
+   the additive "receiver" (the base type, for instance filtering) and "params"
+   (the user's positional binder names, so the dispatcher can bind the event
+   args). The event "name" goes through `canonical_event_name`, matching the flat
+   form; methods with no distinct catalog event (they ride the inline-handler /
+   NPC / hologram / mob-forwarding runtimes) get a `<Receiver>.<method>`
+   identifier. One method maps to one event; fan-out across receivers is naturally
+   expressed as multiple entries sharing an event name (the runtime attaches one
+   EventNode listener per entry, as with multiple flat handlers today). *)
+let receiver_event (rc_type : string) (rk : Registry.receiver_kind) (h : Ast.inline_handler) =
+  let name =
+    match Registry.receiver_method_event rk h.ih_event with
+    | Some e -> Registry.canonical_event_name e
+    | None -> rc_type ^ "." ^ h.ih_event
+  in
+  `Assoc
+    (with_pos h.ih_pos
+       [ ("name", `String name); ("receiver", `String rc_type); ("priority", `Int 0);
+         ("params", `List (List.map (fun (n, _) -> `String n) h.ih_params));
+         ("execute",
+          `Assoc [ ("async", `Bool false); ("statements", statements h.ih_body) ]) ])
+
+let receiver_events (rs : Ast.receiver_decl list) =
+  List.concat_map
+    (fun (r : Ast.receiver_decl) ->
+      match Registry.receiver_kind_of_name r.rc_type with
+      | None -> [] (* unknown receiver: the typechecker has already errored *)
+      | Some rk -> List.map (receiver_event r.rc_type rk) r.rc_methods)
+    rs
+
 let script_fields ~modular (s : Ast.script) =
   (* additive keys: only present when the feature is used, so pre-persistence
      scripts emit byte-identical JSON *)
@@ -1030,13 +1054,12 @@ let script_fields ~modular (s : Ast.script) =
        else [ ("fishing_loot", `List (List.map fishing_loot s.fishing_loots)) ])
     @ (if s.block_handlers = [] then []
        else [ ("block_handlers", `List (List.map block_handler_decl s.block_handlers)) ])
-    @
-    if s.placement_rules = [] then []
-    else [ ("placement_rules", `List (List.map placement_rule_decl s.placement_rules)) ]
+    @ (if s.placement_rules = [] then []
+       else [ ("placement_rules", `List (List.map placement_rule_decl s.placement_rules)) ])
   in
   [
     ("commands", `List (List.map command s.commands));
-    ("events", `List (List.map event s.events));
+    ("events", `List (receiver_events s.receivers));
     ("functions", `List (List.map (fun f -> mark f.fn_exported (func f)) s.functions));
     ("guis", `List (List.map (fun g -> mark g.g_exported (gui g)) s.guis));
     ("scoreboards", `List (List.map (fun sb -> mark sb.sb_exported (scoreboard sb)) s.scoreboards));

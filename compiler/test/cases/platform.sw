@@ -11,32 +11,25 @@ server {
     }
 }
 
-event ServerPing {
-    execute {
-        set event.motd to "<green>dynamic motd"
-        set event.online to 999
-        set event.max to 1000
+Server {
+    on_list_ping(status) {
+        broadcast "pinged"
     }
-}
 
-event TpsChange {
-    execute {
+    on_tps_change(past, current) {
         broadcast "TPS moved ${past} -> ${current}"
         if tps_at(60) < 15.0 broadcast "<red>we were lagging a minute ago"
     }
 }
 
-event BlockBreak {
-    execute {
-        if block == "minecraft:bedrock" cancel event
-        send "you broke ${block}" to player
-    }
-}
-
-event BlockPlace {
-    execute {
-        set block at location to "AIR"
+Block {
+    on_break(player) {
+        send "you broke a block" to player
         cancel event
+    }
+
+    on_place(player, location, block) {
+        set block at location to "AIR"
     }
 }
 

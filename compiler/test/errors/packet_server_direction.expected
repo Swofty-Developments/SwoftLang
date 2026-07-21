@@ -1,0 +1,1 @@
+packet class "ActionBarPacket" is an outbound server packet; a Packet block can only listen to inbound client packets

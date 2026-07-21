@@ -625,10 +625,12 @@
   ],
   "events": [
     {
-      "line": 67,
-      "col": 1,
+      "line": 68,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -645,18 +647,18 @@
                 "line": 69,
                 "col": 12,
                 "kind": "var",
-                "name": "player"
+                "name": "this"
               },
               "right": {
                 "line": 69,
-                "col": 24,
+                "col": 22,
                 "kind": "type",
                 "name": "OfflinePlayer"
               }
             },
             "then": {
               "line": 69,
-              "col": 38,
+              "col": 36,
               "kind": "block",
               "statements": [
                 {
@@ -673,7 +675,7 @@
                     "line": 70,
                     "col": 56,
                     "kind": "var",
-                    "name": "player"
+                    "name": "this"
                   }
                 }
               ]
@@ -686,7 +688,7 @@
             "kind": "call",
             "name": "greet",
             "args": [
-              { "line": 72, "col": 15, "kind": "var", "name": "player" }
+              { "line": 72, "col": 15, "kind": "var", "name": "this" }
             ]
           }
         ]

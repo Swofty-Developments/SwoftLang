@@ -148,6 +148,17 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 2 && args[0].equals("--mob-override-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = MobOverrideSmoke.run(args[1]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 2 && args[0].equals("--tasks-smoke")) {
             // MinecraftServer.init() starts non-daemon threads: always exit
             int code;

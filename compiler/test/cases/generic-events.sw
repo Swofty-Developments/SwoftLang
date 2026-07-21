@@ -1,43 +1,27 @@
-// Phase-7 generated event catalog: any Minestom event by short name or
-// simple class name, Any-typed property access with catalog writability,
-// and catalog-driven cancellability. The pinned Minestom snapshot ships no
-// fishing events (FISHING_BOBBER is entity-only), so the closest engine
-// coverage exercised here is item pickup/consumption.
+// Receiver methods that ride the generated engine event catalog: `this` binds
+// to the receiver instance and the user binders to the event's typed args, with
+// catalog-driven writability (set the rw args) and cancellability (cancel event
+// only inside a cancellable method).
 
-event PickupItem {
-    execute {
-        send "picked up ${event.item_stack}" to all
-        if event.cancelled {
-            send "already cancelled" to all
-        }
+Entity {
+    on_pickup_item(item_stack, item_entity) {
+        send "picked up ${item_stack}" to all
         cancel event
     }
+
+    on_shoot(projectile, dest, power, spread) {
+        set power to 2.0
+        set spread to 0.0
+        send "projectile ${projectile} towards ${dest}" to all
+    }
 }
 
-// simple-class spelling resolves through the catalog (emits "PlayerBeginItemUse")
-event PlayerBeginItemUseEvent {
-    priority: 3
-
-    execute {
-        set event.item_use_duration to 10
+Player {
+    on_begin_item_use() {
         cancel event
     }
-}
 
-event EntityShoot {
-    execute {
-        set event.power to 2.0
-        set event.spread to 0.0
-        send "projectile ${event.projectile} towards ${event.to}" to all
-    }
-}
-
-// A0.1 reverse index: the catalog name 'PlayerSpawn' now collapses to the
-// typed PlayerJoin rows (its class is wrapped by the curated PlayerJoin), so
-// first_spawn is a typed Boolean and player a typed Player, and the handler
-// emits the curated identifier "PlayerJoin".
-event PlayerSpawn {
-    execute {
-        send "spawned (first: ${event.first_spawn}) for ${event.player.name}" to all
+    on_join() {
+        send "spawned for ${this.name}" to all
     }
 }

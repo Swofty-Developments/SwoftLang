@@ -898,6 +898,20 @@ public class SwoftJsonLoader {
     private static Event buildEvent(JsonObject obj) {
         Event event = new Event(obj.get("name").getAsString());
         event.setPriority(obj.get("priority").getAsInt());
+        // OOP receiver model (additive keys): a Capitalized base-type receiver
+        // method carries its receiver type + the user's positional binder names
+        // so the runtime binds `this` + args instead of the flat sender/alias
+        // scheme. Absent on legacy flat handlers, which stay on the old path.
+        if (has(obj, "receiver")) {
+            event.setReceiver(obj.get("receiver").getAsString());
+        }
+        if (has(obj, "params")) {
+            List<String> params = new ArrayList<>();
+            for (JsonElement param : obj.getAsJsonArray("params")) {
+                params.add(param.getAsString());
+            }
+            event.setParams(params);
+        }
         if (has(obj, "execute")) {
             ExecuteBlock block = buildExecuteBlock(obj.get("execute"));
             block.setHandler("event " + event.getName(), currentFile,

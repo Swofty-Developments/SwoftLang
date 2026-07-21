@@ -53,25 +53,20 @@ command "ghoul" {
     }
 }
 
-event MobSpawn {
-    execute {
-        broadcast "spawned: ${event.mob.type}"
+Mob {
+    on_spawn() {
+        broadcast "spawned: ${this.type}"
     }
-}
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            send "<gold>Kill credit!" to event.killer
+    on_death(killer) {
+        if killer exists {
+            broadcast "<gold>Kill credit!"
         }
     }
-}
 
-event MobDamage {
-    execute {
-        set event.damage to event.damage * 2
-        if event.mob.health < 10 {
-            cancel event
+    on_hit(attacker) {
+        if this.health < 10 {
+            broadcast "<red>the mob is low"
         }
     }
 }

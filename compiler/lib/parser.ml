@@ -31,10 +31,10 @@ let parse_exported st ~functions ~guis ~scoreboards ~tablists ~bossbars ~hologra
   | Token.IDENT "npc" -> npcs := { (parse_npc st) with n_exported = true } :: !npcs
   | Token.IDENT "item" -> items := { (parse_item_decl st) with it_exported = true } :: !items
   | Token.IDENT "mob" -> mobs := { (parse_mob_decl st) with mb_exported = true } :: !mobs
-  | Token.COMMAND | Token.EVENT ->
+  | Token.COMMAND ->
     error st
-      "commands and events always register when their module is imported (they are effects, \
-       not symbols); remove 'export'"
+      "commands always register when their module is imported (they are effects, not symbols); \
+       remove 'export'"
   | t ->
     error st
       (Printf.sprintf
@@ -52,7 +52,6 @@ let parse ~file source =
   let imports = ref [] in
   let module_vars = ref [] in
   let commands = ref [] in
-  let events = ref [] in
   let functions = ref [] in
   let guis = ref [] in
   let scoreboards = ref [] in
@@ -71,10 +70,17 @@ let parse ~file source =
   let fishing_loots = ref [] in
   let block_handlers = ref [] in
   let placement_rules = ref [] in
+  let receivers = ref [] in
   while peek_tok st <> Token.EOF do
     match peek_tok st with
     | Token.COMMAND -> commands := parse_command_group st :: !commands
-    | Token.EVENT -> events := parse_event st :: !events
+    (* The flat event system was removed: `event <Name> { execute {} }` is now a
+       capitalized receiver block (`Player { on_join() {} }`, ...). *)
+    | Token.EVENT ->
+      error st
+        "the flat 'event <Name> { execute { } }' form was removed; use the OOP receiver block \
+         instead, e.g. 'Player { on_chat(message) { } }' (see the receiver types: Player, Entity, \
+         Mob, Item, Block, Projectile, Inventory, World, Server, Npc, Hologram)"
     | Token.FUNCTION -> functions := parse_function st ~fn_async:false :: !functions
     | Token.IDENT "async" when peek2_tok st = Token.FUNCTION ->
       ignore (advance st);
@@ -107,30 +113,45 @@ let parse ~file source =
     | Token.IDENT "persistent" -> persistents := parse_persistent st :: !persistents
     | Token.IDENT "item" -> items := parse_item_decl st :: !items
     | Token.IDENT "mob" -> mobs := parse_mob_decl st :: !mobs
+    (* The flat 'on <Event> { }' shorthand and the top-level 'on packet "..." { }'
+       statement were both removed. Events live on capitalized receiver blocks;
+       raw packets live in the `Packet { on "Class" { } }` receiver block. *)
     | Token.IDENT "on" when soft2 st "packet" ->
-      packet_listeners := parse_packet_listener st :: !packet_listeners
-    (* 'on <EventName> { body }' — event-handler shorthand (must come after the
-       'on packet' branch above) *)
-    | Token.IDENT "on" -> events := parse_event_shorthand st :: !events
+      error st
+        "the top-level 'on packet \"ClassName\" { }' statement was removed; use the 'Packet { }' \
+         receiver block instead, e.g. 'Packet { on \"ClientPlayerDiggingPacket\" { } }'"
+    | Token.IDENT "on" ->
+      error st
+        "the flat 'on <Event> { }' shorthand was removed; use the OOP receiver block instead, \
+         e.g. 'Player { on_chat(message) { } }' (receiver types: Player, Entity, Mob, Item, \
+         Block, Projectile, Inventory, World, Server, Npc, Hologram)"
     | Token.IDENT "api" -> apis := parse_api_decl st :: !apis
     | Token.IDENT "every" -> schedulers := parse_sched_decl st :: !schedulers
     | Token.IDENT "fishing_loot" -> fishing_loots := parse_fishing_loot st :: !fishing_loots
     | Token.IDENT "block_handler" -> block_handlers := parse_block_handler st :: !block_handlers
     | Token.IDENT "placement_rule" -> placement_rules := parse_placement_rule st :: !placement_rules
+    (* OOP receiver blocks: `Packet { on "Class" {} }` desugars into packet
+       listeners; the Capitalized base-type receivers (`Player { }`, ...) parse
+       into receiver_decls. Both come after the lowercase/keyword branches. *)
+    | Token.IDENT "Packet" when peek2_tok st = Token.LBRACE ->
+      packet_listeners := List.rev_append (parse_packet_receiver st) !packet_listeners
+    | Token.IDENT name when Registry.receiver_kind_of_name name <> None && peek2_tok st = Token.LBRACE
+      ->
+      receivers := parse_receiver st :: !receivers
     | t ->
       error st
         (Printf.sprintf
-           "Expected 'import', 'export', 'var', 'command', 'event', 'function', 'gui', \
-            'scoreboard', 'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', \
-            'persistent', 'item', 'mob', 'api', 'every', 'fishing_loot', 'block_handler', \
-            'placement_rule', or 'on packet', found %s"
+           "Expected 'import', 'export', 'var', 'command', 'function', 'gui', 'scoreboard', \
+            'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', 'persistent', 'item', \
+            'mob', 'api', 'every', 'fishing_loot', 'block_handler', 'placement_rule', a receiver \
+            block (Player/Entity/Mob/Item/Block/Projectile/Inventory/World/Server/Npc/Hologram), \
+            or 'Packet', found %s"
            (Token.describe t))
   done;
   {
     imports = List.rev !imports;
     module_vars = List.rev !module_vars;
     commands = List.rev !commands;
-    events = List.rev !events;
     functions = List.rev !functions;
     guis = List.rev !guis;
     scoreboards = List.rev !scoreboards;
@@ -149,4 +170,5 @@ let parse ~file source =
     fishing_loots = List.rev !fishing_loots;
     block_handlers = List.rev !block_handlers;
     placement_rules = List.rev !placement_rules;
+    receivers = List.rev !receivers;
   }

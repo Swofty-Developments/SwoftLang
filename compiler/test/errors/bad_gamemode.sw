@@ -1,5 +1,5 @@
-event PlayerJoin {
-    execute {
-        set event.player.gamemode to "creative_plus"
+Player {
+    on_join() {
+        set this.gamemode to "creative_plus"
     }
 }

@@ -362,13 +362,6 @@ type command = {
   cmd_pos : pos;
 }
 
-type event = {
-  ev_name : string;
-  priority : int;
-  ev_execute : exec_block option;
-  ev_pos : pos;
-}
-
 type func = {
   fn_name : string;
   fn_async : bool;
@@ -403,6 +396,20 @@ type inline_handler = {
   ih_params : (string * pos) list; (* user binder names + positions *)
   ih_body : stmt list;
   ih_pos : pos;
+}
+
+(* top-level OOP receiver declaration (design: OOP event model). A Capitalized
+   base type block — `Player { on_join() {} on_death(killer) {} }` — whose
+   members are fixed-name methods (reusing inline_handler: ih_event = method
+   name, ih_params = user binder names, ih_body = sync-colored body). The method
+   is validated against the receiver's fixed method table (registry.ml); `this`
+   binds to the receiver instance type. The special `Packet { on "Class" {} }`
+   block is NOT a receiver_decl — it desugars into packet_listeners. *)
+type receiver_decl = {
+  rc_type : string; (* "Player" | "Entity" | ... *)
+  rc_type_pos : pos;
+  rc_methods : inline_handler list;
+  rc_pos : pos;
 }
 
 type gui_slot = {
@@ -760,7 +767,6 @@ type script = {
   imports : import_decl list;
   module_vars : module_var list;
   commands : command list;
-  events : event list;
   functions : func list;
   guis : gui list;
   scoreboards : scoreboard list;
@@ -779,6 +785,7 @@ type script = {
   fishing_loots : fishing_loot list;
   block_handlers : block_handler_decl list;
   placement_rules : placement_rule_decl list;
+  receivers : receiver_decl list;
 }
 
 (* Constant-fold a numeric declaration-field expression (mob health/damage/

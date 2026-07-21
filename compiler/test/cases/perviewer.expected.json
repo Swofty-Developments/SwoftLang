@@ -4,44 +4,35 @@
   "commands": [],
   "events": [
     {
-      "line": 17,
-      "col": 1,
+      "line": 18,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 18,
-            "col": 5,
+            "line": 19,
+            "col": 9,
             "kind": "spawn_mob",
             "id": {
-              "line": 18,
-              "col": 15,
+              "line": 19,
+              "col": 19,
               "kind": "string",
               "value": "zombie"
             },
             "at": {
-              "line": 18,
-              "col": 27,
+              "line": 19,
+              "col": 31,
               "kind": "call",
               "name": "in_front_of",
               "args": [
+                { "line": 19, "col": 43, "kind": "var", "name": "this" },
                 {
-                  "line": 18,
-                  "col": 45,
-                  "kind": "prop",
-                  "target": {
-                    "line": 18,
-                    "col": 39,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
-                },
-                {
-                  "line": 18,
-                  "col": 53,
+                  "line": 19,
+                  "col": 49,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -51,45 +42,33 @@
             "as": "z"
           },
           {
-            "line": 19,
-            "col": 5,
+            "line": 20,
+            "col": 9,
             "kind": "set_entity_name",
-            "entity": { "line": 19, "col": 17, "kind": "var", "name": "z" },
+            "entity": { "line": 20, "col": 21, "kind": "var", "name": "z" },
             "value": {
-              "line": 19,
-              "col": 22,
+              "line": 20,
+              "col": 26,
               "kind": "string",
               "value": "<red>Zombie <gray>0/5"
             },
             "viewer": {
-              "line": 19,
-              "col": 56,
-              "kind": "prop",
-              "target": {
-                "line": 19,
-                "col": 50,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 20,
+              "col": 54,
+              "kind": "var",
+              "name": "this"
             }
           },
           {
-            "line": 20,
-            "col": 5,
+            "line": 21,
+            "col": 9,
             "kind": "show_entity",
-            "entity": { "line": 20, "col": 10, "kind": "var", "name": "z" },
+            "entity": { "line": 21, "col": 14, "kind": "var", "name": "z" },
             "target": {
-              "line": 20,
-              "col": 21,
-              "kind": "prop",
-              "target": {
-                "line": 20,
-                "col": 15,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 21,
+              "col": 19,
+              "kind": "var",
+              "name": "this"
             }
           }
         ]

@@ -1,0 +1,4726 @@
+{
+  "net.minestom.server.network.packet.client.common.ClientCookieResponsePacket": {
+    "simple_name": "ClientCookieResponsePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "key",
+        "accessor": "key",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "value",
+        "accessor": "value",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientCustomClickActionPacket": {
+    "simple_name": "ClientCustomClickActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "key",
+        "accessor": "key",
+        "javaType": "net.kyori.adventure.key.Key",
+        "ty": "TAny"
+      },
+      {
+        "name": "payload",
+        "accessor": "payload",
+        "javaType": "net.kyori.adventure.nbt.BinaryTag",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientKeepAlivePacket": {
+    "simple_name": "ClientKeepAlivePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientPingRequestPacket": {
+    "simple_name": "ClientPingRequestPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "number",
+        "accessor": "number",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientPluginMessagePacket": {
+    "simple_name": "ClientPluginMessagePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "channel",
+        "accessor": "channel",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientPongPacket": {
+    "simple_name": "ClientPongPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientResourcePackStatusPacket": {
+    "simple_name": "ClientResourcePackStatusPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      },
+      {
+        "name": "status",
+        "accessor": "status",
+        "javaType": "net.kyori.adventure.resource.ResourcePackStatus",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.common.ClientSettingsPacket": {
+    "simple_name": "ClientSettingsPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "settings",
+        "accessor": "settings",
+        "javaType": "net.minestom.server.network.player.ClientSettings",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.configuration.ClientAcceptCodeOfConductPacket": {
+    "simple_name": "ClientAcceptCodeOfConductPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.configuration.ClientFinishConfigurationPacket": {
+    "simple_name": "ClientFinishConfigurationPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.configuration.ClientSelectKnownPacksPacket": {
+    "simple_name": "ClientSelectKnownPacksPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.handshake.ClientHandshakePacket": {
+    "simple_name": "ClientHandshakePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "protocol_version",
+        "accessor": "protocolVersion",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "server_address",
+        "accessor": "serverAddress",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "server_port",
+        "accessor": "serverPort",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "intent",
+        "accessor": "intent",
+        "javaType": "net.minestom.server.network.packet.client.handshake.ClientHandshakePacket$Intent",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.login.ClientEncryptionResponsePacket": {
+    "simple_name": "ClientEncryptionResponsePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "shared_secret",
+        "accessor": "sharedSecret",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      },
+      {
+        "name": "encrypted_verify_token",
+        "accessor": "encryptedVerifyToken",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.login.ClientLoginAcknowledgedPacket": {
+    "simple_name": "ClientLoginAcknowledgedPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.login.ClientLoginPluginResponsePacket": {
+    "simple_name": "ClientLoginPluginResponsePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "message_id",
+        "accessor": "messageId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.login.ClientLoginStartPacket": {
+    "simple_name": "ClientLoginStartPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "username",
+        "accessor": "username",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "profile_id",
+        "accessor": "profileId",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientAdvancementTabPacket": {
+    "simple_name": "ClientAdvancementTabPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.advancements.AdvancementAction",
+        "ty": "TAny"
+      },
+      {
+        "name": "tab_identifier",
+        "accessor": "tabIdentifier",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientAnimationPacket": {
+    "simple_name": "ClientAnimationPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "hand",
+        "accessor": "hand",
+        "javaType": "net.minestom.server.entity.PlayerHand",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientAttackPacket": {
+    "simple_name": "ClientAttackPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "target_id",
+        "accessor": "targetId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChangeDifficultyPacket": {
+    "simple_name": "ClientChangeDifficultyPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "difficulty",
+        "accessor": "difficulty",
+        "javaType": "net.minestom.server.world.Difficulty",
+        "ty": "TAny"
+      },
+      {
+        "name": "locked",
+        "accessor": "locked",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChangeGameModePacket": {
+    "simple_name": "ClientChangeGameModePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "game_mode",
+        "accessor": "gameMode",
+        "javaType": "net.minestom.server.entity.GameMode",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChatAckPacket": {
+    "simple_name": "ClientChatAckPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "offset",
+        "accessor": "offset",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChatMessagePacket": {
+    "simple_name": "ClientChatMessagePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "timestamp",
+        "accessor": "timestamp",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "salt",
+        "accessor": "salt",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "signature",
+        "accessor": "signature",
+        "javaType": "net.minestom.server.crypto.MessageSignature",
+        "ty": "TAny"
+      },
+      {
+        "name": "ack_offset",
+        "accessor": "ackOffset",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "ack_list",
+        "accessor": "ackList",
+        "javaType": "java.util.BitSet",
+        "ty": "TAny"
+      },
+      {
+        "name": "checksum",
+        "accessor": "checksum",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChatSessionUpdatePacket": {
+    "simple_name": "ClientChatSessionUpdatePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "chat_session",
+        "accessor": "chatSession",
+        "javaType": "net.minestom.server.crypto.ChatSession",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientChunkBatchReceivedPacket": {
+    "simple_name": "ClientChunkBatchReceivedPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "target_chunks_per_tick",
+        "accessor": "targetChunksPerTick",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket": {
+    "simple_name": "ClientClickWindowButtonPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "button_id",
+        "accessor": "buttonId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientClickWindowPacket": {
+    "simple_name": "ClientClickWindowPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "state_id",
+        "accessor": "stateId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "button",
+        "accessor": "button",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "click_type",
+        "accessor": "clickType",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientClickWindowPacket$ClickType",
+        "ty": "TAny"
+      },
+      {
+        "name": "changed_slots",
+        "accessor": "changedSlots",
+        "javaType": "java.util.Map<java.lang.Short, net.minestom.server.item.ItemStack$Hash>",
+        "ty": "TAny"
+      },
+      {
+        "name": "clicked_item",
+        "accessor": "clickedItem",
+        "javaType": "net.minestom.server.item.ItemStack$Hash",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientCloseWindowPacket": {
+    "simple_name": "ClientCloseWindowPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientCommandChatPacket": {
+    "simple_name": "ClientCommandChatPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientConfigurationAckPacket": {
+    "simple_name": "ClientConfigurationAckPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.play.ClientCreativeInventoryActionPacket": {
+    "simple_name": "ClientCreativeInventoryActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "item",
+        "accessor": "item",
+        "javaType": "net.minestom.server.item.ItemStack",
+        "ty": "TItem"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientDebugSubscriptionRequestPacket": {
+    "simple_name": "ClientDebugSubscriptionRequestPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "subscriptions",
+        "accessor": "subscriptions",
+        "javaType": "java.util.Set<net.minestom.server.network.debug.DebugSubscription<?>>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientEditBookPacket": {
+    "simple_name": "ClientEditBookPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "pages",
+        "accessor": "pages",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      },
+      {
+        "name": "title",
+        "accessor": "title",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientEntityActionPacket": {
+    "simple_name": "ClientEntityActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "player_id",
+        "accessor": "playerId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientEntityActionPacket$Action",
+        "ty": "TAny"
+      },
+      {
+        "name": "horse_jump_boost",
+        "accessor": "horseJumpBoost",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientGenerateStructurePacket": {
+    "simple_name": "ClientGenerateStructurePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "level",
+        "accessor": "level",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "keep_jigsaws",
+        "accessor": "keepJigsaws",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientHeldItemChangePacket": {
+    "simple_name": "ClientHeldItemChangePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "short",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientInputPacket": {
+    "simple_name": "ClientInputPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientInteractEntityPacket": {
+    "simple_name": "ClientInteractEntityPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "target_id",
+        "accessor": "targetId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "hand",
+        "accessor": "hand",
+        "javaType": "net.minestom.server.entity.PlayerHand",
+        "ty": "TString"
+      },
+      {
+        "name": "location",
+        "accessor": "location",
+        "javaType": "net.minestom.server.coordinate.Vec",
+        "ty": "TVec"
+      },
+      {
+        "name": "using_secondary_action",
+        "accessor": "usingSecondaryAction",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientLockDifficultyPacket": {
+    "simple_name": "ClientLockDifficultyPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "locked",
+        "accessor": "locked",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientNameItemPacket": {
+    "simple_name": "ClientNameItemPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "item_name",
+        "accessor": "itemName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPickItemFromBlockPacket": {
+    "simple_name": "ClientPickItemFromBlockPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "pos",
+        "accessor": "pos",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "include_data",
+        "accessor": "includeData",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPickItemFromEntityPacket": {
+    "simple_name": "ClientPickItemFromEntityPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "include_data",
+        "accessor": "includeData",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlaceRecipePacket": {
+    "simple_name": "ClientPlaceRecipePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "recipe_display_id",
+        "accessor": "recipeDisplayId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "make_all",
+        "accessor": "makeAll",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerAbilitiesPacket": {
+    "simple_name": "ClientPlayerAbilitiesPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerActionPacket": {
+    "simple_name": "ClientPlayerActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "status",
+        "accessor": "status",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientPlayerActionPacket$Status",
+        "ty": "TAny"
+      },
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "block_face",
+        "accessor": "blockFace",
+        "javaType": "net.minestom.server.instance.block.BlockFace",
+        "ty": "TString"
+      },
+      {
+        "name": "sequence",
+        "accessor": "sequence",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerBlockPlacementPacket": {
+    "simple_name": "ClientPlayerBlockPlacementPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "hand",
+        "accessor": "hand",
+        "javaType": "net.minestom.server.entity.PlayerHand",
+        "ty": "TString"
+      },
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "block_face",
+        "accessor": "blockFace",
+        "javaType": "net.minestom.server.instance.block.BlockFace",
+        "ty": "TString"
+      },
+      {
+        "name": "cursor_position_x",
+        "accessor": "cursorPositionX",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "cursor_position_y",
+        "accessor": "cursorPositionY",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "cursor_position_z",
+        "accessor": "cursorPositionZ",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "inside_block",
+        "accessor": "insideBlock",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "hit_world_border",
+        "accessor": "hitWorldBorder",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "sequence",
+        "accessor": "sequence",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerLoadedPacket": {
+    "simple_name": "ClientPlayerLoadedPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerPositionAndRotationPacket": {
+    "simple_name": "ClientPlayerPositionAndRotationPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Pos",
+        "ty": "TLocation"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerPositionPacket": {
+    "simple_name": "ClientPlayerPositionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerPositionStatusPacket": {
+    "simple_name": "ClientPlayerPositionStatusPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientPlayerRotationPacket": {
+    "simple_name": "ClientPlayerRotationPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientQueryBlockNbtPacket": {
+    "simple_name": "ClientQueryBlockNbtPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "transaction_id",
+        "accessor": "transactionId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientQueryEntityNbtPacket": {
+    "simple_name": "ClientQueryEntityNbtPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "transaction_id",
+        "accessor": "transactionId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientRecipeBookSeenRecipePacket": {
+    "simple_name": "ClientRecipeBookSeenRecipePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "index",
+        "accessor": "index",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSelectBundleItemPacket": {
+    "simple_name": "ClientSelectBundleItemPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "selected_index",
+        "accessor": "selectedIndex",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSelectTradePacket": {
+    "simple_name": "ClientSelectTradePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "selected_slot",
+        "accessor": "selectedSlot",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSetBeaconEffectPacket": {
+    "simple_name": "ClientSetBeaconEffectPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "primary_effect",
+        "accessor": "primaryEffect",
+        "javaType": "net.minestom.server.potion.PotionType",
+        "ty": "TAny"
+      },
+      {
+        "name": "secondary_effect",
+        "accessor": "secondaryEffect",
+        "javaType": "net.minestom.server.potion.PotionType",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSetGameRulesPacket": {
+    "simple_name": "ClientSetGameRulesPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.client.play.ClientSetGameRulesPacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSetRecipeBookStatePacket": {
+    "simple_name": "ClientSetRecipeBookStatePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "book_type",
+        "accessor": "bookType",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientSetRecipeBookStatePacket$BookType",
+        "ty": "TAny"
+      },
+      {
+        "name": "book_open",
+        "accessor": "bookOpen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "filter_active",
+        "accessor": "filterActive",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSetTestBlockPacket": {
+    "simple_name": "ClientSetTestBlockPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "mode",
+        "accessor": "mode",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientSetTestBlockPacket$TestBlockMode",
+        "ty": "TAny"
+      },
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSignedCommandChatPacket": {
+    "simple_name": "ClientSignedCommandChatPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "timestamp",
+        "accessor": "timestamp",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "salt",
+        "accessor": "salt",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "signatures",
+        "accessor": "signatures",
+        "javaType": "net.minestom.server.crypto.ArgumentSignatures",
+        "ty": "TAny"
+      },
+      {
+        "name": "last_seen_messages",
+        "accessor": "lastSeenMessages",
+        "javaType": "net.minestom.server.crypto.LastSeenMessages$Update",
+        "ty": "TAny"
+      },
+      {
+        "name": "checksum",
+        "accessor": "checksum",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSpectatorActionPacket": {
+    "simple_name": "ClientSpectatorActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "target_id",
+        "accessor": "targetId",
+        "javaType": "java.lang.Integer",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientStatusPacket": {
+    "simple_name": "ClientStatusPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientStatusPacket$Action",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientSteerBoatPacket": {
+    "simple_name": "ClientSteerBoatPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "left_paddle_turning",
+        "accessor": "leftPaddleTurning",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "right_paddle_turning",
+        "accessor": "rightPaddleTurning",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientTabCompletePacket": {
+    "simple_name": "ClientTabCompletePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "transaction_id",
+        "accessor": "transactionId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "text",
+        "accessor": "text",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientTeleportConfirmPacket": {
+    "simple_name": "ClientTeleportConfirmPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "teleport_id",
+        "accessor": "teleportId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientTeleportToEntityPacket": {
+    "simple_name": "ClientTeleportToEntityPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "target",
+        "accessor": "target",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket": {
+    "simple_name": "ClientTestInstanceBlockActionPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket$Action",
+        "ty": "TAny"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket$Data",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientTickEndPacket": {
+    "simple_name": "ClientTickEndPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockMinecartPacket": {
+    "simple_name": "ClientUpdateCommandBlockMinecartPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "command",
+        "accessor": "command",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "track_output",
+        "accessor": "trackOutput",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockPacket": {
+    "simple_name": "ClientUpdateCommandBlockPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "command",
+        "accessor": "command",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "mode",
+        "accessor": "mode",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockPacket$Mode",
+        "ty": "TAny"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientUpdateJigsawBlockPacket": {
+    "simple_name": "ClientUpdateJigsawBlockPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "location",
+        "accessor": "location",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "name",
+        "accessor": "name",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "target",
+        "accessor": "target",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "pool",
+        "accessor": "pool",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "final_state",
+        "accessor": "finalState",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "joint_type",
+        "accessor": "jointType",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "selection_priority",
+        "accessor": "selectionPriority",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "placement_priority",
+        "accessor": "placementPriority",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientUpdateSignPacket": {
+    "simple_name": "ClientUpdateSignPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "is_front_text",
+        "accessor": "isFrontText",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "lines",
+        "accessor": "lines",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket": {
+    "simple_name": "ClientUpdateStructureBlockPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "location",
+        "accessor": "location",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Action",
+        "ty": "TAny"
+      },
+      {
+        "name": "mode",
+        "accessor": "mode",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Mode",
+        "ty": "TAny"
+      },
+      {
+        "name": "name",
+        "accessor": "name",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "offset",
+        "accessor": "offset",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "size",
+        "accessor": "size",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "mirror",
+        "accessor": "mirror",
+        "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Mirror",
+        "ty": "TAny"
+      },
+      {
+        "name": "rotation",
+        "accessor": "rotation",
+        "javaType": "net.minestom.server.utils.Rotation",
+        "ty": "TAny"
+      },
+      {
+        "name": "metadata",
+        "accessor": "metadata",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "integrity",
+        "accessor": "integrity",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "seed",
+        "accessor": "seed",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientUseItemPacket": {
+    "simple_name": "ClientUseItemPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "hand",
+        "accessor": "hand",
+        "javaType": "net.minestom.server.entity.PlayerHand",
+        "ty": "TString"
+      },
+      {
+        "name": "sequence",
+        "accessor": "sequence",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientVehicleMovePacket": {
+    "simple_name": "ClientVehicleMovePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Pos",
+        "ty": "TLocation"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.play.ClientWindowSlotStatePacket": {
+    "simple_name": "ClientWindowSlotStatePacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "new_state",
+        "accessor": "newState",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.status.LegacyServerListPingPacket": {
+    "simple_name": "LegacyServerListPingPacket",
+    "direction": "client",
+    "fields": [
+      {
+        "name": "payload",
+        "accessor": "payload",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.client.status.StatusRequestPacket": {
+    "simple_name": "StatusRequestPacket",
+    "direction": "client",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.common.ClearDialogPacket": {
+    "simple_name": "ClearDialogPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.common.CookieRequestPacket": {
+    "simple_name": "CookieRequestPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "key",
+        "accessor": "key",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.CookieStorePacket": {
+    "simple_name": "CookieStorePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "key",
+        "accessor": "key",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "value",
+        "accessor": "value",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.CustomReportDetailsPacket": {
+    "simple_name": "CustomReportDetailsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "details",
+        "accessor": "details",
+        "javaType": "java.util.Map<java.lang.String, java.lang.String>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.DisconnectPacket": {
+    "simple_name": "DisconnectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.KeepAlivePacket": {
+    "simple_name": "KeepAlivePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.PingPacket": {
+    "simple_name": "PingPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.PingResponsePacket": {
+    "simple_name": "PingResponsePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "number",
+        "accessor": "number",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.PluginMessagePacket": {
+    "simple_name": "PluginMessagePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "channel",
+        "accessor": "channel",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.ResourcePackPopPacket": {
+    "simple_name": "ResourcePackPopPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.ResourcePackPushPacket": {
+    "simple_name": "ResourcePackPushPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "id",
+        "accessor": "id",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      },
+      {
+        "name": "url",
+        "accessor": "url",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "hash",
+        "accessor": "hash",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "forced",
+        "accessor": "forced",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "prompt",
+        "accessor": "prompt",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.ServerLinksPacket": {
+    "simple_name": "ServerLinksPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.common.ServerLinksPacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.ShowDialogPacket": {
+    "simple_name": "ShowDialogPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "dialog",
+        "accessor": "dialog",
+        "javaType": "net.minestom.server.registry.Holder<net.minestom.server.dialog.Dialog>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.TagsPacket": {
+    "simple_name": "TagsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "registries",
+        "accessor": "registries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.common.TagsPacket$Registry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.common.TransferPacket": {
+    "simple_name": "TransferPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "host",
+        "accessor": "host",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "port",
+        "accessor": "port",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.configuration.CodeOfConductPacket": {
+    "simple_name": "CodeOfConductPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "code_of_conduct",
+        "accessor": "codeOfConduct",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.configuration.FinishConfigurationPacket": {
+    "simple_name": "FinishConfigurationPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.configuration.RegistryDataPacket": {
+    "simple_name": "RegistryDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "registry_id",
+        "accessor": "registryId",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.RegistryDataPacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.configuration.ResetChatPacket": {
+    "simple_name": "ResetChatPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket": {
+    "simple_name": "SelectKnownPacksPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.configuration.UpdateEnabledFeaturesPacket": {
+    "simple_name": "UpdateEnabledFeaturesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "features",
+        "accessor": "features",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.login.EncryptionRequestPacket": {
+    "simple_name": "EncryptionRequestPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "server_id",
+        "accessor": "serverId",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "public_key",
+        "accessor": "publicKey",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      },
+      {
+        "name": "verify_token",
+        "accessor": "verifyToken",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      },
+      {
+        "name": "should_authenticate",
+        "accessor": "shouldAuthenticate",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.login.LoginDisconnectPacket": {
+    "simple_name": "LoginDisconnectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "kick_message",
+        "accessor": "kickMessage",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.login.LoginPluginRequestPacket": {
+    "simple_name": "LoginPluginRequestPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "message_id",
+        "accessor": "messageId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "channel",
+        "accessor": "channel",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.login.LoginSuccessPacket": {
+    "simple_name": "LoginSuccessPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "game_profile",
+        "accessor": "gameProfile",
+        "javaType": "net.minestom.server.network.player.GameProfile",
+        "ty": "TAny"
+      },
+      {
+        "name": "session_id",
+        "accessor": "sessionId",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.login.SetCompressionPacket": {
+    "simple_name": "SetCompressionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "threshold",
+        "accessor": "threshold",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.AcknowledgeBlockChangePacket": {
+    "simple_name": "AcknowledgeBlockChangePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "sequence",
+        "accessor": "sequence",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ActionBarPacket": {
+    "simple_name": "ActionBarPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "text",
+        "accessor": "text",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.AdvancementsPacket": {
+    "simple_name": "AdvancementsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "reset",
+        "accessor": "reset",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "advancement_mappings",
+        "accessor": "advancementMappings",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.AdvancementsPacket$AdvancementMapping>",
+        "ty": "TAny"
+      },
+      {
+        "name": "identifiers_to_remove",
+        "accessor": "identifiersToRemove",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      },
+      {
+        "name": "progress_mappings",
+        "accessor": "progressMappings",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.AdvancementsPacket$ProgressMapping>",
+        "ty": "TAny"
+      },
+      {
+        "name": "show_advancements",
+        "accessor": "showAdvancements",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.AttachEntityPacket": {
+    "simple_name": "AttachEntityPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "attached_entity_id",
+        "accessor": "attachedEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "holding_entity_id",
+        "accessor": "holdingEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BlockActionPacket": {
+    "simple_name": "BlockActionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "action_id",
+        "accessor": "actionId",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "action_param",
+        "accessor": "actionParam",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "block_id",
+        "accessor": "blockId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BlockBreakAnimationPacket": {
+    "simple_name": "BlockBreakAnimationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "destroy_stage",
+        "accessor": "destroyStage",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BlockChangePacket": {
+    "simple_name": "BlockChangePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "block_state_id",
+        "accessor": "blockStateId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BlockEntityDataPacket": {
+    "simple_name": "BlockEntityDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "type",
+        "accessor": "type",
+        "javaType": "net.minestom.server.instance.block.BlockEntityType",
+        "ty": "TAny"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "net.kyori.adventure.nbt.CompoundBinaryTag",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BossBarPacket": {
+    "simple_name": "BossBarPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "uuid",
+        "accessor": "uuid",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      },
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.server.play.BossBarPacket$Action",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.BundlePacket": {
+    "simple_name": "BundlePacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.play.CameraPacket": {
+    "simple_name": "CameraPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "camera_id",
+        "accessor": "cameraId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ChangeGameStatePacket": {
+    "simple_name": "ChangeGameStatePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "reason",
+        "accessor": "reason",
+        "javaType": "net.minestom.server.network.packet.server.play.ChangeGameStatePacket$Reason",
+        "ty": "TAny"
+      },
+      {
+        "name": "value",
+        "accessor": "value",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ChunkBatchFinishedPacket": {
+    "simple_name": "ChunkBatchFinishedPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "batch_size",
+        "accessor": "batchSize",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ChunkBatchStartPacket": {
+    "simple_name": "ChunkBatchStartPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.play.ChunkBiomesPacket": {
+    "simple_name": "ChunkBiomesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunks",
+        "accessor": "chunks",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.ChunkBiomesPacket$ChunkBiomeData>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ChunkDataPacket": {
+    "simple_name": "ChunkDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_x",
+        "accessor": "chunkX",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "chunk_z",
+        "accessor": "chunkZ",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "chunk_data",
+        "accessor": "chunkData",
+        "javaType": "net.minestom.server.network.packet.server.play.data.ChunkData",
+        "ty": "TAny"
+      },
+      {
+        "name": "light_data",
+        "accessor": "lightData",
+        "javaType": "net.minestom.server.network.packet.server.play.data.LightData",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ClearTitlesPacket": {
+    "simple_name": "ClearTitlesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "reset",
+        "accessor": "reset",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.CloseWindowPacket": {
+    "simple_name": "CloseWindowPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.CollectItemPacket": {
+    "simple_name": "CollectItemPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "collected_entity_id",
+        "accessor": "collectedEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "collector_entity_id",
+        "accessor": "collectorEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "pickup_item_count",
+        "accessor": "pickupItemCount",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.CustomChatCompletionPacket": {
+    "simple_name": "CustomChatCompletionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.server.play.CustomChatCompletionPacket$Action",
+        "ty": "TAny"
+      },
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DamageEventPacket": {
+    "simple_name": "DamageEventPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "target_entity_id",
+        "accessor": "targetEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "damage_type_id",
+        "accessor": "damageTypeId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "source_entity_id",
+        "accessor": "sourceEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "source_direct_id",
+        "accessor": "sourceDirectId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "source_pos",
+        "accessor": "sourcePos",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DeathCombatEventPacket": {
+    "simple_name": "DeathCombatEventPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "player_id",
+        "accessor": "playerId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DebugBlockValuePacket": {
+    "simple_name": "DebugBlockValuePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "block_position",
+        "accessor": "blockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "update",
+        "accessor": "update",
+        "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DebugChunkValuePacket": {
+    "simple_name": "DebugChunkValuePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_pos",
+        "accessor": "chunkPos",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "update",
+        "accessor": "update",
+        "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DebugEntityValuePacket": {
+    "simple_name": "DebugEntityValuePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "update",
+        "accessor": "update",
+        "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DebugEventPacket": {
+    "simple_name": "DebugEventPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "event",
+        "accessor": "event",
+        "javaType": "net.minestom.server.network.debug.DebugSubscription$Event<?>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DebugSamplePacket": {
+    "simple_name": "DebugSamplePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "sample",
+        "accessor": "sample",
+        "javaType": "long[]",
+        "ty": "TAny"
+      },
+      {
+        "name": "type",
+        "accessor": "type",
+        "javaType": "net.minestom.server.network.packet.server.play.DebugSamplePacket$Type",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DeclareCommandsPacket": {
+    "simple_name": "DeclareCommandsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "nodes",
+        "accessor": "nodes",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.DeclareCommandsPacket$Node>",
+        "ty": "TAny"
+      },
+      {
+        "name": "root_index",
+        "accessor": "rootIndex",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DeclareRecipesPacket": {
+    "simple_name": "DeclareRecipesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "item_properties",
+        "accessor": "itemProperties",
+        "javaType": "java.util.Map<net.minestom.server.recipe.RecipeProperty, java.util.List<net.minestom.server.item.Material>>",
+        "ty": "TAny"
+      },
+      {
+        "name": "stonecutter_recipes",
+        "accessor": "stonecutterRecipes",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.DeclareRecipesPacket$StonecutterRecipe>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DeleteChatPacket": {
+    "simple_name": "DeleteChatPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "signature",
+        "accessor": "signature",
+        "javaType": "net.minestom.server.crypto.MessageSignature",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DestroyEntitiesPacket": {
+    "simple_name": "DestroyEntitiesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_ids",
+        "accessor": "entityIds",
+        "javaType": "java.util.List<java.lang.Integer>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DisguisedChatPacket": {
+    "simple_name": "DisguisedChatPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "type",
+        "accessor": "type",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "sender_name",
+        "accessor": "senderName",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "target_name",
+        "accessor": "targetName",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.DisplayScoreboardPacket": {
+    "simple_name": "DisplayScoreboardPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "score_name",
+        "accessor": "scoreName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EndCombatEventPacket": {
+    "simple_name": "EndCombatEventPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "duration",
+        "accessor": "duration",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EnterCombatEventPacket": {
+    "simple_name": "EnterCombatEventPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.play.EntityAnimationPacket": {
+    "simple_name": "EntityAnimationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "animation",
+        "accessor": "animation",
+        "javaType": "net.minestom.server.network.packet.server.play.EntityAnimationPacket$Animation",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityAttributesPacket": {
+    "simple_name": "EntityAttributesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "properties",
+        "accessor": "properties",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.EntityAttributesPacket$Property>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityEffectPacket": {
+    "simple_name": "EntityEffectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "potion",
+        "accessor": "potion",
+        "javaType": "net.minestom.server.potion.Potion",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityEquipmentPacket": {
+    "simple_name": "EntityEquipmentPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "equipments",
+        "accessor": "equipments",
+        "javaType": "java.util.Map<net.minestom.server.entity.EquipmentSlot, net.minestom.server.item.ItemStack>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityHeadLookPacket": {
+    "simple_name": "EntityHeadLookPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityMetaDataPacket": {
+    "simple_name": "EntityMetaDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.Map<java.lang.Integer, net.minestom.server.entity.Metadata$Entry<?>>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityPositionAndRotationPacket": {
+    "simple_name": "EntityPositionAndRotationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_x",
+        "accessor": "deltaX",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_y",
+        "accessor": "deltaY",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_z",
+        "accessor": "deltaZ",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityPositionPacket": {
+    "simple_name": "EntityPositionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_x",
+        "accessor": "deltaX",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_y",
+        "accessor": "deltaY",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "delta_z",
+        "accessor": "deltaZ",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityPositionSyncPacket": {
+    "simple_name": "EntityPositionSyncPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "delta",
+        "accessor": "delta",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityRotationPacket": {
+    "simple_name": "EntityRotationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntitySoundEffectPacket": {
+    "simple_name": "EntitySoundEffectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "sound_event",
+        "accessor": "soundEvent",
+        "javaType": "net.minestom.server.sound.SoundEvent",
+        "ty": "TString"
+      },
+      {
+        "name": "source",
+        "accessor": "source",
+        "javaType": "net.kyori.adventure.sound.Sound$Source",
+        "ty": "TAny"
+      },
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "volume",
+        "accessor": "volume",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "seed",
+        "accessor": "seed",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityStatusPacket": {
+    "simple_name": "EntityStatusPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "status",
+        "accessor": "status",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityTeleportPacket": {
+    "simple_name": "EntityTeleportPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Pos",
+        "ty": "TLocation"
+      },
+      {
+        "name": "delta",
+        "accessor": "delta",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "on_ground",
+        "accessor": "onGround",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.EntityVelocityPacket": {
+    "simple_name": "EntityVelocityPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "velocity",
+        "accessor": "velocity",
+        "javaType": "net.minestom.server.coordinate.Vec",
+        "ty": "TVec"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ExplosionPacket": {
+    "simple_name": "ExplosionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "center",
+        "accessor": "center",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "radius",
+        "accessor": "radius",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "block_count",
+        "accessor": "blockCount",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "player_knockback",
+        "accessor": "playerKnockback",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "particle",
+        "accessor": "particle",
+        "javaType": "net.minestom.server.particle.Particle",
+        "ty": "TAny"
+      },
+      {
+        "name": "sound",
+        "accessor": "sound",
+        "javaType": "net.minestom.server.sound.SoundEvent",
+        "ty": "TString"
+      },
+      {
+        "name": "block_particles",
+        "accessor": "blockParticles",
+        "javaType": "net.minestom.server.utils.WeightedList<net.minestom.server.network.packet.server.play.ExplosionPacket$BlockParticleInfo>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.FacePlayerPacket": {
+    "simple_name": "FacePlayerPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "face_position",
+        "accessor": "facePosition",
+        "javaType": "net.minestom.server.network.packet.server.play.FacePlayerPacket$FacePosition",
+        "ty": "TAny"
+      },
+      {
+        "name": "target",
+        "accessor": "target",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "entity_face_position",
+        "accessor": "entityFacePosition",
+        "javaType": "net.minestom.server.network.packet.server.play.FacePlayerPacket$FacePosition",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.GameRuleValuesPacket": {
+    "simple_name": "GameRuleValuesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "values",
+        "accessor": "values",
+        "javaType": "java.util.Map<net.minestom.server.registry.RegistryKey<net.minestom.server.instance.gamerule.GameRule<?>>, java.lang.String>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.GameTestHighlightPosPacket": {
+    "simple_name": "GameTestHighlightPosPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "absolute_block_position",
+        "accessor": "absoluteBlockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "relative_block_position",
+        "accessor": "relativeBlockPosition",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.HeldItemChangePacket": {
+    "simple_name": "HeldItemChangePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.HitAnimationPacket": {
+    "simple_name": "HitAnimationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.InitializeWorldBorderPacket": {
+    "simple_name": "InitializeWorldBorderPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "x",
+        "accessor": "x",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "z",
+        "accessor": "z",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "old_diameter",
+        "accessor": "oldDiameter",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "new_diameter",
+        "accessor": "newDiameter",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "speed",
+        "accessor": "speed",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "portal_teleport_boundary",
+        "accessor": "portalTeleportBoundary",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "warning_time",
+        "accessor": "warningTime",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "warning_blocks",
+        "accessor": "warningBlocks",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.JoinGamePacket": {
+    "simple_name": "JoinGamePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "is_hardcore",
+        "accessor": "isHardcore",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "worlds",
+        "accessor": "worlds",
+        "javaType": "java.util.List<java.lang.String>",
+        "ty": "TAny"
+      },
+      {
+        "name": "max_players",
+        "accessor": "maxPlayers",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "view_distance",
+        "accessor": "viewDistance",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "simulation_distance",
+        "accessor": "simulationDistance",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "reduced_debug_info",
+        "accessor": "reducedDebugInfo",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "enable_respawn_screen",
+        "accessor": "enableRespawnScreen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "do_limited_crafting",
+        "accessor": "doLimitedCrafting",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "player_spawn_info",
+        "accessor": "playerSpawnInfo",
+        "javaType": "net.minestom.server.network.packet.server.play.data.PlayerSpawnInfo",
+        "ty": "TAny"
+      },
+      {
+        "name": "online_mode",
+        "accessor": "onlineMode",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "enforces_secure_chat",
+        "accessor": "enforcesSecureChat",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.LowDiskSpaceWarningPacket": {
+    "simple_name": "LowDiskSpaceWarningPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.play.MapDataPacket": {
+    "simple_name": "MapDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "map_id",
+        "accessor": "mapId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "scale",
+        "accessor": "scale",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "locked",
+        "accessor": "locked",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "tracking_position",
+        "accessor": "trackingPosition",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "icons",
+        "accessor": "icons",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.MapDataPacket$Icon>",
+        "ty": "TAny"
+      },
+      {
+        "name": "color_content",
+        "accessor": "colorContent",
+        "javaType": "net.minestom.server.network.packet.server.play.MapDataPacket$ColorContent",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.MoveMinecartPacket": {
+    "simple_name": "MoveMinecartPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "lerp_steps",
+        "accessor": "lerpSteps",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.MoveMinecartPacket$LerpStep>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.MultiBlockChangePacket": {
+    "simple_name": "MultiBlockChangePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_section_position",
+        "accessor": "chunkSectionPosition",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "blocks",
+        "accessor": "blocks",
+        "javaType": "long[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.NbtQueryResponsePacket": {
+    "simple_name": "NbtQueryResponsePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "transaction_id",
+        "accessor": "transactionId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "net.kyori.adventure.nbt.CompoundBinaryTag",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.OpenBookPacket": {
+    "simple_name": "OpenBookPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "hand",
+        "accessor": "hand",
+        "javaType": "net.minestom.server.entity.PlayerHand",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.OpenHorseWindowPacket": {
+    "simple_name": "OpenHorseWindowPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "slot_count",
+        "accessor": "slotCount",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.OpenSignEditorPacket": {
+    "simple_name": "OpenSignEditorPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "is_front_text",
+        "accessor": "isFrontText",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.OpenWindowPacket": {
+    "simple_name": "OpenWindowPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "window_type",
+        "accessor": "windowType",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "title",
+        "accessor": "title",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ParticlePacket": {
+    "simple_name": "ParticlePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "particle",
+        "accessor": "particle",
+        "javaType": "net.minestom.server.particle.Particle",
+        "ty": "TAny"
+      },
+      {
+        "name": "override_limiter",
+        "accessor": "overrideLimiter",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "long_distance",
+        "accessor": "longDistance",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "x",
+        "accessor": "x",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "y",
+        "accessor": "y",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "z",
+        "accessor": "z",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "offset_x",
+        "accessor": "offsetX",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "offset_y",
+        "accessor": "offsetY",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "offset_z",
+        "accessor": "offsetZ",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "max_speed",
+        "accessor": "maxSpeed",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "particle_count",
+        "accessor": "particleCount",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlaceGhostRecipePacket": {
+    "simple_name": "PlaceGhostRecipePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "recipe",
+        "accessor": "recipe",
+        "javaType": "net.minestom.server.recipe.display.RecipeDisplay",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerAbilitiesPacket": {
+    "simple_name": "PlayerAbilitiesPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "flying_speed",
+        "accessor": "flyingSpeed",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "walking_speed",
+        "accessor": "walkingSpeed",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerChatMessagePacket": {
+    "simple_name": "PlayerChatMessagePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "global_index",
+        "accessor": "globalIndex",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "sender",
+        "accessor": "sender",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      },
+      {
+        "name": "index",
+        "accessor": "index",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "signature",
+        "accessor": "signature",
+        "javaType": "net.minestom.server.crypto.MessageSignature",
+        "ty": "TAny"
+      },
+      {
+        "name": "message_body",
+        "accessor": "messageBody",
+        "javaType": "net.minestom.server.crypto.SignedMessageBody$Packed",
+        "ty": "TAny"
+      },
+      {
+        "name": "unsigned_content",
+        "accessor": "unsignedContent",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "filter_mask",
+        "accessor": "filterMask",
+        "javaType": "net.minestom.server.crypto.FilterMask",
+        "ty": "TAny"
+      },
+      {
+        "name": "msg_type_id",
+        "accessor": "msgTypeId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "msg_type_name",
+        "accessor": "msgTypeName",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "msg_type_target",
+        "accessor": "msgTypeTarget",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket": {
+    "simple_name": "PlayerInfoRemovePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "uuids",
+        "accessor": "uuids",
+        "javaType": "java.util.List<java.util.UUID>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket": {
+    "simple_name": "PlayerInfoUpdatePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "actions",
+        "accessor": "actions",
+        "javaType": "java.util.EnumSet<net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket$Action>",
+        "ty": "TAny"
+      },
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket$Entry>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerListHeaderAndFooterPacket": {
+    "simple_name": "PlayerListHeaderAndFooterPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "header",
+        "accessor": "header",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "footer",
+        "accessor": "footer",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerPositionAndLookPacket": {
+    "simple_name": "PlayerPositionAndLookPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "teleport_id",
+        "accessor": "teleportId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "delta",
+        "accessor": "delta",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.PlayerRotationPacket": {
+    "simple_name": "PlayerRotationPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "relative_yaw",
+        "accessor": "relativeYaw",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "relative_pitch",
+        "accessor": "relativePitch",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ProjectilePowerPacket": {
+    "simple_name": "ProjectilePowerPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "acceleration_power",
+        "accessor": "accelerationPower",
+        "javaType": "double",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.RecipeBookAddPacket": {
+    "simple_name": "RecipeBookAddPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entries",
+        "accessor": "entries",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.RecipeBookAddPacket$Entry>",
+        "ty": "TAny"
+      },
+      {
+        "name": "replace",
+        "accessor": "replace",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.RecipeBookRemovePacket": {
+    "simple_name": "RecipeBookRemovePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "display_ids",
+        "accessor": "displayIds",
+        "javaType": "java.util.List<java.lang.Integer>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.RecipeBookSettingsPacket": {
+    "simple_name": "RecipeBookSettingsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "crafting_recipe_book_open",
+        "accessor": "craftingRecipeBookOpen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "crafting_recipe_book_filter_active",
+        "accessor": "craftingRecipeBookFilterActive",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "smelting_recipe_book_open",
+        "accessor": "smeltingRecipeBookOpen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "smelting_recipe_book_filter_active",
+        "accessor": "smeltingRecipeBookFilterActive",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "blast_furnace_recipe_book_open",
+        "accessor": "blastFurnaceRecipeBookOpen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "blast_furnace_recipe_book_filter_active",
+        "accessor": "blastFurnaceRecipeBookFilterActive",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "smoker_recipe_book_open",
+        "accessor": "smokerRecipeBookOpen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "smoker_recipe_book_filter_active",
+        "accessor": "smokerRecipeBookFilterActive",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.RemoveEntityEffectPacket": {
+    "simple_name": "RemoveEntityEffectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "potion_effect",
+        "accessor": "potionEffect",
+        "javaType": "net.minestom.server.potion.PotionEffect",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ResetScorePacket": {
+    "simple_name": "ResetScorePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "owner",
+        "accessor": "owner",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "objective",
+        "accessor": "objective",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.RespawnPacket": {
+    "simple_name": "RespawnPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "player_spawn_info",
+        "accessor": "playerSpawnInfo",
+        "javaType": "net.minestom.server.network.packet.server.play.data.PlayerSpawnInfo",
+        "ty": "TAny"
+      },
+      {
+        "name": "copy_data",
+        "accessor": "copyData",
+        "javaType": "byte",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ScoreboardObjectivePacket": {
+    "simple_name": "ScoreboardObjectivePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "objective_name",
+        "accessor": "objectiveName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "mode",
+        "accessor": "mode",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "objective_value",
+        "accessor": "objectiveValue",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "type",
+        "accessor": "type",
+        "javaType": "net.minestom.server.network.packet.server.play.ScoreboardObjectivePacket$Type",
+        "ty": "TAny"
+      },
+      {
+        "name": "number_format",
+        "accessor": "numberFormat",
+        "javaType": "net.minestom.server.scoreboard.Sidebar$NumberFormat",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SelectAdvancementTabPacket": {
+    "simple_name": "SelectAdvancementTabPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "identifier",
+        "accessor": "identifier",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ServerDataPacket": {
+    "simple_name": "ServerDataPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "motd",
+        "accessor": "motd",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "icon_base64",
+        "accessor": "iconBase64",
+        "javaType": "byte[]",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.ServerDifficultyPacket": {
+    "simple_name": "ServerDifficultyPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "difficulty",
+        "accessor": "difficulty",
+        "javaType": "net.minestom.server.world.Difficulty",
+        "ty": "TAny"
+      },
+      {
+        "name": "locked",
+        "accessor": "locked",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetCooldownPacket": {
+    "simple_name": "SetCooldownPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "cooldown_group",
+        "accessor": "cooldownGroup",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "cooldown_ticks",
+        "accessor": "cooldownTicks",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetCursorItemPacket": {
+    "simple_name": "SetCursorItemPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "item_stack",
+        "accessor": "itemStack",
+        "javaType": "net.minestom.server.item.ItemStack",
+        "ty": "TItem"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetExperiencePacket": {
+    "simple_name": "SetExperiencePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "percentage",
+        "accessor": "percentage",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "level",
+        "accessor": "level",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "total_experience",
+        "accessor": "totalExperience",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetPassengersPacket": {
+    "simple_name": "SetPassengersPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "vehicle_entity_id",
+        "accessor": "vehicleEntityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "passengers_id",
+        "accessor": "passengersId",
+        "javaType": "java.util.List<java.lang.Integer>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetPlayerInventorySlotPacket": {
+    "simple_name": "SetPlayerInventorySlotPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "item_stack",
+        "accessor": "itemStack",
+        "javaType": "net.minestom.server.item.ItemStack",
+        "ty": "TItem"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetSlotPacket": {
+    "simple_name": "SetSlotPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "state_id",
+        "accessor": "stateId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "slot",
+        "accessor": "slot",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "item_stack",
+        "accessor": "itemStack",
+        "javaType": "net.minestom.server.item.ItemStack",
+        "ty": "TItem"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetTickStatePacket": {
+    "simple_name": "SetTickStatePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "tick_rate",
+        "accessor": "tickRate",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "is_frozen",
+        "accessor": "isFrozen",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetTimePacket": {
+    "simple_name": "SetTimePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "game_time",
+        "accessor": "gameTime",
+        "javaType": "long",
+        "ty": "TInteger"
+      },
+      {
+        "name": "clocks",
+        "accessor": "clocks",
+        "javaType": "java.util.Map<net.minestom.server.registry.RegistryKey<net.minestom.server.world.clock.WorldClock>, net.minestom.server.network.packet.server.play.SetTimePacket$ClockState>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetTitleSubTitlePacket": {
+    "simple_name": "SetTitleSubTitlePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "subtitle",
+        "accessor": "subtitle",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetTitleTextPacket": {
+    "simple_name": "SetTitleTextPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "title",
+        "accessor": "title",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SetTitleTimePacket": {
+    "simple_name": "SetTitleTimePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "fade_in",
+        "accessor": "fadeIn",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "stay",
+        "accessor": "stay",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "fade_out",
+        "accessor": "fadeOut",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SoundEffectPacket": {
+    "simple_name": "SoundEffectPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "sound_event",
+        "accessor": "soundEvent",
+        "javaType": "net.minestom.server.sound.SoundEvent",
+        "ty": "TString"
+      },
+      {
+        "name": "source",
+        "accessor": "source",
+        "javaType": "net.kyori.adventure.sound.Sound$Source",
+        "ty": "TAny"
+      },
+      {
+        "name": "origin",
+        "accessor": "origin",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "volume",
+        "accessor": "volume",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "seed",
+        "accessor": "seed",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SpawnEntityPacket": {
+    "simple_name": "SpawnEntityPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_id",
+        "accessor": "entityId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "uuid",
+        "accessor": "uuid",
+        "javaType": "java.util.UUID",
+        "ty": "TAny"
+      },
+      {
+        "name": "type",
+        "accessor": "type",
+        "javaType": "net.minestom.server.entity.EntityType",
+        "ty": "TAny"
+      },
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Pos",
+        "ty": "TLocation"
+      },
+      {
+        "name": "head_rot",
+        "accessor": "headRot",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "velocity",
+        "accessor": "velocity",
+        "javaType": "net.minestom.server.coordinate.Vec",
+        "ty": "TVec"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SpawnPositionPacket": {
+    "simple_name": "SpawnPositionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "world_pos",
+        "accessor": "worldPos",
+        "javaType": "net.minestom.server.network.packet.server.play.data.WorldPos",
+        "ty": "TAny"
+      },
+      {
+        "name": "yaw",
+        "accessor": "yaw",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "pitch",
+        "accessor": "pitch",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.StartConfigurationPacket": {
+    "simple_name": "StartConfigurationPacket",
+    "direction": "server",
+    "fields": []
+  },
+  "net.minestom.server.network.packet.server.play.StatisticsPacket": {
+    "simple_name": "StatisticsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "statistics",
+        "accessor": "statistics",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.StatisticsPacket$Statistic>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.StopSoundPacket": {
+    "simple_name": "StopSoundPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "flags",
+        "accessor": "flags",
+        "javaType": "byte",
+        "ty": "TInteger"
+      },
+      {
+        "name": "source",
+        "accessor": "source",
+        "javaType": "net.kyori.adventure.sound.Sound$Source",
+        "ty": "TAny"
+      },
+      {
+        "name": "sound",
+        "accessor": "sound",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.SystemChatPacket": {
+    "simple_name": "SystemChatPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "message",
+        "accessor": "message",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "overlay",
+        "accessor": "overlay",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TabCompletePacket": {
+    "simple_name": "TabCompletePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "transaction_id",
+        "accessor": "transactionId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "start",
+        "accessor": "start",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "length",
+        "accessor": "length",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "matches",
+        "accessor": "matches",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.TabCompletePacket$Match>",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TeamsPacket": {
+    "simple_name": "TeamsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "team_name",
+        "accessor": "teamName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "action",
+        "accessor": "action",
+        "javaType": "net.minestom.server.network.packet.server.play.TeamsPacket$Action",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TestInstanceBlockStatus": {
+    "simple_name": "TestInstanceBlockStatus",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "status",
+        "accessor": "status",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "size",
+        "accessor": "size",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TickStepPacket": {
+    "simple_name": "TickStepPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "steps",
+        "accessor": "steps",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TrackedWaypointPacket": {
+    "simple_name": "TrackedWaypointPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "operation",
+        "accessor": "operation",
+        "javaType": "net.minestom.server.network.packet.server.play.TrackedWaypointPacket$Operation",
+        "ty": "TAny"
+      },
+      {
+        "name": "waypoint",
+        "accessor": "waypoint",
+        "javaType": "net.minestom.server.network.packet.server.play.TrackedWaypointPacket$Waypoint",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.TradeListPacket": {
+    "simple_name": "TradeListPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "trades",
+        "accessor": "trades",
+        "javaType": "java.util.List<net.minestom.server.network.packet.server.play.TradeListPacket$Trade>",
+        "ty": "TAny"
+      },
+      {
+        "name": "villager_level",
+        "accessor": "villagerLevel",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "experience",
+        "accessor": "experience",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "regular_villager",
+        "accessor": "regularVillager",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      },
+      {
+        "name": "can_restock",
+        "accessor": "canRestock",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UnloadChunkPacket": {
+    "simple_name": "UnloadChunkPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_x",
+        "accessor": "chunkX",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "chunk_z",
+        "accessor": "chunkZ",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateHealthPacket": {
+    "simple_name": "UpdateHealthPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "health",
+        "accessor": "health",
+        "javaType": "float",
+        "ty": "TDouble"
+      },
+      {
+        "name": "food",
+        "accessor": "food",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "food_saturation",
+        "accessor": "foodSaturation",
+        "javaType": "float",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateLightPacket": {
+    "simple_name": "UpdateLightPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_x",
+        "accessor": "chunkX",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "chunk_z",
+        "accessor": "chunkZ",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "light_data",
+        "accessor": "lightData",
+        "javaType": "net.minestom.server.network.packet.server.play.data.LightData",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateScorePacket": {
+    "simple_name": "UpdateScorePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "entity_name",
+        "accessor": "entityName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "objective_name",
+        "accessor": "objectiveName",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      },
+      {
+        "name": "score",
+        "accessor": "score",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "display_name",
+        "accessor": "displayName",
+        "javaType": "net.kyori.adventure.text.Component",
+        "ty": "TString"
+      },
+      {
+        "name": "number_format",
+        "accessor": "numberFormat",
+        "javaType": "net.minestom.server.scoreboard.Sidebar$NumberFormat",
+        "ty": "TAny"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateSimulationDistancePacket": {
+    "simple_name": "UpdateSimulationDistancePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "simulation_distance",
+        "accessor": "simulationDistance",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateViewDistancePacket": {
+    "simple_name": "UpdateViewDistancePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "view_distance",
+        "accessor": "viewDistance",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.UpdateViewPositionPacket": {
+    "simple_name": "UpdateViewPositionPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "chunk_x",
+        "accessor": "chunkX",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "chunk_z",
+        "accessor": "chunkZ",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.VehicleMovePacket": {
+    "simple_name": "VehicleMovePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Pos",
+        "ty": "TLocation"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WindowItemsPacket": {
+    "simple_name": "WindowItemsPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "state_id",
+        "accessor": "stateId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "items",
+        "accessor": "items",
+        "javaType": "java.util.List<net.minestom.server.item.ItemStack>",
+        "ty": "TAny"
+      },
+      {
+        "name": "carried_item",
+        "accessor": "carriedItem",
+        "javaType": "net.minestom.server.item.ItemStack",
+        "ty": "TItem"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WindowPropertyPacket": {
+    "simple_name": "WindowPropertyPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "window_id",
+        "accessor": "windowId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "property",
+        "accessor": "property",
+        "javaType": "short",
+        "ty": "TInteger"
+      },
+      {
+        "name": "value",
+        "accessor": "value",
+        "javaType": "short",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldBorderCenterPacket": {
+    "simple_name": "WorldBorderCenterPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "x",
+        "accessor": "x",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "z",
+        "accessor": "z",
+        "javaType": "double",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldBorderLerpSizePacket": {
+    "simple_name": "WorldBorderLerpSizePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "old_diameter",
+        "accessor": "oldDiameter",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "new_diameter",
+        "accessor": "newDiameter",
+        "javaType": "double",
+        "ty": "TDouble"
+      },
+      {
+        "name": "speed",
+        "accessor": "speed",
+        "javaType": "long",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldBorderSizePacket": {
+    "simple_name": "WorldBorderSizePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "diameter",
+        "accessor": "diameter",
+        "javaType": "double",
+        "ty": "TDouble"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldBorderWarningDelayPacket": {
+    "simple_name": "WorldBorderWarningDelayPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "warning_time",
+        "accessor": "warningTime",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldBorderWarningReachPacket": {
+    "simple_name": "WorldBorderWarningReachPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "warning_blocks",
+        "accessor": "warningBlocks",
+        "javaType": "int",
+        "ty": "TInteger"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.play.WorldEventPacket": {
+    "simple_name": "WorldEventPacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "effect_id",
+        "accessor": "effectId",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "position",
+        "accessor": "position",
+        "javaType": "net.minestom.server.coordinate.Point",
+        "ty": "TLocation"
+      },
+      {
+        "name": "data",
+        "accessor": "data",
+        "javaType": "int",
+        "ty": "TInteger"
+      },
+      {
+        "name": "disable_relative_volume",
+        "accessor": "disableRelativeVolume",
+        "javaType": "boolean",
+        "ty": "TBoolean"
+      }
+    ]
+  },
+  "net.minestom.server.network.packet.server.status.ResponsePacket": {
+    "simple_name": "ResponsePacket",
+    "direction": "server",
+    "fields": [
+      {
+        "name": "json_response",
+        "accessor": "jsonResponse",
+        "javaType": "java.lang.String",
+        "ty": "TString"
+      }
+    ]
+  },
+  "_meta": {
+    "generator": "compiler/data/GenMinestomCatalogs.java (same command as events.json)",
+    "minestomCommit": "2026.07.12-26.2",
+    "jarSha256": "fa707c722f36c1b37db7386fc2453994a95f8d4714ca7a621ba499f9a97dca77",
+    "scope": "every concrete public record under net.minestom.server.network.packet.** that implements net.minestom.server.network.packet.client.ClientPacket (direction \"client\", inbound — listened to by Packet { on \"...\" }) or net.minestom.server.network.packet.server.ServerPacket (direction \"server\", outbound)",
+    "fieldRules": "one entry per record component; name = snake_case of the component; accessor = the record accessor method; javaType = generic component type; ty = SwoftLang type from the SAME javaType->ty table as the events catalog (compiler/lib/registry.ml ty_of_java_type), exotic types -> \"TAny\"",
+    "count": 232,
+    "clientCount": 79,
+    "serverCount": 153,
+    "loadErrors": []
+  }
+}

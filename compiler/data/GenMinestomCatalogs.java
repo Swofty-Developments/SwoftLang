@@ -51,6 +51,8 @@ public final class GenMinestomCatalogs {
         writeOcamlFragment(outDir.resolve("events_data.ml"), events);
         JsonObject entityApi = genEntityApi(sha);
         write(outDir.resolve("entity-api.json"), entityApi);
+        JsonObject packets = genPackets(jarPath, sha);
+        write(outDir.resolve("packets.json"), packets);
 
         // ---- sanity summary to stdout ----
         JsonArray evs = events.getAsJsonArray("events");
@@ -69,6 +71,169 @@ public final class GenMinestomCatalogs {
                 + events.getAsJsonObject("_meta").getAsJsonArray("nonEventConcretePublicClasses").size());
         System.out.println("loadErrors="
                 + events.getAsJsonObject("_meta").getAsJsonArray("loadErrors").size());
+        JsonObject pmeta = packets.getAsJsonObject("_meta");
+        System.out.println("packets=" + pmeta.get("count").getAsInt()
+                + " (client=" + pmeta.get("clientCount").getAsInt()
+                + ", server=" + pmeta.get("serverCount").getAsInt() + ")");
+        System.out.println("packetLoadErrors=" + pmeta.getAsJsonArray("loadErrors").size());
+    }
+
+    // ================= packets.json =================
+    //
+    // One entry per concrete public record under net.minestom.server.network.packet.**
+    // that implements ClientPacket (inbound — the packets a `Packet { on "..." }` block
+    // listens to) or ServerPacket (outbound). Record components are the packet fields;
+    // javaType -> ty uses the SAME table as the events catalog (see tyOfJavaType, mirrored
+    // from compiler/lib/registry.ml ty_of_java_type). Exotic types collapse to "TAny".
+
+    static JsonObject genPackets(String jarPath, String sha) throws Exception {
+        Class<?> clientItf = Class.forName("net.minestom.server.network.packet.client.ClientPacket");
+        Class<?> serverItf = Class.forName("net.minestom.server.network.packet.server.ServerPacket");
+
+        TreeMap<String, Class<?>> packetClasses = new TreeMap<>();
+        List<String> loadErrors = new ArrayList<>();
+        try (JarFile jar = new JarFile(jarPath)) {
+            Enumeration<JarEntry> en = jar.entries();
+            while (en.hasMoreElements()) {
+                JarEntry je = en.nextElement();
+                String n = je.getName();
+                if (!n.startsWith("net/minestom/server/network/packet/") || !n.endsWith(".class")) continue;
+                String cn = n.substring(0, n.length() - ".class".length()).replace('/', '.');
+                Class<?> c;
+                try {
+                    c = Class.forName(cn, false, GenMinestomCatalogs.class.getClassLoader());
+                } catch (Throwable t) {
+                    loadErrors.add(cn + " : " + t);
+                    continue;
+                }
+                int m = c.getModifiers();
+                if (!Modifier.isPublic(m) || Modifier.isAbstract(m) || c.isInterface()
+                        || c.isAnnotation() || c.isEnum() || c.isSynthetic()
+                        || c.isAnonymousClass() || c.isLocalClass()) continue;
+                boolean isClient = clientItf.isAssignableFrom(c);
+                boolean isServer = serverItf.isAssignableFrom(c);
+                if (!isClient && !isServer) continue;
+                packetClasses.put(cn, c);
+            }
+        }
+        loadErrors.sort(String::compareTo);
+
+        JsonObject root = new JsonObject();
+        JsonObject meta = new JsonObject();
+        meta.addProperty("generator",
+                "compiler/data/GenMinestomCatalogs.java (same command as events.json)");
+        meta.addProperty("minestomCommit", COMMIT);
+        meta.addProperty("jarSha256", sha);
+        meta.addProperty("scope",
+                "every concrete public record under net.minestom.server.network.packet.** that "
+              + "implements net.minestom.server.network.packet.client.ClientPacket (direction "
+              + "\"client\", inbound — listened to by Packet { on \"...\" }) or "
+              + "net.minestom.server.network.packet.server.ServerPacket (direction \"server\", outbound)");
+        meta.addProperty("fieldRules",
+                "one entry per record component; name = snake_case of the component; accessor = the "
+              + "record accessor method; javaType = generic component type; ty = SwoftLang type from "
+              + "the SAME javaType->ty table as the events catalog (compiler/lib/registry.ml "
+              + "ty_of_java_type), exotic types -> \"TAny\"");
+
+        int clientCount = 0, serverCount = 0;
+        for (Map.Entry<String, Class<?>> e : packetClasses.entrySet()) {
+            Class<?> c = e.getValue();
+            boolean isClient = clientItf.isAssignableFrom(c);
+            JsonObject o = new JsonObject();
+            o.addProperty("simple_name", c.getSimpleName());
+            o.addProperty("direction", isClient ? "client" : "server");
+            o.add("fields", packetFields(c, loadErrors));
+            root.add(e.getKey(), o);
+            if (isClient) clientCount++; else serverCount++;
+        }
+
+        meta.addProperty("count", packetClasses.size());
+        meta.addProperty("clientCount", clientCount);
+        meta.addProperty("serverCount", serverCount);
+        JsonArray le = new JsonArray(); loadErrors.forEach(le::add);
+        meta.add("loadErrors", le);
+        root.add("_meta", meta);
+        return root;
+    }
+
+    static JsonArray packetFields(Class<?> c, List<String> errors) {
+        JsonArray out = new JsonArray();
+        try {
+            if (!c.isRecord()) return out;
+            for (RecordComponent rc : c.getRecordComponents()) {
+                String javaType = rc.getGenericType().getTypeName();
+                JsonObject p = new JsonObject();
+                p.addProperty("name", snake(rc.getName()));
+                p.addProperty("accessor", rc.getName());
+                p.addProperty("javaType", javaType);
+                p.addProperty("ty", tyOfJavaType(javaType));
+                out.add(p);
+            }
+        } catch (Throwable t) {
+            errors.add(c.getName() + " (fields) : " + t);
+        }
+        return out;
+    }
+
+    /**
+     * javaType -> SwoftLang ty constructor name. Mirror of ty_of_java_type in
+     * compiler/lib/registry.ml (keep the two in lockstep). Anything not listed -> "TAny".
+     */
+    static String tyOfJavaType(String javaType) {
+        int lt = javaType.indexOf('<');
+        String base = lt >= 0 ? javaType.substring(0, lt) : javaType;
+        switch (base) {
+            case "net.minestom.server.entity.Player":
+                return "TPlayer";
+            case "net.minestom.server.entity.Entity":
+            case "net.minestom.server.entity.LivingEntity":
+            case "net.minestom.server.entity.ItemEntity":
+            case "net.minestom.server.entity.ExperienceOrb":
+                return "TEntity";
+            case "net.minestom.server.item.ItemStack":
+                return "TItem";
+            case "net.minestom.server.instance.block.Block":
+                return "TString";
+            case "net.minestom.server.coordinate.Pos":
+            case "net.minestom.server.coordinate.Point":
+            case "net.minestom.server.coordinate.BlockVec":
+                return "TLocation";
+            case "net.minestom.server.coordinate.Vec":
+                return "TVec";
+            case "net.minestom.server.instance.Instance":
+                return "TWorld";
+            case "net.kyori.adventure.text.Component":
+            case "java.lang.String":
+                return "TString";
+            case "boolean":
+            case "java.lang.Boolean":
+                return "TBoolean";
+            case "int":
+            case "byte":
+            case "short":
+            case "long":
+            case "java.lang.Integer":
+            case "java.lang.Byte":
+            case "java.lang.Short":
+            case "java.lang.Long":
+                return "TInteger";
+            case "double":
+            case "float":
+            case "java.lang.Double":
+            case "java.lang.Float":
+                return "TDouble";
+            case "net.minestom.server.entity.GameMode":
+            case "net.minestom.server.entity.PlayerHand":
+            case "net.minestom.server.instance.block.BlockFace":
+            case "net.minestom.server.inventory.click.ClickType":
+            case "net.minestom.server.item.ItemAnimation":
+            case "net.minestom.server.sound.SoundEvent":
+                return "TString";
+            case "net.minestom.server.entity.damage.Damage":
+                return "TDouble";
+            default:
+                return "TAny";
+        }
     }
 
     // ================= events.json =================

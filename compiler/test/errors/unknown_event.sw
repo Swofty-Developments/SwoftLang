@@ -1,5 +1,5 @@
-event PlayerJump {
-    execute {
-        send "boing" to sender
+Player {
+    on_jump() {
+        send "boing" to this
     }
 }

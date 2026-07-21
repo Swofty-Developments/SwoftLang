@@ -40,10 +40,12 @@
       ],
       "events": [
         {
-          "line": 9,
-          "col": 1,
+          "line": 10,
+          "col": 5,
           "name": "PlayerJoin",
+          "receiver": "Player",
           "priority": 0,
+          "params": [],
           "execute": {
             "async": false,
             "statements": [
@@ -61,7 +63,7 @@
                   "line": 11,
                   "col": 34,
                   "kind": "var",
-                  "name": "player"
+                  "name": "this"
                 }
               }
             ]

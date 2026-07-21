@@ -63,4 +63,28 @@ public record MobDefModel(
     public InlineHandler handler(String event) {
         return handlers == null ? null : handlers.get(event);
     }
+
+    /**
+     * True when this declaration OVERRIDES the base receiver {@code method} —
+     * either through a generic handler (on_click / on_target) or a dedicated
+     * field (on_hit / on_spawn / on_death / on_attack, which the compiler
+     * type-checks as overrides of the matching base {@code Mob.<method>} and
+     * runs through the override-aware dispatch). {@code ReceiverDispatch} uses
+     * this so the base receiver event does not ALSO fire for a mob whose
+     * more-specific handler already ran (and may have chained back with
+     * {@code default()} / {@code super}); most-specific-wins.
+     */
+    public boolean overridesReceiverMethod(String method) {
+        if (handler(method) != null) {
+            return true;
+        }
+        ExecuteBlock dedicated = switch (method) {
+            case "on_hit" -> onHit;
+            case "on_spawn" -> onSpawn;
+            case "on_death" -> onDeath;
+            case "on_attack" -> onAttack;
+            default -> null;
+        };
+        return dedicated != null && !dedicated.isEmpty();
+    }
 }

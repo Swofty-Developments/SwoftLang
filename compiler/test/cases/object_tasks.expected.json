@@ -4,166 +4,80 @@
   "commands": [],
   "events": [
     {
-      "line": 7,
-      "col": 1,
+      "line": 8,
+      "col": 3,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 10,
+            "line": 11,
             "col": 5,
             "kind": "task_set",
-            "owner": {
-              "line": 10,
-              "col": 15,
-              "kind": "prop",
-              "target": {
-                "line": 10,
-                "col": 9,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "owner": { "line": 11, "col": 9, "kind": "var", "name": "this" },
             "id": "welcome",
             "value": {
-              "line": 10,
-              "col": 39,
+              "line": 11,
+              "col": 31,
               "kind": "schedule",
               "after_ticks": null,
               "every_ticks": 20,
               "body": [
                 {
-                  "line": 11,
+                  "line": 12,
                   "col": 9,
                   "kind": "send",
                   "message": {
-                    "line": 11,
+                    "line": 12,
                     "col": 14,
                     "kind": "string",
                     "value": "<gray>tick"
                   },
                   "target": {
-                    "line": 11,
-                    "col": 36,
-                    "kind": "prop",
-                    "target": {
-                      "line": 11,
-                      "col": 30,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "line": 12,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "this"
                   }
                 }
               ]
             }
           },
           {
-            "line": 13,
+            "line": 14,
             "col": 5,
             "kind": "task_set",
-            "owner": {
-              "line": 13,
-              "col": 15,
-              "kind": "prop",
-              "target": {
-                "line": 13,
-                "col": 9,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "owner": { "line": 14, "col": 9, "kind": "var", "name": "this" },
             "id": "reminder",
             "value": {
-              "line": 13,
-              "col": 40,
+              "line": 14,
+              "col": 32,
               "kind": "schedule",
               "after_ticks": 20,
               "every_ticks": 40,
               "body": [
                 {
-                  "line": 14,
+                  "line": 15,
                   "col": 9,
                   "kind": "send",
                   "message": {
-                    "line": 14,
+                    "line": 15,
                     "col": 14,
                     "kind": "string",
                     "value": "<yellow>reminder"
                   },
                   "target": {
-                    "line": 14,
-                    "col": 42,
-                    "kind": "prop",
-                    "target": {
-                      "line": 14,
-                      "col": 36,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "line": 15,
+                    "col": 36,
+                    "kind": "var",
+                    "name": "this"
                   }
                 }
               ]
             }
-          },
-          {
-            "line": 18,
-            "col": 5,
-            "kind": "if",
-            "condition": {
-              "line": 18,
-              "col": 27,
-              "kind": "task_running",
-              "owner": {
-                "line": 18,
-                "col": 14,
-                "kind": "prop",
-                "target": {
-                  "line": 18,
-                  "col": 8,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "player"
-              },
-              "id": "welcome"
-            },
-            "then": {
-              "line": 18,
-              "col": 46,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 18,
-                  "col": 46,
-                  "kind": "send",
-                  "message": {
-                    "line": 18,
-                    "col": 51,
-                    "kind": "string",
-                    "value": "<green>welcome running"
-                  },
-                  "target": {
-                    "line": 18,
-                    "col": 85,
-                    "kind": "prop",
-                    "target": {
-                      "line": 18,
-                      "col": 79,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
-                  }
-                }
-              ]
-            },
-            "else": null
           },
           {
             "line": 19,
@@ -171,54 +85,36 @@
             "kind": "if",
             "condition": {
               "line": 19,
-              "col": 27,
-              "kind": "unary",
-              "op": "NOT",
-              "operand": {
+              "col": 19,
+              "kind": "task_running",
+              "owner": {
                 "line": 19,
-                "col": 27,
-                "kind": "task_running",
-                "owner": {
-                  "line": 19,
-                  "col": 14,
-                  "kind": "prop",
-                  "target": {
-                    "line": 19,
-                    "col": 8,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
-                },
-                "id": "reminder"
-              }
+                "col": 8,
+                "kind": "var",
+                "name": "this"
+              },
+              "id": "welcome"
             },
             "then": {
               "line": 19,
-              "col": 51,
+              "col": 38,
               "kind": "block",
               "statements": [
                 {
                   "line": 19,
-                  "col": 51,
+                  "col": 38,
                   "kind": "send",
                   "message": {
                     "line": 19,
-                    "col": 56,
+                    "col": 43,
                     "kind": "string",
-                    "value": "<red>reminder stopped"
+                    "value": "<green>welcome running"
                   },
                   "target": {
                     "line": 19,
-                    "col": 89,
-                    "kind": "prop",
-                    "target": {
-                      "line": 19,
-                      "col": 83,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "col": 71,
+                    "kind": "var",
+                    "name": "this"
                   }
                 }
               ]
@@ -228,27 +124,69 @@
           {
             "line": 20,
             "col": 5,
+            "kind": "if",
+            "condition": {
+              "line": 20,
+              "col": 19,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 20,
+                "col": 19,
+                "kind": "task_running",
+                "owner": {
+                  "line": 20,
+                  "col": 8,
+                  "kind": "var",
+                  "name": "this"
+                },
+                "id": "reminder"
+              }
+            },
+            "then": {
+              "line": 20,
+              "col": 43,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 20,
+                  "col": 43,
+                  "kind": "send",
+                  "message": {
+                    "line": 20,
+                    "col": 48,
+                    "kind": "string",
+                    "value": "<red>reminder stopped"
+                  },
+                  "target": {
+                    "line": 20,
+                    "col": 75,
+                    "kind": "var",
+                    "name": "this"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 21,
+            "col": 5,
             "kind": "assign",
             "target": "handle",
             "value": {
-              "line": 20,
-              "col": 38,
+              "line": 21,
+              "col": 30,
               "kind": "prop",
               "target": {
-                "line": 20,
-                "col": 32,
+                "line": 21,
+                "col": 24,
                 "kind": "prop",
                 "target": {
-                  "line": 20,
-                  "col": 25,
-                  "kind": "prop",
-                  "target": {
-                    "line": 20,
-                    "col": 19,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
+                  "line": 21,
+                  "col": 19,
+                  "kind": "var",
+                  "name": "this"
                 },
                 "name": "tasks"
               },
@@ -256,53 +194,31 @@
             }
           },
           {
-            "line": 23,
-            "col": 5,
-            "kind": "task_cancel",
-            "owner": {
-              "line": 23,
-              "col": 18,
-              "kind": "prop",
-              "target": {
-                "line": 23,
-                "col": 12,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
-            "id": "welcome"
-          },
-          {
             "line": 24,
             "col": 5,
             "kind": "task_cancel",
-            "owner": {
-              "line": 24,
-              "col": 16,
-              "kind": "prop",
-              "target": {
-                "line": 24,
-                "col": 10,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "owner": { "line": 24, "col": 12, "kind": "var", "name": "this" },
+            "id": "welcome"
+          },
+          {
+            "line": 25,
+            "col": 5,
+            "kind": "task_cancel",
+            "owner": { "line": 25, "col": 10, "kind": "var", "name": "this" },
             "id": "reminder"
           },
           {
-            "line": 27,
+            "line": 28,
             "col": 5,
             "kind": "place",
             "block": {
-              "line": 27,
+              "line": 28,
               "col": 11,
               "kind": "call",
               "name": "block",
               "args": [
                 {
-                  "line": 27,
+                  "line": 28,
                   "col": 17,
                   "kind": "string",
                   "value": "minecraft:sea_lantern"
@@ -310,49 +226,37 @@
               ]
             },
             "location": {
-              "line": 27,
-              "col": 58,
+              "line": 28,
+              "col": 50,
               "kind": "prop",
               "target": {
-                "line": 27,
-                "col": 51,
-                "kind": "prop",
-                "target": {
-                  "line": 27,
-                  "col": 45,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "player"
+                "line": 28,
+                "col": 45,
+                "kind": "var",
+                "name": "this"
               },
               "name": "location"
             }
           },
           {
-            "line": 28,
+            "line": 29,
             "col": 5,
             "kind": "task_set",
             "owner": {
-              "line": 28,
+              "line": 29,
               "col": 9,
               "kind": "call",
               "name": "block_at",
               "args": [
                 {
-                  "line": 28,
-                  "col": 31,
+                  "line": 29,
+                  "col": 23,
                   "kind": "prop",
                   "target": {
-                    "line": 28,
-                    "col": 24,
-                    "kind": "prop",
-                    "target": {
-                      "line": 28,
-                      "col": 18,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "line": 29,
+                    "col": 18,
+                    "kind": "var",
+                    "name": "this"
                   },
                   "name": "location"
                 }
@@ -360,18 +264,18 @@
             },
             "id": "pulse",
             "value": {
-              "line": 28,
-              "col": 56,
+              "line": 29,
+              "col": 48,
               "kind": "schedule",
               "after_ticks": null,
               "every_ticks": 5,
               "body": [
                 {
-                  "line": 29,
+                  "line": 30,
                   "col": 9,
                   "kind": "broadcast",
                   "message": {
-                    "line": 29,
+                    "line": 30,
                     "col": 19,
                     "kind": "string",
                     "value": "<aqua>pulse"
@@ -381,34 +285,28 @@
             }
           },
           {
-            "line": 31,
+            "line": 32,
             "col": 5,
             "kind": "if",
             "condition": {
-              "line": 31,
-              "col": 46,
+              "line": 32,
+              "col": 38,
               "kind": "task_running",
               "owner": {
-                "line": 31,
+                "line": 32,
                 "col": 8,
                 "kind": "call",
                 "name": "block_at",
                 "args": [
                   {
-                    "line": 31,
-                    "col": 30,
+                    "line": 32,
+                    "col": 22,
                     "kind": "prop",
                     "target": {
-                      "line": 31,
-                      "col": 23,
-                      "kind": "prop",
-                      "target": {
-                        "line": 31,
-                        "col": 17,
-                        "kind": "var",
-                        "name": "event"
-                      },
-                      "name": "player"
+                      "line": 32,
+                      "col": 17,
+                      "kind": "var",
+                      "name": "this"
                     },
                     "name": "location"
                   }
@@ -417,17 +315,17 @@
               "id": "pulse"
             },
             "then": {
-              "line": 31,
-              "col": 63,
+              "line": 32,
+              "col": 55,
               "kind": "block",
               "statements": [
                 {
-                  "line": 31,
-                  "col": 63,
+                  "line": 32,
+                  "col": 55,
                   "kind": "broadcast",
                   "message": {
-                    "line": 31,
-                    "col": 73,
+                    "line": 32,
+                    "col": 65,
                     "kind": "string",
                     "value": "pulsing"
                   }
@@ -437,30 +335,24 @@
             "else": null
           },
           {
-            "line": 32,
+            "line": 33,
             "col": 5,
             "kind": "task_cancel",
             "owner": {
-              "line": 32,
+              "line": 33,
               "col": 12,
               "kind": "call",
               "name": "block_at",
               "args": [
                 {
-                  "line": 32,
-                  "col": 34,
+                  "line": 33,
+                  "col": 26,
                   "kind": "prop",
                   "target": {
-                    "line": 32,
-                    "col": 27,
-                    "kind": "prop",
-                    "target": {
-                      "line": 32,
-                      "col": 21,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "line": 33,
+                    "col": 21,
+                    "kind": "var",
+                    "name": "this"
                   },
                   "name": "location"
                 }
@@ -469,53 +361,41 @@
             "id": "pulse"
           },
           {
-            "line": 36,
+            "line": 37,
             "col": 5,
             "kind": "place",
             "block": {
-              "line": 36,
+              "line": 37,
               "col": 11,
               "kind": "string",
               "value": "minecraft:oak_log"
             },
             "location": {
-              "line": 36,
-              "col": 47,
+              "line": 37,
+              "col": 39,
               "kind": "prop",
               "target": {
-                "line": 36,
-                "col": 40,
-                "kind": "prop",
-                "target": {
-                  "line": 36,
-                  "col": 34,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "player"
+                "line": 37,
+                "col": 34,
+                "kind": "var",
+                "name": "this"
               },
               "name": "location"
             }
           },
           {
-            "line": 37,
+            "line": 38,
             "col": 5,
             "kind": "remove_block",
             "location": {
-              "line": 37,
-              "col": 34,
+              "line": 38,
+              "col": 26,
               "kind": "prop",
               "target": {
-                "line": 37,
-                "col": 27,
-                "kind": "prop",
-                "target": {
-                  "line": 37,
-                  "col": 21,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "player"
+                "line": 38,
+                "col": 21,
+                "kind": "var",
+                "name": "this"
               },
               "name": "location"
             }
@@ -532,31 +412,31 @@
   "server": null,
   "holograms": [
     {
-      "line": 54,
+      "line": 56,
       "col": 1,
       "name": "board",
       "location": {
-        "line": 55,
+        "line": 57,
         "col": 15,
         "kind": "call",
         "name": "location",
         "args": [
           {
-            "line": 55,
+            "line": 57,
             "col": 24,
             "kind": "number",
             "value": 0,
             "integer": true
           },
           {
-            "line": 55,
+            "line": 57,
             "col": 27,
             "kind": "number",
             "value": 65,
             "integer": true
           },
           {
-            "line": 55,
+            "line": 57,
             "col": 31,
             "kind": "number",
             "value": 0,
@@ -570,11 +450,11 @@
       "per_viewer": false,
       "lines": [
         {
-          "line": 57,
+          "line": 59,
           "col": 9,
           "kind": "line",
           "text": {
-            "line": 57,
+            "line": 59,
             "col": 14,
             "kind": "string",
             "value": "<gold>Tasks Board"
@@ -586,35 +466,35 @@
           "params": [ "player" ],
           "body": [
             {
-              "line": 60,
+              "line": 62,
               "col": 9,
               "kind": "task_set",
               "owner": {
-                "line": 60,
+                "line": 62,
                 "col": 13,
                 "kind": "var",
                 "name": "this"
               },
               "id": "shimmer",
               "value": {
-                "line": 60,
+                "line": 62,
                 "col": 35,
                 "kind": "schedule",
                 "after_ticks": null,
                 "every_ticks": 10,
                 "body": [
                   {
-                    "line": 61,
+                    "line": 63,
                     "col": 13,
                     "kind": "send",
                     "message": {
-                      "line": 61,
+                      "line": 63,
                       "col": 18,
                       "kind": "string",
                       "value": "<light_purple>shimmer"
                     },
                     "target": {
-                      "line": 61,
+                      "line": 63,
                       "col": 45,
                       "kind": "var",
                       "name": "player"
@@ -624,15 +504,15 @@
               }
             },
             {
-              "line": 63,
+              "line": 65,
               "col": 9,
               "kind": "if",
               "condition": {
-                "line": 63,
+                "line": 65,
                 "col": 23,
                 "kind": "task_running",
                 "owner": {
-                  "line": 63,
+                  "line": 65,
                   "col": 12,
                   "kind": "var",
                   "name": "this"
@@ -640,22 +520,22 @@
                 "id": "shimmer"
               },
               "then": {
-                "line": 63,
+                "line": 65,
                 "col": 42,
                 "kind": "block",
                 "statements": [
                   {
-                    "line": 63,
+                    "line": 65,
                     "col": 42,
                     "kind": "send",
                     "message": {
-                      "line": 63,
+                      "line": 65,
                       "col": 47,
                       "kind": "string",
                       "value": "<green>shimmering"
                     },
                     "target": {
-                      "line": 63,
+                      "line": 65,
                       "col": 70,
                       "kind": "var",
                       "name": "player"
@@ -666,11 +546,11 @@
               "else": null
             },
             {
-              "line": 64,
+              "line": 66,
               "col": 9,
               "kind": "task_cancel",
               "owner": {
-                "line": 64,
+                "line": 66,
                 "col": 16,
                 "kind": "var",
                 "name": "this"
@@ -684,31 +564,31 @@
   ],
   "npcs": [
     {
-      "line": 68,
+      "line": 70,
       "col": 1,
       "name": "guide",
       "location": {
-        "line": 69,
+        "line": 71,
         "col": 15,
         "kind": "call",
         "name": "location",
         "args": [
           {
-            "line": 69,
+            "line": 71,
             "col": 24,
             "kind": "number",
             "value": 5,
             "integer": true
           },
           {
-            "line": 69,
+            "line": 71,
             "col": 27,
             "kind": "number",
             "value": 64,
             "integer": true
           },
           {
-            "line": 69,
+            "line": 71,
             "col": 31,
             "kind": "number",
             "value": 5,
@@ -720,7 +600,7 @@
       "skin": {
         "kind": "username",
         "username": {
-          "line": 70,
+          "line": 72,
           "col": 11,
           "kind": "string",
           "value": "Notch"
@@ -734,29 +614,29 @@
           "params": [],
           "body": [
             {
-              "line": 74,
+              "line": 76,
               "col": 9,
               "kind": "task_set",
               "owner": {
-                "line": 74,
+                "line": 76,
                 "col": 13,
                 "kind": "var",
                 "name": "this"
               },
               "id": "follow",
               "value": {
-                "line": 74,
+                "line": 76,
                 "col": 34,
                 "kind": "schedule",
                 "after_ticks": 40,
                 "every_ticks": 20,
                 "body": [
                   {
-                    "line": 75,
+                    "line": 77,
                     "col": 13,
                     "kind": "broadcast",
                     "message": {
-                      "line": 75,
+                      "line": 77,
                       "col": 23,
                       "kind": "string",
                       "value": "<yellow>following"
@@ -766,15 +646,15 @@
               }
             },
             {
-              "line": 77,
+              "line": 79,
               "col": 9,
               "kind": "if",
               "condition": {
-                "line": 77,
+                "line": 79,
                 "col": 23,
                 "kind": "task_running",
                 "owner": {
-                  "line": 77,
+                  "line": 79,
                   "col": 12,
                   "kind": "var",
                   "name": "this"
@@ -782,16 +662,16 @@
                 "id": "follow"
               },
               "then": {
-                "line": 77,
+                "line": 79,
                 "col": 41,
                 "kind": "block",
                 "statements": [
                   {
-                    "line": 77,
+                    "line": 79,
                     "col": 41,
                     "kind": "broadcast",
                     "message": {
-                      "line": 77,
+                      "line": 79,
                       "col": 51,
                       "kind": "string",
                       "value": "following on"
@@ -802,11 +682,11 @@
               "else": null
             },
             {
-              "line": 78,
+              "line": 80,
               "col": 9,
               "kind": "task_cancel",
               "owner": {
-                "line": 78,
+                "line": 80,
                 "col": 14,
                 "kind": "var",
                 "name": "this"
@@ -820,12 +700,12 @@
   ],
   "mobs": [
     {
-      "line": 41,
+      "line": 43,
       "col": 1,
       "id": "sentinel",
       "type": "IRON_GOLEM",
       "name": {
-        "line": 43,
+        "line": 45,
         "col": 11,
         "kind": "string",
         "value": "<gray>Sentinel"
@@ -837,24 +717,24 @@
       "drops": [],
       "on_spawn": [
         {
-          "line": 46,
+          "line": 48,
           "col": 9,
           "kind": "task_set",
-          "owner": { "line": 46, "col": 13, "kind": "var", "name": "mob" },
+          "owner": { "line": 48, "col": 13, "kind": "var", "name": "mob" },
           "id": "patrol",
           "value": {
-            "line": 46,
+            "line": 48,
             "col": 33,
             "kind": "schedule",
             "after_ticks": null,
             "every_ticks": 40,
             "body": [
               {
-                "line": 47,
+                "line": 49,
                 "col": 13,
                 "kind": "broadcast",
                 "message": {
-                  "line": 47,
+                  "line": 49,
                   "col": 23,
                   "kind": "string",
                   "value": "<white>patrolling"

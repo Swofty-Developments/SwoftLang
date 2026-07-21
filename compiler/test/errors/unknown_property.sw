@@ -1,5 +1,5 @@
-event PlayerJoin {
-    execute {
-        set n to event.player.latencey
+Player {
+    on_join() {
+        set n to this.latencey
     }
 }

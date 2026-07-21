@@ -92,11 +92,9 @@ command "sink", "s" {
     }
 }
 
-event PlayerChat {
-    priority: 2
-
-    execute {
-        if event.message contains "badword" and not event.cancelled {
+Player {
+    on_chat(message) {
+        if message contains "badword" {
             cancel event
         }
         return

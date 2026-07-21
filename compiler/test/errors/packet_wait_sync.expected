@@ -1,1 +1,1 @@
-'wait' is not allowed inside 'on packet' handlers
+'wait' is not allowed inside Packet handlers

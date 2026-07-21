@@ -4,118 +4,81 @@
   "commands": [],
   "events": [
     {
-      "line": 7,
-      "col": 1,
+      "line": 6,
+      "col": 5,
       "name": "BlockBreak",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "block", "location", "face" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 9,
+            "line": 7,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 9,
+              "line": 7,
               "col": 14,
               "kind": "string",
-              "value": "broke ${event.block} at ${event.location.block_x}"
+              "value": "broke ${block} at ${location.block_x}"
             },
-            "target": {
-              "line": 9,
-              "col": 75,
-              "kind": "prop",
-              "target": {
-                "line": 9,
-                "col": 69,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            }
+            "target": { "line": 7, "col": 57, "kind": "var", "name": "this" }
           },
-          { "line": 10, "col": 9, "kind": "cancel_event" }
+          { "line": 8, "col": 9, "kind": "cancel_event" }
         ]
       }
     },
     {
-      "line": 15,
-      "col": 1,
+      "line": 11,
+      "col": 5,
       "name": "BlockPlace",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "block", "location", "face", "hand" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 17,
+            "line": 12,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 17,
+              "line": 12,
               "col": 14,
               "kind": "string",
-              "value": "placed ${event.block}"
+              "value": "placed ${block}"
             },
             "target": {
-              "line": 17,
-              "col": 47,
-              "kind": "prop",
-              "target": {
-                "line": 17,
-                "col": 41,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 12,
+              "col": 35,
+              "kind": "var",
+              "name": "this"
             }
           },
-          { "line": 18, "col": 9, "kind": "cancel_event" }
+          { "line": 13, "col": 9, "kind": "cancel_event" }
         ]
       }
     },
     {
-      "line": 23,
-      "col": 1,
+      "line": 18,
+      "col": 5,
       "name": "ServerPing",
+      "receiver": "Server",
       "priority": 0,
+      "params": [ "status" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 25,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 25,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "motd",
-            "value": {
-              "line": 25,
-              "col": 27,
+            "line": 19,
+            "col": 9,
+            "kind": "broadcast",
+            "message": {
+              "line": 19,
+              "col": 19,
               "kind": "string",
-              "value": "typed motd"
-            }
-          },
-          {
-            "line": 26,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 26,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "max",
-            "value": {
-              "line": 26,
-              "col": 26,
-              "kind": "number",
-              "value": 100,
-              "integer": true
+              "value": "pinged"
             }
           }
         ]

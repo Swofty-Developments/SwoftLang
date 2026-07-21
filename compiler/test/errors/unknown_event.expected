@@ -1,1 +1,1 @@
-unknown_event.sw:1:1: error: unknown event 'PlayerJump'
+unknown Player method 'on_jump'

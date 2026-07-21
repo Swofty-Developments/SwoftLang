@@ -1,1 +1,1 @@
-unknown_event_suggest.sw:1:1: error: unknown event 'PickupItm'; did you mean 'PickupItem'?
+did you mean 'on_pickup'

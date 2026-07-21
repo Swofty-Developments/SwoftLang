@@ -1,1 +1,1 @@
-unknown_property.sw:3:31: error: unknown property 'latencey' on Player; did you mean 'latency'?
+unknown property 'latencey' on Player; did you mean 'latency'?

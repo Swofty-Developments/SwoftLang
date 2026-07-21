@@ -1,5 +1,5 @@
-event PlayerJoin {
-    execute {
-        set event.player.name to "Steve"
+Player {
+    on_join() {
+        set this.name to "Steve"
     }
 }

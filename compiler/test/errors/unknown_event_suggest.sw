@@ -1,5 +1,5 @@
-event PickupItm {
-    execute {
-        send "grabbed" to all
+Item {
+    on_pickp(player) {
+        send "grabbed" to player
     }
 }

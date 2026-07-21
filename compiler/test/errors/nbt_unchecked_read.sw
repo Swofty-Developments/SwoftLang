@@ -2,8 +2,8 @@ item "gem" {
     material: "EMERALD"
 }
 
-event PlayerUseItem {
-    execute {
-        set event.player.level to event.item.tags.power
+Item {
+    on_use(player) {
+        set player.level to this.tags.power
     }
 }

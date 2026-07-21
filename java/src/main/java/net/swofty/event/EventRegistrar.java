@@ -49,10 +49,20 @@ public class EventRegistrar {
             }
         }
         eventNodes.clear();
+        ReceiverDispatch.resetBases();
     }
 
     public void registerEvent(Event event) {
         String eventName = event.getName();
+
+        // OOP receiver method: bind `this` + positional params (design OOP event
+        // model) instead of the flat sender/event/alias scheme. Fans out
+        // naturally — one native event maps to several `events` entries, one per
+        // receiver, each attaching its own listener to the shared event node.
+        if (event.isReceiver()) {
+            registerReceiverEvent(event);
+            return;
+        }
 
         // curated wrappers first: typed rows + bespoke behavior win over
         // the generic catalog path for the events they cover
@@ -84,6 +94,51 @@ public class EventRegistrar {
         }
         registerListener(eventName, entry.className(),
                 (minestomEvent) -> new GenericSwoftEvent(minestomEvent, event).execute());
+    }
+
+    /**
+     * Register one base-receiver method: resolve the Minestom event class it
+     * listens on, index its body for {@code default()}/{@code super} chaining,
+     * and attach a listener that binds {@code this} + the positional params.
+     * Only receivers a script actually declares get a listener.
+     */
+    private void registerReceiverEvent(Event event) {
+        String eventName = event.getName();
+        ReceiverBinding.Spec spec = ReceiverBinding.lookup(eventName, event.getReceiver());
+
+        // index the base body so a more-specific custom decl can reach it
+        if (spec != null) {
+            ReceiverDispatch.registerBase(event.getReceiver(), spec.method(),
+                    event.getExecuteBlock(), event.getParams());
+        }
+
+        String className = spec != null && spec.minestomClass() != null
+                ? spec.minestomClass() : null;
+        if (className == null && EventType.fromIdentifier(eventName) != null) {
+            className = EventType.getMinestomClassName(eventName);
+        }
+        if (className == null) {
+            EventCatalog.Entry entry = EventCatalog.resolve(eventName).orElse(null);
+            if (entry != null) {
+                className = entry.className();
+            }
+        }
+        if (className == null) {
+            // `<Receiver>.<method>` names ride the inline-handler / npc / hologram
+            // runtimes and have no distinct catalog event — nothing to attach here.
+            if (eventName.contains(".")) {
+                System.out.println("Receiver method " + eventName
+                        + " has no catalog event (handled by its content runtime)");
+                return;
+            }
+            List<String> suggestions = EventCatalog.suggest(eventName, 3);
+            System.err.println("Unknown receiver event: " + eventName
+                    + (suggestions.isEmpty() ? ""
+                            : " (did you mean: " + String.join(", ", suggestions) + "?)"));
+            return;
+        }
+        registerListener(eventName, className,
+                (minestomEvent) -> ReceiverDispatch.fire(event, spec, minestomEvent));
     }
 
     private interface WrapperInvoker {

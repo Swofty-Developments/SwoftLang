@@ -1,10 +1,10 @@
-event PlayerJoin {
-    execute {
-        set nametag of event.player to "<red>[ADMIN] ${event.player.name}"
-        set nametag prefix of event.player to "&6[VIP] " for event.player
-        set nametag color of event.player to red
-        set nametag suffix of event.player to " &7(AFK)" for all
-        reset nametag of event.player for all
+Player {
+    on_join() {
+        set nametag of this to "<red>[ADMIN] ${this.name}"
+        set nametag prefix of this to "&6[VIP] " for this
+        set nametag color of this to red
+        set nametag suffix of this to " &7(AFK)" for all
+        reset nametag of this for all
 
         send packet "ParticlePacket" {
             particle: "minecraft:flame",
@@ -12,7 +12,7 @@ event PlayerJoin {
             x: 100.5, y: 65.0, z: 20.5,
             offsetX: 0.5, offsetY: 0.5, offsetZ: 0.5,
             maxSpeed: 0.01, count: 40
-        } to event.player
+        } to this
 
         send packet "TeamsPacket" {
             teamName: "nt_test",
@@ -31,8 +31,8 @@ event PlayerJoin {
     }
 }
 
-on packet "ClientPlayerDiggingPacket" {
-    execute {
+Packet {
+    on "ClientPlayerActionPacket" {
         if packet.status is "STARTED_DIGGING" {
             send "<red>No mining here." to player
             cancel packet

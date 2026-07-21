@@ -1,1 +1,1 @@
-'cancel packet' is only allowed inside an 'on packet' handler
+'cancel packet' is only allowed inside a Packet handler

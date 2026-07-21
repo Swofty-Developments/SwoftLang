@@ -184,10 +184,12 @@
   ],
   "events": [
     {
-      "line": 13,
-      "col": 1,
+      "line": 14,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -227,11 +229,11 @@
               "line": 16,
               "col": 27,
               "kind": "var",
-              "name": "player"
+              "name": "this"
             },
             "value": {
               "line": 16,
-              "col": 37,
+              "col": 35,
               "kind": "string",
               "value": "today"
             }
@@ -276,7 +278,7 @@
               "line": 17,
               "col": 53,
               "kind": "var",
-              "name": "player"
+              "name": "this"
             }
           }
         ]

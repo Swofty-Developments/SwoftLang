@@ -4,10 +4,12 @@
   "commands": [],
   "events": [
     {
-      "line": 1,
-      "col": 1,
+      "line": 2,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -16,23 +18,12 @@
             "col": 9,
             "kind": "set_nametag",
             "part": null,
-            "target": {
-              "line": 3,
-              "col": 30,
-              "kind": "prop",
-              "target": {
-                "line": 3,
-                "col": 24,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "target": { "line": 3, "col": 24, "kind": "var", "name": "this" },
             "value": {
               "line": 3,
-              "col": 40,
+              "col": 32,
               "kind": "string",
-              "value": "<red>[ADMIN] ${event.player.name}"
+              "value": "<red>[ADMIN] ${this.name}"
             },
             "viewer": null
           },
@@ -41,57 +32,24 @@
             "col": 9,
             "kind": "set_nametag",
             "part": "prefix",
-            "target": {
-              "line": 4,
-              "col": 37,
-              "kind": "prop",
-              "target": {
-                "line": 4,
-                "col": 31,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "target": { "line": 4, "col": 31, "kind": "var", "name": "this" },
             "value": {
               "line": 4,
-              "col": 47,
+              "col": 39,
               "kind": "string",
               "value": "&6[VIP] "
             },
-            "viewer": {
-              "line": 4,
-              "col": 68,
-              "kind": "prop",
-              "target": {
-                "line": 4,
-                "col": 62,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            }
+            "viewer": { "line": 4, "col": 54, "kind": "var", "name": "this" }
           },
           {
             "line": 5,
             "col": 9,
             "kind": "set_nametag",
             "part": "color",
-            "target": {
-              "line": 5,
-              "col": 36,
-              "kind": "prop",
-              "target": {
-                "line": 5,
-                "col": 30,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "target": { "line": 5, "col": 30, "kind": "var", "name": "this" },
             "value": {
               "line": 5,
-              "col": 46,
+              "col": 38,
               "kind": "string",
               "value": "red"
             },
@@ -102,27 +60,16 @@
             "col": 9,
             "kind": "set_nametag",
             "part": "suffix",
-            "target": {
-              "line": 6,
-              "col": 37,
-              "kind": "prop",
-              "target": {
-                "line": 6,
-                "col": 31,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "target": { "line": 6, "col": 31, "kind": "var", "name": "this" },
             "value": {
               "line": 6,
-              "col": 47,
+              "col": 39,
               "kind": "string",
               "value": " &7(AFK)"
             },
             "viewer": {
               "line": 6,
-              "col": 62,
+              "col": 54,
               "kind": "string",
               "value": "all"
             }
@@ -131,21 +78,10 @@
             "line": 7,
             "col": 9,
             "kind": "reset_nametag",
-            "target": {
-              "line": 7,
-              "col": 32,
-              "kind": "prop",
-              "target": {
-                "line": 7,
-                "col": 26,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            },
+            "target": { "line": 7, "col": 26, "kind": "var", "name": "this" },
             "viewer": {
               "line": 7,
-              "col": 43,
+              "col": 35,
               "kind": "string",
               "value": "all"
             }
@@ -233,15 +169,9 @@
             },
             "target": {
               "line": 15,
-              "col": 20,
-              "kind": "prop",
-              "target": {
-                "line": 15,
-                "col": 14,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "col": 14,
+              "kind": "var",
+              "name": "this"
             }
           },
           {
@@ -345,9 +275,9 @@
   "server": null,
   "packet_listeners": [
     {
-      "line": 34,
-      "col": 1,
-      "name": "ClientPlayerDiggingPacket",
+      "line": 35,
+      "col": 5,
+      "name": "ClientPlayerActionPacket",
       "execute": {
         "async": false,
         "statements": [

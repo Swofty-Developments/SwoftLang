@@ -3,7 +3,7 @@
   "version": 2,
   "commands": [
     {
-      "line": 43,
+      "line": 36,
       "col": 1,
       "names": [ "hologram" ],
       "permission": null,
@@ -13,44 +13,44 @@
         "async": false,
         "statements": [
           {
-            "line": 45,
+            "line": 38,
             "col": 9,
             "kind": "assign",
             "target": "d",
             "value": {
-              "line": 45,
+              "line": 38,
               "col": 18,
               "kind": "call",
               "name": "spawn_text_display",
               "args": [
                 {
-                  "line": 45,
+                  "line": 38,
                   "col": 37,
                   "kind": "string",
                   "value": "<gold>Welcome!"
                 },
                 {
-                  "line": 45,
+                  "line": 38,
                   "col": 55,
                   "kind": "call",
                   "name": "location",
                   "args": [
                     {
-                      "line": 45,
+                      "line": 38,
                       "col": 64,
                       "kind": "number",
                       "value": 0,
                       "integer": true
                     },
                     {
-                      "line": 45,
+                      "line": 38,
                       "col": 67,
                       "kind": "number",
                       "value": 80,
                       "integer": true
                     },
                     {
-                      "line": 45,
+                      "line": 38,
                       "col": 71,
                       "kind": "number",
                       "value": 0,
@@ -62,26 +62,26 @@
             }
           },
           {
-            "line": 46,
+            "line": 39,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 46, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 39, "col": 13, "kind": "var", "name": "d" },
             "name": "text",
             "value": {
-              "line": 46,
+              "line": 39,
               "col": 23,
               "kind": "string",
               "value": "<gold>Welcome, ${sender.name}!"
             }
           },
           {
-            "line": 47,
+            "line": 40,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 47, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 40, "col": 13, "kind": "var", "name": "d" },
             "name": "scale",
             "value": {
-              "line": 47,
+              "line": 40,
               "col": 24,
               "kind": "number",
               "value": 2.0,
@@ -89,33 +89,33 @@
             }
           },
           {
-            "line": 48,
+            "line": 41,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 48, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 41, "col": 13, "kind": "var", "name": "d" },
             "name": "translation",
             "value": {
-              "line": 48,
+              "line": 41,
               "col": 30,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 48,
+                  "line": 41,
                   "col": 39,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 48,
+                  "line": 41,
                   "col": 42,
                   "kind": "number",
                   "value": 1,
                   "integer": true
                 },
                 {
-                  "line": 48,
+                  "line": 41,
                   "col": 45,
                   "kind": "number",
                   "value": 0,
@@ -125,33 +125,33 @@
             }
           },
           {
-            "line": 49,
+            "line": 42,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 49, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 42, "col": 13, "kind": "var", "name": "d" },
             "name": "rotation",
             "value": {
-              "line": 49,
+              "line": 42,
               "col": 27,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 49,
+                  "line": 42,
                   "col": 36,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 49,
+                  "line": 42,
                   "col": 39,
                   "kind": "number",
                   "value": 45,
                   "integer": true
                 },
                 {
-                  "line": 49,
+                  "line": 42,
                   "col": 43,
                   "kind": "number",
                   "value": 0,
@@ -161,39 +161,39 @@
             }
           },
           {
-            "line": 50,
+            "line": 43,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 50, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 43, "col": 13, "kind": "var", "name": "d" },
             "name": "billboard",
             "value": {
-              "line": 50,
+              "line": 43,
               "col": 28,
               "kind": "string",
               "value": "center"
             }
           },
           {
-            "line": 51,
+            "line": 44,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 51, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 44, "col": 13, "kind": "var", "name": "d" },
             "name": "alignment",
             "value": {
-              "line": 51,
+              "line": 44,
               "col": 28,
               "kind": "string",
               "value": "center"
             }
           },
           {
-            "line": 52,
+            "line": 45,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 52, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 45, "col": 13, "kind": "var", "name": "d" },
             "name": "line_width",
             "value": {
-              "line": 52,
+              "line": 45,
               "col": 29,
               "kind": "number",
               "value": 200,
@@ -201,52 +201,52 @@
             }
           },
           {
-            "line": 53,
+            "line": 46,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 53, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 46, "col": 13, "kind": "var", "name": "d" },
             "name": "see_through",
             "value": {
-              "line": 53,
+              "line": 46,
               "col": 30,
               "kind": "boolean",
               "value": true
             }
           },
           {
-            "line": 54,
+            "line": 47,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 54, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 47, "col": 13, "kind": "var", "name": "d" },
             "name": "background",
             "value": {
-              "line": 54,
+              "line": 47,
               "col": 29,
               "kind": "string",
               "value": "#40000000"
             }
           },
           {
-            "line": 55,
+            "line": 48,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 55, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 48, "col": 13, "kind": "var", "name": "d" },
             "name": "glow_color",
             "value": {
-              "line": 55,
+              "line": 48,
               "col": 29,
               "kind": "string",
               "value": "gold"
             }
           },
           {
-            "line": 56,
+            "line": 49,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 56, "col": 13, "kind": "var", "name": "d" },
+            "target": { "line": 49, "col": 13, "kind": "var", "name": "d" },
             "name": "view_range",
             "value": {
-              "line": 56,
+              "line": 49,
               "col": 29,
               "kind": "number",
               "value": 64.0,
@@ -254,46 +254,46 @@
             }
           },
           {
-            "line": 57,
+            "line": 50,
             "col": 9,
             "kind": "show_display",
-            "display": { "line": 57, "col": 22, "kind": "var", "name": "d" },
-            "target": { "line": 57, "col": 27, "kind": "all_players" }
+            "display": { "line": 50, "col": 22, "kind": "var", "name": "d" },
+            "target": { "line": 50, "col": 27, "kind": "all_players" }
           },
           {
-            "line": 58,
+            "line": 51,
             "col": 9,
             "kind": "assign",
             "target": "b",
             "value": {
-              "line": 58,
+              "line": 51,
               "col": 18,
               "kind": "call",
               "name": "spawn_block_display",
               "args": [
-                { "line": 58, "col": 38, "kind": "string", "value": "STONE" },
+                { "line": 51, "col": 38, "kind": "string", "value": "STONE" },
                 {
-                  "line": 58,
+                  "line": 51,
                   "col": 47,
                   "kind": "call",
                   "name": "location",
                   "args": [
                     {
-                      "line": 58,
+                      "line": 51,
                       "col": 56,
                       "kind": "number",
                       "value": 2,
                       "integer": true
                     },
                     {
-                      "line": 58,
+                      "line": 51,
                       "col": 59,
                       "kind": "number",
                       "value": 80,
                       "integer": true
                     },
                     {
-                      "line": 58,
+                      "line": 51,
                       "col": 63,
                       "kind": "number",
                       "value": 0,
@@ -305,44 +305,44 @@
             }
           },
           {
-            "line": 59,
+            "line": 52,
             "col": 9,
             "kind": "assign",
             "target": "i",
             "value": {
-              "line": 59,
+              "line": 52,
               "col": 18,
               "kind": "call",
               "name": "spawn_item_display",
               "args": [
                 {
-                  "line": 59,
+                  "line": 52,
                   "col": 37,
                   "kind": "string",
                   "value": "DIAMOND_SWORD"
                 },
                 {
-                  "line": 59,
+                  "line": 52,
                   "col": 54,
                   "kind": "call",
                   "name": "location",
                   "args": [
                     {
-                      "line": 59,
+                      "line": 52,
                       "col": 63,
                       "kind": "number",
                       "value": 4,
                       "integer": true
                     },
                     {
-                      "line": 59,
+                      "line": 52,
                       "col": 66,
                       "kind": "number",
                       "value": 80,
                       "integer": true
                     },
                     {
-                      "line": 59,
+                      "line": 52,
                       "col": 70,
                       "kind": "number",
                       "value": 0,
@@ -354,44 +354,44 @@
             }
           },
           {
-            "line": 60,
+            "line": 53,
             "col": 9,
             "kind": "mount_display",
-            "display": { "line": 60, "col": 23, "kind": "var", "name": "i" },
+            "display": { "line": 53, "col": 23, "kind": "var", "name": "i" },
             "entity": {
-              "line": 60,
+              "line": 53,
               "col": 28,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 61,
+            "line": 54,
             "col": 9,
             "kind": "teleport_display",
-            "display": { "line": 61, "col": 26, "kind": "var", "name": "d" },
+            "display": { "line": 54, "col": 26, "kind": "var", "name": "d" },
             "to": {
-              "line": 61,
+              "line": 54,
               "col": 31,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 61,
+                  "line": 54,
                   "col": 40,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 61,
+                  "line": 54,
                   "col": 43,
                   "kind": "number",
                   "value": 90,
                   "integer": true
                 },
                 {
-                  "line": 61,
+                  "line": 54,
                   "col": 47,
                   "kind": "number",
                   "value": 0,
@@ -401,28 +401,28 @@
             }
           },
           {
-            "line": 62,
+            "line": 55,
             "col": 9,
             "kind": "hide_display",
-            "display": { "line": 62, "col": 22, "kind": "var", "name": "d" },
+            "display": { "line": 55, "col": 22, "kind": "var", "name": "d" },
             "target": {
-              "line": 62,
+              "line": 55,
               "col": 29,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 63,
+            "line": 56,
             "col": 9,
             "kind": "destroy_display",
-            "display": { "line": 63, "col": 25, "kind": "var", "name": "b" }
+            "display": { "line": 56, "col": 25, "kind": "var", "name": "b" }
           }
         ]
       }
     },
     {
-      "line": 67,
+      "line": 60,
       "col": 1,
       "names": [ "music" ],
       "permission": null,
@@ -432,17 +432,17 @@
         "async": false,
         "statements": [
           {
-            "line": 69,
+            "line": 62,
             "col": 9,
             "kind": "play_song",
             "song": {
-              "line": 69,
+              "line": 62,
               "col": 19,
               "kind": "string",
               "value": "megalovania.nbs"
             },
             "target": {
-              "line": 69,
+              "line": 62,
               "col": 40,
               "kind": "var",
               "name": "sender"
@@ -452,18 +452,18 @@
             "radius": null
           },
           {
-            "line": 70,
+            "line": 63,
             "col": 9,
             "kind": "play_song",
             "song": {
-              "line": 70,
+              "line": 63,
               "col": 19,
               "kind": "string",
               "value": "megalovania.nbs"
             },
-            "target": { "line": 70, "col": 40, "kind": "all_players" },
+            "target": { "line": 63, "col": 40, "kind": "all_players" },
             "tick": {
-              "line": 70,
+              "line": 63,
               "col": 60,
               "kind": "number",
               "value": 200,
@@ -473,11 +473,11 @@
             "radius": null
           },
           {
-            "line": 71,
+            "line": 64,
             "col": 9,
             "kind": "play_song",
             "song": {
-              "line": 71,
+              "line": 64,
               "col": 19,
               "kind": "string",
               "value": "chill.nbs"
@@ -485,27 +485,27 @@
             "target": null,
             "tick": null,
             "at": {
-              "line": 71,
+              "line": 64,
               "col": 34,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 71,
+                  "line": 64,
                   "col": 43,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 71,
+                  "line": 64,
                   "col": 46,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
-                  "line": 71,
+                  "line": 64,
                   "col": 50,
                   "kind": "number",
                   "value": 0,
@@ -514,7 +514,7 @@
               ]
             },
             "radius": {
-              "line": 71,
+              "line": 64,
               "col": 60,
               "kind": "number",
               "value": 20.0,
@@ -522,17 +522,17 @@
             }
           },
           {
-            "line": 72,
+            "line": 65,
             "col": 9,
             "kind": "song_volume",
             "target": {
-              "line": 72,
+              "line": 65,
               "col": 28,
               "kind": "var",
               "name": "sender"
             },
             "volume": {
-              "line": 72,
+              "line": 65,
               "col": 38,
               "kind": "number",
               "value": 0.5,
@@ -540,17 +540,17 @@
             }
           },
           {
-            "line": 73,
+            "line": 66,
             "col": 9,
             "kind": "fade_song",
             "target": {
-              "line": 73,
+              "line": 66,
               "col": 22,
               "kind": "var",
               "name": "sender"
             },
             "volume": {
-              "line": 73,
+              "line": 66,
               "col": 32,
               "kind": "number",
               "value": 0.0,
@@ -559,62 +559,62 @@
             "ticks": 60
           },
           {
-            "line": 74,
+            "line": 67,
             "col": 9,
             "kind": "pause_song",
             "target": {
-              "line": 74,
+              "line": 67,
               "col": 23,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 75,
+            "line": 68,
             "col": 9,
             "kind": "resume_song",
             "target": {
-              "line": 75,
+              "line": 68,
               "col": 24,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 76,
+            "line": 69,
             "col": 9,
             "kind": "stop_song",
             "target": {
-              "line": 76,
+              "line": 69,
               "col": 22,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 77,
+            "line": 70,
             "col": 9,
             "kind": "broadcast_song",
             "song": {
-              "line": 77,
+              "line": 70,
               "col": 24,
               "kind": "string",
               "value": "anthem.nbs"
             }
           },
           {
-            "line": 78,
+            "line": 71,
             "col": 9,
             "kind": "assign",
             "target": "meta",
             "value": {
-              "line": 78,
+              "line": 71,
               "col": 21,
               "kind": "call",
               "name": "song",
               "args": [
                 {
-                  "line": 78,
+                  "line": 71,
                   "col": 26,
                   "kind": "string",
                   "value": "megalovania.nbs"
@@ -623,17 +623,17 @@
             }
           },
           {
-            "line": 79,
+            "line": 72,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 79,
+              "line": 72,
               "col": 14,
               "kind": "string",
               "value": "Now playing ${meta.title} by ${meta.author}"
             },
             "target": {
-              "line": 79,
+              "line": 72,
               "col": 63,
               "kind": "var",
               "name": "sender"
@@ -643,7 +643,7 @@
       }
     },
     {
-      "line": 83,
+      "line": 76,
       "col": 1,
       "names": [ "tps" ],
       "permission": null,
@@ -653,53 +653,53 @@
         "async": false,
         "statements": [
           {
-            "line": 85,
+            "line": 78,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 85,
+              "line": 78,
               "col": 14,
               "kind": "string",
               "value": "TPS ${server.tps} avg ${server.average_tps} mspt ${server.mspt}"
             },
             "target": {
-              "line": 85,
+              "line": 78,
               "col": 83,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 86,
+            "line": 79,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 86,
+              "line": 79,
               "col": 14,
               "kind": "call",
               "name": "tps_string",
               "args": []
             },
             "target": {
-              "line": 86,
+              "line": 79,
               "col": 30,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 87,
+            "line": 80,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 87,
+              "line": 80,
               "col": 14,
               "kind": "call",
               "name": "average_tps_string",
               "args": []
             },
             "target": {
-              "line": 87,
+              "line": 80,
               "col": 38,
               "kind": "var",
               "name": "sender"
@@ -709,7 +709,7 @@
       }
     },
     {
-      "line": 91,
+      "line": 84,
       "col": 1,
       "names": [ "boom" ],
       "permission": null,
@@ -719,31 +719,31 @@
         "async": false,
         "statements": [
           {
-            "line": 93,
+            "line": 86,
             "col": 9,
             "kind": "set_block",
             "at": {
-              "line": 93,
+              "line": 86,
               "col": 22,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 93,
+                  "line": 86,
                   "col": 31,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 93,
+                  "line": 86,
                   "col": 34,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
-                  "line": 93,
+                  "line": 86,
                   "col": 38,
                   "kind": "number",
                   "value": 0,
@@ -752,38 +752,38 @@
               ]
             },
             "block": {
-              "line": 93,
+              "line": 86,
               "col": 44,
               "kind": "string",
               "value": "TNT"
             }
           },
           {
-            "line": 94,
+            "line": 87,
             "col": 9,
             "kind": "fill_blocks",
             "from": {
-              "line": 94,
+              "line": 87,
               "col": 26,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 35,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 38,
                   "kind": "number",
                   "value": 63,
                   "integer": true
                 },
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 42,
                   "kind": "number",
                   "value": 0,
@@ -792,27 +792,27 @@
               ]
             },
             "to": {
-              "line": 94,
+              "line": 87,
               "col": 48,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 57,
                   "kind": "number",
                   "value": 4,
                   "integer": true
                 },
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 60,
                   "kind": "number",
                   "value": 63,
                   "integer": true
                 },
                 {
-                  "line": 94,
+                  "line": 87,
                   "col": 64,
                   "kind": "number",
                   "value": 4,
@@ -821,39 +821,39 @@
               ]
             },
             "block": {
-              "line": 94,
+              "line": 87,
               "col": 72,
               "kind": "string",
               "value": "STONE"
             }
           },
           {
-            "line": 95,
+            "line": 88,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 95,
+              "line": 88,
               "col": 14,
               "kind": "binary",
               "op": "CONCATENATE",
               "left": {
-                "line": 95,
+                "line": 88,
                 "col": 14,
                 "kind": "string",
                 "value": "under you: "
               },
               "right": {
-                "line": 95,
+                "line": 88,
                 "col": 14,
                 "kind": "call",
                 "name": "block_at",
                 "args": [
                   {
-                    "line": 95,
+                    "line": 88,
                     "col": 14,
                     "kind": "prop",
                     "target": {
-                      "line": 95,
+                      "line": 88,
                       "col": 14,
                       "kind": "var",
                       "name": "sender"
@@ -864,45 +864,45 @@
               }
             },
             "target": {
-              "line": 95,
+              "line": 88,
               "col": 59,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 96,
+            "line": 89,
             "col": 9,
             "kind": "play_sound",
             "sound": {
-              "line": 96,
+              "line": 89,
               "col": 20,
               "kind": "string",
               "value": "minecraft:entity.generic.explode"
             },
-            "target": { "line": 96, "col": 58, "kind": "all_players" },
+            "target": { "line": 89, "col": 58, "kind": "all_players" },
             "at": {
-              "line": 96,
+              "line": 89,
               "col": 73,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 96,
+                  "line": 89,
                   "col": 82,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 96,
+                  "line": 89,
                   "col": 85,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
-                  "line": 96,
+                  "line": 89,
                   "col": 89,
                   "kind": "number",
                   "value": 0,
@@ -911,14 +911,14 @@
               ]
             },
             "volume": {
-              "line": 96,
+              "line": 89,
               "col": 99,
               "kind": "number",
               "value": 2.0,
               "integer": false
             },
             "pitch": {
-              "line": 96,
+              "line": 89,
               "col": 109,
               "kind": "number",
               "value": 0.8,
@@ -926,66 +926,66 @@
             }
           },
           {
-            "line": 97,
+            "line": 90,
             "col": 9,
             "kind": "stop_sound",
             "sound": {
-              "line": 97,
+              "line": 90,
               "col": 20,
               "kind": "string",
               "value": "minecraft:music_disc.cat"
             },
             "target": {
-              "line": 97,
+              "line": 90,
               "col": 51,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 98,
+            "line": 91,
             "col": 9,
             "kind": "stop_sound",
             "sound": null,
             "target": {
-              "line": 98,
+              "line": 91,
               "col": 24,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 99,
+            "line": 92,
             "col": 9,
             "kind": "spawn_particle",
             "particle": {
-              "line": 99,
+              "line": 92,
               "col": 24,
               "kind": "string",
               "value": "FLAME"
             },
             "at": {
-              "line": 99,
+              "line": 92,
               "col": 35,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 99,
+                  "line": 92,
                   "col": 44,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 99,
+                  "line": 92,
                   "col": 47,
                   "kind": "number",
                   "value": 65,
                   "integer": true
                 },
                 {
-                  "line": 99,
+                  "line": 92,
                   "col": 51,
                   "kind": "number",
                   "value": 0,
@@ -994,74 +994,74 @@
               ]
             },
             "count": {
-              "line": 99,
+              "line": 92,
               "col": 60,
               "kind": "number",
               "value": 40,
               "integer": true
             },
             "offset_x": {
-              "line": 99,
+              "line": 92,
               "col": 70,
               "kind": "number",
               "value": 0.5,
               "integer": false
             },
             "offset_y": {
-              "line": 99,
+              "line": 92,
               "col": 75,
               "kind": "number",
               "value": 0.5,
               "integer": false
             },
             "offset_z": {
-              "line": 99,
+              "line": 92,
               "col": 80,
               "kind": "number",
               "value": 0.5,
               "integer": false
             },
             "speed": {
-              "line": 99,
+              "line": 92,
               "col": 90,
               "kind": "number",
               "value": 0.01,
               "integer": false
             },
-            "viewer": { "line": 99, "col": 98, "kind": "all_players" }
+            "viewer": { "line": 92, "col": 98, "kind": "all_players" }
           },
           {
-            "line": 100,
+            "line": 93,
             "col": 9,
             "kind": "spawn_particle",
             "particle": {
-              "line": 100,
+              "line": 93,
               "col": 24,
               "kind": "string",
               "value": "HEART"
             },
             "at": {
-              "line": 100,
+              "line": 93,
               "col": 35,
               "kind": "call",
               "name": "location",
               "args": [
                 {
-                  "line": 100,
+                  "line": 93,
                   "col": 44,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 {
-                  "line": 100,
+                  "line": 93,
                   "col": 47,
                   "kind": "number",
                   "value": 66,
                   "integer": true
                 },
                 {
-                  "line": 100,
+                  "line": 93,
                   "col": 51,
                   "kind": "number",
                   "value": 0,
@@ -1080,7 +1080,7 @@
       }
     },
     {
-      "line": 104,
+      "line": 97,
       "col": 1,
       "names": [ "day" ],
       "permission": null,
@@ -1090,16 +1090,16 @@
         "async": false,
         "statements": [
           {
-            "line": 106,
+            "line": 99,
             "col": 9,
             "kind": "assign",
             "target": "w",
             "value": {
-              "line": 106,
+              "line": 99,
               "col": 25,
               "kind": "prop",
               "target": {
-                "line": 106,
+                "line": 99,
                 "col": 18,
                 "kind": "var",
                 "name": "sender"
@@ -1108,13 +1108,13 @@
             }
           },
           {
-            "line": 107,
+            "line": 100,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 107, "col": 13, "kind": "var", "name": "w" },
+            "target": { "line": 100, "col": 13, "kind": "var", "name": "w" },
             "name": "time",
             "value": {
-              "line": 107,
+              "line": 100,
               "col": 23,
               "kind": "number",
               "value": 1000,
@@ -1122,13 +1122,13 @@
             }
           },
           {
-            "line": 108,
+            "line": 101,
             "col": 15,
             "kind": "set_prop",
-            "target": { "line": 108, "col": 13, "kind": "var", "name": "w" },
+            "target": { "line": 101, "col": 13, "kind": "var", "name": "w" },
             "name": "time_rate",
             "value": {
-              "line": 108,
+              "line": 101,
               "col": 28,
               "kind": "number",
               "value": 0,
@@ -1136,29 +1136,29 @@
             }
           },
           {
-            "line": 109,
+            "line": 102,
             "col": 9,
             "kind": "set_server_motd",
             "value": {
-              "line": 109,
+              "line": 102,
               "col": 28,
               "kind": "string",
               "value": "<blue>daytime!"
             }
           },
           {
-            "line": 110,
+            "line": 103,
             "col": 20,
             "kind": "set_prop",
             "target": {
-              "line": 110,
+              "line": 103,
               "col": 13,
               "kind": "var",
               "name": "server"
             },
             "name": "motd",
             "value": {
-              "line": 110,
+              "line": 103,
               "col": 28,
               "kind": "string",
               "value": "<blue>daytime (property form)"
@@ -1168,14 +1168,14 @@
       }
     },
     {
-      "line": 114,
+      "line": 107,
       "col": 1,
       "names": [ "disguise" ],
       "permission": null,
       "description": null,
       "arguments": [
         {
-          "line": 116,
+          "line": 109,
           "col": 9,
           "name": "name",
           "type": { "base": "STRING" },
@@ -1186,22 +1186,22 @@
         "async": true,
         "statements": [
           {
-            "line": 119,
+            "line": 112,
             "col": 9,
             "kind": "assign",
             "target": "fetched",
             "value": {
-              "line": 119,
+              "line": 112,
               "col": 24,
               "kind": "call",
               "name": "fetch_skin",
               "args": [
                 {
-                  "line": 119,
+                  "line": 112,
                   "col": 40,
                   "kind": "prop",
                   "target": {
-                    "line": 119,
+                    "line": 112,
                     "col": 35,
                     "kind": "var",
                     "name": "args"
@@ -1212,56 +1212,56 @@
             }
           },
           {
-            "line": 120,
+            "line": 113,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 120,
+              "line": 113,
               "col": 12,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
-                "line": 120,
+                "line": 113,
                 "col": 12,
                 "kind": "var",
                 "name": "fetched"
               }
             },
             "then": {
-              "line": 120,
+              "line": 113,
               "col": 27,
               "kind": "block",
               "statements": [
                 {
-                  "line": 121,
+                  "line": 114,
                   "col": 24,
                   "kind": "set_prop",
                   "target": {
-                    "line": 121,
+                    "line": 114,
                     "col": 17,
                     "kind": "var",
                     "name": "sender"
                   },
                   "name": "skin",
                   "value": {
-                    "line": 121,
+                    "line": 114,
                     "col": 32,
                     "kind": "var",
                     "name": "fetched"
                   }
                 },
                 {
-                  "line": 122,
+                  "line": 115,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 122,
+                    "line": 115,
                     "col": 18,
                     "kind": "string",
                     "value": "skin texture: ${sender.skin.texture}"
                   },
                   "target": {
-                    "line": 122,
+                    "line": 115,
                     "col": 60,
                     "kind": "var",
                     "name": "sender"
@@ -1270,35 +1270,35 @@
               ]
             },
             "else": {
-              "line": 123,
+              "line": 116,
               "col": 16,
               "kind": "block",
               "statements": [
                 {
-                  "line": 124,
+                  "line": 117,
                   "col": 24,
                   "kind": "set_prop",
                   "target": {
-                    "line": 124,
+                    "line": 117,
                     "col": 17,
                     "kind": "var",
                     "name": "sender"
                   },
                   "name": "skin",
                   "value": {
-                    "line": 124,
+                    "line": 117,
                     "col": 32,
                     "kind": "call",
                     "name": "skin",
                     "args": [
                       {
-                        "line": 124,
+                        "line": 117,
                         "col": 37,
                         "kind": "string",
                         "value": "texture-base64"
                       },
                       {
-                        "line": 124,
+                        "line": 117,
                         "col": 55,
                         "kind": "string",
                         "value": "signature-base64"
@@ -1313,7 +1313,7 @@
       }
     },
     {
-      "line": 129,
+      "line": 122,
       "col": 1,
       "names": [ "quest" ],
       "permission": null,
@@ -1323,41 +1323,41 @@
         "async": false,
         "statements": [
           {
-            "line": 131,
+            "line": 124,
             "col": 9,
             "kind": "show_toast",
             "title": {
-              "line": 131,
+              "line": 124,
               "col": 20,
               "kind": "string",
               "value": "<gold>Quest Complete!"
             },
             "description": {
-              "line": 131,
+              "line": 124,
               "col": 56,
               "kind": "string",
               "value": "You finished the tutorial"
             },
             "icon": {
-              "line": 131,
+              "line": 124,
               "col": 89,
               "kind": "string",
               "value": "DIAMOND"
             },
             "frame": "challenge",
             "target": {
-              "line": 131,
+              "line": 124,
               "col": 118,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 132,
+            "line": 125,
             "col": 9,
             "kind": "show_toast",
             "title": {
-              "line": 132,
+              "line": 125,
               "col": 20,
               "kind": "string",
               "value": "Hi there"
@@ -1366,19 +1366,19 @@
             "icon": null,
             "frame": null,
             "target": {
-              "line": 132,
+              "line": 125,
               "col": 34,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 133,
+            "line": 126,
             "col": 9,
             "kind": "assign",
             "target": "canvas",
             "value": {
-              "line": 133,
+              "line": 126,
               "col": 23,
               "kind": "call",
               "name": "map_canvas",
@@ -1386,76 +1386,76 @@
             }
           },
           {
-            "line": 134,
+            "line": 127,
             "col": 9,
             "kind": "draw_rect",
             "canvas": {
-              "line": 134,
+              "line": 127,
               "col": 22,
               "kind": "var",
               "name": "canvas"
             },
             "x1": {
-              "line": 134,
+              "line": 127,
               "col": 34,
               "kind": "number",
               "value": 0,
               "integer": true
             },
             "y1": {
-              "line": 134,
+              "line": 127,
               "col": 37,
               "kind": "number",
               "value": 0,
               "integer": true
             },
             "x2": {
-              "line": 134,
+              "line": 127,
               "col": 42,
               "kind": "number",
               "value": 127,
               "integer": true
             },
             "y2": {
-              "line": 134,
+              "line": 127,
               "col": 47,
               "kind": "number",
               "value": 127,
               "integer": true
             },
             "color": {
-              "line": 134,
+              "line": 127,
               "col": 57,
               "kind": "string",
               "value": "white"
             }
           },
           {
-            "line": 135,
+            "line": 128,
             "col": 9,
             "kind": "draw_pixel",
             "canvas": {
-              "line": 135,
+              "line": 128,
               "col": 23,
               "kind": "var",
               "name": "canvas"
             },
             "x": {
-              "line": 135,
+              "line": 128,
               "col": 33,
               "kind": "number",
               "value": 64,
               "integer": true
             },
             "y": {
-              "line": 135,
+              "line": 128,
               "col": 37,
               "kind": "number",
               "value": 64,
               "integer": true
             },
             "color": {
-              "line": 135,
+              "line": 128,
               "col": 46,
               "kind": "number",
               "value": 34,
@@ -1463,71 +1463,71 @@
             }
           },
           {
-            "line": 136,
+            "line": 129,
             "col": 9,
             "kind": "draw_text",
             "canvas": {
-              "line": 136,
+              "line": 129,
               "col": 22,
               "kind": "var",
               "name": "canvas"
             },
             "x": {
-              "line": 136,
+              "line": 129,
               "col": 32,
               "kind": "number",
               "value": 10,
               "integer": true
             },
             "y": {
-              "line": 136,
+              "line": 129,
               "col": 36,
               "kind": "number",
               "value": 10,
               "integer": true
             },
             "text": {
-              "line": 136,
+              "line": 129,
               "col": 44,
               "kind": "string",
               "value": "Hello"
             },
             "color": {
-              "line": 136,
+              "line": 129,
               "col": 58,
               "kind": "string",
               "value": "black"
             }
           },
           {
-            "line": 137,
+            "line": 130,
             "col": 9,
             "kind": "give_map",
             "canvas": {
-              "line": 137,
+              "line": 130,
               "col": 21,
               "kind": "var",
               "name": "canvas"
             },
             "target": {
-              "line": 137,
+              "line": 130,
               "col": 31,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 138,
+            "line": 131,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 138,
+              "line": 131,
               "col": 14,
               "kind": "string",
               "value": "canvas is ${canvas.width}x${canvas.height}"
             },
             "target": {
-              "line": 138,
+              "line": 131,
               "col": 62,
               "kind": "var",
               "name": "sender"
@@ -1537,7 +1537,7 @@
       }
     },
     {
-      "line": 142,
+      "line": 135,
       "col": 1,
       "names": [ "admincheck" ],
       "permission": "admin.panel",
@@ -1547,18 +1547,18 @@
         "async": false,
         "statements": [
           {
-            "line": 145,
+            "line": 138,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 145,
+              "line": 138,
               "col": 12,
               "kind": "call",
               "name": "has_permission",
               "args": [
-                { "line": 145, "col": 27, "kind": "var", "name": "sender" },
+                { "line": 138, "col": 27, "kind": "var", "name": "sender" },
                 {
-                  "line": 145,
+                  "line": 138,
                   "col": 35,
                   "kind": "string",
                   "value": "admin.ban"
@@ -1566,22 +1566,22 @@
               ]
             },
             "then": {
-              "line": 145,
+              "line": 138,
               "col": 48,
               "kind": "block",
               "statements": [
                 {
-                  "line": 145,
+                  "line": 138,
                   "col": 48,
                   "kind": "send",
                   "message": {
-                    "line": 145,
+                    "line": 138,
                     "col": 53,
                     "kind": "string",
                     "value": "you may ban"
                   },
                   "target": {
-                    "line": 145,
+                    "line": 138,
                     "col": 70,
                     "kind": "var",
                     "name": "sender"
@@ -1597,108 +1597,67 @@
   ],
   "events": [
     {
-      "line": 14,
-      "col": 1,
+      "line": 15,
+      "col": 5,
       "name": "ServerPing",
+      "receiver": "Server",
       "priority": 0,
+      "params": [ "status" ],
       "execute": {
         "async": false,
         "statements": [
           {
             "line": 16,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
+            "col": 9,
+            "kind": "broadcast",
+            "message": {
               "line": 16,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "motd",
-            "value": {
-              "line": 16,
-              "col": 27,
+              "col": 19,
               "kind": "string",
-              "value": "<green>dynamic motd"
-            }
-          },
-          {
-            "line": 17,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 17,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "online",
-            "value": {
-              "line": 17,
-              "col": 29,
-              "kind": "number",
-              "value": 999,
-              "integer": true
-            }
-          },
-          {
-            "line": 18,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 18,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "max",
-            "value": {
-              "line": 18,
-              "col": 26,
-              "kind": "number",
-              "value": 1000,
-              "integer": true
+              "value": "pinged"
             }
           }
         ]
       }
     },
     {
-      "line": 22,
-      "col": 1,
+      "line": 19,
+      "col": 5,
       "name": "TpsChange",
+      "receiver": "Server",
       "priority": 0,
+      "params": [ "past", "current" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 24,
+            "line": 20,
             "col": 9,
             "kind": "broadcast",
             "message": {
-              "line": 24,
+              "line": 20,
               "col": 19,
               "kind": "string",
               "value": "TPS moved ${past} -> ${current}"
             }
           },
           {
-            "line": 25,
+            "line": 21,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 25,
+              "line": 21,
               "col": 12,
               "kind": "binary",
               "op": "LESS_THAN",
               "left": {
-                "line": 25,
+                "line": 21,
                 "col": 12,
                 "kind": "call",
                 "name": "tps_at",
                 "args": [
                   {
-                    "line": 25,
+                    "line": 21,
                     "col": 19,
                     "kind": "number",
                     "value": 60,
@@ -1707,7 +1666,7 @@
                 ]
               },
               "right": {
-                "line": 25,
+                "line": 21,
                 "col": 25,
                 "kind": "number",
                 "value": 15.0,
@@ -1715,16 +1674,16 @@
               }
             },
             "then": {
-              "line": 25,
+              "line": 21,
               "col": 30,
               "kind": "block",
               "statements": [
                 {
-                  "line": 25,
+                  "line": 21,
                   "col": 30,
                   "kind": "broadcast",
                   "message": {
-                    "line": 25,
+                    "line": 21,
                     "col": 40,
                     "kind": "string",
                     "value": "<red>we were lagging a minute ago"
@@ -1738,91 +1697,63 @@
       }
     },
     {
-      "line": 29,
-      "col": 1,
+      "line": 26,
+      "col": 5,
       "name": "BlockBreak",
+      "receiver": "Block",
       "priority": 0,
+      "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 31,
-            "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 31,
-              "col": 12,
-              "kind": "binary",
-              "op": "EQUALS",
-              "left": {
-                "line": 31,
-                "col": 12,
-                "kind": "var",
-                "name": "block"
-              },
-              "right": {
-                "line": 31,
-                "col": 21,
-                "kind": "string",
-                "value": "minecraft:bedrock"
-              }
-            },
-            "then": {
-              "line": 31,
-              "col": 41,
-              "kind": "block",
-              "statements": [
-                { "line": 31, "col": 41, "kind": "cancel_event" }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 32,
+            "line": 27,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 32,
+              "line": 27,
               "col": 14,
               "kind": "string",
-              "value": "you broke ${block}"
+              "value": "you broke a block"
             },
             "target": {
-              "line": 32,
-              "col": 38,
+              "line": 27,
+              "col": 37,
               "kind": "var",
               "name": "player"
             }
-          }
+          },
+          { "line": 28, "col": 9, "kind": "cancel_event" }
         ]
       }
     },
     {
-      "line": 36,
-      "col": 1,
+      "line": 31,
+      "col": 5,
       "name": "BlockPlace",
+      "receiver": "Block",
       "priority": 0,
+      "params": [ "player", "location", "block" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 38,
+            "line": 32,
             "col": 9,
             "kind": "set_block",
             "at": {
-              "line": 38,
+              "line": 32,
               "col": 22,
               "kind": "var",
               "name": "location"
             },
             "block": {
-              "line": 38,
+              "line": 32,
               "col": 34,
               "kind": "string",
               "value": "AIR"
             }
-          },
-          { "line": 39, "col": 9, "kind": "cancel_event" }
+          }
         ]
       }
     }

@@ -1,1 +1,1 @@
-readonly_property.sw:3:26: error: property 'name' on Player is read-only
+property 'name' on Player is read-only

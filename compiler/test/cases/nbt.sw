@@ -37,12 +37,12 @@ command "enchant" {
     }
 }
 
-event PlayerUseItem {
-    execute {
-        // tags read off the event's item value
-        if event.item.tags.soulbound exists {
-            send "<gray>Soulbound." to event.player
+Item {
+    on_use(player) {
+        // tags read off the item value (`this`)
+        if this.tags.soulbound exists {
+            send "<gray>Soulbound." to player
         }
-        set event.item.tags.uses to (event.item.tags.uses otherwise 0) + 1
+        set this.tags.uses to (this.tags.uses otherwise 0) + 1
     }
 }

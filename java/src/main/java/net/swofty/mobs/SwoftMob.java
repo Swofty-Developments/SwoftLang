@@ -195,7 +195,7 @@ public class SwoftMob extends EntityCreature {
     public void spawn() {
         super.spawn();
         MobRegistry.track(this);
-        runHandler(def.onSpawn(), baseVars());
+        runOverrideHandler(def.onSpawn(), baseVars(), "on_spawn", List.of());
         EventDispatcher.call(new MobSpawnEvent(this));
     }
 
@@ -244,9 +244,10 @@ public class SwoftMob extends EntityCreature {
                 killer = player;
             }
 
+            Object killerValue = killer != null ? killer : NoneValue.INSTANCE;
             Map<String, Object> vars = baseVars();
-            vars.put("killer", killer != null ? killer : NoneValue.INSTANCE);
-            runHandler(def.onDeath(), vars);
+            vars.put("killer", killerValue);
+            runOverrideHandler(def.onDeath(), vars, "on_death", List.of(killerValue));
             EventDispatcher.call(new MobDeathEvent(this, killer));
             rollDrops();
         }
@@ -306,7 +307,7 @@ public class SwoftMob extends EntityCreature {
             vars.put("victim", target);
             vars.put("damage", amount);
             vars.put("cancelled", false);
-            runHandler(def.onAttack(), vars);
+            runOverrideHandler(def.onAttack(), vars, "on_attack", List.of(target));
             if (Values.toBoolean(vars.get("cancelled"))) {
                 return;
             }
@@ -333,7 +334,7 @@ public class SwoftMob extends EntityCreature {
             Map<String, Object> vars = baseVars();
             vars.put("attacker", attacker);
             vars.put("cancelled", false);
-            runHandler(def.onHit(), vars);
+            runOverrideHandler(def.onHit(), vars, "on_hit", List.of(attacker));
             if (Values.toBoolean(vars.get("cancelled"))) {
                 return;
             }
@@ -354,6 +355,21 @@ public class SwoftMob extends EntityCreature {
      */
     private void runHandler(ExecuteBlock block, Map<String, Object> vars) {
         HandlerDispatch.run(handlerSender(), block, vars, "mob '" + def.id() + "'");
+    }
+
+    /**
+     * Run a dedicated mob handler ({@code on_spawn}/{@code on_death}/
+     * {@code on_attack}/{@code on_hit}) through the override-aware dispatch so a
+     * {@code default()} / {@code super.<method>(...)} in its body chains into the
+     * base {@code Mob.<method>} receiver method with {@code this} + {@code args}
+     * bound. The legacy {@code mob} (and attacker/killer/victim/cancelled)
+     * bindings in {@code vars} are preserved for back-compat; when no base
+     * {@code Mob.<method>} is declared, {@code default()} is a safe no-op.
+     */
+    private void runOverrideHandler(ExecuteBlock block, Map<String, Object> vars,
+            String method, List<Object> args) {
+        HandlerDispatch.runOverride(handlerSender(), block, vars, "mob '" + def.id() + "'",
+                this, "Mob", method, args);
     }
 
     /**

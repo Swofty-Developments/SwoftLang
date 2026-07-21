@@ -38,35 +38,22 @@ server {
     }
 }
 
-event PlayerCastRod {
-    execute {
-        if player.world.time > 100000 {
-            cancel event
+Player {
+    on_cast_rod() {
+        if this.world.time > 100000 {
+            send "<red>the water is still" to this
         }
     }
-}
 
-event FishBite {
-    execute {
-        send "something bit near ${hook_location.x}, ${hook_location.z}" to player
+    on_fish_bite() {
+        send "something bit nearby" to this
     }
-}
 
-event PlayerCatchFish {
-    execute {
-        if event.caught_mob exists {
-            send "a creature emerges..." to player
-            halt
-        }
-        if event.caught_item exists {
-            send "you caught ${event.caught_item.name}!" to player
-            set event.caught_item to item("SALMON")
-        }
+    on_catch_fish() {
+        send "a creature emerges..." to this
     }
-}
 
-event PlayerReelIn {
-    execute {
-        send "reeled in" to player
+    on_reel_in() {
+        send "reeled in" to this
     }
 }

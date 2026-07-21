@@ -5,106 +5,48 @@
   "events": [
     {
       "line": 8,
-      "col": 1,
+      "col": 5,
       "name": "EntityDamage",
+      "receiver": "Entity",
       "priority": 0,
+      "params": [ "attacker" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 10,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 10,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "damage",
-            "value": {
-              "line": 10,
-              "col": 35,
-              "kind": "binary",
-              "op": "MULTIPLY",
-              "left": {
-                "line": 10,
-                "col": 35,
-                "kind": "prop",
-                "target": {
-                  "line": 10,
-                  "col": 29,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "damage"
-              },
-              "right": {
-                "line": 10,
-                "col": 44,
-                "kind": "number",
-                "value": 2.0,
-                "integer": false
-              }
-            }
-          },
-          {
-            "line": 11,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 11,
-              "col": 14,
-              "kind": "string",
-              "value": "${event.entity} took ${event.damage} (${event.damage_type})"
-            },
-            "target": {
-              "line": 11,
-              "col": 79,
-              "kind": "string",
-              "value": "all"
-            }
-          },
-          {
-            "line": 12,
+            "line": 9,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 12,
-              "col": 18,
+              "line": 9,
+              "col": 12,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
-                "line": 12,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 12,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
+                "line": 9,
+                "col": 12,
+                "kind": "var",
                 "name": "attacker"
               }
             },
             "then": {
-              "line": 12,
-              "col": 34,
+              "line": 9,
+              "col": 28,
               "kind": "block",
               "statements": [
                 {
-                  "line": 13,
+                  "line": 10,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 13,
+                    "line": 10,
                     "col": 18,
                     "kind": "string",
-                    "value": "attacker: ${event.attacker}"
+                    "value": "attacker: ${attacker}"
                   },
                   "target": {
-                    "line": 13,
-                    "col": 51,
+                    "line": 10,
+                    "col": 45,
                     "kind": "string",
                     "value": "all"
                   }
@@ -112,306 +54,182 @@
               ]
             },
             "else": null
-          },
+          }
+        ]
+      }
+    },
+    {
+      "line": 15,
+      "col": 5,
+      "name": "EntityAttack",
+      "receiver": "Entity",
+      "priority": 0,
+      "params": [ "target" ],
+      "execute": {
+        "async": false,
+        "statements": [
           {
-            "line": 15,
+            "line": 16,
             "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 15,
-              "col": 18,
-              "kind": "binary",
-              "op": "GREATER_THAN",
-              "left": {
-                "line": 15,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 15,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "damage"
-              },
-              "right": {
-                "line": 15,
-                "col": 27,
-                "kind": "number",
-                "value": 100.0,
-                "integer": false
-              }
+            "kind": "send",
+            "message": {
+              "line": 16,
+              "col": 14,
+              "kind": "string",
+              "value": "${this} hit ${target}"
             },
-            "then": {
-              "line": 15,
-              "col": 33,
-              "kind": "block",
-              "statements": [
-                { "line": 16, "col": 13, "kind": "cancel_event" }
-              ]
-            },
-            "else": null
+            "target": {
+              "line": 16,
+              "col": 41,
+              "kind": "string",
+              "value": "all"
+            }
           }
         ]
       }
     },
     {
       "line": 21,
-      "col": 1,
+      "col": 5,
       "name": "PlayerMove",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "new_position" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 23,
+            "line": 22,
             "col": 9,
-            "kind": "if",
-            "condition": {
-              "line": 23,
-              "col": 18,
+            "kind": "assign",
+            "target": "new_position",
+            "value": {
+              "line": 22,
+              "col": 34,
               "kind": "prop",
               "target": {
-                "line": 23,
-                "col": 12,
+                "line": 22,
+                "col": 29,
                 "kind": "var",
-                "name": "event"
+                "name": "this"
               },
-              "name": "on_ground"
-            },
-            "then": {
-              "line": 23,
-              "col": 28,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 24,
-                  "col": 23,
-                  "kind": "set_prop",
-                  "target": {
-                    "line": 24,
-                    "col": 17,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "new_position",
-                  "value": {
-                    "line": 24,
-                    "col": 52,
-                    "kind": "prop",
-                    "target": {
-                      "line": 24,
-                      "col": 45,
-                      "kind": "prop",
-                      "target": {
-                        "line": 24,
-                        "col": 39,
-                        "kind": "var",
-                        "name": "event"
-                      },
-                      "name": "player"
-                    },
-                    "name": "location"
-                  }
-                }
-              ]
-            },
-            "else": null
+              "name": "location"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 25,
+      "col": 5,
+      "name": "PlayerDeath",
+      "receiver": "Player",
+      "priority": 0,
+      "params": [ "death_text", "chat_message" ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "assign",
+            "target": "death_text",
+            "value": {
+              "line": 26,
+              "col": 27,
+              "kind": "string",
+              "value": "<red>${this.name} was slain"
+            }
           }
         ]
       }
     },
     {
       "line": 29,
-      "col": 1,
-      "name": "PlayerDeath",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 31,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 31,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "death_text",
-            "value": {
-              "line": 31,
-              "col": 33,
-              "kind": "string",
-              "value": "<red>${event.player.name} was slain"
-            }
-          },
-          {
-            "line": 32,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 32,
-              "col": 14,
-              "kind": "string",
-              "value": "died in ${event.world}"
-            },
-            "target": {
-              "line": 32,
-              "col": 42,
-              "kind": "string",
-              "value": "all"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "line": 36,
-      "col": 1,
+      "col": 5,
       "name": "PlayerGameModeChange",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "new_game_mode" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 38,
+            "line": 30,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 38,
+              "line": 30,
               "col": 14,
               "kind": "string",
-              "value": "${event.player.name} -> ${event.new_game_mode}"
+              "value": "${this.name} -> ${new_game_mode}"
             },
             "target": {
-              "line": 38,
-              "col": 72,
-              "kind": "prop",
-              "target": {
-                "line": 38,
-                "col": 66,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "line": 42,
-      "col": 1,
-      "name": "EntityAttack",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 44,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 44,
-              "col": 14,
-              "kind": "string",
-              "value": "${event.entity} hit ${event.target}"
-            },
-            "target": {
-              "line": 44,
-              "col": 55,
-              "kind": "string",
-              "value": "all"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "line": 48,
-      "col": 1,
-      "name": "PlayerUseItemEvent",
-      "priority": 0,
-      "execute": {
-        "async": false,
-        "statements": [
-          {
-            "line": 50,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 50,
-              "col": 13,
+              "line": 30,
+              "col": 52,
               "kind": "var",
-              "name": "event"
-            },
-            "name": "item_use_time",
-            "value": {
-              "line": 50,
-              "col": 36,
-              "kind": "number",
-              "value": 100,
-              "integer": true
+              "name": "this"
             }
-          },
-          {
-            "line": 51,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 51,
-              "col": 14,
-              "kind": "string",
-              "value": "using ${event.item_stack} in ${event.hand}"
-            },
-            "target": {
-              "line": 51,
-              "col": 68,
-              "kind": "prop",
-              "target": {
-                "line": 51,
-                "col": 62,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
-            }
-          },
-          { "line": 52, "col": 9, "kind": "cancel_event" }
+          }
         ]
       }
     },
     {
-      "line": 56,
-      "col": 1,
-      "name": "PlayerBlockInteract",
+      "line": 33,
+      "col": 5,
+      "name": "PlayerUseItemEvent",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "item", "hand" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 58,
+            "line": 34,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 58,
+              "line": 34,
               "col": 14,
               "kind": "string",
-              "value": "clicked ${event.block} face ${event.block_face} at ${event.location.block_y}"
+              "value": "using ${item} in ${hand}"
             },
             "target": {
-              "line": 58,
-              "col": 102,
-              "kind": "prop",
-              "target": {
-                "line": 58,
-                "col": 96,
-                "kind": "var",
-                "name": "event"
-              },
-              "name": "player"
+              "line": 34,
+              "col": 44,
+              "kind": "var",
+              "name": "this"
+            }
+          },
+          { "line": 35, "col": 9, "kind": "cancel_event" }
+        ]
+      }
+    },
+    {
+      "line": 38,
+      "col": 5,
+      "name": "PlayerBlockInteract",
+      "receiver": "Player",
+      "priority": 0,
+      "params": [ "block", "location", "face", "hand" ],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 39,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 39,
+              "col": 14,
+              "kind": "string",
+              "value": "clicked ${block} face ${face} at ${location.block_y}"
+            },
+            "target": {
+              "line": 39,
+              "col": 72,
+              "kind": "var",
+              "name": "this"
             }
           }
         ]

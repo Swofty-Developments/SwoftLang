@@ -246,10 +246,12 @@
   ],
   "events": [
     {
-      "line": 6,
-      "col": 1,
+      "line": 7,
+      "col": 5,
       "name": "PlayerCommand",
+      "receiver": "Player",
       "priority": 0,
+      "params": [ "cmd" ],
       "execute": {
         "async": false,
         "statements": [
@@ -262,22 +264,17 @@
               "col": 12,
               "kind": "binary",
               "op": "CONTAINS",
-              "left": {
-                "line": 8,
-                "col": 12,
-                "kind": "var",
-                "name": "command"
-              },
+              "left": { "line": 8, "col": 12, "kind": "var", "name": "cmd" },
               "right": {
                 "line": 8,
-                "col": 29,
+                "col": 25,
                 "kind": "string",
                 "value": "stop"
               }
             },
             "then": {
               "line": 8,
-              "col": 36,
+              "col": 32,
               "kind": "block",
               "statements": [
                 {
@@ -294,7 +291,7 @@
                     "line": 9,
                     "col": 47,
                     "kind": "var",
-                    "name": "player"
+                    "name": "this"
                   }
                 },
                 { "line": 10, "col": 13, "kind": "cancel_event" }
@@ -304,33 +301,16 @@
           },
           {
             "line": 13,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 13,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "command",
+            "col": 9,
+            "kind": "assign",
+            "target": "cmd",
             "value": {
               "line": 13,
-              "col": 30,
+              "col": 20,
               "kind": "call",
               "name": "lowercase",
               "args": [
-                {
-                  "line": 13,
-                  "col": 46,
-                  "kind": "prop",
-                  "target": {
-                    "line": 13,
-                    "col": 40,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "command"
-                }
+                { "line": 13, "col": 30, "kind": "var", "name": "cmd" }
               ]
             }
           }

@@ -32,6 +32,7 @@ let make_ctx file =
     mod_vars = Hashtbl.create 8;
     import_privates = Hashtbl.create 8;
     cur_mob_tags = [];
+    cur_packet_fields = None;
   }
 
 (* Collect every named-schedule name declared in a script: top-level
@@ -368,7 +369,6 @@ let collect_sched_names (script : Ast.script) : string list =
     script.schedulers;
   List.iter (fun (f : func) -> List.iter ws f.body) script.functions;
   List.iter (fun (c : command) -> exec c.execute) script.commands;
-  List.iter (fun (ev : event) -> exec ev.ev_execute) script.events;
   List.iter (fun (mv : module_var) -> we mv.mv_value) script.module_vars;
   List.iter (fun (pk : packet_listener) -> exec pk.pk_execute) script.packet_listeners;
   List.iter (fun (a : api_decl) -> exec a.api_execute) script.apis;
@@ -421,6 +421,7 @@ let collect_sched_names (script : Ast.script) : string list =
     (fun (pr : placement_rule_decl) ->
       List.iter (fun (cb : block_cb) -> List.iter ws cb.cb_body) pr.pr_callbacks)
     script.placement_rules;
+  List.iter (fun (r : receiver_decl) -> scan_handlers r.rc_methods) script.receivers;
   !names
 
 (* UI + scheduler declaration names are unit-global (unique across the
@@ -515,7 +516,7 @@ let check_initializer_calls ctx own_fns (mv : module_var) =
    initializer (checked in declaration order, so later initializers see
    earlier vars), private to the module, non-persistent. *)
 let check_module_vars ctx (script : Ast.script) =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let own_fns = Hashtbl.create 8 in
   List.iter (fun f -> Hashtbl.replace own_fns f.fn_name ()) script.functions;
   List.iter
@@ -547,7 +548,6 @@ let check_module_body ctx (script : Ast.script) =
   check_storages ctx script.storages;
   List.iter (check_function ctx) script.functions;
   List.iter (check_command ctx) script.commands;
-  List.iter (check_event ctx) script.events;
   List.iter (check_gui ctx) script.guis;
   List.iter (check_scoreboard ctx) script.scoreboards;
   List.iter (check_tablist ctx) script.tablists;
@@ -562,6 +562,7 @@ let check_module_body ctx (script : Ast.script) =
   check_fishing_loots ctx script.fishing_loots;
   check_block_handlers ctx script.block_handlers;
   check_placement_rules ctx script.placement_rules;
+  check_receivers ctx script.receivers;
   check_servers ctx script.servers
 
 let dedupe errors =

@@ -1244,76 +1244,48 @@
   ],
   "events": [
     {
-      "line": 95,
-      "col": 1,
+      "line": 96,
+      "col": 5,
       "name": "PlayerChat",
-      "priority": 2,
+      "receiver": "Player",
+      "priority": 0,
+      "params": [ "message" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 99,
+            "line": 97,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 99,
-              "col": 18,
+              "line": 97,
+              "col": 12,
               "kind": "binary",
-              "op": "AND",
+              "op": "CONTAINS",
               "left": {
-                "line": 99,
-                "col": 18,
-                "kind": "binary",
-                "op": "CONTAINS",
-                "left": {
-                  "line": 99,
-                  "col": 18,
-                  "kind": "prop",
-                  "target": {
-                    "line": 99,
-                    "col": 12,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "message"
-                },
-                "right": {
-                  "line": 99,
-                  "col": 35,
-                  "kind": "string",
-                  "value": "badword"
-                }
+                "line": 97,
+                "col": 12,
+                "kind": "var",
+                "name": "message"
               },
               "right": {
-                "line": 99,
-                "col": 49,
-                "kind": "unary",
-                "op": "NOT",
-                "operand": {
-                  "line": 99,
-                  "col": 59,
-                  "kind": "prop",
-                  "target": {
-                    "line": 99,
-                    "col": 53,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "cancelled"
-                }
+                "line": 97,
+                "col": 29,
+                "kind": "string",
+                "value": "badword"
               }
             },
             "then": {
-              "line": 99,
-              "col": 69,
+              "line": 97,
+              "col": 39,
               "kind": "block",
               "statements": [
-                { "line": 100, "col": 13, "kind": "cancel_event" }
+                { "line": 98, "col": 13, "kind": "cancel_event" }
               ]
             },
             "else": null
           },
-          { "line": 102, "col": 9, "kind": "return", "value": null }
+          { "line": 100, "col": 9, "kind": "return", "value": null }
         ]
       }
     }

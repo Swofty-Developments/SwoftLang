@@ -228,102 +228,24 @@
   ],
   "events": [
     {
-      "line": 46,
-      "col": 1,
+      "line": 47,
+      "col": 5,
       "name": "MobDamage",
+      "receiver": "Mob",
       "priority": 0,
+      "params": [ "attacker" ],
       "execute": {
         "async": false,
         "statements": [
           {
             "line": 48,
             "col": 9,
-            "kind": "if",
-            "condition": {
+            "kind": "broadcast",
+            "message": {
               "line": 48,
-              "col": 18,
-              "kind": "unary",
-              "op": "EXISTS",
-              "operand": {
-                "line": 48,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 48,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "attacker"
-              }
-            },
-            "then": {
-              "line": 48,
-              "col": 34,
-              "kind": "block",
-              "statements": [
-                {
-                  "line": 49,
-                  "col": 13,
-                  "kind": "send",
-                  "message": {
-                    "line": 49,
-                    "col": 18,
-                    "kind": "string",
-                    "value": "attacked by ${event.attacker.name}"
-                  },
-                  "target": {
-                    "line": 49,
-                    "col": 64,
-                    "kind": "prop",
-                    "target": {
-                      "line": 49,
-                      "col": 58,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "attacker"
-                  }
-                }
-              ]
-            },
-            "else": null
-          },
-          {
-            "line": 51,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 51,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "damage",
-            "value": {
-              "line": 51,
-              "col": 35,
-              "kind": "binary",
-              "op": "DIVIDE",
-              "left": {
-                "line": 51,
-                "col": 35,
-                "kind": "prop",
-                "target": {
-                  "line": 51,
-                  "col": 29,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "damage"
-              },
-              "right": {
-                "line": 51,
-                "col": 44,
-                "kind": "number",
-                "value": 2,
-                "integer": true
-              }
+              "col": 19,
+              "kind": "string",
+              "value": "${this.type} attacked by ${attacker}"
             }
           }
         ]

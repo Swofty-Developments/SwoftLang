@@ -1,8 +1,8 @@
 // design 5D: nested record objects inside packet field LISTS (the
 // PlayerInfoUpdatePacket entries/properties shape) and explicit 'none'
 // for nullable packet components (displayName, chatSession)
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         send packet "PlayerInfoUpdatePacket" {
             actions: ["ADD_PLAYER", "UPDATE_LISTED"],
             entries: [{
@@ -16,6 +16,6 @@ event PlayerJoin {
                 chatSession: none,
                 listOrder: 0
             }]
-        } to event.player
+        } to this
     }
 }

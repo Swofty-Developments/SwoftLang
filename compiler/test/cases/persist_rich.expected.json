@@ -54,10 +54,12 @@
   ],
   "events": [
     {
-      "line": 17,
-      "col": 1,
+      "line": 18,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -70,17 +72,17 @@
               "line": 19,
               "col": 22,
               "kind": "var",
-              "name": "player"
+              "name": "this"
             },
             "value": {
               "line": 19,
-              "col": 39,
+              "col": 35,
               "kind": "prop",
               "target": {
                 "line": 19,
-                "col": 32,
+                "col": 30,
                 "kind": "var",
-                "name": "player"
+                "name": "this"
               },
               "name": "location"
             }
@@ -94,17 +96,17 @@
               "line": 20,
               "col": 25,
               "kind": "var",
-              "name": "player"
+              "name": "this"
             },
             "value": {
               "line": 20,
-              "col": 35,
+              "col": 33,
               "kind": "call",
               "name": "item",
               "args": [
                 {
                   "line": 20,
-                  "col": 40,
+                  "col": 38,
                   "kind": "string",
                   "value": "compass"
                 }

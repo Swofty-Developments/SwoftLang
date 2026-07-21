@@ -1,1 +1,0 @@
-generic_cancel_noncancellable.sw:3:9: error: event 'PlayerJoin' is not cancellable

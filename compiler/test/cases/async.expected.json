@@ -265,10 +265,12 @@
   ],
   "events": [
     {
-      "line": 32,
-      "col": 1,
+      "line": 33,
+      "col": 5,
       "name": "PlayerJoin",
+      "receiver": "Player",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -280,11 +282,11 @@
               "line": 34,
               "col": 14,
               "kind": "string",
-              "value": "<green>Welcome ${event.player.name}!"
+              "value": "<green>Welcome ${this.name}!"
             },
             "target": {
               "line": 34,
-              "col": 56,
+              "col": 48,
               "kind": "string",
               "value": "all"
             }
@@ -296,21 +298,10 @@
             "call": {
               "name": "greet_later",
               "args": [
+                { "line": 35, "col": 27, "kind": "var", "name": "this" },
                 {
                   "line": 35,
                   "col": 33,
-                  "kind": "prop",
-                  "target": {
-                    "line": 35,
-                    "col": 27,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
-                },
-                {
-                  "line": 35,
-                  "col": 41,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -338,36 +329,24 @@
               },
               {
                 "line": 38,
-                "col": 30,
+                "col": 22,
                 "kind": "set_prop",
                 "target": {
                   "line": 38,
-                  "col": 23,
-                  "kind": "prop",
-                  "target": {
-                    "line": 38,
-                    "col": 17,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
+                  "col": 17,
+                  "kind": "var",
+                  "name": "this"
                 },
                 "name": "health",
                 "value": {
                   "line": 38,
-                  "col": 53,
+                  "col": 37,
                   "kind": "prop",
                   "target": {
                     "line": 38,
-                    "col": 46,
-                    "kind": "prop",
-                    "target": {
-                      "line": 38,
-                      "col": 40,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "player"
+                    "col": 32,
+                    "kind": "var",
+                    "name": "this"
                   },
                   "name": "max_health"
                 }
@@ -384,15 +363,9 @@
                 },
                 "target": {
                   "line": 39,
-                  "col": 37,
-                  "kind": "prop",
-                  "target": {
-                    "line": 39,
-                    "col": 31,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "player"
+                  "col": 31,
+                  "kind": "var",
+                  "name": "this"
                 }
               }
             ]

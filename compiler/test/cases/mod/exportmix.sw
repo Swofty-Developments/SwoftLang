@@ -1,4 +1,4 @@
-// commands and events carry no 'export' - they always register when the
+// commands and receivers carry no 'export' - they always register when the
 // module is imported (they are effects, not symbols)
 command "mixcmd" {
     execute {
@@ -6,9 +6,9 @@ command "mixcmd" {
     }
 }
 
-event PlayerJoin {
-    execute {
-        send "module says hi" to player
+Player {
+    on_join() {
+        send "module says hi" to this
     }
 }
 

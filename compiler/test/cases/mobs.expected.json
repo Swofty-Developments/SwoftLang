@@ -161,10 +161,12 @@
   ],
   "events": [
     {
-      "line": 56,
-      "col": 1,
+      "line": 57,
+      "col": 5,
       "name": "MobSpawn",
+      "receiver": "Mob",
       "priority": 0,
+      "params": [],
       "execute": {
         "async": false,
         "statements": [
@@ -176,68 +178,52 @@
               "line": 58,
               "col": 19,
               "kind": "string",
-              "value": "spawned: ${event.mob.type}"
+              "value": "spawned: ${this.type}"
             }
           }
         ]
       }
     },
     {
-      "line": 62,
-      "col": 1,
+      "line": 61,
+      "col": 5,
       "name": "MobDeath",
+      "receiver": "Mob",
       "priority": 0,
+      "params": [ "killer" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 64,
+            "line": 62,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 64,
-              "col": 18,
+              "line": 62,
+              "col": 12,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
-                "line": 64,
-                "col": 18,
-                "kind": "prop",
-                "target": {
-                  "line": 64,
-                  "col": 12,
-                  "kind": "var",
-                  "name": "event"
-                },
+                "line": 62,
+                "col": 12,
+                "kind": "var",
                 "name": "killer"
               }
             },
             "then": {
-              "line": 64,
-              "col": 32,
+              "line": 62,
+              "col": 26,
               "kind": "block",
               "statements": [
                 {
-                  "line": 65,
+                  "line": 63,
                   "col": 13,
-                  "kind": "send",
+                  "kind": "broadcast",
                   "message": {
-                    "line": 65,
-                    "col": 18,
+                    "line": 63,
+                    "col": 23,
                     "kind": "string",
                     "value": "<gold>Kill credit!"
-                  },
-                  "target": {
-                    "line": 65,
-                    "col": 48,
-                    "kind": "prop",
-                    "target": {
-                      "line": 65,
-                      "col": 42,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "killer"
                   }
                 }
               ]
@@ -248,91 +234,60 @@
       }
     },
     {
-      "line": 70,
-      "col": 1,
+      "line": 67,
+      "col": 5,
       "name": "MobDamage",
+      "receiver": "Mob",
       "priority": 0,
+      "params": [ "attacker" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 72,
-            "col": 19,
-            "kind": "set_prop",
-            "target": {
-              "line": 72,
-              "col": 13,
-              "kind": "var",
-              "name": "event"
-            },
-            "name": "damage",
-            "value": {
-              "line": 72,
-              "col": 35,
-              "kind": "binary",
-              "op": "MULTIPLY",
-              "left": {
-                "line": 72,
-                "col": 35,
-                "kind": "prop",
-                "target": {
-                  "line": 72,
-                  "col": 29,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "damage"
-              },
-              "right": {
-                "line": 72,
-                "col": 44,
-                "kind": "number",
-                "value": 2,
-                "integer": true
-              }
-            }
-          },
-          {
-            "line": 73,
+            "line": 68,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 73,
-              "col": 22,
+              "line": 68,
+              "col": 17,
               "kind": "binary",
               "op": "LESS_THAN",
               "left": {
-                "line": 73,
-                "col": 22,
+                "line": 68,
+                "col": 17,
                 "kind": "prop",
                 "target": {
-                  "line": 73,
-                  "col": 18,
-                  "kind": "prop",
-                  "target": {
-                    "line": 73,
-                    "col": 12,
-                    "kind": "var",
-                    "name": "event"
-                  },
-                  "name": "mob"
+                  "line": 68,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "this"
                 },
                 "name": "health"
               },
               "right": {
-                "line": 73,
-                "col": 31,
+                "line": 68,
+                "col": 26,
                 "kind": "number",
                 "value": 10,
                 "integer": true
               }
             },
             "then": {
-              "line": 73,
-              "col": 34,
+              "line": 68,
+              "col": 29,
               "kind": "block",
               "statements": [
-                { "line": 74, "col": 13, "kind": "cancel_event" }
+                {
+                  "line": 69,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 69,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "<red>the mob is low"
+                  }
+                }
               ]
             },
             "else": null

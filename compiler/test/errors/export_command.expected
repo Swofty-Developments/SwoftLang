@@ -1,1 +1,1 @@
-commands and events always register when their module is imported
+commands always register when their module is imported

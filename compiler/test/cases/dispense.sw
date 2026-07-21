@@ -9,17 +9,10 @@ command "fire" {
     }
 }
 
-event BlockDispense {
-    execute {
-        set facing to direction
-        // droppers never launch projectiles: cancel and handle manually
-        if block is "minecraft:dropper" {
-            cancel event
-        }
-        // swap or inspect what comes out
-        if event.item exists {
-            broadcast "dispensed ${event.item.name} at ${location.block_x}, ${location.block_z}"
-        }
-        set event.item to item("ARROW")
+Block {
+    on_dispense(item, direction) {
+        // inspect what comes out, then veto the vanilla dispense
+        broadcast "dispensed ${item.name} facing ${direction}"
+        cancel event
     }
 }

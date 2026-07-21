@@ -43,11 +43,8 @@ command "guard" {
     }
 }
 
-event MobDamage {
-    execute {
-        if event.attacker exists {
-            send "attacked by ${event.attacker.name}" to event.attacker
-        }
-        set event.damage to event.damage / 2
+Mob {
+    on_hit(attacker) {
+        broadcast "${this.type} attacked by ${attacker}"
     }
 }

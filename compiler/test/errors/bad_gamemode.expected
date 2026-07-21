@@ -1,1 +1,1 @@
-bad_gamemode.sw:3:38: error: invalid gamemode 'creative_plus'; valid values: survival, creative, adventure, spectator
+invalid gamemode 'creative_plus'; valid values: survival, creative, adventure, spectator

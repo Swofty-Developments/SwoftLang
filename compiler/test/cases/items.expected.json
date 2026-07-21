@@ -86,10 +86,12 @@
   ],
   "events": [
     {
-      "line": 62,
-      "col": 1,
+      "line": 63,
+      "col": 5,
       "name": "PlayerUseItem",
+      "receiver": "Item",
       "priority": 0,
+      "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
@@ -108,34 +110,23 @@
                 "kind": "call",
                 "name": "custom_id",
                 "args": [
-                  {
-                    "line": 64,
-                    "col": 28,
-                    "kind": "prop",
-                    "target": {
-                      "line": 64,
-                      "col": 22,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "item"
-                  }
+                  { "line": 64, "col": 22, "kind": "var", "name": "this" }
                 ]
               },
               "right": {
                 "line": 64,
-                "col": 44,
+                "col": 38,
                 "kind": "binary",
                 "op": "EQUALS",
                 "left": {
                   "line": 64,
-                  "col": 44,
+                  "col": 38,
                   "kind": "string",
                   "value": ""
                 },
                 "right": {
                   "line": 64,
-                  "col": 50,
+                  "col": 44,
                   "kind": "string",
                   "value": "aspect_of_the_end"
                 }
@@ -143,7 +134,7 @@
             },
             "then": {
               "line": 64,
-              "col": 70,
+              "col": 64,
               "kind": "block",
               "statements": [
                 {
@@ -158,14 +149,8 @@
                   },
                   "target": {
                     "line": 65,
-                    "col": 56,
-                    "kind": "prop",
-                    "target": {
-                      "line": 65,
-                      "col": 50,
-                      "kind": "var",
-                      "name": "event"
-                    },
+                    "col": 50,
+                    "kind": "var",
                     "name": "player"
                   }
                 },

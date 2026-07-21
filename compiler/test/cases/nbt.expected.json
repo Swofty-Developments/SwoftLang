@@ -247,10 +247,12 @@
   ],
   "events": [
     {
-      "line": 40,
-      "col": 1,
+      "line": 41,
+      "col": 5,
       "name": "PlayerUseItem",
+      "receiver": "Item",
       "priority": 0,
+      "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
@@ -260,28 +262,22 @@
             "kind": "if",
             "condition": {
               "line": 43,
-              "col": 28,
+              "col": 22,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
                 "line": 43,
-                "col": 28,
+                "col": 22,
                 "kind": "prop",
                 "target": {
                   "line": 43,
-                  "col": 23,
+                  "col": 17,
                   "kind": "prop",
                   "target": {
                     "line": 43,
-                    "col": 18,
-                    "kind": "prop",
-                    "target": {
-                      "line": 43,
-                      "col": 12,
-                      "kind": "var",
-                      "name": "event"
-                    },
-                    "name": "item"
+                    "col": 12,
+                    "kind": "var",
+                    "name": "this"
                   },
                   "name": "tags"
                 },
@@ -290,7 +286,7 @@
             },
             "then": {
               "line": 43,
-              "col": 45,
+              "col": 39,
               "kind": "block",
               "statements": [
                 {
@@ -305,14 +301,8 @@
                   },
                   "target": {
                     "line": 44,
-                    "col": 46,
-                    "kind": "prop",
-                    "target": {
-                      "line": 44,
-                      "col": 40,
-                      "kind": "var",
-                      "name": "event"
-                    },
+                    "col": 40,
+                    "kind": "var",
                     "name": "player"
                   }
                 }
@@ -322,56 +312,44 @@
           },
           {
             "line": 46,
-            "col": 29,
+            "col": 23,
             "kind": "set_prop",
             "target": {
               "line": 46,
-              "col": 24,
+              "col": 18,
               "kind": "prop",
               "target": {
                 "line": 46,
-                "col": 19,
-                "kind": "prop",
-                "target": {
-                  "line": 46,
-                  "col": 13,
-                  "kind": "var",
-                  "name": "event"
-                },
-                "name": "item"
+                "col": 13,
+                "kind": "var",
+                "name": "this"
               },
               "name": "tags"
             },
             "name": "uses",
             "value": {
               "line": 46,
-              "col": 54,
+              "col": 42,
               "kind": "binary",
               "op": "ADD",
               "left": {
                 "line": 46,
-                "col": 54,
+                "col": 42,
                 "kind": "binary",
                 "op": "OR_ELSE",
                 "left": {
                   "line": 46,
-                  "col": 54,
+                  "col": 42,
                   "kind": "prop",
                   "target": {
                     "line": 46,
-                    "col": 49,
+                    "col": 37,
                     "kind": "prop",
                     "target": {
                       "line": 46,
-                      "col": 44,
-                      "kind": "prop",
-                      "target": {
-                        "line": 46,
-                        "col": 38,
-                        "kind": "var",
-                        "name": "event"
-                      },
-                      "name": "item"
+                      "col": 32,
+                      "kind": "var",
+                      "name": "this"
                     },
                     "name": "tags"
                   },
@@ -379,7 +357,7 @@
                 },
                 "right": {
                   "line": 46,
-                  "col": 69,
+                  "col": 57,
                   "kind": "number",
                   "value": 0,
                   "integer": true
@@ -387,7 +365,7 @@
               },
               "right": {
                 "line": 46,
-                "col": 74,
+                "col": 62,
                 "kind": "number",
                 "value": 1,
                 "integer": true

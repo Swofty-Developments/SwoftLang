@@ -37,6 +37,10 @@ type body_ctx = {
   (* inside an every/schedule/repeat body: 'stop' becomes legal and the 'run'
      counter is in scope (scheduler v2) *)
   in_schedule : bool;
+  (* inside a lowercase custom-declaration handler that OVERRIDES a base
+     receiver method: carries the base method's signature so `default()` and
+     `super.<method>(...)` can invoke the base. None everywhere else. *)
+  override : Registry.handler_sig option;
 }
 
 type pinfo = {
@@ -81,6 +85,11 @@ type ctx = {
      mob.tags.<declared> resolves to its declared type (indexable maps/lists);
      empty everywhere else, where mob.tags.<key> stays freeform optional<Any>. *)
   mutable cur_mob_tags : (string * ty) list;
+  (* inside a `Packet { on "Class" { } }` handler body: the packet's display
+     class name (the `on "..."` spelling) and its typed fields, so `packet.<field>`
+     resolves to the field's real type and an unknown field errors with the valid
+     set. None everywhere else, where `packet` stays an opaque Any value. *)
+  mutable cur_packet_fields : (string * (string * ty) list) option;
 }
 
 let err ctx (pos : pos) fmt =

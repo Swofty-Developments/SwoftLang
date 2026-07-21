@@ -1,1 +1,1 @@
-errors/bad_else.sw:5:16: error: Unexpected number '42' at start of statement
+Unexpected number '42' at start of statement

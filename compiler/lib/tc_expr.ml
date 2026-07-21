@@ -138,7 +138,7 @@ let rec type_of ctx bctx env e : ty =
        snapshot of the variables, so narrowing facts are dropped and the
        body is async-colored. 'stop' is legal and the 1-based 'run' counter
        is in scope (scheduler v2) *)
-    let bctx' = { bctx with color = Async; ret_sink = None; in_schedule = true } in
+    let bctx' = { bctx with color = Async; ret_sink = None; in_schedule = true; override = None } in
     let env' = bind { env with facts = SM.empty } "run" TInteger in
     ignore (!check_stmts_ref ctx bctx' env' sc_body);
     TSchedule
@@ -209,6 +209,20 @@ and prop_type ctx bctx env whole target name =
       | None ->
         err ctx whole.epos "unknown argument '%s'%s" name
           (suggestion name (List.map fst args));
+        TAny)
+    (* `packet.<field>` inside a Packet handler: type the field against the
+       resolved packet class's catalog. An unknown field errors with the valid
+       set (mirroring block/property validation). The handler forbids user
+       rebinding of `packet`, so this fires whenever we are in a Packet body. *)
+    | EVar "packet", _ when ctx.cur_packet_fields <> None -> (
+      let cls, fields =
+        match ctx.cur_packet_fields with Some (c, f) -> (c, f) | None -> ("", [])
+      in
+      match List.assoc_opt name fields with
+      | Some t -> t
+      | None ->
+        err ctx whole.epos "unknown field '%s' on packet %s%s" name cls
+          (suggestion name (List.map fst fields));
         TAny)
     | _ when inside_tags ctx bctx env target ->
       (* item.tags.<path...>: a tag namespace is freely traversable — an
@@ -411,6 +425,22 @@ and lambda_type ctx bctx env lam_async lam_params lam_body =
 (* resolution order: a local variable holding a callable, then declared
    functions, then builtins *)
 and call_type ctx bctx env pos name args =
+  if name = "default" then begin
+    (* default() re-runs the base receiver method this handler overrides, with
+       the same `this`/args; legal only inside an overriding custom-decl method *)
+    (match bctx.override with
+    | None ->
+      err ctx pos
+        "'default()' is only valid inside a custom declaration method that overrides a base \
+         receiver method"
+    | Some _ ->
+      if args <> [] then
+        err ctx pos
+          "'default()' takes no arguments; it re-invokes the base method with the same arguments");
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TAny
+  end
+  else
   let looked = callee_var_type env name in
   match looked with
   | Some (TFunction f) ->
@@ -991,6 +1021,30 @@ and check_block_method ctx bctx env pos recv name args ~as_stmt : ty =
     | _ -> TAny))
 
 and check_method ctx bctx env pos recv name args ~as_stmt : ty =
+  match recv.e with
+  | EVar "super" ->
+    (* super.<method>(args) invokes the base receiver method this custom-decl
+       handler overrides; legal only inside an overriding method, and only for
+       the overridden method name, with args matching the base signature *)
+    (match bctx.override with
+    | None ->
+      err ctx pos
+        "'super' is only valid inside a custom declaration method that overrides a base \
+         receiver method";
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args
+    | Some sg ->
+      if name <> sg.h_event then
+        err ctx pos
+          "'super.%s' does not match the overridden method '%s'; a super call may only invoke \
+           the base method being overridden"
+          name sg.h_event;
+      let want = List.length sg.h_params in
+      let got = List.length args in
+      if want <> got then
+        err ctx pos "'super.%s' expects %d argument(s), got %d" sg.h_event want got;
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
+    TAny
+  | _ ->
   let rt = type_of ctx bctx env recv in
   require_present ctx env recv rt ~use:"the method receiver";
   if unwrap rt = TBlock then check_block_method ctx bctx env pos recv name args ~as_stmt

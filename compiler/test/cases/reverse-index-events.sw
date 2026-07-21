@@ -1,28 +1,21 @@
-// A0.1 reverse index: the catalog short name and the simple class name of an
-// engine event wrapped by a (possibly renamed) curated event both collapse to
-// the SAME typed curated rows, and the handler emits the curated identifier
-// the runtime binds by (EventType.fromIdentifier).
+// Reverse index: a receiver method carries the curated identifier the runtime
+// binds by (EventType.fromIdentifier). on_break_block/on_place_block emit the
+// curated "BlockBreak"/"BlockPlace" names, on_list_ping the "ServerPing" name.
 
-// catalog name 'PlayerBlockBreak' -> typed BlockBreak rows, emits "BlockBreak"
-event PlayerBlockBreak {
-    execute {
-        send "broke ${event.block} at ${event.location.block_x}" to event.player
+Player {
+    on_break_block(block, location, face) {
+        send "broke ${block} at ${location.block_x}" to this
+        cancel event
+    }
+
+    on_place_block(block, location, face, hand) {
+        send "placed ${block}" to this
         cancel event
     }
 }
 
-// simple class name 'PlayerBlockPlaceEvent' -> typed BlockPlace rows, emits "BlockPlace"
-event PlayerBlockPlaceEvent {
-    execute {
-        send "placed ${event.block}" to event.player
-        cancel event
-    }
-}
-
-// simple class name 'ServerListPingEvent' -> typed ServerPing rows, emits "ServerPing"
-event ServerListPingEvent {
-    execute {
-        set event.motd to "typed motd"
-        set event.max to 100
+Server {
+    on_list_ping(status) {
+        broadcast "pinged"
     }
 }

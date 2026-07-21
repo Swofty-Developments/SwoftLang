@@ -1,5 +1,5 @@
-event PlayerChat {
-    execute {
+Player {
+    on_chat(message) {
         cancel packet
     }
 }

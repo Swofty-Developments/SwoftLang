@@ -1,60 +1,41 @@
-// W-events: typed engine event catalog (design A1/A2). Every event.<prop>
-// below typechecks to a real type; settable props are writable, others are
-// read-only; 'cancel event' is legal only on cancellable events.
+// W-events: typed engine events reached through OOP receiver methods. Each
+// method binds `this` to the receiver instance and its user binders to the
+// event's typed args; settable args are writable, `cancel event` is legal only
+// inside a cancellable method.
 
-// EntityDamage — the highest-value typed event. Attack-veto goes through here
-// (EntityAttackEvent is not cancellable): read the victim, scale the damage,
-// inspect the source, veto lethal hits.
-event EntityDamage {
-    execute {
-        set event.damage to event.damage * 2.0
-        send "${event.entity} took ${event.damage} (${event.damage_type})" to all
-        if event.attacker exists {
-            send "attacker: ${event.attacker}" to all
-        }
-        if event.damage > 100.0 {
-            cancel event
+Entity {
+    // EntityDamage -> Entity.on_hit: `this` is the victim, `attacker` the source.
+    on_hit(attacker) {
+        if attacker exists {
+            send "attacker: ${attacker}" to all
         }
     }
-}
 
-event PlayerMove {
-    execute {
-        if event.on_ground {
-            set event.new_position to event.player.location
-        }
+    // EntityAttack -> Entity.on_attack: `this` is the attacker, `target` the victim.
+    on_attack(target) {
+        send "${this} hit ${target}" to all
     }
 }
 
-event PlayerDeath {
-    execute {
-        set event.death_text to "<red>${event.player.name} was slain"
-        send "died in ${event.world}" to all
+Player {
+    on_move(new_position) {
+        set new_position to this.location
     }
-}
 
-event PlayerGameModeChange {
-    execute {
-        send "${event.player.name} -> ${event.new_game_mode}" to event.player
+    on_death(death_text, chat_message) {
+        set death_text to "<red>${this.name} was slain"
     }
-}
 
-event EntityAttack {
-    execute {
-        send "${event.entity} hit ${event.target}" to all
+    on_gamemode_change(new_game_mode) {
+        send "${this.name} -> ${new_game_mode}" to this
     }
-}
 
-event VanillaUseItem {
-    execute {
-        set event.item_use_time to 100
-        send "using ${event.item_stack} in ${event.hand}" to event.player
+    on_use_item(item, hand) {
+        send "using ${item} in ${hand}" to this
         cancel event
     }
-}
 
-event PlayerBlockInteract {
-    execute {
-        send "clicked ${event.block} face ${event.block_face} at ${event.location.block_y}" to event.player
+    on_interact_block(block, location, face, hand) {
+        send "clicked ${block} face ${face} at ${location.block_y}" to this
     }
 }

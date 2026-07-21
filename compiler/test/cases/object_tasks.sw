@@ -4,37 +4,39 @@
 // auto-cancelled when the owner goes away. Also: imperative block placement
 // (place ... at ...) and removal (remove block at ...).
 
-on PlayerJoin {
+Player {
+  on_join() {
     // associate named tasks with a Player; re-assigning the same id cancels the
     // old task first (runtime), so the value must be a Schedule expression
-    set event.player.tasks.welcome to schedule every 20 ticks {
-        send "<gray>tick" to event.player
+    set this.tasks.welcome to schedule every 20 ticks {
+        send "<gray>tick" to this
     }
-    set event.player.tasks.reminder to schedule after 1 seconds every 2 seconds {
-        send "<yellow>reminder" to event.player
+    set this.tasks.reminder to schedule after 1 seconds every 2 seconds {
+        send "<yellow>reminder" to this
     }
 
     // reference by id: a Boolean 'is running', and the optional<Schedule> read
-    if event.player.tasks.welcome is running send "<green>welcome running" to event.player
-    if event.player.tasks.reminder is not running send "<red>reminder stopped" to event.player
-    set handle to event.player.tasks.welcome
+    if this.tasks.welcome is running send "<green>welcome running" to this
+    if this.tasks.reminder is not running send "<red>reminder stopped" to this
+    set handle to this.tasks.welcome
 
     // cancel by id (also 'stop <obj>.tasks.<id>')
-    cancel event.player.tasks.welcome
-    stop event.player.tasks.reminder
+    cancel this.tasks.welcome
+    stop this.tasks.reminder
 
     // a task on a block-at-a-position: block_at(loc) keys by position
-    place block("minecraft:sea_lantern") at event.player.location
-    set block_at(event.player.location).tasks.pulse to schedule every 5 ticks {
+    place block("minecraft:sea_lantern") at this.location
+    set block_at(this.location).tasks.pulse to schedule every 5 ticks {
         broadcast "<aqua>pulse"
     }
-    if block_at(event.player.location).tasks.pulse is running broadcast "pulsing"
-    cancel block_at(event.player.location).tasks.pulse
+    if block_at(this.location).tasks.pulse is running broadcast "pulsing"
+    cancel block_at(this.location).tasks.pulse
 
     // imperative placement (Block value or "id" string) and removal — removal
     // cancels every task bound to that position
-    place "minecraft:oak_log" at event.player.location
-    remove block at event.player.location
+    place "minecraft:oak_log" at this.location
+    remove block at this.location
+  }
 }
 
 // a task on a Mob (this = the Mob), bound once on spawn

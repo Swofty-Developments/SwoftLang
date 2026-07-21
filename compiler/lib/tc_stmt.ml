@@ -75,7 +75,7 @@ let rec check_stmt ctx bctx env st : env * bool =
     | _ -> ());
     (* the body runs on the scheduler: async-colored, 'stop' legal, 'run'
        (1-based, capped at the count) in scope *)
-    let bctx' = { bctx with color = Async; ret_sink = None; in_schedule = true } in
+    let bctx' = { bctx with color = Async; ret_sink = None; in_schedule = true; override = None } in
     let benv = bind { env with facts = SM.empty } "run" TInteger in
     ignore (check_stmts ctx bctx' benv rp_body);
     (env, false)
@@ -190,7 +190,7 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SWait (amount, _) ->
     if bctx.packet && bctx.color = Sync then
       err ctx st.spos
-        "'wait' is not allowed inside 'on packet' handlers; wrap the work in an 'async { }' block"
+        "'wait' is not allowed inside Packet handlers; wrap the work in an 'async { }' block"
     else if bctx.color = Sync then
       err ctx st.spos "'wait' is only allowed in async functions, 'execute async', or 'async { }' blocks";
     let at = type_of ctx bctx env amount in
@@ -201,7 +201,7 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SSpawn (name, args) ->
     if bctx.packet && bctx.color = Sync then
       err ctx st.spos
-        "'spawn' is not allowed inside 'on packet' handlers; wrap the work in an 'async { }' \
+        "'spawn' is not allowed inside Packet handlers; wrap the work in an 'async { }' \
          block";
     (* same resolution order as calls: callable variable, then declared
        function; spawn detaches, so async callees are fine in sync color *)
@@ -442,7 +442,7 @@ let rec check_stmt ctx bctx env st : env * bool =
     (env, false)
   | SCancelPacket ->
     (if not bctx.packet then
-       err ctx st.spos "'cancel packet' is only allowed inside an 'on packet' handler"
+       err ctx st.spos "'cancel packet' is only allowed inside a Packet handler"
      else if bctx.color = Async then
        err ctx st.spos "'cancel packet' must run before the handler goes async");
     (env, false)
@@ -1141,10 +1141,6 @@ and check_set_prop ctx bctx env pos target name value =
           if not p.p_writable then
             err ctx pos "property '%s' on %s is read-only" name (ty_to_string owner)
           else begin
-            (match owner with
-            | TEvent _ when name = "cancelled" && bctx.color = Async ->
-              err ctx pos "'set event.cancelled' must run before the handler goes async"
-            | _ -> ());
             (match p.p_ty with
             | TInteger | TDouble ->
               if not (num_ok vt) then

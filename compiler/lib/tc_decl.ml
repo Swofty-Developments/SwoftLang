@@ -45,7 +45,7 @@ let check_item_spec ctx bctx env spec =
   | None -> ()
 
 let check_gui ctx g =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   List.iter
     (fun b ->
       if Hashtbl.mem ctx.persists b then
@@ -160,6 +160,7 @@ let check_function ctx f =
       packet = false;
       api = false;
       in_schedule = false;
+      override = None;
     }
   in
   let env =
@@ -193,6 +194,7 @@ let check_command ctx c =
         packet = false;
         api = false;
         in_schedule = false;
+        override = None;
       }
     in
     (* args are also stored unprefixed in the runtime variables map *)
@@ -204,44 +206,8 @@ let check_command ctx c =
     in
     ignore (check_stmts ctx bctx env ex.ex_stmts)
 
-let check_event ctx ev =
-  match find_event ev.ev_name with
-  | None ->
-    err ctx ev.ev_pos "unknown event '%s'%s" ev.ev_name
-      (suggestion ev.ev_name all_event_names)
-  | Some def -> (
-    match ev.ev_execute with
-    | None -> ()
-    | Some ex ->
-      List.iter
-        (fun (alias, _) ->
-          if Hashtbl.mem ctx.persists alias then
-            err ctx ev.ev_pos
-              "persistent '%s' shadows the built-in '%s' binding of event %s — rename the \
-               persistent"
-              alias alias ev.ev_name)
-        def.e_aliases;
-      let bctx =
-        {
-          color = (if ex.ex_async then Async else Sync);
-          event = Some def;
-          args = None;
-          ret_sink = None;
-          packet = false;
-          api = false;
-          in_schedule = false;
-        }
-      in
-      let env =
-        List.fold_left
-          (fun env (name, ty) -> bind env name ty)
-          (bind (bind (base_env ctx) "sender" TPlayer) "event" (TEvent ev.ev_name))
-          def.e_aliases
-      in
-      ignore (check_stmts ctx bctx env ex.ex_stmts))
-
 let check_scoreboard ctx sb =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let env = bind empty_env "player" TPlayer in
   let tt = type_of ctx bctx env sb.sb_title in
   require_present ctx env sb.sb_title tt ~use:"the scoreboard title";
@@ -256,7 +222,7 @@ let check_scoreboard ctx sb =
       sidebar_max_lines
 
 let check_tablist ctx tl =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let env = bind empty_env "player" TPlayer in
   (match tl.tl_update with
   | UTicks n when n <= 0 -> err ctx tl.tl_pos "update cadence must be positive"
@@ -282,7 +248,7 @@ let check_tablist ctx tl =
     tl.tl_columns
 
 let check_bossbar ctx bb =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let env = bind empty_env "player" TPlayer in
   let tt = type_of ctx bctx env bb.bb_text in
   require_present ctx env bb.bb_text tt ~use:"the bossbar text";
@@ -352,7 +318,7 @@ let persistable_value = function
   | _ -> false
 
 let check_persistent ctx (pd : persistent_decl) =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let declared = ty_of_dt pd.pd_type in
   let reject_live () =
     err ctx pd.pd_pos
@@ -453,14 +419,19 @@ let check_inline_handlers ctx kind (handlers : inline_handler list) =
      body's `cancel event` typechecks (the runtime binds the real Minestom
      CancellableEvent as `event`); non-cancellable handlers keep event = None so
      `cancel event` still errors. *)
+  let base_rk = Registry.base_receiver_of_kind kind in
   let bctx_for (sg : Registry.handler_sig) =
+    (* expose the handler as an event context so `cancel event` typechecks; a
+       non-cancellable handler carries e_cancellable = false, which makes
+       `cancel event` report "not cancellable" rather than "not in a handler" *)
     let event =
-      if sg.h_cancellable then
-        Some { e_name = sg.h_event; e_cancellable = true; e_props = []; e_aliases = [] }
-      else None
+      Some { e_name = sg.h_event; e_cancellable = sg.h_cancellable; e_props = []; e_aliases = [] }
     in
+    (* this handler OVERRIDES the same-named base receiver method (most-specific
+       wins); expose the base signature so the body may call default()/super *)
+    let override = Registry.find_receiver_method base_rk sg.h_event in
     { color = Sync; event; args = None; ret_sink = None; packet = false; api = false;
-      in_schedule = false }
+      in_schedule = false; override }
   in
   List.iter
     (fun (h : inline_handler) ->
@@ -495,8 +466,63 @@ let check_inline_handlers ctx kind (handlers : inline_handler list) =
         end)
     handlers
 
+(* OOP receiver blocks (`Player { on_join() {} }`, ...). Each method name is
+   validated against the receiver's fixed table (registry.ml); the user binder
+   names bind positionally to the fixed parameter types, `this` binds to the
+   receiver instance type, and the body is sync-colored. These are BASE methods
+   (they override nothing), so override = None — `default()`/`super` are only
+   available inside lowercase custom-declaration overrides. *)
+let check_receiver ctx (r : receiver_decl) =
+  match Registry.receiver_kind_of_name r.rc_type with
+  | None ->
+    err ctx r.rc_type_pos "unknown receiver type '%s'; valid receivers: %s%s" r.rc_type
+      (String.concat ", " Registry.receiver_type_names)
+      (suggestion r.rc_type Registry.receiver_type_names)
+  | Some rk ->
+    let this_ty = Registry.receiver_this_ty rk in
+    let bctx_for (sg : Registry.handler_sig) =
+      let event =
+        Some { e_name = sg.h_event; e_cancellable = sg.h_cancellable; e_props = []; e_aliases = [] }
+      in
+      { color = Sync; event; args = None; ret_sink = None; packet = false; api = false;
+        in_schedule = false; override = None }
+    in
+    List.iter
+      (fun (h : inline_handler) ->
+        match Registry.find_receiver_method rk h.ih_event with
+        | None ->
+          err ctx h.ih_pos "unknown %s method '%s'; valid methods: %s%s" r.rc_type h.ih_event
+            (String.concat ", " (Registry.receiver_method_names rk))
+            (suggestion h.ih_event (Registry.receiver_method_names rk))
+        | Some sg ->
+          let want = List.length sg.h_params in
+          let got = List.length h.ih_params in
+          if want <> got then
+            err ctx h.ih_pos "%s method '%s' expects %d parameter%s (%s), got %d" r.rc_type
+              h.ih_event want
+              (if want = 1 then "" else "s")
+              (String.concat ", "
+                 (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.h_params))
+              got
+          else begin
+            let binder_names = "this" :: List.map fst h.ih_params in
+            check_binding_shadows ctx h.ih_pos
+              (Printf.sprintf "the '%s' method" h.ih_event)
+              binder_names;
+            let env = bind empty_env "this" this_ty in
+            let env =
+              List.fold_left2
+                (fun env (pname, _ppos) (_cn, pty) -> bind env pname pty)
+                env h.ih_params sg.h_params
+            in
+            ignore (check_stmts ctx (bctx_for sg) env h.ih_body)
+          end)
+      r.rc_methods
+
+let check_receivers ctx (rs : receiver_decl list) = List.iter (check_receiver ctx) rs
+
 let check_item_decl ctx it =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   (match (it.it_material, it.it_skull) with
   | Some _, Some _ ->
     err ctx it.it_pos "item \"%s\" cannot have both 'material' and 'skull'" it.it_id
@@ -599,7 +625,7 @@ let check_item_decl ctx it =
         check_binding_shadows ctx it.it_pos "an on_click handler" [ "player"; "item" ];
         let cbctx =
           { color = Sync; event = Some use_def; args = None; ret_sink = None; packet = false;
-            api = false; in_schedule = false }
+            api = false; in_schedule = false; override = None }
         in
         let env = bind (bind empty_env "player" TPlayer) "item" TItem in
         ignore (check_stmts ctx cbctx env ch.ch_body))
@@ -607,7 +633,7 @@ let check_item_decl ctx it =
   check_inline_handlers ctx KItem it.it_handlers
 
 let check_mob_decl ctx mb =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   (match mb.mb_type with
   | Some (t, pos) ->
     if not (entity_type_exists t) then
@@ -703,13 +729,20 @@ let check_mob_decl ctx mb =
       mb.mb_tags
   in
   ctx.cur_mob_tags <- tag_tys;
+  (* the dedicated mob handlers (on_spawn/on_death/on_attack/on_hit) OVERRIDE the
+     same-named base Mob receiver method (most-specific wins), so their bodies may
+     call default()/super to chain into it — exactly like the generic inline
+     handlers below. Expose the base signature via bctx.override so those chain
+     calls typecheck; the runtime binds the matching $override context. *)
+  let base_rk = Registry.base_receiver_of_kind KMob in
+  let override_for what = { bctx with override = Registry.find_receiver_method base_rk what } in
   let handler what bindings body =
     match body with
     | None -> ()
     | Some ss ->
       check_binding_shadows ctx mb.mb_pos what (List.map fst bindings);
       let env = List.fold_left (fun env (name, ty) -> bind env name ty) empty_env bindings in
-      ignore (check_stmts ctx bctx env ss)
+      ignore (check_stmts ctx (override_for what) env ss)
   in
   handler "on_spawn" [ ("mob", TMob) ] mb.mb_on_spawn;
   handler "on_death" [ ("mob", TMob); ("killer", TOptional TPlayer) ] mb.mb_on_death;
@@ -721,7 +754,7 @@ let check_mob_decl ctx mb =
   | Some (attacker, ss) ->
     check_binding_shadows ctx mb.mb_pos "on_hit" [ "mob"; attacker ];
     let env = bind (bind empty_env "mob" TMob) attacker (TOptional TPlayer) in
-    ignore (check_stmts ctx bctx env ss));
+    ignore (check_stmts ctx (override_for "on_hit") env ss));
   check_inline_handlers ctx KMob mb.mb_handlers;
   ctx.cur_mob_tags <- []
 
@@ -730,7 +763,7 @@ let check_mob_decl ctx mb =
 let check_holograms ctx (hs : hologram list) =
   let bctx =
     { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
-      in_schedule = false }
+      in_schedule = false; override = None }
   in
   let seen = Hashtbl.create 8 in
   List.iter
@@ -767,7 +800,7 @@ let check_holograms ctx (hs : hologram list) =
 let check_npcs ctx (ns : npc list) =
   let bctx =
     { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
-      in_schedule = false }
+      in_schedule = false; override = None }
   in
   let seen = Hashtbl.create 8 in
   List.iter
@@ -808,7 +841,7 @@ let check_npcs ctx (ns : npc list) =
 (* --- phase-8 fishing loot tables --- *)
 
 let check_fishing_loots ctx (fls : fishing_loot list) =
-  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false } in
+  let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let seen = Hashtbl.create 8 in
   List.iter
     (fun (fl : fishing_loot) ->
@@ -860,16 +893,38 @@ let check_packet_listener ctx pk =
   match pk.pk_execute with
   | None -> ()
   | Some ex ->
-    (* design 5D: 'on packet' handlers are a restricted sync color — they run
+    (* design 5D: Packet handlers are a restricted sync color — they run
        on the packet path, so wait/spawn are banned and async{} re-opens them *)
     if ex.ex_async then
       err ctx pk.pk_pos
-        "'on packet' handlers always run sync; use an 'async { }' block inside instead of \
-         'execute async'";
-    check_binding_shadows ctx pk.pk_pos "'on packet'" [ "player"; "packet" ];
-    let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = true; api = false; in_schedule = false } in
+        "Packet handlers always run sync; use an 'async { }' block inside";
+    check_binding_shadows ctx pk.pk_pos "a Packet handler" [ "player"; "packet" ];
+    (* validate the packet class name against the catalog (accepts either the
+       bare simple name or the fully-qualified name); an unknown class errors
+       with a nearest-match suggestion. On success, bind `packet`'s field set so
+       packet.<field> typechecks to the real field type inside the body. *)
+    let fields =
+      match Registry.resolve_packet_class pk.pk_name with
+      | Some fq when Registry.packet_direction fq = Some "server" ->
+        (* the class exists but is outbound: the runtime PacketSender.resolveClient
+           only accepts inbound client packets, so listening to it can never fire *)
+        err ctx pk.pk_pos
+          "packet class \"%s\" is an outbound server packet; a Packet block can only listen to inbound client packets%s"
+          pk.pk_name
+          (suggestion pk.pk_name (Registry.client_packet_class_names ()));
+        []
+      | Some fq ->
+        List.map (fun (p : Registry.prop) -> (p.p_name, p.p_ty)) (Registry.packet_fields fq)
+      | None ->
+        err ctx pk.pk_pos "unknown packet class \"%s\"%s" pk.pk_name
+          (suggestion pk.pk_name (Registry.client_packet_class_names ()));
+        []
+    in
+    ctx.cur_packet_fields <- Some (pk.pk_name, fields);
+    let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = true; api = false; in_schedule = false; override = None } in
     let env = bind (bind empty_env "player" TPlayer) "packet" TAny in
-    ignore (check_stmts ctx bctx env ex.ex_stmts)
+    ignore (check_stmts ctx bctx env ex.ex_stmts);
+    ctx.cur_packet_fields <- None
 
 (* --- phase-6 api / scheduler declarations --- *)
 
@@ -891,7 +946,7 @@ let check_api_decl ctx (a : api_decl) =
        async' check as async *)
     check_binding_shadows ctx a.api_pos "the api handler" [ "request" ];
     let bctx =
-      { color = Async; event = None; args = None; ret_sink = None; packet = false; api = true; in_schedule = false }
+      { color = Async; event = None; args = None; ret_sink = None; packet = false; api = true; in_schedule = false; override = None }
     in
     let env = bind (base_env ctx) "request" TRequest in
     ignore (check_stmts ctx bctx env ex.ex_stmts)
@@ -901,7 +956,7 @@ let check_sched_decl ctx (sd : sched_decl) =
   (* async-colored: the body runs on the AsyncRuntime, tick-aligned. 'stop'
      is legal and the 1-based 'run' counter is in scope (scheduler v2) *)
   let bctx =
-    { color = Async; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = true }
+    { color = Async; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = true; override = None }
   in
   ignore (check_stmts ctx bctx (bind (base_env ctx) "run" TInteger) sd.sd_body)
 
@@ -946,7 +1001,7 @@ let check_block_cb ctx kind (sg : Registry.block_cb_sig) (cb : block_cb) =
     let bare = ref false in
     let bctx =
       { color = Sync; event = None; args = None; ret_sink = Some (vals, bare); packet = false;
-        api = false; in_schedule = false }
+        api = false; in_schedule = false; override = None }
     in
     let _, terminates = check_stmts ctx bctx env cb.cb_body in
     match sg.bcb_ret with

@@ -506,22 +506,52 @@ let parse_placement_rule st =
   expect st Token.RBRACE "'}' to close placement_rule body";
   { pr_id; pr_callbacks = List.rev !cbs; pr_self_replaceable = !self_replaceable; pr_pos }
 
-let parse_packet_listener st =
-  let pk_pos = pos_here st in
-  ignore (advance st);
-  (* 'on' *)
-  ignore (advance st);
-  (* 'packet' *)
-  let pk_name = expect_string st "packet class name" in
-  expect st Token.LBRACE "'{' after packet name";
-  let execute = ref None in
+(* --- OOP receiver blocks ---
+
+   `Player { on_join() {} on_death(killer) {} }` — a Capitalized base-type block
+   whose members are fixed-name methods, parsed with the same inline-handler
+   grammar as the item/mob additive handlers. Method names are validated against
+   the receiver's table in Tc_decl. *)
+let parse_receiver st =
+  let rc_pos = pos_here st in
+  let rc_type_pos = pos_here st in
+  let rc_type = expect_ident st "receiver type name" in
+  expect st Token.LBRACE "'{' after receiver type name";
+  let methods = ref [] in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
-    match peek_tok st with
-    | Token.IDENT "execute" ->
-      ignore (advance st);
-      execute := Some (parse_execute st)
-    | t -> error st (Printf.sprintf "Expected 'execute' in 'on packet' body, found %s"
-                       (Token.describe t))
+    let h = parse_inline_handler st in
+    if List.exists (fun (x : inline_handler) -> x.ih_event = h.ih_event) !methods then
+      error st (Printf.sprintf "Duplicate %s method '%s'" rc_type h.ih_event);
+    methods := h :: !methods;
+    ignore (matches st Token.COMMA)
   done;
-  expect st Token.RBRACE "'}' to close 'on packet' body";
-  { pk_name; pk_execute = !execute; pk_pos }
+  expect st Token.RBRACE "'}' to close receiver body";
+  { rc_type; rc_type_pos; rc_methods = List.rev !methods; rc_pos }
+
+(* `Packet { on "PacketClassName" { body } on "Other" { body } }` — the OOP
+   spelling of the packet-listener subsystem. Each `on "Class" { body }` member
+   desugars into a packet_listener (reusing the exact runtime path); the body is
+   the handler's statements directly (no nested 'execute { }'). *)
+let parse_packet_receiver st =
+  ignore (advance st);
+  (* 'Packet' *)
+  expect st Token.LBRACE "'{' after 'Packet'";
+  let listeners = ref [] in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    (match peek_tok st with
+    | Token.IDENT "on" ->
+      let pk_pos = pos_here st in
+      ignore (advance st);
+      (* 'on' *)
+      let pk_name = expect_string st "packet class name after 'on'" in
+      let ex_stmts = parse_body st in
+      listeners :=
+        { pk_name; pk_execute = Some { ex_async = false; ex_stmts }; pk_pos } :: !listeners
+    | t ->
+      error st
+        (Printf.sprintf "Expected 'on \"PacketClassName\" { }' inside 'Packet { }', found %s"
+           (Token.describe t)));
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close 'Packet' body";
+  List.rev !listeners
