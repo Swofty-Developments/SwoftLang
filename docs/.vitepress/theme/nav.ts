@@ -159,7 +159,7 @@ export interface DocVersion {
 
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
-  { text: '1.2.0 (latest)', link: '/', label: 'v1.2.0', prefix: '' },
+  { text: '1.4.0 (latest)', link: '/', label: 'v1.4.0', prefix: '' },
   { text: '1.1.0', link: '/1.1.0/', label: 'v1.1.0', prefix: '/1.1.0' }
 ]
 
