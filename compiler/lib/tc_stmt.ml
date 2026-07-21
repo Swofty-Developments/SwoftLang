@@ -176,6 +176,37 @@ let rec check_stmt ctx bctx env st : env * bool =
   | SCall (name, args) ->
     ignore (call_type ctx bctx env st.spos name args);
     (env, false)
+  | SCallOriginal args ->
+    (match bctx.override with
+    | None ->
+      err ctx st.spos
+        "'call original method' is only valid inside a custom declaration method that overrides a \
+         base receiver method"
+    | Some sg ->
+      (match args with
+      | None -> ()
+      | Some es ->
+        let want = List.length sg.h_params in
+        let got = List.length es in
+        if want <> got then
+          err ctx st.spos
+            "'call original method with arguments' passes %d argument%s, but the base method '%s' \
+             takes %d (%s)"
+            got
+            (if got = 1 then "" else "s")
+            sg.h_event want
+            (String.concat ", "
+               (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.h_params))
+        else
+          List.iter2
+            (fun e (cn, pty) ->
+              let at = type_of ctx bctx env e in
+              if not (param_compat pty at) then
+                err ctx e.epos
+                  "'call original method' argument '%s' must be %s (got %s)" cn (ty_to_string pty)
+                  (ty_to_string at))
+            es sg.h_params));
+    (env, false)
   | SMethodCall (recv, name, args) ->
     ignore (check_method ctx bctx env st.spos recv name args ~as_stmt:true);
     (env, false)

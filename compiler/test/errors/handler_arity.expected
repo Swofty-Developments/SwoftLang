@@ -1,1 +1,1 @@
-item handler 'on_right_click' expects 1 parameter (player: Player), got 2
+handler 'on_right_click' takes no parameter list

@@ -39,11 +39,11 @@ npc "guide" {
     name: "<green>Village Guide (${player.name})"
     skin: "Notch"
     look_at_players: true
-    on_click(player) {
+    on_click {
         send "<yellow>Hello ${player.name}!" to player
     }
-    on_left_click(clicker) {
-        send "<red>Don't hit me!" to clicker
+    on_left_click {
+        send "<red>Don't hit me!" to player
     }
 }
 

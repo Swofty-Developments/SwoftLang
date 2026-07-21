@@ -116,6 +116,11 @@ and stmt_node =
      key and the V value over each entry of the map *)
   | SForeachMap of { fm_key : string; fm_val : string; fm_map : expr; fm_body : stmt }
   | SCall of string * expr list
+  (* 'call original method [with arguments <expr>, ...]' — inside a custom
+     declaration method that overrides a base receiver method, re-invoke the
+     base (overridden) method. None = re-run with the same bound variables; Some
+     args = explicit arguments (arity/types must match the base method). *)
+  | SCallOriginal of expr list option
   (* W-collections: a bare method-call statement — <receiver>.<name>(<args>) —
      for the in-place mutating methods (list add/remove/..., map set/delete/...).
      Carries the receiver, method name, and arguments. *)
@@ -387,13 +392,14 @@ type click_handler = {
 }
 
 (* first-class inline event handler on an item/mob/hologram/npc declaration
-   (W-inline-handlers): on_<event>(binders) { body }. The event name is checked
-   against the declaration kind's fixed handler table (registry.ml); the binder
-   names are user-chosen and bind positionally to the fixed parameter types,
-   with `this` bound to the kind's instance type. Body is sync-colored. *)
+   (W-inline-handlers): on_<event> { body } — a bare handler name followed by the
+   body, no parameter list. The event name is checked against the declaration
+   kind's fixed handler table (registry.ml); the receiver instance and the
+   event's arguments are bound as fixed bare variables (self noun + canonical arg
+   names, from the registry) directly in scope — there is no `this`. Body is
+   sync-colored. *)
 type inline_handler = {
   ih_event : string;
-  ih_params : (string * pos) list; (* user binder names + positions *)
   ih_body : stmt list;
   ih_pos : pos;
 }
@@ -533,8 +539,8 @@ type npc = {
   (* viewable: <Bool> (W-viewers §1) — auto-viewable at spawn; false => hidden
      until shown to a player *)
   n_viewable : bool option;
-  n_on_click : (string * stmt list) option; (* right-click: (player binder, body) *)
-  n_on_left_click : (string * stmt list) option;
+  n_on_click : stmt list option; (* right-click: binds bare 'npc' and 'player' *)
+  n_on_left_click : stmt list option;
   (* generic handler path (reconciled with on_click/on_left_click above): used
      to surface unknown-handler errors for any other on_<name> (W-inline-handlers) *)
   n_handlers : inline_handler list;
@@ -623,9 +629,9 @@ type mob_decl = {
   mb_on_spawn : stmt list option;
   mb_on_death : stmt list option;
   mb_on_attack : stmt list option;
-  (* on_hit(attacker) { }: fired when this mob is damaged; binds 'mob' and the
-     named 'attacker' (optional<Player>). The string is the attacker binder. *)
-  mb_on_hit : (string * stmt list) option;
+  (* on_hit { }: fired when this mob is damaged; binds the bare 'mob' and
+     'attacker' (optional<Player>) variables in scope (no parameter list). *)
+  mb_on_hit : stmt list option;
   (* additive first-class handlers: on_click / on_attack / on_target / on_tick
      (on_spawn/on_death/on_hit keep their dedicated fields above)
      (W-inline-handlers) *)

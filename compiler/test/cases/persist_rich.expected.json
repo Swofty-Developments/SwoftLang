@@ -59,6 +59,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -72,17 +73,17 @@
               "line": 19,
               "col": 22,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 19,
-              "col": 35,
+              "col": 39,
               "kind": "prop",
               "target": {
                 "line": 19,
-                "col": 30,
+                "col": 32,
                 "kind": "var",
-                "name": "this"
+                "name": "player"
               },
               "name": "location"
             }
@@ -96,17 +97,17 @@
               "line": 20,
               "col": 25,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 20,
-              "col": 33,
+              "col": 35,
               "kind": "call",
               "name": "item",
               "args": [
                 {
                   "line": 20,
-                  "col": 38,
+                  "col": 40,
                   "kind": "string",
                   "value": "compass"
                 }

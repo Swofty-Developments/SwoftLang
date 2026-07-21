@@ -5,7 +5,7 @@
 // spelling itself, which the runtime resolves generically.
 
 Player {
-    on_use_item(item, hand) {
+    on_use_item {
         send "using ${item} in hand ${hand}" to all
         cancel event
     }

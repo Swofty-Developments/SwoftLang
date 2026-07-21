@@ -38,11 +38,11 @@ command "enchant" {
 }
 
 Item {
-    on_use(player) {
-        // tags read off the item value (`this`)
-        if this.tags.soulbound exists {
+    on_use {
+        // tags read off the item value (`item`)
+        if item.tags.soulbound exists {
             send "<gray>Soulbound." to player
         }
-        set this.tags.uses to (this.tags.uses otherwise 0) + 1
+        set item.tags.uses to (item.tags.uses otherwise 0) + 1
     }
 }

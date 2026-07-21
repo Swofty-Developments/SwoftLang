@@ -187,6 +187,18 @@ and var_type ctx bctx env pos name =
         (* 'server' is an implicit global value (design 6B TPS / 6D MOTD);
            a local binding of the same name shadows it *)
       else if name = "server" then TServer
+      else if name = "this" then begin
+        err ctx pos
+          "'this' was removed; the receiver instance is now a bare variable in scope named after \
+           its type (e.g. 'player', 'mob', 'block', 'entity')";
+        TAny
+      end
+      else if name = "super" then begin
+        err ctx pos
+          "'super' was removed; use 'call original method' (optionally 'call original method with \
+           arguments <expr>, ...') to invoke the overridden base method";
+        TAny
+      end
       else begin
         let candidates = SM.fold (fun k _ acc -> k :: acc) env.vars [] in
         err ctx pos "variable '%s' is never assigned%s" name (suggestion name candidates);
@@ -426,17 +438,10 @@ and lambda_type ctx bctx env lam_async lam_params lam_body =
    functions, then builtins *)
 and call_type ctx bctx env pos name args =
   if name = "default" then begin
-    (* default() re-runs the base receiver method this handler overrides, with
-       the same `this`/args; legal only inside an overriding custom-decl method *)
-    (match bctx.override with
-    | None ->
-      err ctx pos
-        "'default()' is only valid inside a custom declaration method that overrides a base \
-         receiver method"
-    | Some _ ->
-      if args <> [] then
-        err ctx pos
-          "'default()' takes no arguments; it re-invokes the base method with the same arguments");
+    (* removed: default() -> 'call original method' *)
+    err ctx pos
+      "'default()' was removed; use 'call original method' (optionally 'call original method with \
+       arguments <expr>, ...') to invoke the overridden base method";
     List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny
   end
@@ -1023,26 +1028,11 @@ and check_block_method ctx bctx env pos recv name args ~as_stmt : ty =
 and check_method ctx bctx env pos recv name args ~as_stmt : ty =
   match recv.e with
   | EVar "super" ->
-    (* super.<method>(args) invokes the base receiver method this custom-decl
-       handler overrides; legal only inside an overriding method, and only for
-       the overridden method name, with args matching the base signature *)
-    (match bctx.override with
-    | None ->
-      err ctx pos
-        "'super' is only valid inside a custom declaration method that overrides a base \
-         receiver method";
-      List.iter (fun a -> ignore (type_of ctx bctx env a)) args
-    | Some sg ->
-      if name <> sg.h_event then
-        err ctx pos
-          "'super.%s' does not match the overridden method '%s'; a super call may only invoke \
-           the base method being overridden"
-          name sg.h_event;
-      let want = List.length sg.h_params in
-      let got = List.length args in
-      if want <> got then
-        err ctx pos "'super.%s' expects %d argument(s), got %d" sg.h_event want got;
-      List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
+    (* removed: super.<method>(args) -> 'call original method' *)
+    err ctx pos
+      "'super' was removed; use 'call original method' (optionally 'call original method with \
+       arguments <expr>, ...') to invoke the overridden base method";
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny
   | _ ->
   let rt = type_of ctx bctx env recv in

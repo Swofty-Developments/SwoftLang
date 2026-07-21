@@ -1,5 +1,5 @@
 Player {
-    on_join() {
+    on_join {
         cancel event
     }
 }

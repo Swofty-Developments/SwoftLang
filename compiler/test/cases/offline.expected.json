@@ -630,6 +630,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -647,18 +648,18 @@
                 "line": 69,
                 "col": 12,
                 "kind": "var",
-                "name": "this"
+                "name": "player"
               },
               "right": {
                 "line": 69,
-                "col": 22,
+                "col": 24,
                 "kind": "type",
                 "name": "OfflinePlayer"
               }
             },
             "then": {
               "line": 69,
-              "col": 36,
+              "col": 38,
               "kind": "block",
               "statements": [
                 {
@@ -675,7 +676,7 @@
                     "line": 70,
                     "col": 56,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   }
                 }
               ]
@@ -688,7 +689,7 @@
             "kind": "call",
             "name": "greet",
             "args": [
-              { "line": 72, "col": 15, "kind": "var", "name": "this" }
+              { "line": 72, "col": 15, "kind": "var", "name": "player" }
             ]
           }
         ]

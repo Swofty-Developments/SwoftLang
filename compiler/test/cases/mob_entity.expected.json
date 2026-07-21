@@ -233,6 +233,7 @@
       "name": "MobDamage",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
@@ -245,7 +246,7 @@
               "line": 48,
               "col": 19,
               "kind": "string",
-              "value": "${this.type} attacked by ${attacker}"
+              "value": "${mob.type} attacked by ${attacker}"
             }
           }
         ]

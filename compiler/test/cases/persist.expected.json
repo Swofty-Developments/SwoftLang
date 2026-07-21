@@ -189,6 +189,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -229,11 +230,11 @@
               "line": 16,
               "col": 27,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 16,
-              "col": 35,
+              "col": 37,
               "kind": "string",
               "value": "today"
             }
@@ -278,7 +279,7 @@
               "line": 17,
               "col": 53,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

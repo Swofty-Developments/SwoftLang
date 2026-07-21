@@ -1,5 +1,5 @@
 // Mob composes the ENTITY property table (Mob <: Entity), entity/mob tags, the
-// on_hit(attacker) handler, the MobDamage 'attacker' row, and in_front_of().
+// on_hit handler, the MobDamage 'attacker' row, and in_front_of().
 
 mob "guardian" {
     type: "IRON_GOLEM"
@@ -12,7 +12,7 @@ mob "guardian" {
         set mob.gravity to false
     }
 
-    on_hit(attacker) {
+    on_hit {
         // attacker is optional<Player>
         if attacker exists {
             send "You struck the ${mob.custom_id}!" to attacker
@@ -44,7 +44,7 @@ command "guard" {
 }
 
 Mob {
-    on_hit(attacker) {
-        broadcast "${this.type} attacked by ${attacker}"
+    on_hit {
+        broadcast "${mob.type} attacked by ${attacker}"
     }
 }

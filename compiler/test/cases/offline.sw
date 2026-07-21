@@ -65,10 +65,10 @@ function greet(target: OfflinePlayer) {
 }
 
 Player {
-    on_join() {
-        if this is a OfflinePlayer {
-            send "you are also a seen-store record" to this
+    on_join {
+        if player is a OfflinePlayer {
+            send "you are also a seen-store record" to player
         }
-        greet(this)
+        greet(player)
     }
 }

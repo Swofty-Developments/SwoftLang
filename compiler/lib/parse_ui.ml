@@ -227,13 +227,14 @@ let parse_hologram st =
 (* parse_npc_skin lives in Parse_stmt (shared with 'set npc ... skin'); it is
    in scope here through 'open Parse_stmt'. *)
 
-(* on_click(player) { ... } / on_left_click(player) { ... }: a named player
-   binder then a statement body *)
+(* on_click { ... } / on_left_click { ... }: param-less; the body binds the bare
+   'npc' (self) and 'player' variables in scope *)
 let parse_npc_handler st =
-  expect st Token.LPAREN "'(' after npc click handler";
-  let binder = expect_ident st "the player binder name" in
-  expect st Token.RPAREN "')' after the click handler parameter";
-  (binder, parse_body st)
+  if peek_tok st = Token.LPAREN then
+    error st
+      "npc click handlers take no parameter list; write 'on_click { }' — 'npc' and 'player' are \
+       bound as bare variables in scope";
+  parse_body st
 
 let parse_npc st =
   let n_pos = pos_here st in

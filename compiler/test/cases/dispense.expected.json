@@ -74,6 +74,7 @@
       "name": "BlockDispense",
       "receiver": "Block",
       "priority": 0,
+      "self": "block",
       "params": [ "item", "direction" ],
       "execute": {
         "async": false,

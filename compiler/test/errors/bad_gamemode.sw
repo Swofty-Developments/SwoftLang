@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        set this.gamemode to "creative_plus"
+    on_join {
+        set player.gamemode to "creative_plus"
     }
 }

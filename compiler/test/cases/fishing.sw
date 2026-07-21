@@ -39,21 +39,21 @@ server {
 }
 
 Player {
-    on_cast_rod() {
-        if this.world.time > 100000 {
-            send "<red>the water is still" to this
+    on_cast_rod {
+        if player.world.time > 100000 {
+            send "<red>the water is still" to player
         }
     }
 
-    on_fish_bite() {
-        send "something bit nearby" to this
+    on_fish_bite {
+        send "something bit nearby" to player
     }
 
-    on_catch_fish() {
-        send "a creature emerges..." to this
+    on_catch_fish {
+        send "a creature emerges..." to player
     }
 
-    on_reel_in() {
-        send "reeled in" to this
+    on_reel_in {
+        send "reeled in" to player
     }
 }

@@ -357,6 +357,8 @@ public final class NpcRuntime {
         }
         Map<String, Object> vars = new HashMap<>();
         vars.put("player", player);
+        // the npc's fake-player entity is bound under its natural noun (`npc`)
+        vars.put("npc", npc.entity);
         try {
             new ASTExecutor(player, vars).execute(body);
         } catch (Exception e) {

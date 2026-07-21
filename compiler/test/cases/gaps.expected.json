@@ -251,7 +251,8 @@
       "name": "PlayerCommand",
       "receiver": "Player",
       "priority": 0,
-      "params": [ "cmd" ],
+      "self": "player",
+      "params": [ "command" ],
       "execute": {
         "async": false,
         "statements": [
@@ -264,17 +265,22 @@
               "col": 12,
               "kind": "binary",
               "op": "CONTAINS",
-              "left": { "line": 8, "col": 12, "kind": "var", "name": "cmd" },
+              "left": {
+                "line": 8,
+                "col": 12,
+                "kind": "var",
+                "name": "command"
+              },
               "right": {
                 "line": 8,
-                "col": 25,
+                "col": 29,
                 "kind": "string",
                 "value": "stop"
               }
             },
             "then": {
               "line": 8,
-              "col": 32,
+              "col": 36,
               "kind": "block",
               "statements": [
                 {
@@ -291,7 +297,7 @@
                     "line": 9,
                     "col": 47,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   }
                 },
                 { "line": 10, "col": 13, "kind": "cancel_event" }
@@ -303,14 +309,14 @@
             "line": 13,
             "col": 9,
             "kind": "assign",
-            "target": "cmd",
+            "target": "command",
             "value": {
               "line": 13,
-              "col": 20,
+              "col": 24,
               "kind": "call",
               "name": "lowercase",
               "args": [
-                { "line": 13, "col": 30, "kind": "var", "name": "cmd" }
+                { "line": 13, "col": 34, "kind": "var", "name": "command" }
               ]
             }
           }

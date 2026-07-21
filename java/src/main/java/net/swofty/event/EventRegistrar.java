@@ -109,7 +109,7 @@ public class EventRegistrar {
         // index the base body so a more-specific custom decl can reach it
         if (spec != null) {
             ReceiverDispatch.registerBase(event.getReceiver(), spec.method(),
-                    event.getExecuteBlock(), event.getParams());
+                    event.getExecuteBlock(), event.getParams(), event.getSelf());
         }
 
         String className = spec != null && spec.minestomClass() != null

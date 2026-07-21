@@ -16,7 +16,6 @@ import net.swofty.event.EventPropertyResolver.Handle;
 import net.swofty.event.ReceiverBinding.Arg;
 import net.swofty.event.ReceiverBinding.Spec;
 import net.swofty.event.events.GenericSwoftEvent;
-import net.swofty.nativebridge.execution.Expression;
 import net.swofty.nativebridge.representation.Event;
 import net.swofty.nativebridge.representation.ExecuteBlock;
 import net.swofty.props.NoneValue;
@@ -45,19 +44,22 @@ public final class ReceiverDispatch {
     // base-method registry (for default() / super.<method>())
     // ------------------------------------------------------------------
 
-    /** A registered base receiver method body + its positional param names. */
-    public record BaseMethod(ExecuteBlock body, List<String> params) {
+    /**
+     * A registered base receiver method body + its positional param names +
+     * the receiver instance's bound noun (player/mob/item/…).
+     */
+    public record BaseMethod(ExecuteBlock body, List<String> params, String self) {
     }
 
     private static final Map<String, BaseMethod> BASE = new ConcurrentHashMap<>();
 
     /** Register a base receiver method so overrides can chain into it. */
     public static void registerBase(String receiver, String method, ExecuteBlock body,
-            List<String> params) {
+            List<String> params, String self) {
         if (receiver == null || method == null || body == null) {
             return;
         }
-        BASE.put(key(receiver, method), new BaseMethod(body, params));
+        BASE.put(key(receiver, method), new BaseMethod(body, params, self));
     }
 
     /** Forget every registered base method (hot reload). */
@@ -102,7 +104,11 @@ public final class ReceiverDispatch {
         }
 
         Map<String, Object> vars = new HashMap<>();
-        vars.put("this", subject);
+        // bind the receiver instance under its natural noun (player/mob/item/…)
+        // as a bare variable; `this` was removed with the OOP-events cleanup
+        if (swoftEvent.getSelf() != null) {
+            vars.put(swoftEvent.getSelf(), subject);
+        }
         List<Object> argValues = new ArrayList<>();
         for (int i = 0; i < params.size(); i++) {
             Object value;
@@ -150,30 +156,42 @@ public final class ReceiverDispatch {
     // ------------------------------------------------------------------
 
     /**
-     * The override context bound into a custom declaration's handler body so
-     * {@code default()} and {@code super.<method>(...)} can chain to the base
-     * receiver method with the same {@code this} + args.
+     * The override context bound into a custom declaration's handler body (as
+     * {@code $override}) so {@code call original method} can chain to the base
+     * receiver method with the same receiver instance + args.
      */
     public record OverrideContext(String receiver, String method, Object thisValue,
             List<Object> args, Object eventWrapper, CommandSender sender) {
     }
 
-    /** The {@code super} sentinel value bound in an overriding handler's scope. */
-    public record SuperRef(OverrideContext ctx) {
-        public Object invoke(ExecutionContext context, String method, List<Expression> args) {
-            List<Object> values = new ArrayList<>(args.size());
-            for (Expression arg : args) {
-                values.add(context.evaluate(arg));
-            }
-            runBase(ctx.receiver(), method, ctx.thisValue(), values, ctx.eventWrapper(),
-                    ctx.sender());
-            return NoneValue.INSTANCE;
-        }
+    /**
+     * {@code call original method with arguments ...}: run the overridden base
+     * method with the explicitly supplied argument values.
+     */
+    public static void invokeOriginal(OverrideContext ctx, List<Object> args) {
+        runBase(ctx.receiver(), ctx.method(), ctx.thisValue(), args, ctx.eventWrapper(),
+                ctx.sender());
     }
 
-    /** {@code default()}: run the overridden base method with the current args. */
-    public static void invokeDefault(OverrideContext ctx) {
-        runBase(ctx.receiver(), ctx.method(), ctx.thisValue(), ctx.args(), ctx.eventWrapper(),
+    /**
+     * {@code call original method} (no arguments): run the overridden base
+     * method with the handler's CURRENT bound variable values for each of the
+     * base method's params (so a mutated arg like {@code damage} flows through).
+     * Falls back to the args captured at dispatch time when no base method is
+     * registered.
+     */
+    public static void invokeOriginal(OverrideContext ctx, ExecutionContext exec) {
+        BaseMethod base = BASE.get(key(ctx.receiver(), ctx.method()));
+        if (base == null) {
+            // no base method declared — most-specific-wins with nothing to chain
+            return;
+        }
+        List<Object> args = new ArrayList<>(base.params().size());
+        for (String param : base.params()) {
+            Object value = exec.getVariables().get(param);
+            args.add(value == null ? NoneValue.INSTANCE : value);
+        }
+        runBase(ctx.receiver(), ctx.method(), ctx.thisValue(), args, ctx.eventWrapper(),
                 ctx.sender());
     }
 
@@ -185,7 +203,10 @@ public final class ReceiverDispatch {
             return;
         }
         Map<String, Object> vars = new HashMap<>();
-        vars.put("this", thisValue);
+        // bind the receiver instance under its natural noun (bare variable)
+        if (base.self() != null) {
+            vars.put(base.self(), thisValue);
+        }
         List<String> params = base.params();
         for (int i = 0; i < params.size(); i++) {
             vars.put(params.get(i), i < args.size() ? args.get(i) : NoneValue.INSTANCE);

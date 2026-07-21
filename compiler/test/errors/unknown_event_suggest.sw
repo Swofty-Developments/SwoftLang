@@ -1,5 +1,5 @@
 Item {
-    on_pickp(player) {
+    on_pickp {
         send "grabbed" to player
     }
 }

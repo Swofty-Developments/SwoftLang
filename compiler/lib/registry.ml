@@ -1390,6 +1390,15 @@ let decl_this_ty = function
   | KHologram -> TDisplay (* the hologram's text-display stack *)
   | KNpc -> TEntity (* the npc's fake-player entity *)
 
+(* the bare variable name the receiver instance ("self") is bound under inside a
+   handler body — its natural noun. `this` was removed; the receiver is now a
+   plain in-scope variable of this name. *)
+let decl_noun = function
+  | KMob -> "mob"
+  | KItem -> "item"
+  | KHologram -> "hologram"
+  | KNpc -> "npc"
+
 type handler_sig = {
   h_event : string;
   (* fixed parameter list: (canonical name for errors, fixed ty). The user
@@ -1567,7 +1576,23 @@ let receiver_type_names =
   [ "Player"; "Entity"; "Mob"; "Item"; "Block"; "Projectile"; "Inventory"; "World"; "Server";
     "Npc"; "Hologram" ]
 
-(* the type bound to `this` inside a method body of this receiver *)
+(* the bare variable name the receiver instance ("self") is bound under inside a
+   method body — its natural noun. `this` was removed; the receiver is now a
+   plain in-scope variable of this name. *)
+let receiver_noun = function
+  | RPlayer -> "player"
+  | REntity -> "entity"
+  | RMob -> "mob"
+  | RItem -> "item"
+  | RBlock -> "block"
+  | RProjectile -> "projectile"
+  | RInventory -> "inventory"
+  | RWorld -> "world"
+  | RServer -> "server"
+  | RNpc -> "npc"
+  | RHologram -> "hologram"
+
+(* the type bound to the receiver-instance variable inside a method body *)
 let receiver_this_ty = function
   | RPlayer -> TPlayer
   | REntity -> TEntity

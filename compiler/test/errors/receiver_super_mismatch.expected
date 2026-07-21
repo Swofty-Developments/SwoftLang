@@ -1,1 +1,1 @@
-'super.on_target' does not match the overridden method 'on_click'
+'super' was removed; use 'call original method'

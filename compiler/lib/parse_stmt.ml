@@ -190,6 +190,26 @@ let rec parse_statement st =
     if starts_expression (peek_tok st) && (pos_here st).line = p.line then
       mks p (SReturn (Some (parse_expr st)))
     else mks p (SReturn None)
+  | Token.CALL when soft2 st "original" ->
+    (* 'call original method [with arguments <expr>, ...]' — invoke the
+       overridden base receiver method (replaces the removed default()/super) *)
+    ignore (advance st);
+    (* 'call' *)
+    ignore (advance st);
+    (* 'original' *)
+    expect_soft st "method";
+    let args =
+      if eat_soft st "with" then begin
+        expect_soft st "arguments";
+        let es = ref [ parse_expr st ] in
+        while matches st Token.COMMA do
+          es := parse_expr st :: !es
+        done;
+        Some (List.rev !es)
+      end
+      else None
+    in
+    mks p (SCallOriginal args)
   | Token.CALL ->
     ignore (advance st);
     let name = expect_ident st "function name after 'call'" in
@@ -1206,27 +1226,14 @@ let starts_with_on name = String.length name > 3 && String.sub name 0 3 = "on_"
 let parse_inline_handler st =
   let ih_pos = pos_here st in
   let ih_event = expect_ident st "handler name" in
-  let ih_params =
-    if peek_tok st = Token.LPAREN then begin
-      ignore (advance st);
-      let ps = ref [] in
-      if peek_tok st <> Token.RPAREN then begin
-        let one () =
-          let p = pos_here st in
-          (expect_ident st "handler parameter name", p)
-        in
-        ps := [ one () ];
-        while matches st Token.COMMA do
-          ps := one () :: !ps
-        done
-      end;
-      expect st Token.RPAREN "')' to close the handler parameter list";
-      List.rev !ps
-    end
-    else []
-  in
+  if peek_tok st = Token.LPAREN then
+    error st
+      (Printf.sprintf
+         "handler '%s' takes no parameter list; write '%s { }' — the receiver and the event's \
+          values are bound as bare variables in scope"
+         ih_event ih_event);
   let ih_body = parse_body st in
-  { ih_event; ih_params; ih_body; ih_pos }
+  { ih_event; ih_body; ih_pos }
 
 (* --- restricted DSL blocks (scoreboard lines { } / tablist column { }) --- *)
 

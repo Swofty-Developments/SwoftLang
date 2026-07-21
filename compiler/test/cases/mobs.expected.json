@@ -166,6 +166,7 @@
       "name": "MobSpawn",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [],
       "execute": {
         "async": false,
@@ -178,7 +179,7 @@
               "line": 58,
               "col": 19,
               "kind": "string",
-              "value": "spawned: ${this.type}"
+              "value": "spawned: ${mob.type}"
             }
           }
         ]
@@ -190,6 +191,7 @@
       "name": "MobDeath",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "killer" ],
       "execute": {
         "async": false,
@@ -239,6 +241,7 @@
       "name": "MobDamage",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
@@ -249,24 +252,24 @@
             "kind": "if",
             "condition": {
               "line": 68,
-              "col": 17,
+              "col": 16,
               "kind": "binary",
               "op": "LESS_THAN",
               "left": {
                 "line": 68,
-                "col": 17,
+                "col": 16,
                 "kind": "prop",
                 "target": {
                   "line": 68,
                   "col": 12,
                   "kind": "var",
-                  "name": "this"
+                  "name": "mob"
                 },
                 "name": "health"
               },
               "right": {
                 "line": 68,
-                "col": 26,
+                "col": 25,
                 "kind": "number",
                 "value": 10,
                 "integer": true
@@ -274,7 +277,7 @@
             },
             "then": {
               "line": 68,
-              "col": 29,
+              "col": 28,
               "kind": "block",
               "statements": [
                 {

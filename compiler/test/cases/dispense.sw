@@ -10,7 +10,7 @@ command "fire" {
 }
 
 Block {
-    on_dispense(item, direction) {
+    on_dispense {
         // inspect what comes out, then veto the vanilla dispense
         broadcast "dispensed ${item.name} facing ${direction}"
         cancel event

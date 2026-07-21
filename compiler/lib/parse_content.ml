@@ -291,12 +291,13 @@ let parse_mob_decl st =
     | Token.IDENT "on_hit" ->
       ignore (advance st);
       if !on_hit <> None then dup "on_hit";
-      (* on_hit(attacker) { }: the parenthesized identifier is the binder for the
-         attacking player (optional<Player>) *)
-      expect st Token.LPAREN "'(' after 'on_hit'";
-      let attacker = expect_ident st "attacker binder in on_hit(...)" in
-      expect st Token.RPAREN "')' after on_hit attacker binder";
-      on_hit := Some (attacker, parse_body st)
+      (* on_hit { }: param-less; binds the bare 'mob' and 'attacker'
+         (optional<Player>) variables in scope *)
+      if peek_tok st = Token.LPAREN then
+        error st
+          "handler 'on_hit' takes no parameter list; write 'on_hit { }' — 'mob' and 'attacker' \
+           are bound as bare variables in scope";
+      on_hit := Some (parse_body st)
     (* generic first-class handlers: on_click / on_attack / on_target / on_tick.
        on_spawn/on_death/on_attack/on_hit are matched by dedicated branches
        above and never reach here. *)
@@ -445,22 +446,15 @@ let parse_sched_decl st =
 let parse_block_cb st =
   let cb_pos = pos_here st in
   let cb_name = expect_ident st "callback name" in
-  expect st Token.LPAREN "'(' after callback name";
-  let params = ref [] in
-  if peek_tok st <> Token.RPAREN then begin
-    let one () =
-      let pp = pos_here st in
-      (expect_ident st "callback parameter name", pp)
-    in
-    params := [ one () ];
-    while matches st Token.COMMA do
-      params := one () :: !params
-    done
-  end;
-  expect st Token.RPAREN "')' to close the callback parameter list";
+  if peek_tok st = Token.LPAREN then
+    error st
+      (Printf.sprintf
+         "callback '%s' takes no parameter list; write '%s [-> Type] { }' — the block value and \
+          the hook's values are bound as bare variables in scope"
+         cb_name cb_name);
   let cb_ret = if matches st Token.ARROW then Some (Parse_type.parse_type st) else None in
   let cb_body = parse_body st in
-  { cb_name; cb_params = List.rev !params; cb_ret; cb_body; cb_pos }
+  { cb_name; cb_params = []; cb_ret; cb_body; cb_pos }
 
 let parse_block_handler st =
   let bh_pos = pos_here st in

@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        set this.name to "Steve"
+    on_join {
+        set player.name to "Steve"
     }
 }

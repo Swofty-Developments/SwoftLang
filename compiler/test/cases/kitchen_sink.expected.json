@@ -1249,6 +1249,7 @@
       "name": "PlayerChat",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "message" ],
       "execute": {
         "async": false,

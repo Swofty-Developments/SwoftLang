@@ -270,6 +270,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -282,11 +283,11 @@
               "line": 34,
               "col": 14,
               "kind": "string",
-              "value": "<green>Welcome ${this.name}!"
+              "value": "<green>Welcome ${player.name}!"
             },
             "target": {
               "line": 34,
-              "col": 48,
+              "col": 50,
               "kind": "string",
               "value": "all"
             }
@@ -298,10 +299,10 @@
             "call": {
               "name": "greet_later",
               "args": [
-                { "line": 35, "col": 27, "kind": "var", "name": "this" },
+                { "line": 35, "col": 27, "kind": "var", "name": "player" },
                 {
                   "line": 35,
-                  "col": 33,
+                  "col": 35,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -329,24 +330,24 @@
               },
               {
                 "line": 38,
-                "col": 22,
+                "col": 24,
                 "kind": "set_prop",
                 "target": {
                   "line": 38,
                   "col": 17,
                   "kind": "var",
-                  "name": "this"
+                  "name": "player"
                 },
                 "name": "health",
                 "value": {
                   "line": 38,
-                  "col": 37,
+                  "col": 41,
                   "kind": "prop",
                   "target": {
                     "line": 38,
-                    "col": 32,
+                    "col": 34,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   },
                   "name": "max_health"
                 }
@@ -365,7 +366,7 @@
                   "line": 39,
                   "col": 31,
                   "kind": "var",
-                  "name": "this"
+                  "name": "player"
                 }
               }
             ]

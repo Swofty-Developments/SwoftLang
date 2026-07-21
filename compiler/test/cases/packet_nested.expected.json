@@ -9,6 +9,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -137,7 +138,7 @@
               "line": 19,
               "col": 14,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

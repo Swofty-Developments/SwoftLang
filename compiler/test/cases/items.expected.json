@@ -91,6 +91,7 @@
       "name": "PlayerUseItem",
       "receiver": "Item",
       "priority": 0,
+      "self": "item",
       "params": [ "player" ],
       "execute": {
         "async": false,
@@ -110,7 +111,7 @@
                 "kind": "call",
                 "name": "custom_id",
                 "args": [
-                  { "line": 64, "col": 22, "kind": "var", "name": "this" }
+                  { "line": 64, "col": 22, "kind": "var", "name": "item" }
                 ]
               },
               "right": {

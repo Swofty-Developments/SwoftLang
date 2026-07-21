@@ -2,7 +2,7 @@
 // PlayerInfoUpdatePacket entries/properties shape) and explicit 'none'
 // for nullable packet components (displayName, chatSession)
 Player {
-    on_join() {
+    on_join {
         send packet "PlayerInfoUpdatePacket" {
             actions: ["ADD_PLAYER", "UPDATE_LISTED"],
             entries: [{
@@ -16,6 +16,6 @@ Player {
                 chatSession: none,
                 listOrder: 0
             }]
-        } to this
+        } to player
     }
 }

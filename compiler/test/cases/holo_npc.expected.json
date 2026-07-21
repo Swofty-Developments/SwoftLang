@@ -484,7 +484,8 @@
       },
       "look_at_players": true,
       "on_click": {
-        "param": "player",
+        "self": "npc",
+        "params": [ "player" ],
         "body": [
           {
             "line": 43,
@@ -506,7 +507,8 @@
         ]
       },
       "on_left_click": {
-        "param": "clicker",
+        "self": "npc",
+        "params": [ "player" ],
         "body": [
           {
             "line": 46,
@@ -522,7 +524,7 @@
               "line": 46,
               "col": 38,
               "kind": "var",
-              "name": "clicker"
+              "name": "player"
             }
           }
         ]

@@ -1,7 +1,6 @@
-// Player.on_chat binds exactly one argument (message); a second binder is an
-// arity error.
+// A receiver method takes no parameter list.
 Player {
-    on_chat(message, extra) {
+    on_chat(message) {
         broadcast "hi"
     }
 }

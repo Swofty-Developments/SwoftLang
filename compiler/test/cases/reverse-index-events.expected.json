@@ -9,6 +9,7 @@
       "name": "BlockBreak",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "block", "location", "face" ],
       "execute": {
         "async": false,
@@ -23,7 +24,12 @@
               "kind": "string",
               "value": "broke ${block} at ${location.block_x}"
             },
-            "target": { "line": 7, "col": 57, "kind": "var", "name": "this" }
+            "target": {
+              "line": 7,
+              "col": 57,
+              "kind": "var",
+              "name": "player"
+            }
           },
           { "line": 8, "col": 9, "kind": "cancel_event" }
         ]
@@ -35,6 +41,7 @@
       "name": "BlockPlace",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "block", "location", "face", "hand" ],
       "execute": {
         "async": false,
@@ -53,7 +60,7 @@
               "line": 12,
               "col": 35,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           { "line": 13, "col": 9, "kind": "cancel_event" }
@@ -66,6 +73,7 @@
       "name": "ServerPing",
       "receiver": "Server",
       "priority": 0,
+      "self": "server",
       "params": [ "status" ],
       "execute": {
         "async": false,

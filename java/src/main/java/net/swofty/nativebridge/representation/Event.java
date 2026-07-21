@@ -18,9 +18,17 @@ public class Event {
     private String receiver;
 
     /**
-     * The user's positional binder names for a receiver method (empty for a
-     * flat handler). {@code on_hit(attacker)} emits {@code ["attacker"]}; each
-     * name binds to the mapped event argument in order.
+     * The receiver instance's natural noun ("player"/"entity"/"mob"/"item"/
+     * "block"/"projectile"/"inventory"/"world"/"server"/"npc"/"hologram"), or
+     * {@code null} for a legacy flat handler. When set, the runtime binds the
+     * receiver instance under this bare name (instead of {@code this}).
+     */
+    private String self;
+
+    /**
+     * The event's canonical positional arg names for a receiver method (empty
+     * for a flat handler). {@code on_hit} emits {@code ["attacker"]}; each name
+     * binds to the mapped event argument in order as a bare variable.
      */
     private List<String> params = List.of();
 
@@ -61,6 +69,15 @@ public class Event {
     /** True when this handler is an OOP receiver method (has a receiver type). */
     public boolean isReceiver() {
         return receiver != null;
+    }
+
+    /** The receiver instance's bound noun, or {@code null} for a flat handler. */
+    public String getSelf() {
+        return self;
+    }
+
+    public void setSelf(String self) {
+        this.self = self;
     }
 
     /** The positional binder names for a receiver method. */

@@ -45,6 +45,7 @@
           "name": "PlayerJoin",
           "receiver": "Player",
           "priority": 0,
+          "self": "player",
           "params": [],
           "execute": {
             "async": false,
@@ -63,7 +64,7 @@
                   "line": 11,
                   "col": 34,
                   "kind": "var",
-                  "name": "this"
+                  "name": "player"
                 }
               }
             ]

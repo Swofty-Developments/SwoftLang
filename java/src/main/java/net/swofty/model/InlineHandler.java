@@ -10,11 +10,18 @@ import net.swofty.nativebridge.representation.ExecuteBlock;
  * compiler under the declaration's {@code "handlers"} object as
  * {@code {event: {params:[...], body:{...}}}}.
  *
- * <p>{@code params} are the user-chosen binder names in declaration order (the
- * types are fixed per (kind, event) by the compiler registry); the runtime
- * dispatcher binds {@code this} to the involved instance plus each param name
- * positionally to that event's arguments before running {@code body} through an
- * {@link net.swofty.ASTExecutor}. Bodies are sync-colored.
+ * <p>{@code self} is the receiver instance's natural noun (mob/item/block/…)
+ * bound as a bare variable; {@code params} are the event's canonical arg names
+ * in declaration order (types fixed per (kind, event) by the compiler
+ * registry). The runtime dispatcher binds {@code self} to the involved instance
+ * plus each param name positionally to that event's arguments before running
+ * {@code body} through an {@link net.swofty.ASTExecutor}. Bodies are
+ * sync-colored.
  */
-public record InlineHandler(List<String> params, ExecuteBlock body) {
+public record InlineHandler(String self, List<String> params, ExecuteBlock body) {
+
+    /** Legacy shape without a bound self noun. */
+    public InlineHandler(List<String> params, ExecuteBlock body) {
+        this(null, params, body);
+    }
 }

@@ -93,7 +93,7 @@ command "sink", "s" {
 }
 
 Player {
-    on_chat(message) {
+    on_chat {
         if message contains "badword" {
             cancel event
         }

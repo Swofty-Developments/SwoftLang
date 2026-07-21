@@ -252,6 +252,7 @@
       "name": "PlayerUseItem",
       "receiver": "Item",
       "priority": 0,
+      "self": "item",
       "params": [ "player" ],
       "execute": {
         "async": false,
@@ -277,7 +278,7 @@
                     "line": 43,
                     "col": 12,
                     "kind": "var",
-                    "name": "this"
+                    "name": "item"
                   },
                   "name": "tags"
                 },
@@ -322,7 +323,7 @@
                 "line": 46,
                 "col": 13,
                 "kind": "var",
-                "name": "this"
+                "name": "item"
               },
               "name": "tags"
             },
@@ -349,7 +350,7 @@
                       "line": 46,
                       "col": 32,
                       "kind": "var",
-                      "name": "this"
+                      "name": "item"
                     },
                     "name": "tags"
                   },

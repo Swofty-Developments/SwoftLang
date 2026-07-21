@@ -415,6 +415,7 @@ let check_binding_shadows ctx pos what bindings =
    error). *)
 let check_inline_handlers ctx kind (handlers : inline_handler list) =
   let this_ty = decl_this_ty kind in
+  let self_noun = Registry.decl_noun kind in
   (* a cancellable inline handler exposes a synthetic cancellable event so the
      body's `cancel event` typechecks (the runtime binds the real Minestom
      CancellableEvent as `event`); non-cancellable handlers keep event = None so
@@ -442,28 +443,15 @@ let check_inline_handlers ctx kind (handlers : inline_handler list) =
           (String.concat ", " (handler_names kind))
           (suggestion h.ih_event (handler_names kind))
       | Some sg ->
-        let want = List.length sg.h_params in
-        let got = List.length h.ih_params in
-        if want <> got then
-          err ctx h.ih_pos "%s handler '%s' expects %d parameter%s (%s), got %d"
-            (decl_kind_name kind) h.ih_event want
-            (if want = 1 then "" else "s")
-            (String.concat ", "
-               (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.h_params))
-            got
-        else begin
-          let binder_names = "this" :: List.map fst h.ih_params in
-          check_binding_shadows ctx h.ih_pos
-            (Printf.sprintf "the '%s' handler" h.ih_event)
-            binder_names;
-          let env = bind empty_env "this" this_ty in
-          let env =
-            List.fold_left2
-              (fun env (pname, _ppos) (_cn, pty) -> bind env pname pty)
-              env h.ih_params sg.h_params
-          in
-          ignore (check_stmts ctx (bctx_for sg) env h.ih_body)
-        end)
+        let binder_names = self_noun :: List.map fst sg.h_params in
+        check_binding_shadows ctx h.ih_pos
+          (Printf.sprintf "the '%s' handler" h.ih_event)
+          binder_names;
+        (* bind the receiver instance under its noun, then the event's canonical
+           args as bare variables (an arg sharing the self noun wins) *)
+        let env = bind empty_env self_noun this_ty in
+        let env = List.fold_left (fun env (cn, pty) -> bind env cn pty) env sg.h_params in
+        ignore (check_stmts ctx (bctx_for sg) env h.ih_body))
     handlers
 
 (* OOP receiver blocks (`Player { on_join() {} }`, ...). Each method name is
@@ -480,6 +468,7 @@ let check_receiver ctx (r : receiver_decl) =
       (suggestion r.rc_type Registry.receiver_type_names)
   | Some rk ->
     let this_ty = Registry.receiver_this_ty rk in
+    let self_noun = Registry.receiver_noun rk in
     let bctx_for (sg : Registry.handler_sig) =
       let event =
         Some { e_name = sg.h_event; e_cancellable = sg.h_cancellable; e_props = []; e_aliases = [] }
@@ -495,28 +484,16 @@ let check_receiver ctx (r : receiver_decl) =
             (String.concat ", " (Registry.receiver_method_names rk))
             (suggestion h.ih_event (Registry.receiver_method_names rk))
         | Some sg ->
-          let want = List.length sg.h_params in
-          let got = List.length h.ih_params in
-          if want <> got then
-            err ctx h.ih_pos "%s method '%s' expects %d parameter%s (%s), got %d" r.rc_type
-              h.ih_event want
-              (if want = 1 then "" else "s")
-              (String.concat ", "
-                 (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.h_params))
-              got
-          else begin
-            let binder_names = "this" :: List.map fst h.ih_params in
-            check_binding_shadows ctx h.ih_pos
-              (Printf.sprintf "the '%s' method" h.ih_event)
-              binder_names;
-            let env = bind empty_env "this" this_ty in
-            let env =
-              List.fold_left2
-                (fun env (pname, _ppos) (_cn, pty) -> bind env pname pty)
-                env h.ih_params sg.h_params
-            in
-            ignore (check_stmts ctx (bctx_for sg) env h.ih_body)
-          end)
+          let binder_names = self_noun :: List.map fst sg.h_params in
+          check_binding_shadows ctx h.ih_pos
+            (Printf.sprintf "the '%s' method" h.ih_event)
+            binder_names;
+          (* bind the receiver instance under its noun, then the event's
+             canonical args as bare variables (an arg sharing the self noun
+             wins) *)
+          let env = bind empty_env self_noun this_ty in
+          let env = List.fold_left (fun env (cn, pty) -> bind env cn pty) env sg.h_params in
+          ignore (check_stmts ctx (bctx_for sg) env h.ih_body))
       r.rc_methods
 
 let check_receivers ctx (rs : receiver_decl list) = List.iter (check_receiver ctx) rs
@@ -747,14 +724,9 @@ let check_mob_decl ctx mb =
   handler "on_spawn" [ ("mob", TMob) ] mb.mb_on_spawn;
   handler "on_death" [ ("mob", TMob); ("killer", TOptional TPlayer) ] mb.mb_on_death;
   handler "on_attack" [ ("mob", TMob); ("victim", TPlayer) ] mb.mb_on_attack;
-  (* on_hit(attacker): sync-colored, binds 'mob' and the named attacker
-     (optional<Player>); the attacker binder must not shadow 'mob' *)
-  (match mb.mb_on_hit with
-  | None -> ()
-  | Some (attacker, ss) ->
-    check_binding_shadows ctx mb.mb_pos "on_hit" [ "mob"; attacker ];
-    let env = bind (bind empty_env "mob" TMob) attacker (TOptional TPlayer) in
-    ignore (check_stmts ctx (override_for "on_hit") env ss));
+  (* on_hit: sync-colored, binds the bare 'mob' and 'attacker'
+     (optional<Player>) variables in scope *)
+  handler "on_hit" [ ("mob", TMob); ("attacker", TOptional TPlayer) ] mb.mb_on_hit;
   check_inline_handlers ctx KMob mb.mb_handlers;
   ctx.cur_mob_tags <- []
 
@@ -828,9 +800,9 @@ let check_npcs ctx (ns : npc list) =
          player; the binder must not shadow a persistent *)
       let handler what = function
         | None -> ()
-        | Some (binder, ss) ->
-          check_binding_shadows ctx n.n_pos what [ binder ];
-          let henv = bind empty_env binder TPlayer in
+        | Some ss ->
+          check_binding_shadows ctx n.n_pos what [ "npc"; "player" ];
+          let henv = bind (bind empty_env "npc" TEntity) "player" TPlayer in
           ignore (check_stmts ctx bctx henv ss)
       in
       handler "an on_click handler" n.n_on_click;
@@ -969,18 +941,10 @@ let check_sched_decl ctx (sd : sched_decl) =
    value. A written '-> Type' annotation is cross-checked against the fixed
    type. *)
 let check_block_cb ctx kind (sg : Registry.block_cb_sig) (cb : block_cb) =
-  let want = List.length sg.bcb_params in
-  let got = List.length cb.cb_params in
-  if want <> got then
-    err ctx cb.cb_pos "%s callback '%s' expects %d parameter%s (%s), got %d" kind cb.cb_name want
-      (if want = 1 then "" else "s")
-      (String.concat ", "
-         (List.map (fun (n, t) -> Printf.sprintf "%s: %s" n (ty_to_string t)) sg.bcb_params))
-      got
-  else begin
+  begin
     check_binding_shadows ctx cb.cb_pos
       (Printf.sprintf "the '%s' callback" cb.cb_name)
-      (List.map fst cb.cb_params);
+      (List.map fst sg.bcb_params);
     (* a written '-> Type' must agree with the hook's fixed return type *)
     (match (cb.cb_ret, sg.bcb_ret) with
     | Some dt, Some expected ->
@@ -992,10 +956,9 @@ let check_block_cb ctx kind (sg : Registry.block_cb_sig) (cb : block_cb) =
       err ctx cb.cb_pos "%s callback '%s' does not return a value, but '-> %s' was written" kind
         cb.cb_name (ty_to_string (ty_of_dt dt))
     | None, _ -> ());
+    (* bind the hook's canonical arg names as bare variables in scope *)
     let env =
-      List.fold_left2
-        (fun env (pname, _pp) (_cn, pty) -> bind env pname pty)
-        empty_env cb.cb_params sg.bcb_params
+      List.fold_left (fun env (cn, pty) -> bind env cn pty) empty_env sg.bcb_params
     in
     let vals = ref [] in
     let bare = ref false in

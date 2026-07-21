@@ -40,6 +40,7 @@ import net.swofty.nativebridge.execution.BlockStatement;
 import net.swofty.nativebridge.execution.Expression;
 import net.swofty.nativebridge.execution.Statement;
 import net.swofty.nativebridge.execution.commands.AsyncBlockStatement;
+import net.swofty.nativebridge.execution.commands.CallOriginalStatement;
 import net.swofty.nativebridge.execution.commands.CancelEventStatement;
 import net.swofty.nativebridge.execution.commands.ForEachStatement;
 import net.swofty.nativebridge.execution.commands.FunctionCallStatement;
@@ -682,7 +683,7 @@ public class SwoftJsonLoader {
                 params.add(param.getAsString());
             }
             handlers.put(entry.getKey(), new net.swofty.model.InlineHandler(
-                    params, buildExecuteBlock(h.get("body"))));
+                    optString(h, "self"), params, buildExecuteBlock(h.get("body"))));
         }
         return handlers;
     }
@@ -905,6 +906,9 @@ public class SwoftJsonLoader {
         if (has(obj, "receiver")) {
             event.setReceiver(obj.get("receiver").getAsString());
         }
+        if (has(obj, "self")) {
+            event.setSelf(obj.get("self").getAsString());
+        }
         if (has(obj, "params")) {
             List<String> params = new ArrayList<>();
             for (JsonElement param : obj.getAsJsonArray("params")) {
@@ -1081,6 +1085,13 @@ public class SwoftJsonLoader {
             case "call":
                 return new FunctionCallStatement(obj.get("name").getAsString(),
                         buildExpressionList(obj.getAsJsonArray("args")));
+            case "call_original":
+                // `call original method [with arguments ...]`: null arguments =
+                // the no-args form (base runs with the current bound vars)
+                return new CallOriginalStatement(
+                        has(obj, "arguments") && !obj.get("arguments").isJsonNull()
+                                ? buildExpressionList(obj.getAsJsonArray("arguments"))
+                                : null);
             case "method_call_stmt":
                 // <receiver>.<name>(<args>) in-place mutating collection method
                 return new net.swofty.nativebridge.execution.commands.MethodCallStatement(

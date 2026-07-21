@@ -9,6 +9,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -29,10 +30,10 @@
               "kind": "call",
               "name": "in_front_of",
               "args": [
-                { "line": 19, "col": 43, "kind": "var", "name": "this" },
+                { "line": 19, "col": 43, "kind": "var", "name": "player" },
                 {
                   "line": 19,
-                  "col": 49,
+                  "col": 51,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -56,7 +57,7 @@
               "line": 20,
               "col": 54,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -68,7 +69,7 @@
               "line": 21,
               "col": 19,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

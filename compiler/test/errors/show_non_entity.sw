@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        show "hello" to this
+    on_join {
+        show "hello" to player
     }
 }

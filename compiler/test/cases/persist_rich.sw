@@ -15,9 +15,9 @@ persistent waypoints for Player: list<Location> = []
 persistent stash for Player: map<String, Item> = new_map()
 
 Player {
-    on_join() {
-        set home for this to this.location
-        set starter for this to item("compass")
+    on_join {
+        set home for player to player.location
+        set starter for player to item("compass")
     }
 }
 

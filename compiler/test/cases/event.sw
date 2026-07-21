@@ -1,20 +1,20 @@
 Player {
-    on_chat(message) {
+    on_chat {
         // Modify the message
         set message to "[Filtered] ${message}"
 
         // Send feedback to the player
-        send "You said: ${message}" to this
+        send "You said: ${message}" to player
 
         // Conditional cancellation
         if message contains "badword" {
-            send "<red>Your message was blocked!" to this
+            send "<red>Your message was blocked!" to player
             cancel event
         }
     }
 
-    on_join() {
-        send "<green>Welcome ${this.name}!" to all
-        send "Hello ${this.name}!" to this
+    on_join {
+        send "<green>Welcome ${player.name}!" to all
+        send "Hello ${player.name}!" to player
     }
 }

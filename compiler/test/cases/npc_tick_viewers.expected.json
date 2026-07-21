@@ -157,22 +157,23 @@
       ],
       "handlers": {
         "on_tick": {
+          "self": "hologram",
           "params": [],
           "body": [
             {
               "line": 26,
-              "col": 18,
+              "col": 22,
               "kind": "set_prop",
               "target": {
                 "line": 26,
                 "col": 13,
                 "kind": "var",
-                "name": "this"
+                "name": "hologram"
               },
               "name": "text",
               "value": {
                 "line": 26,
-                "col": 26,
+                "col": 30,
                 "kind": "string",
                 "value": "<aqua>Clock"
               }
@@ -234,7 +235,8 @@
       "look_at_players": false,
       "viewable": false,
       "on_click": {
-        "param": "player",
+        "self": "npc",
+        "params": [ "player" ],
         "body": [
           {
             "line": 12,
@@ -258,22 +260,23 @@
       "on_left_click": null,
       "handlers": {
         "on_tick": {
+          "self": "npc",
           "params": [],
           "body": [
             {
               "line": 15,
-              "col": 18,
+              "col": 17,
               "kind": "set_prop",
               "target": {
                 "line": 15,
                 "col": 13,
                 "kind": "var",
-                "name": "this"
+                "name": "npc"
               },
               "name": "glowing",
               "value": {
                 "line": 15,
-                "col": 29,
+                "col": 28,
                 "kind": "boolean",
                 "value": true
               }

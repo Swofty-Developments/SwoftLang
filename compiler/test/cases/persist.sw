@@ -11,10 +11,10 @@ persistent last_seen for Player: String = "never"
 persistent hardcore for Player: Boolean = false
 
 Player {
-    on_join() {
+    on_join {
         set total_joins to total_joins + 1
-        set last_seen for this to "today"
-        send "Join #${total_joins}${motd_extra}" to this
+        set last_seen for player to "today"
+        send "Join #${total_joins}${motd_extra}" to player
     }
 }
 

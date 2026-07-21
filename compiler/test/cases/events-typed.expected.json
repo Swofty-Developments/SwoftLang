@@ -9,6 +9,7 @@
       "name": "EntityDamage",
       "receiver": "Entity",
       "priority": 0,
+      "self": "entity",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
@@ -64,6 +65,7 @@
       "name": "EntityAttack",
       "receiver": "Entity",
       "priority": 0,
+      "self": "entity",
       "params": [ "target" ],
       "execute": {
         "async": false,
@@ -76,11 +78,11 @@
               "line": 16,
               "col": 14,
               "kind": "string",
-              "value": "${this} hit ${target}"
+              "value": "${entity} hit ${target}"
             },
             "target": {
               "line": 16,
-              "col": 41,
+              "col": 43,
               "kind": "string",
               "value": "all"
             }
@@ -94,6 +96,7 @@
       "name": "PlayerMove",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "new_position" ],
       "execute": {
         "async": false,
@@ -105,13 +108,13 @@
             "target": "new_position",
             "value": {
               "line": 22,
-              "col": 34,
+              "col": 36,
               "kind": "prop",
               "target": {
                 "line": 22,
                 "col": 29,
                 "kind": "var",
-                "name": "this"
+                "name": "player"
               },
               "name": "location"
             }
@@ -125,6 +128,7 @@
       "name": "PlayerDeath",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "death_text", "chat_message" ],
       "execute": {
         "async": false,
@@ -138,7 +142,7 @@
               "line": 26,
               "col": 27,
               "kind": "string",
-              "value": "<red>${this.name} was slain"
+              "value": "<red>${player.name} was slain"
             }
           }
         ]
@@ -150,6 +154,7 @@
       "name": "PlayerGameModeChange",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "new_game_mode" ],
       "execute": {
         "async": false,
@@ -162,13 +167,13 @@
               "line": 30,
               "col": 14,
               "kind": "string",
-              "value": "${this.name} -> ${new_game_mode}"
+              "value": "${player.name} -> ${new_game_mode}"
             },
             "target": {
               "line": 30,
-              "col": 52,
+              "col": 54,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
@@ -180,6 +185,7 @@
       "name": "PlayerUseItemEvent",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "item", "hand" ],
       "execute": {
         "async": false,
@@ -198,7 +204,7 @@
               "line": 34,
               "col": 44,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           { "line": 35, "col": 9, "kind": "cancel_event" }
@@ -211,6 +217,7 @@
       "name": "PlayerBlockInteract",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "block", "location", "face", "hand" ],
       "execute": {
         "async": false,
@@ -229,7 +236,7 @@
               "line": 39,
               "col": 72,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

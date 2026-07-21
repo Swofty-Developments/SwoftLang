@@ -1,1 +1,1 @@
-Player method 'on_chat' expects 1 parameter (message: String), got 2
+handler 'on_chat' takes no parameter list

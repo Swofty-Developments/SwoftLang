@@ -30,13 +30,13 @@ command "countdown" {
 }
 
 Player {
-    on_join() {
-        send "<green>Welcome ${this.name}!" to all
-        spawn greet_later(this, 5)
+    on_join {
+        send "<green>Welcome ${player.name}!" to all
+        spawn greet_later(player, 5)
         async {
             wait 40 ticks
-            set this.health to this.max_health
-            send "healed!" to this
+            set player.health to player.max_health
+            send "healed!" to player
         }
     }
 }

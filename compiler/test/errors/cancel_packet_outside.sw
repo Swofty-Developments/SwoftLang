@@ -1,5 +1,5 @@
 Player {
-    on_chat(message) {
+    on_chat {
         cancel packet
     }
 }

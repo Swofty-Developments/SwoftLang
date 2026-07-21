@@ -3,7 +3,7 @@ mob "zombie" {
     type: "ZOMBIE"
     viewable: false
     tags: { hits: map<Player, Integer> }
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
             set name of mob to "<red>Zombie <gray>${mob.tags.hits[attacker] otherwise 0}/5" for attacker
@@ -15,9 +15,9 @@ mob "zombie" {
     }
 }
 Player {
-    on_join() {
-        spawn mob "zombie" at in_front_of(this, 5) as z
-        set name of z to "<red>Zombie <gray>0/5" for this
-        show z to this
+    on_join {
+        spawn mob "zombie" at in_front_of(player, 5) as z
+        set name of z to "<red>Zombie <gray>0/5" for player
+        show z to player
     }
 }

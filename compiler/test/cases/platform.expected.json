@@ -1602,6 +1602,7 @@
       "name": "ServerPing",
       "receiver": "Server",
       "priority": 0,
+      "self": "server",
       "params": [ "status" ],
       "execute": {
         "async": false,
@@ -1626,6 +1627,7 @@
       "name": "TpsChange",
       "receiver": "Server",
       "priority": 0,
+      "self": "server",
       "params": [ "past", "current" ],
       "execute": {
         "async": false,
@@ -1702,6 +1704,7 @@
       "name": "BlockBreak",
       "receiver": "Block",
       "priority": 0,
+      "self": "block",
       "params": [ "player" ],
       "execute": {
         "async": false,
@@ -1733,6 +1736,7 @@
       "name": "BlockPlace",
       "receiver": "Block",
       "priority": 0,
+      "self": "block",
       "params": [ "player", "location", "block" ],
       "execute": {
         "async": false,

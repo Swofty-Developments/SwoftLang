@@ -75,11 +75,11 @@ let parse ~file source =
     match peek_tok st with
     | Token.COMMAND -> commands := parse_command_group st :: !commands
     (* The flat event system was removed: `event <Name> { execute {} }` is now a
-       capitalized receiver block (`Player { on_join() {} }`, ...). *)
+       capitalized receiver block (`Player { on_join {} }`, ...). *)
     | Token.EVENT ->
       error st
         "the flat 'event <Name> { execute { } }' form was removed; use the OOP receiver block \
-         instead, e.g. 'Player { on_chat(message) { } }' (see the receiver types: Player, Entity, \
+         instead, e.g. 'Player { on_chat { } }' (see the receiver types: Player, Entity, \
          Mob, Item, Block, Projectile, Inventory, World, Server, Npc, Hologram)"
     | Token.FUNCTION -> functions := parse_function st ~fn_async:false :: !functions
     | Token.IDENT "async" when peek2_tok st = Token.FUNCTION ->
@@ -123,7 +123,7 @@ let parse ~file source =
     | Token.IDENT "on" ->
       error st
         "the flat 'on <Event> { }' shorthand was removed; use the OOP receiver block instead, \
-         e.g. 'Player { on_chat(message) { } }' (receiver types: Player, Entity, Mob, Item, \
+         e.g. 'Player { on_chat { } }' (receiver types: Player, Entity, Mob, Item, \
          Block, Projectile, Inventory, World, Server, Npc, Hologram)"
     | Token.IDENT "api" -> apis := parse_api_decl st :: !apis
     | Token.IDENT "every" -> schedulers := parse_sched_decl st :: !schedulers

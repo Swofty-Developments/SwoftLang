@@ -4,13 +4,13 @@
 // PlayerCommand fires before a command is dispatched; it is cancellable and
 // 'command' is rw so a handler can rewrite or veto what runs.
 Player {
-    on_command(cmd) {
-        if cmd contains "stop" {
-            send "that command is blocked" to this
+    on_command {
+        if command contains "stop" {
+            send "that command is blocked" to player
             cancel event
         }
         // normalise the command before it dispatches
-        set cmd to lowercase(cmd)
+        set command to lowercase(command)
     }
 }
 

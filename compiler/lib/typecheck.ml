@@ -124,6 +124,7 @@ let collect_sched_names (script : Ast.script) : string list =
       we t;
       we v
     | SCall (_, args) | SSpawn (_, args) -> List.iter we args
+    | SCallOriginal args -> Option.iter (List.iter we) args
     | SMethodCall (recv, _, args) ->
       we recv;
       List.iter we args
@@ -393,7 +394,7 @@ let collect_sched_names (script : Ast.script) : string list =
       body mb.mb_on_spawn;
       body mb.mb_on_death;
       body mb.mb_on_attack;
-      (match mb.mb_on_hit with Some (_, ss) -> List.iter ws ss | None -> ());
+      body mb.mb_on_hit;
       scan_handlers mb.mb_handlers)
     script.mobs;
   List.iter
@@ -409,8 +410,8 @@ let collect_sched_names (script : Ast.script) : string list =
     script.holograms;
   List.iter
     (fun (n : npc) ->
-      (match n.n_on_click with Some (_, ss) -> List.iter ws ss | None -> ());
-      (match n.n_on_left_click with Some (_, ss) -> List.iter ws ss | None -> ());
+      body n.n_on_click;
+      body n.n_on_left_click;
       scan_handlers n.n_handlers)
     script.npcs;
   List.iter

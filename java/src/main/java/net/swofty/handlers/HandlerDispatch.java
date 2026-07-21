@@ -54,16 +54,16 @@ public final class HandlerDispatch {
     /**
      * Run a dedicated-field handler body ({@code SwoftMob} on_spawn / on_death /
      * on_attack / on_hit) through the SAME override-aware path the generic
-     * handlers-map methods use: the caller-supplied {@code vars} keep their
-     * legacy bindings (notably {@code mob}, plus attacker/killer/victim/cancelled)
-     * for back-compat, and this additionally binds {@code this} = the receiver
-     * plus the {@code $override}/{@code super} context so the body's
-     * {@code default()} / {@code super.<method>(...)} chains into the base
-     * {@code (receiverType, methodName)} receiver method. When no such base
-     * method is registered, {@code default()} is a safe no-op (see
-     * {@link ReceiverDispatch#invokeDefault}). The body runs on the passed
-     * {@code vars} map (not a copy) so settable bindings like {@code cancelled}
-     * flush back to the caller. No-op for a null/empty block.
+     * handlers-map methods use: the caller-supplied {@code vars} already carry
+     * the receiver noun ({@code mob}) plus the former event args
+     * (attacker/killer/victim/damage/cancelled) as bare variables, and this
+     * adds the {@code $override} context so the body's {@code call original
+     * method} chains into the base {@code (receiverType, methodName)} receiver
+     * method. When no such base method is registered, {@code call original
+     * method} is a safe no-op (see {@link ReceiverDispatch#invokeOriginal}). The
+     * body runs on the passed {@code vars} map (not a copy) so settable bindings
+     * like {@code cancelled} flush back to the caller. No-op for a null/empty
+     * block.
      */
     public static void runOverride(CommandSender sender, ExecuteBlock body,
             Map<String, Object> vars, String label, Object thisValue, String receiverType,
@@ -71,12 +71,13 @@ public final class HandlerDispatch {
         if (body == null || body.isEmpty()) {
             return;
         }
-        vars.put("this", thisValue);
+        // the receiver instance is already bound under its noun (e.g. `mob`) by
+        // the caller's vars; only the override context is added so a
+        // `call original method` in the body can chain into the base method.
         ReceiverDispatch.OverrideContext ctx = new ReceiverDispatch.OverrideContext(
                 receiverType, methodName, thisValue, args, null,
                 sender != null ? sender : consoleSender());
         vars.put("$override", ctx);
-        vars.put("super", new ReceiverDispatch.SuperRef(ctx));
         run(sender, body, vars, label);
     }
 
@@ -97,7 +98,10 @@ public final class HandlerDispatch {
     public static boolean dispatch(InlineHandler handler, Object thisValue,
             net.minestom.server.event.Event cancellable, String label, Object... args) {
         Map<String, Object> vars = new HashMap<>();
-        vars.put("this", thisValue);
+        // bind the receiver instance under its natural noun (mob/item/npc/…)
+        if (handler.self() != null) {
+            vars.put(handler.self(), thisValue);
+        }
         List<String> params = handler.params();
         for (int i = 0; i < params.size() && i < args.length; i++) {
             vars.put(params.get(i), args[i]);
@@ -122,7 +126,10 @@ public final class HandlerDispatch {
             net.minestom.server.event.Event cancellable, String label, String receiverType,
             String methodName, Object... args) {
         Map<String, Object> vars = new HashMap<>();
-        vars.put("this", thisValue);
+        // bind the receiver instance under its natural noun (mob/item/…)
+        if (handler.self() != null) {
+            vars.put(handler.self(), thisValue);
+        }
         List<String> params = handler.params();
         List<Object> argList = new ArrayList<>(args.length);
         for (Object arg : args) {
@@ -140,7 +147,6 @@ public final class HandlerDispatch {
         ReceiverDispatch.OverrideContext ctx = new ReceiverDispatch.OverrideContext(
                 receiverType, methodName, thisValue, argList, wrapper, sender);
         vars.put("$override", ctx);
-        vars.put("super", new ReceiverDispatch.SuperRef(ctx));
         run(sender, handler.body(), vars, label);
         return wrapper != null && wrapper.isCancelled();
     }

@@ -1,5 +1,5 @@
 Player {
-    on_chat(message) {
+    on_chat {
         if message = "hi" {
             halt
         } else 42

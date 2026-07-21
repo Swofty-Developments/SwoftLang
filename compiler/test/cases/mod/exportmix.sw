@@ -7,8 +7,8 @@ command "mixcmd" {
 }
 
 Player {
-    on_join() {
-        send "module says hi" to this
+    on_join {
+        send "module says hi" to player
     }
 }
 

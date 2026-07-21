@@ -54,18 +54,18 @@ command "ghoul" {
 }
 
 Mob {
-    on_spawn() {
-        broadcast "spawned: ${this.type}"
+    on_spawn {
+        broadcast "spawned: ${mob.type}"
     }
 
-    on_death(killer) {
+    on_death {
         if killer exists {
             broadcast "<gold>Kill credit!"
         }
     }
 
-    on_hit(attacker) {
-        if this.health < 10 {
+    on_hit {
+        if mob.health < 10 {
             broadcast "<red>the mob is low"
         }
     }

@@ -3,7 +3,7 @@ item "gem" {
 }
 
 Item {
-    on_use(player) {
-        set player.level to this.tags.power
+    on_use {
+        set player.level to item.tags.power
     }
 }

@@ -4,131 +4,135 @@
   "commands": [],
   "events": [
     {
-      "line": 8,
+      "line": 9,
       "col": 5,
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 9,
+            "line": 10,
             "col": 9,
             "kind": "broadcast",
             "message": {
-              "line": 9,
+              "line": 10,
               "col": 19,
               "kind": "string",
-              "value": "<green>${this.name} joined"
+              "value": "<green>${player.name} joined"
             }
           }
         ]
       }
     },
     {
-      "line": 12,
+      "line": 13,
       "col": 5,
       "name": "PlayerChat",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "message" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 13,
+            "line": 14,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 13,
+              "line": 14,
               "col": 12,
               "kind": "binary",
               "op": "EQUALS",
               "left": {
-                "line": 13,
+                "line": 14,
                 "col": 12,
                 "kind": "var",
                 "name": "message"
               },
               "right": {
-                "line": 13,
+                "line": 14,
                 "col": 23,
                 "kind": "string",
                 "value": "secret"
               }
             },
             "then": {
-              "line": 13,
+              "line": 14,
               "col": 32,
               "kind": "block",
               "statements": [
-                { "line": 14, "col": 13, "kind": "cancel_event" }
+                { "line": 15, "col": 13, "kind": "cancel_event" }
               ]
             },
             "else": null
           },
           {
-            "line": 16,
+            "line": 17,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 16,
+              "line": 17,
               "col": 14,
               "kind": "string",
               "value": "<gray>You said: ${message}"
             },
             "target": {
-              "line": 16,
+              "line": 17,
               "col": 46,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
       }
     },
     {
-      "line": 19,
+      "line": 20,
       "col": 5,
       "name": "PlayerDeath",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "death_text", "chat_message" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 20,
+            "line": 21,
             "col": 9,
             "kind": "broadcast",
             "message": {
-              "line": 20,
+              "line": 21,
               "col": 19,
               "kind": "string",
-              "value": "<red>${this.name} has fallen"
+              "value": "<red>${player.name} has fallen"
             }
           }
         ]
       }
     },
     {
-      "line": 26,
+      "line": 27,
       "col": 5,
       "name": "MobSpawn",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 27,
+            "line": 28,
             "col": 9,
             "kind": "broadcast",
             "message": {
-              "line": 27,
+              "line": 28,
               "col": 19,
               "kind": "string",
               "value": "<gray>A mob has spawned"
@@ -138,29 +142,25 @@
       }
     },
     {
-      "line": 30,
+      "line": 31,
       "col": 5,
       "name": "MobDamage",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 31,
-            "col": 18,
+            "line": 32,
+            "col": 17,
             "kind": "set_prop",
-            "target": {
-              "line": 31,
-              "col": 13,
-              "kind": "var",
-              "name": "this"
-            },
+            "target": { "line": 32, "col": 13, "kind": "var", "name": "mob" },
             "name": "glowing",
             "value": {
-              "line": 31,
-              "col": 29,
+              "line": 32,
+              "col": 28,
               "kind": "boolean",
               "value": true
             }
@@ -169,28 +169,29 @@
       }
     },
     {
-      "line": 34,
+      "line": 35,
       "col": 5,
       "name": "PlayerEntityInteract",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 34,
-            "col": 22,
+            "line": 35,
+            "col": 14,
             "kind": "send",
             "message": {
-              "line": 34,
-              "col": 27,
+              "line": 35,
+              "col": 19,
               "kind": "string",
-              "value": "<gray>You poke a ${this.type}."
+              "value": "<gray>You poke a ${mob.type}."
             },
             "target": {
-              "line": 34,
-              "col": 63,
+              "line": 35,
+              "col": 54,
               "kind": "var",
               "name": "player"
             }
@@ -199,27 +200,28 @@
       }
     },
     {
-      "line": 39,
+      "line": 40,
       "col": 5,
       "name": "BlockPlace",
       "receiver": "Block",
       "priority": 0,
+      "self": "block",
       "params": [ "player", "location", "block" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 40,
+            "line": 41,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 40,
+              "line": 41,
               "col": 14,
               "kind": "string",
               "value": "<gray>You placed a block"
             },
             "target": {
-              "line": 40,
+              "line": 41,
               "col": 44,
               "kind": "var",
               "name": "player"
@@ -229,27 +231,28 @@
       }
     },
     {
-      "line": 43,
+      "line": 44,
       "col": 5,
       "name": "BlockBreak",
       "receiver": "Block",
       "priority": 0,
+      "self": "block",
       "params": [ "player" ],
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 44,
+            "line": 45,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 44,
+              "line": 45,
               "col": 14,
               "kind": "string",
               "value": "<gray>You broke a block"
             },
             "target": {
-              "line": 44,
+              "line": 45,
               "col": 43,
               "kind": "var",
               "name": "player"
@@ -267,18 +270,18 @@
   "server": null,
   "mobs": [
     {
-      "line": 50,
+      "line": 51,
       "col": 1,
       "id": "ghoul",
       "type": "ZOMBIE",
       "name": {
-        "line": 52,
+        "line": 53,
         "col": 11,
         "kind": "string",
         "value": "<dark_green>Ghoul"
       },
       "health": {
-        "line": 53,
+        "line": 54,
         "col": 13,
         "kind": "number",
         "value": 40,
@@ -293,50 +296,44 @@
       "on_attack": null,
       "handlers": {
         "on_click": {
+          "self": "mob",
           "params": [ "player" ],
           "body": [
             {
-              "line": 56,
+              "line": 57,
               "col": 9,
               "kind": "send",
               "message": {
-                "line": 56,
+                "line": 57,
                 "col": 14,
                 "kind": "string",
                 "value": "<green>You poke the ghoul."
               },
               "target": {
-                "line": 56,
+                "line": 57,
                 "col": 46,
                 "kind": "var",
                 "name": "player"
               }
             },
             {
-              "line": 57,
+              "line": 58,
               "col": 9,
-              "kind": "call",
-              "name": "default",
-              "args": []
+              "kind": "call_original",
+              "arguments": null
             }
           ]
         },
         "on_target": {
+          "self": "mob",
           "params": [ "target" ],
           "body": [
             {
-              "line": 61,
-              "col": 15,
-              "kind": "method_call_stmt",
-              "receiver": {
-                "line": 61,
-                "col": 9,
-                "kind": "var",
-                "name": "super"
-              },
-              "name": "on_target",
-              "args": [
-                { "line": 61, "col": 25, "kind": "var", "name": "target" }
+              "line": 62,
+              "col": 9,
+              "kind": "call_original",
+              "arguments": [
+                { "line": 62, "col": 45, "kind": "var", "name": "target" }
               ]
             }
           ]
@@ -346,18 +343,18 @@
   ],
   "packet_listeners": [
     {
-      "line": 69,
+      "line": 70,
       "col": 5,
       "name": "ClientPlayerActionPacket",
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 70,
+            "line": 71,
             "col": 9,
             "kind": "broadcast",
             "message": {
-              "line": 70,
+              "line": 71,
               "col": 19,
               "kind": "string",
               "value": "<gray>A dig packet arrived"
@@ -367,24 +364,24 @@
       }
     },
     {
-      "line": 73,
+      "line": 74,
       "col": 5,
       "name": "ClientAnimationPacket",
       "execute": {
         "async": false,
         "statements": [
           {
-            "line": 74,
+            "line": 75,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 74,
+              "line": 75,
               "col": 14,
               "kind": "string",
               "value": "<gray>You swung your arm"
             },
             "target": {
-              "line": 74,
+              "line": 75,
               "col": 44,
               "kind": "var",
               "name": "player"

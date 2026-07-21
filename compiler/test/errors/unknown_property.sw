@@ -1,5 +1,5 @@
 Player {
-    on_join() {
-        set n to this.latencey
+    on_join {
+        set n to player.latencey
     }
 }

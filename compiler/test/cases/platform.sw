@@ -12,23 +12,23 @@ server {
 }
 
 Server {
-    on_list_ping(status) {
+    on_list_ping {
         broadcast "pinged"
     }
 
-    on_tps_change(past, current) {
+    on_tps_change {
         broadcast "TPS moved ${past} -> ${current}"
         if tps_at(60) < 15.0 broadcast "<red>we were lagging a minute ago"
     }
 }
 
 Block {
-    on_break(player) {
+    on_break {
         send "you broke a block" to player
         cancel event
     }
 
-    on_place(player, location, block) {
+    on_place {
         set block at location to "AIR"
     }
 }

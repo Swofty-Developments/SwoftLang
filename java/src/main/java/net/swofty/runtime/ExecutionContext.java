@@ -268,14 +268,8 @@ public final class ExecutionContext {
      * inside a module), then builtins
      */
     public Object callFunction(String name, List<Expression> args) {
-        // OOP receiver override: `default()` inside an overriding custom-decl
-        // handler runs the base receiver method with the same this + args.
-        if ("default".equals(name) && args.isEmpty()
-                && variables.get("$override")
-                        instanceof net.swofty.event.ReceiverDispatch.OverrideContext oc) {
-            net.swofty.event.ReceiverDispatch.invokeDefault(oc);
-            return NoneValue.INSTANCE;
-        }
+        // OOP receiver override chaining is now the `call original method`
+        // statement (see CallOriginalStatement), not a default()/super call.
         if (variables.get(name) instanceof SwoftCallable callable) {
             return callCallable(callable, evaluateCallableArgs(callable, args));
         }
@@ -296,11 +290,6 @@ public final class ExecutionContext {
      */
     public Object callMethod(Expression receiver, String name, List<Expression> args) {
         Object value = evaluate(receiver);
-        // OOP receiver override: `super.<method>(...)` chains to the base
-        // receiver method the custom declaration overrides.
-        if (value instanceof net.swofty.event.ReceiverDispatch.SuperRef superRef) {
-            return superRef.invoke(this, name, args);
-        }
         return Builtins.callMethod(this, value, name, args);
     }
 

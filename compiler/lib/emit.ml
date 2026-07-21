@@ -174,6 +174,10 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
   | SCall (name, args) ->
     node
       [ ("kind", `String "call"); ("name", `String name); ("args", `List (List.map expr args)) ]
+  | SCallOriginal args ->
+    node
+      [ ("kind", `String "call_original");
+        ("arguments", match args with None -> `Null | Some es -> `List (List.map expr es)) ]
   | SMethodCall (recv, name, args) ->
     node
       [ ("kind", `String "method_call_stmt"); ("receiver", expr recv); ("name", `String name);
@@ -692,19 +696,27 @@ let hologram_per_viewer lines =
    order, for the runtime dispatcher to bind the event args) and the body.
    Additive — the key is omitted entirely when a declaration has none, so
    handler-free declarations stay byte-identical. *)
-let inline_handlers (hs : Ast.inline_handler list) =
+(* the bare variables a handler binds: the receiver noun ("self") first, then the
+   event's canonical arg names — the same set the typechecker binds. *)
+let handler_params kind event =
+  match Registry.find_handler kind event with
+  | Some sg -> List.map (fun (n, _) -> `String n) sg.h_params
+  | None -> []
+
+let inline_handlers kind (hs : Ast.inline_handler list) =
   `Assoc
     (List.map
        (fun (h : Ast.inline_handler) ->
          ( h.ih_event,
            `Assoc
              [
-               ("params", `List (List.map (fun (n, _) -> `String n) h.ih_params));
+               ("self", `String (Registry.decl_noun kind));
+               ("params", `List (handler_params kind h.ih_event));
                ("body", statements h.ih_body);
              ] ))
        hs)
 
-let handlers_field = function [] -> [] | hs -> [ ("handlers", inline_handlers hs) ]
+let handlers_field kind = function [] -> [] | hs -> [ ("handlers", inline_handlers kind hs) ]
 
 let hologram h =
   `Assoc
@@ -719,7 +731,7 @@ let hologram h =
           ("lines", statements h.h_lines);
         ]
        @ (match h.h_viewable with Some v -> [ ("viewable", `Bool v) ] | None -> [])
-       @ handlers_field h.h_handlers))
+       @ handlers_field Registry.KHologram h.h_handlers))
 
 let npc n =
   `Assoc
@@ -735,16 +747,20 @@ let npc n =
        @ [
           ( "on_click",
             opt
-              (fun (binder, body) ->
-                `Assoc [ ("param", `String binder); ("body", statements body) ])
+              (fun body ->
+                `Assoc
+                  [ ("self", `String "npc"); ("params", `List [ `String "player" ]);
+                    ("body", statements body) ])
               n.n_on_click );
           ( "on_left_click",
             opt
-              (fun (binder, body) ->
-                `Assoc [ ("param", `String binder); ("body", statements body) ])
+              (fun body ->
+                `Assoc
+                  [ ("self", `String "npc"); ("params", `List [ `String "player" ]);
+                    ("body", statements body) ])
               n.n_on_left_click );
         ]
-       @ handlers_field n.n_handlers))
+       @ handlers_field Registry.KNpc n.n_handlers))
 
 let server sv =
   let auth =
@@ -852,7 +868,7 @@ let item_decl it =
           ("tags", `Assoc (List.map (fun (k, v) -> (k, expr v)) it.it_tags));
           ("on_click", `List (List.map item_click_handler it.it_on_click));
         ]
-       @ handlers_field it.it_handlers))
+       @ handlers_field Registry.KItem it.it_handlers))
 
 let mob_drop dr =
   `Assoc
@@ -897,9 +913,9 @@ let mob_decl mb =
           scripts emit byte-identical JSON *)
        @ (match mb.mb_on_hit with
          | None -> []
-         | Some (attacker, ss) ->
-           [ ("on_hit", `Assoc [ ("attacker", `String attacker); ("body", statements ss) ]) ])
-       @ handlers_field mb.mb_handlers))
+         | Some ss ->
+           [ ("on_hit", `Assoc [ ("attacker", `String "attacker"); ("body", statements ss) ]) ])
+       @ handlers_field Registry.KMob mb.mb_handlers))
 
 let packet_listener pk =
   `Assoc
@@ -959,19 +975,26 @@ let persistent pd =
    additionally carries its "exported" flag; flat emission stays byte-
    identical to the pre-module compiler. *)
 (* --- W-blocks: block_handler / placement_rule --- *)
-let block_cb (cb : block_cb) =
+let block_cb cbs (cb : block_cb) =
+  (* the hook's canonical arg names, bound as bare variables in scope *)
+  let params =
+    match Registry.find_block_cb cbs cb.cb_name with
+    | Some sg -> List.map (fun (n, _) -> `String n) sg.bcb_params
+    | None -> []
+  in
   `Assoc
     (with_pos cb.cb_pos
        [
          ("name", `String cb.cb_name);
-         ("params", `List (List.map (fun (n, _) -> `String n) cb.cb_params));
+         ("params", `List params);
          ("body", `List (List.map stmt cb.cb_body));
        ])
 
 let block_handler_decl (bh : block_handler_decl) =
   `Assoc
     (with_pos bh.bh_pos
-       [ ("id", `String bh.bh_id); ("callbacks", `List (List.map block_cb bh.bh_callbacks)) ])
+       [ ("id", `String bh.bh_id);
+         ("callbacks", `List (List.map (block_cb Registry.block_handler_cbs) bh.bh_callbacks)) ])
 
 let placement_rule_decl (pr : placement_rule_decl) =
   `Assoc
@@ -979,7 +1002,7 @@ let placement_rule_decl (pr : placement_rule_decl) =
        [
          ("id", `String pr.pr_id);
          ("self_replaceable", `Bool pr.pr_self_replaceable);
-         ("callbacks", `List (List.map block_cb pr.pr_callbacks));
+         ("callbacks", `List (List.map (block_cb Registry.placement_rule_cbs) pr.pr_callbacks));
        ])
 
 (* OOP receiver blocks compile DOWN to the same event-dispatch JSON the removed
@@ -1000,10 +1023,18 @@ let receiver_event (rc_type : string) (rk : Registry.receiver_kind) (h : Ast.inl
     | Some e -> Registry.canonical_event_name e
     | None -> rc_type ^ "." ^ h.ih_event
   in
+  (* the bare variables the method binds: the receiver noun first, then the
+     event's canonical arg names (the same set the typechecker binds) *)
+  let params =
+    match Registry.find_receiver_method rk h.ih_event with
+    | Some sg -> List.map (fun (n, _) -> `String n) sg.h_params
+    | None -> []
+  in
   `Assoc
     (with_pos h.ih_pos
        [ ("name", `String name); ("receiver", `String rc_type); ("priority", `Int 0);
-         ("params", `List (List.map (fun (n, _) -> `String n) h.ih_params));
+         ("self", `String (Registry.receiver_noun rk));
+         ("params", `List params);
          ("execute",
           `Assoc [ ("async", `Bool false); ("statements", statements h.ih_body) ]) ])
 

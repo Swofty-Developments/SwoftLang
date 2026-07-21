@@ -3,19 +3,19 @@
 // curated "BlockBreak"/"BlockPlace" names, on_list_ping the "ServerPing" name.
 
 Player {
-    on_break_block(block, location, face) {
-        send "broke ${block} at ${location.block_x}" to this
+    on_break_block {
+        send "broke ${block} at ${location.block_x}" to player
         cancel event
     }
 
-    on_place_block(block, location, face, hand) {
-        send "placed ${block}" to this
+    on_place_block {
+        send "placed ${block}" to player
         cancel event
     }
 }
 
 Server {
-    on_list_ping(status) {
+    on_list_ping {
         broadcast "pinged"
     }
 }

@@ -73,21 +73,22 @@
       ],
       "handlers": {
         "on_click": {
+          "self": "hologram",
           "params": [ "player" ],
           "body": [
             {
               "line": 61,
-              "col": 22,
+              "col": 14,
               "kind": "send",
               "message": {
                 "line": 61,
-                "col": 27,
+                "col": 19,
                 "kind": "string",
                 "value": "<green>Welcome, ${player.name}!"
               },
               "target": {
                 "line": 61,
-                "col": 64,
+                "col": 56,
                 "kind": "var",
                 "name": "player"
               }
@@ -95,6 +96,7 @@
           ]
         },
         "on_line_click": {
+          "self": "hologram",
           "params": [ "player", "line" ],
           "body": [
             {
@@ -141,6 +143,7 @@
       "on_click": [],
       "handlers": {
         "on_right_click": {
+          "self": "item",
           "params": [ "player" ],
           "body": [
             {
@@ -163,7 +166,8 @@
           ]
         },
         "on_right_click_block": {
-          "params": [ "player", "loc", "face" ],
+          "self": "item",
+          "params": [ "player", "location", "face" ],
           "body": [
             {
               "line": 18,
@@ -173,11 +177,11 @@
                 "line": 18,
                 "col": 14,
                 "kind": "string",
-                "value": "<gray>Struck ${face} at ${loc.block_x}, ${loc.block_y}, ${loc.block_z}"
+                "value": "<gray>Struck ${face} at ${location.block_x}, ${location.block_y}, ${location.block_z}"
               },
               "target": {
                 "line": 18,
-                "col": 90,
+                "col": 105,
                 "kind": "var",
                 "name": "player"
               }
@@ -185,6 +189,7 @@
           ]
         },
         "on_attack_entity": {
+          "self": "item",
           "params": [ "player", "target" ],
           "body": [
             {
@@ -207,21 +212,22 @@
           ]
         },
         "on_left_click": {
+          "self": "item",
           "params": [ "player" ],
           "body": [
             {
               "line": 25,
-              "col": 27,
+              "col": 19,
               "kind": "send",
               "message": {
                 "line": 25,
-                "col": 32,
+                "col": 24,
                 "kind": "string",
                 "value": "<yellow>Swish"
               },
               "target": {
                 "line": 25,
-                "col": 51,
+                "col": 43,
                 "kind": "var",
                 "name": "player"
               }
@@ -271,6 +277,7 @@
       "on_attack": null,
       "handlers": {
         "on_click": {
+          "self": "mob",
           "params": [ "player" ],
           "body": [
             {
@@ -281,11 +288,11 @@
                 "line": 41,
                 "col": 14,
                 "kind": "string",
-                "value": "<gray>You poke ${this.custom_id}."
+                "value": "<gray>You poke ${mob.custom_id}."
               },
               "target": {
                 "line": 41,
-                "col": 53,
+                "col": 52,
                 "kind": "var",
                 "name": "player"
               }
@@ -293,6 +300,7 @@
           ]
         },
         "on_target": {
+          "self": "mob",
           "params": [ "target" ],
           "body": [
             {
@@ -334,22 +342,23 @@
           ]
         },
         "on_tick": {
+          "self": "mob",
           "params": [],
           "body": [
             {
               "line": 50,
-              "col": 24,
+              "col": 21,
               "kind": "set_prop",
               "target": {
                 "line": 50,
-                "col": 19,
+                "col": 17,
                 "kind": "var",
-                "name": "this"
+                "name": "mob"
               },
               "name": "glowing",
               "value": {
                 "line": 50,
-                "col": 35,
+                "col": 32,
                 "kind": "boolean",
                 "value": true
               }

@@ -9,6 +9,7 @@
       "name": "PlayerUseItemEvent",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "item", "hand" ],
       "execute": {
         "async": false,

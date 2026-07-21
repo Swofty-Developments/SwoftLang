@@ -9,6 +9,7 @@
       "name": "PickupItem",
       "receiver": "Entity",
       "priority": 0,
+      "self": "entity",
       "params": [ "item_stack", "item_entity" ],
       "execute": {
         "async": false,
@@ -40,7 +41,8 @@
       "name": "EntityShoot",
       "receiver": "Entity",
       "priority": 0,
-      "params": [ "projectile", "dest", "power", "spread" ],
+      "self": "entity",
+      "params": [ "projectile", "to", "power", "spread" ],
       "execute": {
         "async": false,
         "statements": [
@@ -78,11 +80,11 @@
               "line": 15,
               "col": 14,
               "kind": "string",
-              "value": "projectile ${projectile} towards ${dest}"
+              "value": "projectile ${projectile} towards ${to}"
             },
             "target": {
               "line": 15,
-              "col": 60,
+              "col": 58,
               "kind": "string",
               "value": "all"
             }
@@ -96,6 +98,7 @@
       "name": "PlayerBeginItemUse",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -108,6 +111,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -120,11 +124,11 @@
               "line": 25,
               "col": 14,
               "kind": "string",
-              "value": "spawned for ${this.name}"
+              "value": "spawned for ${player.name}"
             },
             "target": {
               "line": 25,
-              "col": 44,
+              "col": 46,
               "kind": "string",
               "value": "all"
             }
