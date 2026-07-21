@@ -221,10 +221,12 @@ function build() {
   const builtins = dump.builtins || [];
   const handlers = dump.handlers || [];
   const namespaces = dump.namespaces || [];
+  const receivers = dump.receivers || [];
   const enums = dump.enums || {};
 
   for (const k of keywords) symbols.push({ name: k, kind: 'keyword' });
   for (const d of declarations) symbols.push({ name: d, kind: 'declaration' });
+  for (const r of receivers) symbols.push({ name: r, kind: 'receiver', doc: `\`${r} { }\` OOP receiver block.` });
   for (const o of operators) symbols.push({ name: o, kind: 'operator' });
   for (const t of types) symbols.push({ name: t, kind: 'type' });
   for (const c of constants) symbols.push({ name: c, kind: 'constant' });

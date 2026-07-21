@@ -1,0 +1,4176 @@
+{
+  "generatedBy": "scripts/gen-packets.js",
+  "note": "Compact packet catalog for the LSP. Source: compiler/data/packets.json. direction \"client\" = inbound (listened to by Packet { on \"...\" }); \"server\" = outbound. Fields keyed on the snake_case name packet.<field> uses.",
+  "_meta": {
+    "generator": "compiler/data/GenMinestomCatalogs.java (same command as events.json)",
+    "minestomCommit": "2026.07.12-26.2",
+    "jarSha256": "fa707c722f36c1b37db7386fc2453994a95f8d4714ca7a621ba499f9a97dca77",
+    "scope": "every concrete public record under net.minestom.server.network.packet.** that implements net.minestom.server.network.packet.client.ClientPacket (direction \"client\", inbound — listened to by Packet { on \"...\" }) or net.minestom.server.network.packet.server.ServerPacket (direction \"server\", outbound)",
+    "fieldRules": "one entry per record component; name = snake_case of the component; accessor = the record accessor method; javaType = generic component type; ty = SwoftLang type from the SAME javaType->ty table as the events catalog (compiler/lib/registry.ml ty_of_java_type), exotic types -> \"TAny\"",
+    "count": 232,
+    "clientCount": 79,
+    "serverCount": 153,
+    "loadErrors": []
+  },
+  "clientCount": 79,
+  "serverCount": 153,
+  "packets": {
+    "ClientCookieResponsePacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientCookieResponsePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "key",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "value",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ClientCustomClickActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientCustomClickActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "key",
+          "type": "Key",
+          "javaType": "net.kyori.adventure.key.Key"
+        },
+        {
+          "name": "payload",
+          "type": "BinaryTag",
+          "javaType": "net.kyori.adventure.nbt.BinaryTag"
+        }
+      ]
+    },
+    "ClientKeepAlivePacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientKeepAlivePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "id",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "ClientPingRequestPacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientPingRequestPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "number",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "ClientPluginMessagePacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientPluginMessagePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "channel",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ClientPongPacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientPongPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientResourcePackStatusPacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientResourcePackStatusPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        },
+        {
+          "name": "status",
+          "type": "ResourcePackStatus",
+          "javaType": "net.kyori.adventure.resource.ResourcePackStatus"
+        }
+      ]
+    },
+    "ClientSettingsPacket": {
+      "fq": "net.minestom.server.network.packet.client.common.ClientSettingsPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "settings",
+          "type": "ClientSettings",
+          "javaType": "net.minestom.server.network.player.ClientSettings"
+        }
+      ]
+    },
+    "ClientAcceptCodeOfConductPacket": {
+      "fq": "net.minestom.server.network.packet.client.configuration.ClientAcceptCodeOfConductPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientFinishConfigurationPacket": {
+      "fq": "net.minestom.server.network.packet.client.configuration.ClientFinishConfigurationPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientSelectKnownPacksPacket": {
+      "fq": "net.minestom.server.network.packet.client.configuration.ClientSelectKnownPacksPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket$Entry>"
+        }
+      ]
+    },
+    "ClientHandshakePacket": {
+      "fq": "net.minestom.server.network.packet.client.handshake.ClientHandshakePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "protocol_version",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "server_address",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "server_port",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "intent",
+          "type": "Intent",
+          "javaType": "net.minestom.server.network.packet.client.handshake.ClientHandshakePacket$Intent"
+        }
+      ]
+    },
+    "ClientEncryptionResponsePacket": {
+      "fq": "net.minestom.server.network.packet.client.login.ClientEncryptionResponsePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "shared_secret",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        },
+        {
+          "name": "encrypted_verify_token",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ClientLoginAcknowledgedPacket": {
+      "fq": "net.minestom.server.network.packet.client.login.ClientLoginAcknowledgedPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientLoginPluginResponsePacket": {
+      "fq": "net.minestom.server.network.packet.client.login.ClientLoginPluginResponsePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "message_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ClientLoginStartPacket": {
+      "fq": "net.minestom.server.network.packet.client.login.ClientLoginStartPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "username",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "profile_id",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        }
+      ]
+    },
+    "ClientAdvancementTabPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientAdvancementTabPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "action",
+          "type": "AdvancementAction",
+          "javaType": "net.minestom.server.advancements.AdvancementAction"
+        },
+        {
+          "name": "tab_identifier",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientAnimationPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientAnimationPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "hand",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.PlayerHand"
+        }
+      ]
+    },
+    "ClientAttackPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientAttackPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "target_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientChangeDifficultyPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChangeDifficultyPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "difficulty",
+          "type": "Difficulty",
+          "javaType": "net.minestom.server.world.Difficulty"
+        },
+        {
+          "name": "locked",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientChangeGameModePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChangeGameModePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "game_mode",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.GameMode"
+        }
+      ]
+    },
+    "ClientChatAckPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChatAckPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "offset",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientChatMessagePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChatMessagePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "timestamp",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "salt",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "signature",
+          "type": "MessageSignature",
+          "javaType": "net.minestom.server.crypto.MessageSignature"
+        },
+        {
+          "name": "ack_offset",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "ack_list",
+          "type": "BitSet",
+          "javaType": "java.util.BitSet"
+        },
+        {
+          "name": "checksum",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientChatSessionUpdatePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChatSessionUpdatePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "chat_session",
+          "type": "ChatSession",
+          "javaType": "net.minestom.server.crypto.ChatSession"
+        }
+      ]
+    },
+    "ClientChunkBatchReceivedPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientChunkBatchReceivedPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "target_chunks_per_tick",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "ClientClickWindowButtonPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "button_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientClickWindowPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientClickWindowPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "state_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "button",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "click_type",
+          "type": "ClickType",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientClickWindowPacket$ClickType"
+        },
+        {
+          "name": "changed_slots",
+          "type": "Hash>",
+          "javaType": "java.util.Map<java.lang.Short, net.minestom.server.item.ItemStack$Hash>"
+        },
+        {
+          "name": "clicked_item",
+          "type": "Hash",
+          "javaType": "net.minestom.server.item.ItemStack$Hash"
+        }
+      ]
+    },
+    "ClientCloseWindowPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientCloseWindowPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientCommandChatPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientCommandChatPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientConfigurationAckPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientConfigurationAckPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientCreativeInventoryActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientCreativeInventoryActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "item",
+          "type": "Item",
+          "javaType": "net.minestom.server.item.ItemStack"
+        }
+      ]
+    },
+    "ClientDebugSubscriptionRequestPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientDebugSubscriptionRequestPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "subscriptions",
+          "type": "DebugSubscription<?>>",
+          "javaType": "java.util.Set<net.minestom.server.network.debug.DebugSubscription<?>>"
+        }
+      ]
+    },
+    "ClientEditBookPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientEditBookPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "pages",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientEntityActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientEntityActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "player_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientEntityActionPacket$Action"
+        },
+        {
+          "name": "horse_jump_boost",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientGenerateStructurePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientGenerateStructurePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "level",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "keep_jigsaws",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientHeldItemChangePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientHeldItemChangePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "short"
+        }
+      ]
+    },
+    "ClientInputPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientInputPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientInteractEntityPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientInteractEntityPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "target_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "hand",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.PlayerHand"
+        },
+        {
+          "name": "location",
+          "type": "Vec",
+          "javaType": "net.minestom.server.coordinate.Vec"
+        },
+        {
+          "name": "using_secondary_action",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientLockDifficultyPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientLockDifficultyPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "locked",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientNameItemPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientNameItemPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "item_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientPickItemFromBlockPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPickItemFromBlockPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "pos",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "include_data",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientPickItemFromEntityPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPickItemFromEntityPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "include_data",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientPlaceRecipePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlaceRecipePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "recipe_display_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "make_all",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientPlayerAbilitiesPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerAbilitiesPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientPlayerActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "status",
+          "type": "Status",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientPlayerActionPacket$Status"
+        },
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "block_face",
+          "type": "String",
+          "javaType": "net.minestom.server.instance.block.BlockFace"
+        },
+        {
+          "name": "sequence",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientPlayerBlockPlacementPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerBlockPlacementPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "hand",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.PlayerHand"
+        },
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "block_face",
+          "type": "String",
+          "javaType": "net.minestom.server.instance.block.BlockFace"
+        },
+        {
+          "name": "cursor_position_x",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "cursor_position_y",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "cursor_position_z",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "inside_block",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "hit_world_border",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "sequence",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientPlayerLoadedPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerLoadedPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientPlayerPositionAndRotationPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerPositionAndRotationPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Pos"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientPlayerPositionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerPositionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientPlayerPositionStatusPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerPositionStatusPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientPlayerRotationPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientPlayerRotationPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientQueryBlockNbtPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientQueryBlockNbtPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "transaction_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        }
+      ]
+    },
+    "ClientQueryEntityNbtPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientQueryEntityNbtPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "transaction_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientRecipeBookSeenRecipePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientRecipeBookSeenRecipePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "index",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientSelectBundleItemPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSelectBundleItemPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "selected_index",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientSelectTradePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSelectTradePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "selected_slot",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientSetBeaconEffectPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSetBeaconEffectPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "primary_effect",
+          "type": "PotionType",
+          "javaType": "net.minestom.server.potion.PotionType"
+        },
+        {
+          "name": "secondary_effect",
+          "type": "PotionType",
+          "javaType": "net.minestom.server.potion.PotionType"
+        }
+      ]
+    },
+    "ClientSetGameRulesPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSetGameRulesPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.client.play.ClientSetGameRulesPacket$Entry>"
+        }
+      ]
+    },
+    "ClientSetRecipeBookStatePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSetRecipeBookStatePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "book_type",
+          "type": "BookType",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientSetRecipeBookStatePacket$BookType"
+        },
+        {
+          "name": "book_open",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "filter_active",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientSetTestBlockPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSetTestBlockPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "mode",
+          "type": "TestBlockMode",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientSetTestBlockPacket$TestBlockMode"
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientSignedCommandChatPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSignedCommandChatPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "timestamp",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "salt",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "signatures",
+          "type": "ArgumentSignatures",
+          "javaType": "net.minestom.server.crypto.ArgumentSignatures"
+        },
+        {
+          "name": "last_seen_messages",
+          "type": "Update",
+          "javaType": "net.minestom.server.crypto.LastSeenMessages$Update"
+        },
+        {
+          "name": "checksum",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientSpectatorActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSpectatorActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "target_id",
+          "type": "Integer",
+          "javaType": "java.lang.Integer"
+        }
+      ]
+    },
+    "ClientStatusPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientStatusPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientStatusPacket$Action"
+        }
+      ]
+    },
+    "ClientSteerBoatPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientSteerBoatPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "left_paddle_turning",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "right_paddle_turning",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientTabCompletePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientTabCompletePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "transaction_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "text",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ClientTeleportConfirmPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientTeleportConfirmPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "teleport_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientTeleportToEntityPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientTeleportToEntityPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "target",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        }
+      ]
+    },
+    "ClientTestInstanceBlockActionPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket$Action"
+        },
+        {
+          "name": "data",
+          "type": "Data",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientTestInstanceBlockActionPacket$Data"
+        }
+      ]
+    },
+    "ClientTickEndPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientTickEndPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClientUpdateCommandBlockMinecartPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockMinecartPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "command",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "track_output",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientUpdateCommandBlockPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "command",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "mode",
+          "type": "Mode",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateCommandBlockPacket$Mode"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientUpdateJigsawBlockPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUpdateJigsawBlockPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "location",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "pool",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "final_state",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "joint_type",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "selection_priority",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "placement_priority",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ClientUpdateSignPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUpdateSignPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "is_front_text",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "lines",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        }
+      ]
+    },
+    "ClientUpdateStructureBlockPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "location",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Action"
+        },
+        {
+          "name": "mode",
+          "type": "Mode",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Mode"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "offset",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "size",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "mirror",
+          "type": "Mirror",
+          "javaType": "net.minestom.server.network.packet.client.play.ClientUpdateStructureBlockPacket$Mirror"
+        },
+        {
+          "name": "rotation",
+          "type": "Rotation",
+          "javaType": "net.minestom.server.utils.Rotation"
+        },
+        {
+          "name": "metadata",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "integrity",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "seed",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ClientUseItemPacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientUseItemPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "hand",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.PlayerHand"
+        },
+        {
+          "name": "sequence",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "ClientVehicleMovePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientVehicleMovePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Pos"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ClientWindowSlotStatePacket": {
+      "fq": "net.minestom.server.network.packet.client.play.ClientWindowSlotStatePacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "new_state",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "LegacyServerListPingPacket": {
+      "fq": "net.minestom.server.network.packet.client.status.LegacyServerListPingPacket",
+      "direction": "client",
+      "fields": [
+        {
+          "name": "payload",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "StatusRequestPacket": {
+      "fq": "net.minestom.server.network.packet.client.status.StatusRequestPacket",
+      "direction": "client",
+      "fields": []
+    },
+    "ClearDialogPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.ClearDialogPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "CookieRequestPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.CookieRequestPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "key",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "CookieStorePacket": {
+      "fq": "net.minestom.server.network.packet.server.common.CookieStorePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "key",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "value",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "CustomReportDetailsPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.CustomReportDetailsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "details",
+          "type": "String>",
+          "javaType": "java.util.Map<java.lang.String, java.lang.String>"
+        }
+      ]
+    },
+    "DisconnectPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.DisconnectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "KeepAlivePacket": {
+      "fq": "net.minestom.server.network.packet.server.common.KeepAlivePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "id",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "PingPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.PingPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "PingResponsePacket": {
+      "fq": "net.minestom.server.network.packet.server.common.PingResponsePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "number",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "PluginMessagePacket": {
+      "fq": "net.minestom.server.network.packet.server.common.PluginMessagePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "channel",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ResourcePackPopPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.ResourcePackPopPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        }
+      ]
+    },
+    "ResourcePackPushPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.ResourcePackPushPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        },
+        {
+          "name": "url",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "hash",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "forced",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "prompt",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "ServerLinksPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.ServerLinksPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.common.ServerLinksPacket$Entry>"
+        }
+      ]
+    },
+    "ShowDialogPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.ShowDialogPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "dialog",
+          "type": "Dialog>",
+          "javaType": "net.minestom.server.registry.Holder<net.minestom.server.dialog.Dialog>"
+        }
+      ]
+    },
+    "TagsPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.TagsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "registries",
+          "type": "Registry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.common.TagsPacket$Registry>"
+        }
+      ]
+    },
+    "TransferPacket": {
+      "fq": "net.minestom.server.network.packet.server.common.TransferPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "host",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "port",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "CodeOfConductPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.CodeOfConductPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "code_of_conduct",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "FinishConfigurationPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.FinishConfigurationPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "RegistryDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.RegistryDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "registry_id",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.RegistryDataPacket$Entry>"
+        }
+      ]
+    },
+    "ResetChatPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.ResetChatPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "SelectKnownPacksPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.configuration.SelectKnownPacksPacket$Entry>"
+        }
+      ]
+    },
+    "UpdateEnabledFeaturesPacket": {
+      "fq": "net.minestom.server.network.packet.server.configuration.UpdateEnabledFeaturesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "features",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        }
+      ]
+    },
+    "EncryptionRequestPacket": {
+      "fq": "net.minestom.server.network.packet.server.login.EncryptionRequestPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "server_id",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "public_key",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        },
+        {
+          "name": "verify_token",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        },
+        {
+          "name": "should_authenticate",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "LoginDisconnectPacket": {
+      "fq": "net.minestom.server.network.packet.server.login.LoginDisconnectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "kick_message",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "LoginPluginRequestPacket": {
+      "fq": "net.minestom.server.network.packet.server.login.LoginPluginRequestPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "message_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "channel",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "LoginSuccessPacket": {
+      "fq": "net.minestom.server.network.packet.server.login.LoginSuccessPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "game_profile",
+          "type": "GameProfile",
+          "javaType": "net.minestom.server.network.player.GameProfile"
+        },
+        {
+          "name": "session_id",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        }
+      ]
+    },
+    "SetCompressionPacket": {
+      "fq": "net.minestom.server.network.packet.server.login.SetCompressionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "threshold",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "AcknowledgeBlockChangePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.AcknowledgeBlockChangePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "sequence",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ActionBarPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ActionBarPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "text",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "AdvancementsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.AdvancementsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "reset",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "advancement_mappings",
+          "type": "AdvancementMapping>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.AdvancementsPacket$AdvancementMapping>"
+        },
+        {
+          "name": "identifiers_to_remove",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        },
+        {
+          "name": "progress_mappings",
+          "type": "ProgressMapping>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.AdvancementsPacket$ProgressMapping>"
+        },
+        {
+          "name": "show_advancements",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "AttachEntityPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.AttachEntityPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "attached_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "holding_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "BlockActionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BlockActionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "action_id",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "action_param",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "block_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "BlockBreakAnimationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BlockBreakAnimationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "destroy_stage",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "BlockChangePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BlockChangePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "block_state_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "BlockEntityDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BlockEntityDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "type",
+          "type": "BlockEntityType",
+          "javaType": "net.minestom.server.instance.block.BlockEntityType"
+        },
+        {
+          "name": "data",
+          "type": "CompoundBinaryTag",
+          "javaType": "net.kyori.adventure.nbt.CompoundBinaryTag"
+        }
+      ]
+    },
+    "BossBarPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BossBarPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "uuid",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        },
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.server.play.BossBarPacket$Action"
+        }
+      ]
+    },
+    "BundlePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.BundlePacket",
+      "direction": "server",
+      "fields": []
+    },
+    "CameraPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.CameraPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "camera_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ChangeGameStatePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ChangeGameStatePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "reason",
+          "type": "Reason",
+          "javaType": "net.minestom.server.network.packet.server.play.ChangeGameStatePacket$Reason"
+        },
+        {
+          "name": "value",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "ChunkBatchFinishedPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ChunkBatchFinishedPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "batch_size",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "ChunkBatchStartPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ChunkBatchStartPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "ChunkBiomesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ChunkBiomesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunks",
+          "type": "ChunkBiomeData>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.ChunkBiomesPacket$ChunkBiomeData>"
+        }
+      ]
+    },
+    "ChunkDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ChunkDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_x",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "chunk_z",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "chunk_data",
+          "type": "ChunkData",
+          "javaType": "net.minestom.server.network.packet.server.play.data.ChunkData"
+        },
+        {
+          "name": "light_data",
+          "type": "LightData",
+          "javaType": "net.minestom.server.network.packet.server.play.data.LightData"
+        }
+      ]
+    },
+    "ClearTitlesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ClearTitlesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "reset",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "CloseWindowPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.CloseWindowPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "CollectItemPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.CollectItemPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "collected_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "collector_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "pickup_item_count",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "CustomChatCompletionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.CustomChatCompletionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.server.play.CustomChatCompletionPacket$Action"
+        },
+        {
+          "name": "entries",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        }
+      ]
+    },
+    "DamageEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DamageEventPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "target_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "damage_type_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "source_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "source_direct_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "source_pos",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        }
+      ]
+    },
+    "DeathCombatEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DeathCombatEventPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "player_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "DebugBlockValuePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DebugBlockValuePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "update",
+          "type": "Update<?>",
+          "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>"
+        }
+      ]
+    },
+    "DebugChunkValuePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DebugChunkValuePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_pos",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "update",
+          "type": "Update<?>",
+          "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>"
+        }
+      ]
+    },
+    "DebugEntityValuePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DebugEntityValuePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "update",
+          "type": "Update<?>",
+          "javaType": "net.minestom.server.network.debug.DebugSubscription$Update<?>"
+        }
+      ]
+    },
+    "DebugEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DebugEventPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "event",
+          "type": "Event<?>",
+          "javaType": "net.minestom.server.network.debug.DebugSubscription$Event<?>"
+        }
+      ]
+    },
+    "DebugSamplePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DebugSamplePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "sample",
+          "type": "long[]",
+          "javaType": "long[]"
+        },
+        {
+          "name": "type",
+          "type": "Type",
+          "javaType": "net.minestom.server.network.packet.server.play.DebugSamplePacket$Type"
+        }
+      ]
+    },
+    "DeclareCommandsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DeclareCommandsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "nodes",
+          "type": "Node>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.DeclareCommandsPacket$Node>"
+        },
+        {
+          "name": "root_index",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "DeclareRecipesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DeclareRecipesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "item_properties",
+          "type": "Material>>",
+          "javaType": "java.util.Map<net.minestom.server.recipe.RecipeProperty, java.util.List<net.minestom.server.item.Material>>"
+        },
+        {
+          "name": "stonecutter_recipes",
+          "type": "StonecutterRecipe>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.DeclareRecipesPacket$StonecutterRecipe>"
+        }
+      ]
+    },
+    "DeleteChatPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DeleteChatPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "signature",
+          "type": "MessageSignature",
+          "javaType": "net.minestom.server.crypto.MessageSignature"
+        }
+      ]
+    },
+    "DestroyEntitiesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DestroyEntitiesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_ids",
+          "type": "Integer>",
+          "javaType": "java.util.List<java.lang.Integer>"
+        }
+      ]
+    },
+    "DisguisedChatPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DisguisedChatPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "type",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "sender_name",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "target_name",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "DisplayScoreboardPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.DisplayScoreboardPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "score_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "EndCombatEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EndCombatEventPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "duration",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "EnterCombatEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EnterCombatEventPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "EntityAnimationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityAnimationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "animation",
+          "type": "Animation",
+          "javaType": "net.minestom.server.network.packet.server.play.EntityAnimationPacket$Animation"
+        }
+      ]
+    },
+    "EntityAttributesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityAttributesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "properties",
+          "type": "Property>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.EntityAttributesPacket$Property>"
+        }
+      ]
+    },
+    "EntityEffectPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityEffectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "potion",
+          "type": "Potion",
+          "javaType": "net.minestom.server.potion.Potion"
+        }
+      ]
+    },
+    "EntityEquipmentPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityEquipmentPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "equipments",
+          "type": "ItemStack>",
+          "javaType": "java.util.Map<net.minestom.server.entity.EquipmentSlot, net.minestom.server.item.ItemStack>"
+        }
+      ]
+    },
+    "EntityHeadLookPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityHeadLookPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "EntityMetaDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityMetaDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "entries",
+          "type": "Entry<?>>",
+          "javaType": "java.util.Map<java.lang.Integer, net.minestom.server.entity.Metadata$Entry<?>>"
+        }
+      ]
+    },
+    "EntityPositionAndRotationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityPositionAndRotationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "delta_x",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "delta_y",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "delta_z",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "EntityPositionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityPositionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "delta_x",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "delta_y",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "delta_z",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "EntityPositionSyncPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityPositionSyncPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "delta",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "EntityRotationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityRotationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "EntitySoundEffectPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntitySoundEffectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "sound_event",
+          "type": "String",
+          "javaType": "net.minestom.server.sound.SoundEvent"
+        },
+        {
+          "name": "source",
+          "type": "Source",
+          "javaType": "net.kyori.adventure.sound.Sound$Source"
+        },
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "volume",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "seed",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "EntityStatusPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityStatusPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "status",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "EntityTeleportPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityTeleportPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Pos"
+        },
+        {
+          "name": "delta",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "on_ground",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "EntityVelocityPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.EntityVelocityPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "velocity",
+          "type": "Vec",
+          "javaType": "net.minestom.server.coordinate.Vec"
+        }
+      ]
+    },
+    "ExplosionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ExplosionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "center",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "radius",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "block_count",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "player_knockback",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "particle",
+          "type": "Particle",
+          "javaType": "net.minestom.server.particle.Particle"
+        },
+        {
+          "name": "sound",
+          "type": "String",
+          "javaType": "net.minestom.server.sound.SoundEvent"
+        },
+        {
+          "name": "block_particles",
+          "type": "BlockParticleInfo>",
+          "javaType": "net.minestom.server.utils.WeightedList<net.minestom.server.network.packet.server.play.ExplosionPacket$BlockParticleInfo>"
+        }
+      ]
+    },
+    "FacePlayerPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.FacePlayerPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "face_position",
+          "type": "FacePosition",
+          "javaType": "net.minestom.server.network.packet.server.play.FacePlayerPacket$FacePosition"
+        },
+        {
+          "name": "target",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "entity_face_position",
+          "type": "FacePosition",
+          "javaType": "net.minestom.server.network.packet.server.play.FacePlayerPacket$FacePosition"
+        }
+      ]
+    },
+    "GameRuleValuesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.GameRuleValuesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "values",
+          "type": "String>",
+          "javaType": "java.util.Map<net.minestom.server.registry.RegistryKey<net.minestom.server.instance.gamerule.GameRule<?>>, java.lang.String>"
+        }
+      ]
+    },
+    "GameTestHighlightPosPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.GameTestHighlightPosPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "absolute_block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "relative_block_position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        }
+      ]
+    },
+    "HeldItemChangePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.HeldItemChangePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "HitAnimationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.HitAnimationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "InitializeWorldBorderPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.InitializeWorldBorderPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "x",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "z",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "old_diameter",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "new_diameter",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "speed",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "portal_teleport_boundary",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "warning_time",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "warning_blocks",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "JoinGamePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.JoinGamePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "is_hardcore",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "worlds",
+          "type": "String>",
+          "javaType": "java.util.List<java.lang.String>"
+        },
+        {
+          "name": "max_players",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "view_distance",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "simulation_distance",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "reduced_debug_info",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "enable_respawn_screen",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "do_limited_crafting",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "player_spawn_info",
+          "type": "PlayerSpawnInfo",
+          "javaType": "net.minestom.server.network.packet.server.play.data.PlayerSpawnInfo"
+        },
+        {
+          "name": "online_mode",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "enforces_secure_chat",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "LowDiskSpaceWarningPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.LowDiskSpaceWarningPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "MapDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.MapDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "map_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "scale",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "locked",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "tracking_position",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "icons",
+          "type": "Icon>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.MapDataPacket$Icon>"
+        },
+        {
+          "name": "color_content",
+          "type": "ColorContent",
+          "javaType": "net.minestom.server.network.packet.server.play.MapDataPacket$ColorContent"
+        }
+      ]
+    },
+    "MoveMinecartPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.MoveMinecartPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "lerp_steps",
+          "type": "LerpStep>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.MoveMinecartPacket$LerpStep>"
+        }
+      ]
+    },
+    "MultiBlockChangePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.MultiBlockChangePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_section_position",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "blocks",
+          "type": "long[]",
+          "javaType": "long[]"
+        }
+      ]
+    },
+    "NbtQueryResponsePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.NbtQueryResponsePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "transaction_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "data",
+          "type": "CompoundBinaryTag",
+          "javaType": "net.kyori.adventure.nbt.CompoundBinaryTag"
+        }
+      ]
+    },
+    "OpenBookPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.OpenBookPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "hand",
+          "type": "String",
+          "javaType": "net.minestom.server.entity.PlayerHand"
+        }
+      ]
+    },
+    "OpenHorseWindowPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.OpenHorseWindowPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "slot_count",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "OpenSignEditorPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.OpenSignEditorPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "is_front_text",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "OpenWindowPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.OpenWindowPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "window_type",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "ParticlePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ParticlePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "particle",
+          "type": "Particle",
+          "javaType": "net.minestom.server.particle.Particle"
+        },
+        {
+          "name": "override_limiter",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "long_distance",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "x",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "z",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "offset_x",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "offset_y",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "offset_z",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "max_speed",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "particle_count",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "PlaceGhostRecipePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlaceGhostRecipePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "recipe",
+          "type": "RecipeDisplay",
+          "javaType": "net.minestom.server.recipe.display.RecipeDisplay"
+        }
+      ]
+    },
+    "PlayerAbilitiesPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerAbilitiesPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "flying_speed",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "walking_speed",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "PlayerChatMessagePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerChatMessagePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "global_index",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "sender",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        },
+        {
+          "name": "index",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "signature",
+          "type": "MessageSignature",
+          "javaType": "net.minestom.server.crypto.MessageSignature"
+        },
+        {
+          "name": "message_body",
+          "type": "Packed",
+          "javaType": "net.minestom.server.crypto.SignedMessageBody$Packed"
+        },
+        {
+          "name": "unsigned_content",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "filter_mask",
+          "type": "FilterMask",
+          "javaType": "net.minestom.server.crypto.FilterMask"
+        },
+        {
+          "name": "msg_type_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "msg_type_name",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "msg_type_target",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "PlayerInfoRemovePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "uuids",
+          "type": "UUID>",
+          "javaType": "java.util.List<java.util.UUID>"
+        }
+      ]
+    },
+    "PlayerInfoUpdatePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "actions",
+          "type": "Action>",
+          "javaType": "java.util.EnumSet<net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket$Action>"
+        },
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket$Entry>"
+        }
+      ]
+    },
+    "PlayerListHeaderAndFooterPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerListHeaderAndFooterPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "header",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "footer",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "PlayerPositionAndLookPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerPositionAndLookPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "teleport_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "delta",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "PlayerRotationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.PlayerRotationPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "relative_yaw",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "relative_pitch",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ProjectilePowerPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ProjectilePowerPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "acceleration_power",
+          "type": "Double",
+          "javaType": "double"
+        }
+      ]
+    },
+    "RecipeBookAddPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.RecipeBookAddPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "Entry>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.RecipeBookAddPacket$Entry>"
+        },
+        {
+          "name": "replace",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "RecipeBookRemovePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.RecipeBookRemovePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "display_ids",
+          "type": "Integer>",
+          "javaType": "java.util.List<java.lang.Integer>"
+        }
+      ]
+    },
+    "RecipeBookSettingsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.RecipeBookSettingsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "crafting_recipe_book_open",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "crafting_recipe_book_filter_active",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "smelting_recipe_book_open",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "smelting_recipe_book_filter_active",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "blast_furnace_recipe_book_open",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "blast_furnace_recipe_book_filter_active",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "smoker_recipe_book_open",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "smoker_recipe_book_filter_active",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "RemoveEntityEffectPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.RemoveEntityEffectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "potion_effect",
+          "type": "PotionEffect",
+          "javaType": "net.minestom.server.potion.PotionEffect"
+        }
+      ]
+    },
+    "ResetScorePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ResetScorePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "objective",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "RespawnPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.RespawnPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "player_spawn_info",
+          "type": "PlayerSpawnInfo",
+          "javaType": "net.minestom.server.network.packet.server.play.data.PlayerSpawnInfo"
+        },
+        {
+          "name": "copy_data",
+          "type": "Integer",
+          "javaType": "byte"
+        }
+      ]
+    },
+    "ScoreboardObjectivePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ScoreboardObjectivePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "objective_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "mode",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "objective_value",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "type",
+          "type": "Type",
+          "javaType": "net.minestom.server.network.packet.server.play.ScoreboardObjectivePacket$Type"
+        },
+        {
+          "name": "number_format",
+          "type": "NumberFormat",
+          "javaType": "net.minestom.server.scoreboard.Sidebar$NumberFormat"
+        }
+      ]
+    },
+    "SelectAdvancementTabPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SelectAdvancementTabPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "identifier",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "ServerDataPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ServerDataPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "motd",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "icon_base64",
+          "type": "byte[]",
+          "javaType": "byte[]"
+        }
+      ]
+    },
+    "ServerDifficultyPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.ServerDifficultyPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "difficulty",
+          "type": "Difficulty",
+          "javaType": "net.minestom.server.world.Difficulty"
+        },
+        {
+          "name": "locked",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "SetCooldownPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetCooldownPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "cooldown_group",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "cooldown_ticks",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "SetCursorItemPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetCursorItemPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "item_stack",
+          "type": "Item",
+          "javaType": "net.minestom.server.item.ItemStack"
+        }
+      ]
+    },
+    "SetExperiencePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetExperiencePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "percentage",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "level",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "total_experience",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "SetPassengersPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetPassengersPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "vehicle_entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "passengers_id",
+          "type": "Integer>",
+          "javaType": "java.util.List<java.lang.Integer>"
+        }
+      ]
+    },
+    "SetPlayerInventorySlotPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetPlayerInventorySlotPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "item_stack",
+          "type": "Item",
+          "javaType": "net.minestom.server.item.ItemStack"
+        }
+      ]
+    },
+    "SetSlotPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetSlotPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "state_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "slot",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "item_stack",
+          "type": "Item",
+          "javaType": "net.minestom.server.item.ItemStack"
+        }
+      ]
+    },
+    "SetTickStatePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetTickStatePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "tick_rate",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "is_frozen",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "SetTimePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetTimePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "game_time",
+          "type": "Integer",
+          "javaType": "long"
+        },
+        {
+          "name": "clocks",
+          "type": "ClockState>",
+          "javaType": "java.util.Map<net.minestom.server.registry.RegistryKey<net.minestom.server.world.clock.WorldClock>, net.minestom.server.network.packet.server.play.SetTimePacket$ClockState>"
+        }
+      ]
+    },
+    "SetTitleSubTitlePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetTitleSubTitlePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "subtitle",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "SetTitleTextPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetTitleTextPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "title",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        }
+      ]
+    },
+    "SetTitleTimePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SetTitleTimePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "fade_in",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "stay",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "fade_out",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "SoundEffectPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SoundEffectPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "sound_event",
+          "type": "String",
+          "javaType": "net.minestom.server.sound.SoundEvent"
+        },
+        {
+          "name": "source",
+          "type": "Source",
+          "javaType": "net.kyori.adventure.sound.Sound$Source"
+        },
+        {
+          "name": "origin",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "volume",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "seed",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "SpawnEntityPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SpawnEntityPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "uuid",
+          "type": "UUID",
+          "javaType": "java.util.UUID"
+        },
+        {
+          "name": "type",
+          "type": "EntityType",
+          "javaType": "net.minestom.server.entity.EntityType"
+        },
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Pos"
+        },
+        {
+          "name": "head_rot",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "data",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "velocity",
+          "type": "Vec",
+          "javaType": "net.minestom.server.coordinate.Vec"
+        }
+      ]
+    },
+    "SpawnPositionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SpawnPositionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "world_pos",
+          "type": "WorldPos",
+          "javaType": "net.minestom.server.network.packet.server.play.data.WorldPos"
+        },
+        {
+          "name": "yaw",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "StartConfigurationPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.StartConfigurationPacket",
+      "direction": "server",
+      "fields": []
+    },
+    "StatisticsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.StatisticsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "statistics",
+          "type": "Statistic>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.StatisticsPacket$Statistic>"
+        }
+      ]
+    },
+    "StopSoundPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.StopSoundPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "Integer",
+          "javaType": "byte"
+        },
+        {
+          "name": "source",
+          "type": "Source",
+          "javaType": "net.kyori.adventure.sound.Sound$Source"
+        },
+        {
+          "name": "sound",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    },
+    "SystemChatPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.SystemChatPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "message",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "overlay",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "TabCompletePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.TabCompletePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "transaction_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "start",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "length",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "matches",
+          "type": "Match>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.TabCompletePacket$Match>"
+        }
+      ]
+    },
+    "TeamsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.TeamsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "team_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "action",
+          "type": "Action",
+          "javaType": "net.minestom.server.network.packet.server.play.TeamsPacket$Action"
+        }
+      ]
+    },
+    "TestInstanceBlockStatus": {
+      "fq": "net.minestom.server.network.packet.server.play.TestInstanceBlockStatus",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "status",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "size",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        }
+      ]
+    },
+    "TickStepPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.TickStepPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "steps",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "TrackedWaypointPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.TrackedWaypointPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "operation",
+          "type": "Operation",
+          "javaType": "net.minestom.server.network.packet.server.play.TrackedWaypointPacket$Operation"
+        },
+        {
+          "name": "waypoint",
+          "type": "Waypoint",
+          "javaType": "net.minestom.server.network.packet.server.play.TrackedWaypointPacket$Waypoint"
+        }
+      ]
+    },
+    "TradeListPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.TradeListPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "trades",
+          "type": "Trade>",
+          "javaType": "java.util.List<net.minestom.server.network.packet.server.play.TradeListPacket$Trade>"
+        },
+        {
+          "name": "villager_level",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "experience",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "regular_villager",
+          "type": "Boolean",
+          "javaType": "boolean"
+        },
+        {
+          "name": "can_restock",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "UnloadChunkPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UnloadChunkPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_x",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "chunk_z",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "UpdateHealthPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateHealthPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "health",
+          "type": "Double",
+          "javaType": "float"
+        },
+        {
+          "name": "food",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "food_saturation",
+          "type": "Double",
+          "javaType": "float"
+        }
+      ]
+    },
+    "UpdateLightPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateLightPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_x",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "chunk_z",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "light_data",
+          "type": "LightData",
+          "javaType": "net.minestom.server.network.packet.server.play.data.LightData"
+        }
+      ]
+    },
+    "UpdateScorePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateScorePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "entity_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "objective_name",
+          "type": "String",
+          "javaType": "java.lang.String"
+        },
+        {
+          "name": "score",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "display_name",
+          "type": "String",
+          "javaType": "net.kyori.adventure.text.Component"
+        },
+        {
+          "name": "number_format",
+          "type": "NumberFormat",
+          "javaType": "net.minestom.server.scoreboard.Sidebar$NumberFormat"
+        }
+      ]
+    },
+    "UpdateSimulationDistancePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateSimulationDistancePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "simulation_distance",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "UpdateViewDistancePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateViewDistancePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "view_distance",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "UpdateViewPositionPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.UpdateViewPositionPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "chunk_x",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "chunk_z",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "VehicleMovePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.VehicleMovePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Pos"
+        }
+      ]
+    },
+    "WindowItemsPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WindowItemsPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "state_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "items",
+          "type": "ItemStack>",
+          "javaType": "java.util.List<net.minestom.server.item.ItemStack>"
+        },
+        {
+          "name": "carried_item",
+          "type": "Item",
+          "javaType": "net.minestom.server.item.ItemStack"
+        }
+      ]
+    },
+    "WindowPropertyPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WindowPropertyPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "window_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "property",
+          "type": "Integer",
+          "javaType": "short"
+        },
+        {
+          "name": "value",
+          "type": "Integer",
+          "javaType": "short"
+        }
+      ]
+    },
+    "WorldBorderCenterPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldBorderCenterPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "x",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "z",
+          "type": "Double",
+          "javaType": "double"
+        }
+      ]
+    },
+    "WorldBorderLerpSizePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldBorderLerpSizePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "old_diameter",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "new_diameter",
+          "type": "Double",
+          "javaType": "double"
+        },
+        {
+          "name": "speed",
+          "type": "Integer",
+          "javaType": "long"
+        }
+      ]
+    },
+    "WorldBorderSizePacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldBorderSizePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "diameter",
+          "type": "Double",
+          "javaType": "double"
+        }
+      ]
+    },
+    "WorldBorderWarningDelayPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldBorderWarningDelayPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "warning_time",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "WorldBorderWarningReachPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldBorderWarningReachPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "warning_blocks",
+          "type": "Integer",
+          "javaType": "int"
+        }
+      ]
+    },
+    "WorldEventPacket": {
+      "fq": "net.minestom.server.network.packet.server.play.WorldEventPacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "effect_id",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "position",
+          "type": "Location",
+          "javaType": "net.minestom.server.coordinate.Point"
+        },
+        {
+          "name": "data",
+          "type": "Integer",
+          "javaType": "int"
+        },
+        {
+          "name": "disable_relative_volume",
+          "type": "Boolean",
+          "javaType": "boolean"
+        }
+      ]
+    },
+    "ResponsePacket": {
+      "fq": "net.minestom.server.network.packet.server.status.ResponsePacket",
+      "direction": "server",
+      "fields": [
+        {
+          "name": "json_response",
+          "type": "String",
+          "javaType": "java.lang.String"
+        }
+      ]
+    }
+  }
+}

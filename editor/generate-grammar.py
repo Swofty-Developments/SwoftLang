@@ -146,6 +146,8 @@ def main():
     builtins = sym["builtins"]
     decls = sym["declarations"]
     namespaces = sym["namespaces"]
+    # capitalized OOP receiver block heads (Player { }, Npc { }, Packet { }, ...)
+    receivers = sym.get("receivers", [])
 
     # type primitives = all declared types minus the generic containers
     containers = ["either", "optional", "list", "map"]
@@ -350,6 +352,18 @@ def main():
         ]
     }
 
+    # capitalized receiver block heads: Player { }, Entity { }, Npc { },
+    # Hologram { }, Packet { } — colored where they introduce a receiver block.
+    repo["receivers"] = {
+        "patterns": [
+            {
+                "comment": "OOP receiver block head (Capitalized name before '{')",
+                "name": "storage.type.receiver.swoftlang",
+                "match": r"\b(" + alt(receivers) + r")\b(?=\s*\{)",
+            }
+        ]
+    }
+
     repo["import"] = {
         "patterns": [
             kw_pattern("keyword.control.import.swoftlang", IMPORT_KW)
@@ -517,6 +531,7 @@ def main():
             {"include": "#namespaces"},
             {"include": "#namespace-accessor"},
             {"include": "#declarations"},
+            {"include": "#receivers"},
             {"include": "#import"},
             {"include": "#storage-modifiers"},
             {"include": "#property-accessor"},
@@ -547,6 +562,7 @@ def main():
 
     check(sym["keywords"])
     check(sym["declarations"])
+    check(receivers)
     check(sym["handlers"])
     check(sym["builtins"])
     check(sym["types"])

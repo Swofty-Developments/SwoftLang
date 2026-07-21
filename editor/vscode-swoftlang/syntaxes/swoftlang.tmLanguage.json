@@ -28,6 +28,9 @@
       "include": "#declarations"
     },
     {
+      "include": "#receivers"
+    },
+    {
       "include": "#import"
     },
     {
@@ -196,7 +199,7 @@
         {
           "comment": "event handler names (on_tick, on_click, tick, ...)",
           "name": "keyword.other.handler.swoftlang",
-          "match": "\\b(on_right_click_block|on_attack_entity|on_right_click|on_left_click|on_line_click|on_interact|on_consume|on_destroy|on_swap_to|on_attack|on_pickup|on_target|on_update|on_break|on_click|on_death|on_place|on_spawn|on_touch|on_drop|on_tick|on_hit|tick)\\b(?=\\s*[({])"
+          "match": "\\b(on_player_configuration|on_resource_pack_status|on_section_invalidate|on_teleport_to_entity|on_outgoing_transfer|on_pickup_experience|on_right_click_block|on_use_item_on_block|on_change_held_slot|on_advancement_tab|on_cancel_item_use|on_creative_action|on_finish_item_use|on_fire_extinguish|on_gamemode_change|on_interact_entity|on_settings_change|on_spectate_entity|on_start_sprinting|on_begin_item_use|on_cancel_digging|on_finish_digging|on_hand_animation|on_interact_block|on_plugin_message|on_stop_sprinting|on_attack_entity|on_bundle_select|on_entity_remove|on_potion_remove|on_start_digging|on_block_update|on_button_click|on_chunk_unload|on_start_elytra|on_start_flying|on_tick_monitor|on_anvil_input|on_break_block|on_client_ping|on_item_change|on_pick_entity|on_pickup_item|on_place_block|on_right_click|on_stop_elytra|on_stop_flying|on_cancel_use|on_catch_fish|on_chunk_load|on_entity_add|on_finish_use|on_hit_entity|on_item_merge|on_left_click|on_line_click|on_packet_out|on_pick_block|on_potion_add|on_tps_change|on_unregister|on_begin_use|on_drop_item|on_edit_book|on_edit_sign|on_fish_bite|on_hit_block|on_leave_bed|on_list_ping|on_packet_in|on_pre_click|on_pre_login|on_skin_init|on_swap_item|on_uncollide|on_cast_rod|on_dispense|on_interact|on_register|on_set_fire|on_teleport|on_tick_end|on_use_item|on_velocity|on_command|on_consume|on_despawn|on_destroy|on_reel_in|on_respawn|on_swap_to|on_attack|on_loaded|on_pickup|on_target|on_update|on_break|on_click|on_close|on_death|on_equip|on_input|on_place|on_shoot|on_spawn|on_touch|on_chat|on_drop|on_join|on_move|on_open|on_quit|on_stab|on_tick|on_hit|on_use|tick)\\b(?=\\s*[({])"
         }
       ]
     },
@@ -273,6 +276,15 @@
         {
           "name": "storage.type.declaration.swoftlang",
           "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|storage|tablist|server|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
+        }
+      ]
+    },
+    "receivers": {
+      "patterns": [
+        {
+          "comment": "OOP receiver block head (Capitalized name before '{')",
+          "name": "storage.type.receiver.swoftlang",
+          "match": "\\b(Projectile|Inventory|Hologram|Entity|Packet|Player|Server|Block|World|Item|Mob|Npc)\\b(?=\\s*\\{)"
         }
       ]
     },
@@ -661,7 +673,7 @@
         },
         {
           "name": "keyword.other.handler.swoftlang",
-          "match": "\\b(on_right_click_block|on_attack_entity|on_right_click|on_left_click|on_line_click|on_interact|on_consume|on_destroy|on_swap_to|on_attack|on_pickup|on_target|on_update|on_break|on_click|on_death|on_place|on_spawn|on_touch|on_drop|on_tick|on_hit|tick)\\b"
+          "match": "\\b(on_player_configuration|on_resource_pack_status|on_section_invalidate|on_teleport_to_entity|on_outgoing_transfer|on_pickup_experience|on_right_click_block|on_use_item_on_block|on_change_held_slot|on_advancement_tab|on_cancel_item_use|on_creative_action|on_finish_item_use|on_fire_extinguish|on_gamemode_change|on_interact_entity|on_settings_change|on_spectate_entity|on_start_sprinting|on_begin_item_use|on_cancel_digging|on_finish_digging|on_hand_animation|on_interact_block|on_plugin_message|on_stop_sprinting|on_attack_entity|on_bundle_select|on_entity_remove|on_potion_remove|on_start_digging|on_block_update|on_button_click|on_chunk_unload|on_start_elytra|on_start_flying|on_tick_monitor|on_anvil_input|on_break_block|on_client_ping|on_item_change|on_pick_entity|on_pickup_item|on_place_block|on_right_click|on_stop_elytra|on_stop_flying|on_cancel_use|on_catch_fish|on_chunk_load|on_entity_add|on_finish_use|on_hit_entity|on_item_merge|on_left_click|on_line_click|on_packet_out|on_pick_block|on_potion_add|on_tps_change|on_unregister|on_begin_use|on_drop_item|on_edit_book|on_edit_sign|on_fish_bite|on_hit_block|on_leave_bed|on_list_ping|on_packet_in|on_pre_click|on_pre_login|on_skin_init|on_swap_item|on_uncollide|on_cast_rod|on_dispense|on_interact|on_register|on_set_fire|on_teleport|on_tick_end|on_use_item|on_velocity|on_command|on_consume|on_despawn|on_destroy|on_reel_in|on_respawn|on_swap_to|on_attack|on_loaded|on_pickup|on_target|on_update|on_break|on_click|on_close|on_death|on_equip|on_input|on_place|on_shoot|on_spawn|on_touch|on_chat|on_drop|on_join|on_move|on_open|on_quit|on_stab|on_tick|on_hit|on_use|tick)\\b"
         },
         {
           "name": "keyword.other.block.swoftlang",

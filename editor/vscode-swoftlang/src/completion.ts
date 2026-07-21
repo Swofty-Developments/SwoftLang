@@ -44,6 +44,21 @@ export interface SymData {
   handlers?: string[];
 }
 
+// --- packet catalog (bundled data/packets.json, see scripts/gen-packets.js) ---
+export interface PacketField {
+  name: string; // snake_case — the spelling `packet.<field>` uses
+  type: string; // friendly SwoftLang type, e.g. 'Integer', 'Location', 'Status'
+  javaType?: string;
+}
+export interface PacketInfo {
+  fq: string;
+  direction: string; // 'client' = inbound (listened to); 'server' = outbound
+  fields: PacketField[];
+}
+export interface PacketData {
+  packets: Record<string, PacketInfo>; // keyed by SIMPLE class name
+}
+
 // What the analyzer can work out about the cursor's surroundings, used to infer
 // the type of a `.`-receiver so property completion is owner-precise, and the
 // enclosing block so config-key/handler/attribute completion is context-precise.
@@ -52,6 +67,7 @@ export interface ScriptContext {
   argTypes?: Record<string, string>; // command `arguments { name: Type }`
   varTypes?: Record<string, string>; // locals with an inferable type
   block?: string; // innermost enclosing block opener keyword, e.g. 'item', 'attributes', 'execute'
+  packetClass?: string; // enclosing `Packet { on "Class" { } }` simple class name
 }
 
 export interface CompletionEngine {
@@ -63,6 +79,9 @@ export interface CompletionEngine {
   ): CompletionItem[];
   resolve(item: CompletionItem): CompletionItem;
   analyze(text: string): ScriptContext;
+  // Packet catalog access (undefined-safe when no packet data is bundled).
+  getPacketInfo(simpleName: string): PacketInfo | undefined;
+  getPacketField(simpleName: string, field: string): PacketField | undefined;
 }
 
 // Nominal subtype edges: a receiver of the subtype also exposes supertype props.
@@ -375,7 +394,47 @@ export function enclosingBlock(textBefore: string): string | undefined {
   return undefined;
 }
 
-export function createCompletionEngine(data: SymData): CompletionEngine {
+// If the cursor sits inside a `Packet { on "Class" { … } }` handler body, return
+// the simple class name from the enclosing `on "…"`. Walks a brace stack (skips
+// strings/comments) and returns the nearest still-open `on "…"` block that has a
+// `Packet` ancestor. Pure — usable from both `analyze` and hover.
+export function findEnclosingPacketClass(textBefore: string): string | undefined {
+  type Frame = { kind: 'Packet' | 'on' | 'other'; cls?: string };
+  const stack: Frame[] = [];
+  let inStr = false;
+  let lineStart = 0;
+  for (let i = 0; i < textBefore.length; i++) {
+    const c = textBefore[i];
+    if (c === '\n') lineStart = i + 1;
+    if (inStr) {
+      if (c === '\\') i++;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === '/' && textBefore[i + 1] === '/') {
+      while (i < textBefore.length && textBefore[i] !== '\n') i++;
+      if (i < textBefore.length) lineStart = i + 1;
+    } else if (c === '{') {
+      const seg = textBefore.slice(lineStart, i);
+      const on = /\bon\s+"([^"]+)"\s*$/.exec(seg);
+      if (on) stack.push({ kind: 'on', cls: on[1] });
+      else if (/(^|\s)Packet\s*$/.test(seg)) stack.push({ kind: 'Packet' });
+      else stack.push({ kind: 'other' });
+    } else if (c === '}') stack.pop();
+  }
+  for (let k = stack.length - 1; k >= 0; k--) {
+    if (stack[k].kind === 'on' && stack[k].cls) {
+      for (let j = k - 1; j >= 0; j--) if (stack[j].kind === 'Packet') return stack[k].cls;
+    }
+  }
+  return undefined;
+}
+
+export function createCompletionEngine(
+  data: SymData,
+  packetData?: PacketData,
+): CompletionEngine {
   const enums = data.enums || {};
   const namespaces = data.namespaces || ['tags', 'tasks', 'attributes'];
   const handlerNames =
@@ -583,6 +642,83 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     return dedupeByLabel(out);
   };
 
+  // --- packet catalog ---
+  const packetMap: Record<string, PacketInfo> = packetData?.packets || {};
+  const getPacketInfo = (name: string): PacketInfo | undefined => packetMap[name];
+  const getPacketField = (name: string, field: string): PacketField | undefined =>
+    packetMap[name]?.fields.find((f) => f.name === field);
+
+  const directionDetail = (dir: string): string =>
+    dir === 'client' ? 'inbound · client packet' : 'outbound · server packet';
+
+  // Packet class-name items for `on "<CURSOR>"`. Only inbound (client) packets
+  // can be listened to — the compiler (and runtime PacketSender.resolveClient)
+  // reject an outbound server packet here — so outbound packets are omitted
+  // entirely rather than offered and then flagged as a compile error.
+  const packetClassItems: CompletionItem[] = Object.entries(packetMap)
+    .filter(([, info]) => info.direction === 'client')
+    .map(([simple, info]) => ({
+      label: simple,
+      kind: CompletionItemKind.Class,
+      detail: directionDetail(info.direction),
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value:
+          `\`${info.fq}\`\n\n` +
+          (info.fields.length
+            ? info.fields.map((f) => `- \`${f.name}\`: \`${f.type}\``).join('\n')
+            : '_no fields_'),
+      },
+      sortText: `0${simple}`,
+      data: -1,
+    }));
+
+  // Field items for `packet.<CURSOR>` inside a known handler, plus a scaffold
+  // snippet that binds every field to a local so the user sees the whole shape.
+  const packetFieldItems = (simpleName: string): CompletionItem[] => {
+    const info = packetMap[simpleName];
+    if (!info) return [];
+    const items: CompletionItem[] = info.fields.map((f) => ({
+      label: f.name,
+      kind: CompletionItemKind.Property,
+      detail: `${simpleName}.${f.name}: ${f.type} (read-only)`,
+      documentation: f.javaType
+        ? { kind: MarkupKind.Markdown, value: `\`${f.javaType}\`` }
+        : undefined,
+      sortText: `0${f.name}`,
+      data: -1,
+    }));
+    return items;
+  };
+
+  // A single "scaffold all fields" item: inserts `set <field> to packet.<field>`
+  // for every field, so the whole packet shape lands in the buffer at once.
+  const packetScaffoldItem = (simpleName: string): CompletionItem | undefined => {
+    const info = packetMap[simpleName];
+    if (!info || info.fields.length === 0) return undefined;
+    const body = info.fields
+      .map((f, i) => `set \${${i + 1}:${f.name}} to packet.${f.name}`)
+      .join('\n');
+    return {
+      label: 'scaffold packet fields',
+      kind: CompletionItemKind.Snippet,
+      detail: `bind all ${info.fields.length} fields of ${simpleName}`,
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value:
+          `Inserts a \`set … to packet.<field>\` line for every field of ` +
+          `\`${simpleName}\`:\n\n` +
+          '```swoftlang\n' +
+          info.fields.map((f) => `set ${f.name} to packet.${f.name}  // ${f.type}`).join('\n') +
+          '\n```',
+      },
+      insertText: body,
+      insertTextFormat: InsertTextFormat.Snippet,
+      sortText: '0scaffold',
+      data: -1,
+    };
+  };
+
   const analyze = (text: string): ScriptContext => {
     // enclosing `event <Name> { }` via a brace stack (skip strings/comments)
     const stack: (string | null)[] = [];
@@ -643,8 +779,9 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     }
 
     const block = enclosingBlock(text);
+    const packetClass = findEnclosingPacketClass(text);
 
-    return { event, argTypes, varTypes, block };
+    return { event, argTypes, varTypes, block, packetClass };
   };
 
   const getCompletions = (
@@ -653,6 +790,15 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     locals: string[] = [],
     ctx: ScriptContext = {},
   ): CompletionItem[] => {
+    // 0) `Packet { on "<CURSOR>" }` — complete packet CLASS names (inbound first).
+    //    The `on "…"` block is not yet open, so the enclosing block is `Packet`.
+    if (
+      packetClassItems.length &&
+      ctx.block === 'Packet' &&
+      /\bon\s+"[^"]*$/.test(prefix)
+    ) {
+      return packetClassItems;
+    }
     // 1) Inside a string: only MiniMessage tags right after `<`, otherwise nothing.
     if (inUnclosedString(prefix)) {
       if (/<\/?\w*$/.test(prefix)) return withGroup(minimessageItems, '0');
@@ -661,6 +807,10 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     // 2) Property access after a dot — offer ONLY the receiver type's properties.
     const chainM = CHAIN_RE.exec(prefix);
     if (chainM) {
+      // `packet.<field>` inside a known Packet handler -> that class's fields.
+      if (chainM[1].trim() === 'packet' && ctx.packetClass) {
+        return packetFieldItems(ctx.packetClass);
+      }
       const type = resolveReceiverType(chainM[1], ctx);
       if (!type) return []; // can't infer the receiver -> nothing, not the wall
       return propsForType(type);
@@ -692,6 +842,26 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
           ...withGroup(configKeysFor(ctx.block), '0'),
           ...withGroup(handlerItems, '1'),
           ...withGroup(namespaceItems, '1'),
+        );
+      }
+      // 5b') Inside a `Packet { on "Class" { } }` handler: surface the bound
+      //      `packet` receiver and a one-shot "scaffold all fields" snippet
+      //      before the general palette.
+      if (ctx.packetClass && getPacketInfo(ctx.packetClass)) {
+        const scaffold = packetScaffoldItem(ctx.packetClass);
+        head.push(
+          ...withGroup(
+            [
+              {
+                label: 'packet',
+                kind: CompletionItemKind.Variable,
+                detail: `the inbound ${ctx.packetClass}`,
+                data: -1,
+              },
+              ...(scaffold ? [scaffold] : []),
+            ],
+            '0',
+          ),
         );
       }
       // 5c) The user's own variables, then statement keywords / builtins / consts.
@@ -731,5 +901,5 @@ export function createCompletionEngine(data: SymData): CompletionEngine {
     return item;
   };
 
-  return { getCompletions, resolve, analyze };
+  return { getCompletions, resolve, analyze, getPacketInfo, getPacketField };
 }

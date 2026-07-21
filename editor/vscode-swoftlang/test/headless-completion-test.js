@@ -291,5 +291,43 @@ const complete = (prefix, depth = 1, locals = [], ctx = {}) =>
   ok(engine.analyze('command "c" {\n  execute {\n    ').block === 'execute', 'analyze() reports enclosing `execute` block');
 }
 
+// --- 16. Packet blocks: class-name completion is client-only; field completion
+//     scopes to the enclosing on-block's class; scaffold binds every field ---
+{
+  const packetData = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'data', 'packets.json'), 'utf8'),
+  );
+  const pEngine = createCompletionEngine(data, packetData);
+  const pComplete = (prefix, depth = 1, locals = [], ctx = {}) =>
+    pEngine.getCompletions(prefix, depth, locals, ctx);
+
+  // `Packet { on "<CURSOR>" }` — inbound client packets only, never outbound.
+  const cls = pComplete('    on "', 2, [], { block: 'Packet' });
+  const clsL = labels(cls);
+  ok(clsL.has('ClientChatMessagePacket'), '`on "` offers inbound client packet ClientChatMessagePacket');
+  ok(clsL.has('ClientPlayerActionPacket'), '`on "` offers inbound client packet ClientPlayerActionPacket');
+  ok(!clsL.has('ActionBarPacket'), '`on "` does NOT offer outbound server packet ActionBarPacket');
+  ok(cls.length > 0 && cls.every((i) => i.detail === 'inbound · client packet'),
+    'every `on "` class item is an inbound client packet');
+
+  // `packet.<CURSOR>` scopes to the enclosing on-block's class.
+  const chat = labels(pComplete('        set v to packet.', 3, [], { packetClass: 'ClientChatMessagePacket' }));
+  ok(chat.has('message') && chat.has('timestamp') && chat.has('checksum'),
+    '`packet.` in a ClientChatMessagePacket block offers its fields');
+  ok(!chat.has('block_face') && !chat.has('sequence'),
+    '`packet.` does NOT leak another packet\'s fields (block_face/sequence)');
+  const act = labels(pComplete('        set v to packet.', 3, [], { packetClass: 'ClientPlayerActionPacket' }));
+  ok(act.has('block_face') && act.has('sequence') && !act.has('message'),
+    '`packet.` in a ClientPlayerActionPacket block scopes to ITS fields');
+
+  // scaffold snippet binds every field of the enclosing packet.
+  const scaffold = pComplete('        ', 3, [], { packetClass: 'ClientChatMessagePacket' })
+    .find((i) => i.label === 'scaffold packet fields');
+  ok(!!scaffold && scaffold.insertTextFormat === InsertTextFormat.Snippet, 'scaffold item is a Snippet');
+  const chatFields = packetData.packets.ClientChatMessagePacket.fields;
+  ok(scaffold && chatFields.every((f) => scaffold.insertText.includes(`to packet.${f.name}`)),
+    `scaffold binds all ${chatFields.length} ClientChatMessagePacket fields`);
+}
+
 console.log(fails === 0 ? '\nALL COMPLETION TESTS PASSED' : `\n${fails} FAILURE(S)`);
 process.exit(fails === 0 ? 0 : 1);

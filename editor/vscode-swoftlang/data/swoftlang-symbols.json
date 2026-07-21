@@ -539,6 +539,66 @@
       "kind": "declaration"
     },
     {
+      "name": "Player",
+      "kind": "receiver",
+      "doc": "`Player { }` OOP receiver block."
+    },
+    {
+      "name": "Entity",
+      "kind": "receiver",
+      "doc": "`Entity { }` OOP receiver block."
+    },
+    {
+      "name": "Mob",
+      "kind": "receiver",
+      "doc": "`Mob { }` OOP receiver block."
+    },
+    {
+      "name": "Item",
+      "kind": "receiver",
+      "doc": "`Item { }` OOP receiver block."
+    },
+    {
+      "name": "Block",
+      "kind": "receiver",
+      "doc": "`Block { }` OOP receiver block."
+    },
+    {
+      "name": "Projectile",
+      "kind": "receiver",
+      "doc": "`Projectile { }` OOP receiver block."
+    },
+    {
+      "name": "Inventory",
+      "kind": "receiver",
+      "doc": "`Inventory { }` OOP receiver block."
+    },
+    {
+      "name": "World",
+      "kind": "receiver",
+      "doc": "`World { }` OOP receiver block."
+    },
+    {
+      "name": "Server",
+      "kind": "receiver",
+      "doc": "`Server { }` OOP receiver block."
+    },
+    {
+      "name": "Npc",
+      "kind": "receiver",
+      "doc": "`Npc { }` OOP receiver block."
+    },
+    {
+      "name": "Hologram",
+      "kind": "receiver",
+      "doc": "`Hologram { }` OOP receiver block."
+    },
+    {
+      "name": "Packet",
+      "kind": "receiver",
+      "doc": "`Packet { }` OOP receiver block."
+    },
+    {
       "name": "is",
       "kind": "operator"
     },
@@ -1781,6 +1841,16 @@
       "doc": "Parse an item stack from NBT."
     },
     {
+      "name": "on_advancement_tab",
+      "kind": "handler",
+      "doc": "Inline `on_advancement_tab` event handler block."
+    },
+    {
+      "name": "on_anvil_input",
+      "kind": "handler",
+      "doc": "Inline `on_anvil_input` event handler block."
+    },
+    {
       "name": "on_attack",
       "kind": "handler",
       "doc": "Inline `on_attack` event handler block."
@@ -1791,9 +1861,84 @@
       "doc": "Inline `on_attack_entity` event handler block."
     },
     {
+      "name": "on_begin_item_use",
+      "kind": "handler",
+      "doc": "Inline `on_begin_item_use` event handler block."
+    },
+    {
+      "name": "on_begin_use",
+      "kind": "handler",
+      "doc": "Inline `on_begin_use` event handler block."
+    },
+    {
+      "name": "on_block_update",
+      "kind": "handler",
+      "doc": "Inline `on_block_update` event handler block."
+    },
+    {
       "name": "on_break",
       "kind": "handler",
       "doc": "Inline `on_break` event handler block."
+    },
+    {
+      "name": "on_break_block",
+      "kind": "handler",
+      "doc": "Inline `on_break_block` event handler block."
+    },
+    {
+      "name": "on_bundle_select",
+      "kind": "handler",
+      "doc": "Inline `on_bundle_select` event handler block."
+    },
+    {
+      "name": "on_button_click",
+      "kind": "handler",
+      "doc": "Inline `on_button_click` event handler block."
+    },
+    {
+      "name": "on_cancel_digging",
+      "kind": "handler",
+      "doc": "Inline `on_cancel_digging` event handler block."
+    },
+    {
+      "name": "on_cancel_item_use",
+      "kind": "handler",
+      "doc": "Inline `on_cancel_item_use` event handler block."
+    },
+    {
+      "name": "on_cancel_use",
+      "kind": "handler",
+      "doc": "Inline `on_cancel_use` event handler block."
+    },
+    {
+      "name": "on_cast_rod",
+      "kind": "handler",
+      "doc": "Inline `on_cast_rod` event handler block."
+    },
+    {
+      "name": "on_catch_fish",
+      "kind": "handler",
+      "doc": "Inline `on_catch_fish` event handler block."
+    },
+    {
+      "name": "on_change_held_slot",
+      "kind": "handler",
+      "doc": "Inline `on_change_held_slot` event handler block."
+    },
+    {
+      "name": "on_chat",
+      "kind": "handler",
+      "doc": "Inline `on_chat` event handler block."
+    },
+    {
+      "name": "on_chunk_load",
+      "kind": "handler",
+      "doc": "Inline `on_chunk_load` event handler block."
+    },
+    {
+      "name": "on_chunk_unload",
+      "kind": "handler",
+      "doc": "Inline `on_chunk_unload` event handler block."
     },
     {
       "name": "on_click",
@@ -1801,9 +1946,29 @@
       "doc": "Inline `on_click` event handler block."
     },
     {
+      "name": "on_client_ping",
+      "kind": "handler",
+      "doc": "Inline `on_client_ping` event handler block."
+    },
+    {
+      "name": "on_close",
+      "kind": "handler",
+      "doc": "Inline `on_close` event handler block."
+    },
+    {
+      "name": "on_command",
+      "kind": "handler",
+      "doc": "Inline `on_command` event handler block."
+    },
+    {
       "name": "on_consume",
       "kind": "handler",
       "doc": "Inline `on_consume` event handler block."
+    },
+    {
+      "name": "on_creative_action",
+      "kind": "handler",
+      "doc": "Inline `on_creative_action` event handler block."
     },
     {
       "name": "on_death",
@@ -1811,9 +1976,19 @@
       "doc": "Inline `on_death` event handler block."
     },
     {
+      "name": "on_despawn",
+      "kind": "handler",
+      "doc": "Inline `on_despawn` event handler block."
+    },
+    {
       "name": "on_destroy",
       "kind": "handler",
       "doc": "Inline `on_destroy` event handler block."
+    },
+    {
+      "name": "on_dispense",
+      "kind": "handler",
+      "doc": "Inline `on_dispense` event handler block."
     },
     {
       "name": "on_drop",
@@ -1821,14 +1996,124 @@
       "doc": "Inline `on_drop` event handler block."
     },
     {
+      "name": "on_drop_item",
+      "kind": "handler",
+      "doc": "Inline `on_drop_item` event handler block."
+    },
+    {
+      "name": "on_edit_book",
+      "kind": "handler",
+      "doc": "Inline `on_edit_book` event handler block."
+    },
+    {
+      "name": "on_edit_sign",
+      "kind": "handler",
+      "doc": "Inline `on_edit_sign` event handler block."
+    },
+    {
+      "name": "on_entity_add",
+      "kind": "handler",
+      "doc": "Inline `on_entity_add` event handler block."
+    },
+    {
+      "name": "on_entity_remove",
+      "kind": "handler",
+      "doc": "Inline `on_entity_remove` event handler block."
+    },
+    {
+      "name": "on_equip",
+      "kind": "handler",
+      "doc": "Inline `on_equip` event handler block."
+    },
+    {
+      "name": "on_finish_digging",
+      "kind": "handler",
+      "doc": "Inline `on_finish_digging` event handler block."
+    },
+    {
+      "name": "on_finish_item_use",
+      "kind": "handler",
+      "doc": "Inline `on_finish_item_use` event handler block."
+    },
+    {
+      "name": "on_finish_use",
+      "kind": "handler",
+      "doc": "Inline `on_finish_use` event handler block."
+    },
+    {
+      "name": "on_fire_extinguish",
+      "kind": "handler",
+      "doc": "Inline `on_fire_extinguish` event handler block."
+    },
+    {
+      "name": "on_fish_bite",
+      "kind": "handler",
+      "doc": "Inline `on_fish_bite` event handler block."
+    },
+    {
+      "name": "on_gamemode_change",
+      "kind": "handler",
+      "doc": "Inline `on_gamemode_change` event handler block."
+    },
+    {
+      "name": "on_hand_animation",
+      "kind": "handler",
+      "doc": "Inline `on_hand_animation` event handler block."
+    },
+    {
       "name": "on_hit",
       "kind": "handler",
       "doc": "Inline `on_hit` event handler block."
     },
     {
+      "name": "on_hit_block",
+      "kind": "handler",
+      "doc": "Inline `on_hit_block` event handler block."
+    },
+    {
+      "name": "on_hit_entity",
+      "kind": "handler",
+      "doc": "Inline `on_hit_entity` event handler block."
+    },
+    {
+      "name": "on_input",
+      "kind": "handler",
+      "doc": "Inline `on_input` event handler block."
+    },
+    {
       "name": "on_interact",
       "kind": "handler",
       "doc": "Inline `on_interact` event handler block."
+    },
+    {
+      "name": "on_interact_block",
+      "kind": "handler",
+      "doc": "Inline `on_interact_block` event handler block."
+    },
+    {
+      "name": "on_interact_entity",
+      "kind": "handler",
+      "doc": "Inline `on_interact_entity` event handler block."
+    },
+    {
+      "name": "on_item_change",
+      "kind": "handler",
+      "doc": "Inline `on_item_change` event handler block."
+    },
+    {
+      "name": "on_item_merge",
+      "kind": "handler",
+      "doc": "Inline `on_item_merge` event handler block."
+    },
+    {
+      "name": "on_join",
+      "kind": "handler",
+      "doc": "Inline `on_join` event handler block."
+    },
+    {
+      "name": "on_leave_bed",
+      "kind": "handler",
+      "doc": "Inline `on_leave_bed` event handler block."
     },
     {
       "name": "on_left_click",
@@ -1841,14 +2126,129 @@
       "doc": "Inline `on_line_click` event handler block."
     },
     {
+      "name": "on_list_ping",
+      "kind": "handler",
+      "doc": "Inline `on_list_ping` event handler block."
+    },
+    {
+      "name": "on_loaded",
+      "kind": "handler",
+      "doc": "Inline `on_loaded` event handler block."
+    },
+    {
+      "name": "on_move",
+      "kind": "handler",
+      "doc": "Inline `on_move` event handler block."
+    },
+    {
+      "name": "on_open",
+      "kind": "handler",
+      "doc": "Inline `on_open` event handler block."
+    },
+    {
+      "name": "on_outgoing_transfer",
+      "kind": "handler",
+      "doc": "Inline `on_outgoing_transfer` event handler block."
+    },
+    {
+      "name": "on_packet_in",
+      "kind": "handler",
+      "doc": "Inline `on_packet_in` event handler block."
+    },
+    {
+      "name": "on_packet_out",
+      "kind": "handler",
+      "doc": "Inline `on_packet_out` event handler block."
+    },
+    {
+      "name": "on_pick_block",
+      "kind": "handler",
+      "doc": "Inline `on_pick_block` event handler block."
+    },
+    {
+      "name": "on_pick_entity",
+      "kind": "handler",
+      "doc": "Inline `on_pick_entity` event handler block."
+    },
+    {
       "name": "on_pickup",
       "kind": "handler",
       "doc": "Inline `on_pickup` event handler block."
     },
     {
+      "name": "on_pickup_experience",
+      "kind": "handler",
+      "doc": "Inline `on_pickup_experience` event handler block."
+    },
+    {
+      "name": "on_pickup_item",
+      "kind": "handler",
+      "doc": "Inline `on_pickup_item` event handler block."
+    },
+    {
       "name": "on_place",
       "kind": "handler",
       "doc": "Inline `on_place` event handler block."
+    },
+    {
+      "name": "on_place_block",
+      "kind": "handler",
+      "doc": "Inline `on_place_block` event handler block."
+    },
+    {
+      "name": "on_player_configuration",
+      "kind": "handler",
+      "doc": "Inline `on_player_configuration` event handler block."
+    },
+    {
+      "name": "on_plugin_message",
+      "kind": "handler",
+      "doc": "Inline `on_plugin_message` event handler block."
+    },
+    {
+      "name": "on_potion_add",
+      "kind": "handler",
+      "doc": "Inline `on_potion_add` event handler block."
+    },
+    {
+      "name": "on_potion_remove",
+      "kind": "handler",
+      "doc": "Inline `on_potion_remove` event handler block."
+    },
+    {
+      "name": "on_pre_click",
+      "kind": "handler",
+      "doc": "Inline `on_pre_click` event handler block."
+    },
+    {
+      "name": "on_pre_login",
+      "kind": "handler",
+      "doc": "Inline `on_pre_login` event handler block."
+    },
+    {
+      "name": "on_quit",
+      "kind": "handler",
+      "doc": "Inline `on_quit` event handler block."
+    },
+    {
+      "name": "on_reel_in",
+      "kind": "handler",
+      "doc": "Inline `on_reel_in` event handler block."
+    },
+    {
+      "name": "on_register",
+      "kind": "handler",
+      "doc": "Inline `on_register` event handler block."
+    },
+    {
+      "name": "on_resource_pack_status",
+      "kind": "handler",
+      "doc": "Inline `on_resource_pack_status` event handler block."
+    },
+    {
+      "name": "on_respawn",
+      "kind": "handler",
+      "doc": "Inline `on_respawn` event handler block."
     },
     {
       "name": "on_right_click",
@@ -1861,9 +2261,84 @@
       "doc": "Inline `on_right_click_block` event handler block."
     },
     {
+      "name": "on_section_invalidate",
+      "kind": "handler",
+      "doc": "Inline `on_section_invalidate` event handler block."
+    },
+    {
+      "name": "on_set_fire",
+      "kind": "handler",
+      "doc": "Inline `on_set_fire` event handler block."
+    },
+    {
+      "name": "on_settings_change",
+      "kind": "handler",
+      "doc": "Inline `on_settings_change` event handler block."
+    },
+    {
+      "name": "on_shoot",
+      "kind": "handler",
+      "doc": "Inline `on_shoot` event handler block."
+    },
+    {
+      "name": "on_skin_init",
+      "kind": "handler",
+      "doc": "Inline `on_skin_init` event handler block."
+    },
+    {
       "name": "on_spawn",
       "kind": "handler",
       "doc": "Inline `on_spawn` event handler block."
+    },
+    {
+      "name": "on_spectate_entity",
+      "kind": "handler",
+      "doc": "Inline `on_spectate_entity` event handler block."
+    },
+    {
+      "name": "on_stab",
+      "kind": "handler",
+      "doc": "Inline `on_stab` event handler block."
+    },
+    {
+      "name": "on_start_digging",
+      "kind": "handler",
+      "doc": "Inline `on_start_digging` event handler block."
+    },
+    {
+      "name": "on_start_elytra",
+      "kind": "handler",
+      "doc": "Inline `on_start_elytra` event handler block."
+    },
+    {
+      "name": "on_start_flying",
+      "kind": "handler",
+      "doc": "Inline `on_start_flying` event handler block."
+    },
+    {
+      "name": "on_start_sprinting",
+      "kind": "handler",
+      "doc": "Inline `on_start_sprinting` event handler block."
+    },
+    {
+      "name": "on_stop_elytra",
+      "kind": "handler",
+      "doc": "Inline `on_stop_elytra` event handler block."
+    },
+    {
+      "name": "on_stop_flying",
+      "kind": "handler",
+      "doc": "Inline `on_stop_flying` event handler block."
+    },
+    {
+      "name": "on_stop_sprinting",
+      "kind": "handler",
+      "doc": "Inline `on_stop_sprinting` event handler block."
+    },
+    {
+      "name": "on_swap_item",
+      "kind": "handler",
+      "doc": "Inline `on_swap_item` event handler block."
     },
     {
       "name": "on_swap_to",
@@ -1876,9 +2351,29 @@
       "doc": "Inline `on_target` event handler block."
     },
     {
+      "name": "on_teleport",
+      "kind": "handler",
+      "doc": "Inline `on_teleport` event handler block."
+    },
+    {
+      "name": "on_teleport_to_entity",
+      "kind": "handler",
+      "doc": "Inline `on_teleport_to_entity` event handler block."
+    },
+    {
       "name": "on_tick",
       "kind": "handler",
       "doc": "Inline `on_tick` event handler block."
+    },
+    {
+      "name": "on_tick_end",
+      "kind": "handler",
+      "doc": "Inline `on_tick_end` event handler block."
+    },
+    {
+      "name": "on_tick_monitor",
+      "kind": "handler",
+      "doc": "Inline `on_tick_monitor` event handler block."
     },
     {
       "name": "on_touch",
@@ -1886,9 +2381,44 @@
       "doc": "Inline `on_touch` event handler block."
     },
     {
+      "name": "on_tps_change",
+      "kind": "handler",
+      "doc": "Inline `on_tps_change` event handler block."
+    },
+    {
+      "name": "on_uncollide",
+      "kind": "handler",
+      "doc": "Inline `on_uncollide` event handler block."
+    },
+    {
+      "name": "on_unregister",
+      "kind": "handler",
+      "doc": "Inline `on_unregister` event handler block."
+    },
+    {
       "name": "on_update",
       "kind": "handler",
       "doc": "Inline `on_update` event handler block."
+    },
+    {
+      "name": "on_use",
+      "kind": "handler",
+      "doc": "Inline `on_use` event handler block."
+    },
+    {
+      "name": "on_use_item",
+      "kind": "handler",
+      "doc": "Inline `on_use_item` event handler block."
+    },
+    {
+      "name": "on_use_item_on_block",
+      "kind": "handler",
+      "doc": "Inline `on_use_item_on_block` event handler block."
+    },
+    {
+      "name": "on_velocity",
+      "kind": "handler",
+      "doc": "Inline `on_velocity` event handler block."
     },
     {
       "name": "tick",
@@ -7436,28 +7966,122 @@
     "attributes"
   ],
   "handlers": [
+    "on_advancement_tab",
+    "on_anvil_input",
     "on_attack",
     "on_attack_entity",
+    "on_begin_item_use",
+    "on_begin_use",
+    "on_block_update",
     "on_break",
+    "on_break_block",
+    "on_bundle_select",
+    "on_button_click",
+    "on_cancel_digging",
+    "on_cancel_item_use",
+    "on_cancel_use",
+    "on_cast_rod",
+    "on_catch_fish",
+    "on_change_held_slot",
+    "on_chat",
+    "on_chunk_load",
+    "on_chunk_unload",
     "on_click",
+    "on_client_ping",
+    "on_close",
+    "on_command",
     "on_consume",
+    "on_creative_action",
     "on_death",
+    "on_despawn",
     "on_destroy",
+    "on_dispense",
     "on_drop",
+    "on_drop_item",
+    "on_edit_book",
+    "on_edit_sign",
+    "on_entity_add",
+    "on_entity_remove",
+    "on_equip",
+    "on_finish_digging",
+    "on_finish_item_use",
+    "on_finish_use",
+    "on_fire_extinguish",
+    "on_fish_bite",
+    "on_gamemode_change",
+    "on_hand_animation",
     "on_hit",
+    "on_hit_block",
+    "on_hit_entity",
+    "on_input",
     "on_interact",
+    "on_interact_block",
+    "on_interact_entity",
+    "on_item_change",
+    "on_item_merge",
+    "on_join",
+    "on_leave_bed",
     "on_left_click",
     "on_line_click",
+    "on_list_ping",
+    "on_loaded",
+    "on_move",
+    "on_open",
+    "on_outgoing_transfer",
+    "on_packet_in",
+    "on_packet_out",
+    "on_pick_block",
+    "on_pick_entity",
     "on_pickup",
+    "on_pickup_experience",
+    "on_pickup_item",
     "on_place",
+    "on_place_block",
+    "on_player_configuration",
+    "on_plugin_message",
+    "on_potion_add",
+    "on_potion_remove",
+    "on_pre_click",
+    "on_pre_login",
+    "on_quit",
+    "on_reel_in",
+    "on_register",
+    "on_resource_pack_status",
+    "on_respawn",
     "on_right_click",
     "on_right_click_block",
+    "on_section_invalidate",
+    "on_set_fire",
+    "on_settings_change",
+    "on_shoot",
+    "on_skin_init",
     "on_spawn",
+    "on_spectate_entity",
+    "on_stab",
+    "on_start_digging",
+    "on_start_elytra",
+    "on_start_flying",
+    "on_start_sprinting",
+    "on_stop_elytra",
+    "on_stop_flying",
+    "on_stop_sprinting",
+    "on_swap_item",
     "on_swap_to",
     "on_target",
+    "on_teleport",
+    "on_teleport_to_entity",
     "on_tick",
+    "on_tick_end",
+    "on_tick_monitor",
     "on_touch",
+    "on_tps_change",
+    "on_uncollide",
+    "on_unregister",
     "on_update",
+    "on_use",
+    "on_use_item",
+    "on_use_item_on_block",
+    "on_velocity",
     "tick"
   ]
 }
