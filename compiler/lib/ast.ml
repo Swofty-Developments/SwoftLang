@@ -116,11 +116,11 @@ and stmt_node =
      key and the V value over each entry of the map *)
   | SForeachMap of { fm_key : string; fm_val : string; fm_map : expr; fm_body : stmt }
   | SCall of string * expr list
-  (* 'call original method [with arguments <expr>, ...]' — inside a custom
-     declaration method that overrides a base receiver method, re-invoke the
-     base (overridden) method. None = re-run with the same bound variables; Some
-     args = explicit arguments (arity/types must match the base method). *)
-  | SCallOriginal of expr list option
+  (* 'call original method' — inside a custom declaration method that overrides
+     a base receiver method, re-invoke the base (overridden) method. It re-runs
+     with the current bound-variable values, so mutate a bound var beforehand to
+     forward a changed value. *)
+  | SCallOriginal
   (* W-collections: a bare method-call statement — <receiver>.<name>(<args>) —
      for the in-place mutating methods (list add/remove/..., map set/delete/...).
      Carries the receiver, method name, and arguments. *)

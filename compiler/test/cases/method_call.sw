@@ -3,8 +3,9 @@
 // Method-call EXPRESSIONS (<receiver>.<name>(args)) resolve by the receiver's
 // static type; the zero-arg accessors (.size/.keys/.first/.is_empty) stay in
 // property form. Mutating methods (add/set/remove/...) are bare STATEMENTS
-// that mutate in place. The free builtins (map_get/sort/uppercase/...) still
-// work as deprecated aliases delegating to the same runtime.
+// that mutate in place. The natural-language dialect ('size of m', 'keys of m',
+// 'set m at k to v', 'sorted l', 'uppercase of s', ...) desugars to the same
+// method/emit nodes.
 
 command "collections" {
     execute {

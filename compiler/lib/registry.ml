@@ -2082,15 +2082,15 @@ let builtins =
        map<K,V> variable, or the first insertion). The empty '{}' literal is
        rejected as ambiguous with a block, so this is the way to create one. *)
     b "new_map" [ ([], RTy (TMap (TAny, TAny))) ];
-    (* map_get/map_set/map_has/map_delete/map_keys/map_size are handled
-       specially in Tc_expr (their result type depends on the map's key/value
-       type), but they still resolve here so name-collision checks see them *)
-    b "map_get" [ ([ PStr; PStr ], RTy (TOptional TAny)) ];
-    b "map_set" [ ([ PStr; PStr; PStr ], RTy TAny) ];
-    b "map_has" [ ([ PStr; PStr ], RTy TBoolean) ];
-    b "map_delete" [ ([ PStr; PStr ], RTy TAny) ];
-    b "map_keys" [ ([ PStr ], RTy (TList TString)) ];
-    b "map_size" [ ([ PStr ], RTy TInteger) ];
+    (* The six map_get/map_set/map_has/map_delete/map_keys/map_size DICTIONARY
+       free builtins were REMOVED: the natural-language dialect ('set m at k to
+       v', 'm has k', 'keys of m', 'delete m at k', 'size of m', 'm[k]') and the
+       method dialect (m.set/get/has/delete/keys/size) are the only surface
+       forms now. A literal call to any of them is a parse error (see
+       Parse_expr.removed_map_builtins) that points at both forms. Those same
+       map_* nodes remain the internal emit target (Tc_expr routes them by the
+       map's key/value type), so removing them here only drops the free-function
+       spelling and its name-collision registration. map_canvas is unrelated. *)
     (* --- W-pvp: the entity ATTRIBUTE accessors/modifiers, combat EFFECTS, and
        native trackers were free functions (attribute/set_attribute/
        add_attribute_modifier/remove_attribute_modifier, apply_damage/
@@ -2514,6 +2514,15 @@ let control_keywords =
     "all"; "players"; "true"; "false";
   ]
 
+(* W-collections: the natural-language collection-operation words. These are
+   context-sensitive SOFT keywords (legal variable names elsewhere), so they are
+   deliberately NOT in control_keywords; the symbol dump advertises them under a
+   separate 'collection_ops' key so the editor grammar/LSP can color and complete
+   them as collection operators without the parser reserving them globally. 'of'
+   also appears in control_keywords as a general connective; listing it here too
+   is harmless (both surfaces color it a keyword). *)
+let collection_ops = [ "of"; "has"; "sorted"; "reversed"; "first"; "last" ]
+
 (* the top-level declaration keywords, mirroring the dispatch in parser.ml. Every
    one opens a first-class declaration block. *)
 let declaration_keywords =
@@ -2600,6 +2609,7 @@ let dump_symbols_json () : Yojson.Safe.t =
   `Assoc
     [
       ("keywords", jstrings control_keywords);
+      ("collection_ops", jstrings collection_ops);
       ("declarations", jstrings declaration_keywords);
       ("receivers", jstrings receiver_keyword_names);
       ("handlers", jstrings all_handler_names);

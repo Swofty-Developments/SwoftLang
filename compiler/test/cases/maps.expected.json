@@ -3,7 +3,7 @@
   "version": 2,
   "commands": [
     {
-      "line": 15,
+      "line": 16,
       "col": 1,
       "names": [ "maps" ],
       "permission": null,
@@ -13,19 +13,19 @@
         "async": false,
         "statements": [
           {
-            "line": 18,
+            "line": 19,
             "col": 9,
             "kind": "assign",
             "target": "counts",
             "value": {
-              "line": 18,
+              "line": 19,
               "col": 23,
               "kind": "map_lit",
               "entries": [
                 {
                   "key": "a",
                   "value": {
-                    "line": 18,
+                    "line": 19,
                     "col": 30,
                     "kind": "number",
                     "value": 1,
@@ -35,7 +35,7 @@
                 {
                   "key": "b",
                   "value": {
-                    "line": 18,
+                    "line": 19,
                     "col": 38,
                     "kind": "number",
                     "value": 2,
@@ -45,7 +45,7 @@
                 {
                   "key": "c",
                   "value": {
-                    "line": 18,
+                    "line": 19,
                     "col": 46,
                     "kind": "number",
                     "value": 3,
@@ -56,15 +56,15 @@
             }
           },
           {
-            "line": 21,
+            "line": 22,
             "col": 9,
             "kind": "call",
             "name": "map_set",
             "args": [
-              { "line": 21, "col": 17, "kind": "var", "name": "counts" },
-              { "line": 21, "col": 25, "kind": "string", "value": "d" },
+              { "line": 22, "col": 13, "kind": "var", "name": "counts" },
+              { "line": 22, "col": 23, "kind": "string", "value": "d" },
               {
-                "line": 21,
+                "line": 22,
                 "col": 30,
                 "kind": "number",
                 "value": 4,
@@ -73,15 +73,15 @@
             ]
           },
           {
-            "line": 22,
+            "line": 23,
             "col": 9,
             "kind": "call",
             "name": "map_set",
             "args": [
-              { "line": 22, "col": 13, "kind": "var", "name": "counts" },
-              { "line": 22, "col": 23, "kind": "string", "value": "e" },
+              { "line": 23, "col": 13, "kind": "var", "name": "counts" },
+              { "line": 23, "col": 23, "kind": "string", "value": "e" },
               {
-                "line": 22,
+                "line": 23,
                 "col": 30,
                 "kind": "number",
                 "value": 5,
@@ -90,36 +90,36 @@
             ]
           },
           {
-            "line": 24,
+            "line": 25,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 24,
+              "line": 25,
               "col": 12,
               "kind": "call",
               "name": "map_has",
               "args": [
-                { "line": 24, "col": 20, "kind": "var", "name": "counts" },
-                { "line": 24, "col": 28, "kind": "string", "value": "a" }
+                { "line": 25, "col": 12, "kind": "var", "name": "counts" },
+                { "line": 25, "col": 23, "kind": "string", "value": "a" }
               ]
             },
             "then": {
-              "line": 24,
-              "col": 33,
+              "line": 25,
+              "col": 27,
               "kind": "block",
               "statements": [
                 {
-                  "line": 25,
+                  "line": 26,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 25,
+                    "line": 26,
                     "col": 18,
                     "kind": "string",
                     "value": "counts has a"
                   },
                   "target": {
-                    "line": 25,
+                    "line": 26,
                     "col": 36,
                     "kind": "var",
                     "name": "sender"
@@ -130,27 +130,27 @@
             "else": null
           },
           {
-            "line": 29,
+            "line": 30,
             "col": 9,
             "kind": "assign",
             "target": "a_count",
             "value": {
-              "line": 29,
+              "line": 30,
               "col": 30,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 29,
+                "line": 30,
                 "col": 30,
                 "kind": "call",
                 "name": "map_get",
                 "args": [
-                  { "line": 29, "col": 24, "kind": "var", "name": "counts" },
-                  { "line": 29, "col": 31, "kind": "string", "value": "a" }
+                  { "line": 30, "col": 24, "kind": "var", "name": "counts" },
+                  { "line": 30, "col": 31, "kind": "string", "value": "a" }
                 ]
               },
               "right": {
-                "line": 29,
+                "line": 30,
                 "col": 46,
                 "kind": "number",
                 "value": 0,
@@ -159,59 +159,59 @@
             }
           },
           {
-            "line": 30,
+            "line": 31,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 30,
+              "line": 31,
               "col": 14,
               "kind": "string",
               "value": "a is ${a_count}"
             },
             "target": {
-              "line": 30,
+              "line": 31,
               "col": 35,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 33,
+            "line": 34,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 33,
+              "line": 34,
               "col": 18,
               "kind": "unary",
               "op": "EXISTS",
               "operand": {
-                "line": 33,
+                "line": 34,
                 "col": 18,
                 "kind": "call",
                 "name": "map_get",
                 "args": [
-                  { "line": 33, "col": 12, "kind": "var", "name": "counts" },
-                  { "line": 33, "col": 19, "kind": "string", "value": "z" }
+                  { "line": 34, "col": 12, "kind": "var", "name": "counts" },
+                  { "line": 34, "col": 19, "kind": "string", "value": "z" }
                 ]
               }
             },
             "then": {
-              "line": 33,
+              "line": 34,
               "col": 31,
               "kind": "block",
               "statements": [
                 {
-                  "line": 34,
+                  "line": 35,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 34,
+                    "line": 35,
                     "col": 18,
                     "kind": "string",
                     "value": "z present"
                   },
                   "target": {
-                    "line": 34,
+                    "line": 35,
                     "col": 33,
                     "kind": "var",
                     "name": "sender"
@@ -222,69 +222,75 @@
             "else": null
           },
           {
-            "line": 37,
+            "line": 38,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 37,
+              "line": 38,
               "col": 14,
               "kind": "binary",
               "op": "CONCATENATE",
               "left": {
-                "line": 37,
+                "line": 38,
                 "col": 14,
                 "kind": "string",
                 "value": "size is "
               },
               "right": {
-                "line": 37,
+                "line": 38,
                 "col": 14,
-                "kind": "call",
-                "name": "map_size",
-                "args": [
-                  { "line": 37, "col": 14, "kind": "var", "name": "counts" }
-                ]
+                "kind": "prop",
+                "target": {
+                  "line": 38,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "counts"
+                },
+                "name": "size"
               }
             },
             "target": {
-              "line": 37,
-              "col": 47,
+              "line": 38,
+              "col": 45,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 40,
+            "line": 41,
             "col": 9,
             "kind": "foreach",
             "var": "key",
             "limit": null,
             "iterable": {
-              "line": 40,
+              "line": 41,
               "col": 14,
-              "kind": "call",
-              "name": "map_keys",
-              "args": [
-                { "line": 40, "col": 23, "kind": "var", "name": "counts" }
-              ]
+              "kind": "prop",
+              "target": {
+                "line": 41,
+                "col": 22,
+                "kind": "var",
+                "name": "counts"
+              },
+              "name": "keys"
             },
             "body": {
-              "line": 40,
-              "col": 38,
+              "line": 41,
+              "col": 36,
               "kind": "block",
               "statements": [
                 {
-                  "line": 41,
+                  "line": 42,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 41,
+                    "line": 42,
                     "col": 18,
                     "kind": "string",
                     "value": "key ${key}"
                   },
                   "target": {
-                    "line": 41,
+                    "line": 42,
                     "col": 34,
                     "kind": "var",
                     "name": "sender"
@@ -294,29 +300,29 @@
             }
           },
           {
-            "line": 45,
+            "line": 46,
             "col": 9,
             "kind": "foreach_map",
             "key": "name",
             "value": "amount",
-            "map": { "line": 45, "col": 14, "kind": "var", "name": "counts" },
+            "map": { "line": 46, "col": 14, "kind": "var", "name": "counts" },
             "body": {
-              "line": 45,
+              "line": 46,
               "col": 39,
               "kind": "block",
               "statements": [
                 {
-                  "line": 46,
+                  "line": 47,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 46,
+                    "line": 47,
                     "col": 18,
                     "kind": "string",
                     "value": "${name} = ${amount}"
                   },
                   "target": {
-                    "line": 46,
+                    "line": 47,
                     "col": 43,
                     "kind": "var",
                     "name": "sender"
@@ -326,40 +332,40 @@
             }
           },
           {
-            "line": 49,
+            "line": 50,
             "col": 9,
             "kind": "call",
             "name": "map_delete",
             "args": [
-              { "line": 49, "col": 20, "kind": "var", "name": "counts" },
-              { "line": 49, "col": 28, "kind": "string", "value": "b" }
+              { "line": 50, "col": 16, "kind": "var", "name": "counts" },
+              { "line": 50, "col": 26, "kind": "string", "value": "b" }
             ]
           },
           {
-            "line": 52,
+            "line": 53,
             "col": 9,
             "kind": "persist_set",
             "name": "leaderboard",
             "subject": null,
             "value": {
-              "line": 52,
+              "line": 53,
               "col": 9,
               "kind": "call",
               "name": "map_set",
               "args": [
                 {
-                  "line": 52,
+                  "line": 53,
                   "col": 9,
                   "kind": "persist_get",
                   "name": "leaderboard",
                   "subject": null
                 },
                 {
-                  "line": 52,
+                  "line": 53,
                   "col": 35,
                   "kind": "prop",
                   "target": {
-                    "line": 52,
+                    "line": 53,
                     "col": 28,
                     "kind": "var",
                     "name": "sender"
@@ -367,51 +373,49 @@
                   "name": "name"
                 },
                 {
-                  "line": 52,
+                  "line": 53,
                   "col": 43,
-                  "kind": "call",
-                  "name": "map_size",
-                  "args": [
-                    {
-                      "line": 52,
-                      "col": 52,
-                      "kind": "var",
-                      "name": "counts"
-                    }
-                  ]
+                  "kind": "prop",
+                  "target": {
+                    "line": 53,
+                    "col": 51,
+                    "kind": "var",
+                    "name": "counts"
+                  },
+                  "name": "size"
                 }
               ]
             }
           },
           {
-            "line": 53,
+            "line": 54,
             "col": 9,
             "kind": "assign",
             "target": "best",
             "value": {
-              "line": 53,
+              "line": 54,
               "col": 32,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 53,
+                "line": 54,
                 "col": 32,
                 "kind": "call",
                 "name": "map_get",
                 "args": [
                   {
-                    "line": 53,
+                    "line": 54,
                     "col": 21,
                     "kind": "persist_get",
                     "name": "leaderboard",
                     "subject": null
                   },
                   {
-                    "line": 53,
+                    "line": 54,
                     "col": 40,
                     "kind": "prop",
                     "target": {
-                      "line": 53,
+                      "line": 54,
                       "col": 33,
                       "kind": "var",
                       "name": "sender"
@@ -421,7 +425,7 @@
                 ]
               },
               "right": {
-                "line": 53,
+                "line": 54,
                 "col": 56,
                 "kind": "number",
                 "value": 0,
@@ -430,17 +434,17 @@
             }
           },
           {
-            "line": 54,
+            "line": 55,
             "col": 9,
             "kind": "send",
             "message": {
-              "line": 54,
+              "line": 55,
               "col": 14,
               "kind": "string",
               "value": "best ${best}"
             },
             "target": {
-              "line": 54,
+              "line": 55,
               "col": 32,
               "kind": "var",
               "name": "sender"
@@ -458,20 +462,20 @@
   "bossbars": [],
   "server": null,
   "storage": {
-    "line": 7,
+    "line": 8,
     "col": 1,
     "backend": { "kind": "files", "path": "data/swoftlang" },
     "flush_ticks": 200
   },
   "persistents": [
     {
-      "line": 13,
+      "line": 14,
       "col": 1,
       "name": "leaderboard",
       "subject": null,
       "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
       "default": {
-        "line": 13,
+        "line": 14,
         "col": 40,
         "kind": "call",
         "name": "new_map",

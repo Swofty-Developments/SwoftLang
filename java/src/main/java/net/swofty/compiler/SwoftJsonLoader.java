@@ -1086,12 +1086,8 @@ public class SwoftJsonLoader {
                 return new FunctionCallStatement(obj.get("name").getAsString(),
                         buildExpressionList(obj.getAsJsonArray("args")));
             case "call_original":
-                // `call original method [with arguments ...]`: null arguments =
-                // the no-args form (base runs with the current bound vars)
-                return new CallOriginalStatement(
-                        has(obj, "arguments") && !obj.get("arguments").isJsonNull()
-                                ? buildExpressionList(obj.getAsJsonArray("arguments"))
-                                : null);
+                // `call original method`: base runs with the current bound vars
+                return new CallOriginalStatement();
             case "method_call_stmt":
                 // <receiver>.<name>(<args>) in-place mutating collection method
                 return new net.swofty.nativebridge.execution.commands.MethodCallStatement(

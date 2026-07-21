@@ -26,9 +26,9 @@ command "random" {
             send "${item}" to sender
         }
 
-        // compose random_in with map_keys to pick a random key
+        // compose random_in with 'keys of' to pick a random key
         set weights to { "common": 1, "rare": 5 }
-        set pick to random_in(map_keys(weights)) otherwise "?"
+        set pick to random_in(keys of weights) otherwise "?"
         send "pick ${pick}" to sender
     }
 }

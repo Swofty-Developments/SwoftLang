@@ -45,25 +45,32 @@
           {
             "line": 16,
             "col": 9,
-            "kind": "call",
-            "name": "map_set",
-            "args": [
-              {
-                "line": 16,
-                "col": 17,
-                "kind": "persist_get",
-                "name": "wins",
-                "subject": null
-              },
-              { "line": 16, "col": 23, "kind": "var", "name": "sender" },
-              {
-                "line": 16,
-                "col": 31,
-                "kind": "number",
-                "value": 20,
-                "integer": true
-              }
-            ]
+            "kind": "persist_set",
+            "name": "wins",
+            "subject": null,
+            "value": {
+              "line": 16,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 16,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "wins",
+                  "subject": null
+                },
+                { "line": 16, "col": 21, "kind": "var", "name": "sender" },
+                {
+                  "line": 16,
+                  "col": 31,
+                  "kind": "number",
+                  "value": 20,
+                  "integer": true
+                }
+              ]
+            }
           },
           {
             "line": 18,
@@ -77,17 +84,17 @@
               "args": [
                 {
                   "line": 18,
-                  "col": 20,
+                  "col": 12,
                   "kind": "persist_get",
                   "name": "wins",
                   "subject": null
                 },
-                { "line": 18, "col": 26, "kind": "var", "name": "sender" }
+                { "line": 18, "col": 21, "kind": "var", "name": "sender" }
               ]
             },
             "then": {
               "line": 18,
-              "col": 34,
+              "col": 28,
               "kind": "block",
               "statements": [
                 {
@@ -172,21 +179,19 @@
             "iterable": {
               "line": 27,
               "col": 14,
-              "kind": "call",
-              "name": "map_keys",
-              "args": [
-                {
-                  "line": 27,
-                  "col": 23,
-                  "kind": "persist_get",
-                  "name": "wins",
-                  "subject": null
-                }
-              ]
+              "kind": "prop",
+              "target": {
+                "line": 27,
+                "col": 22,
+                "kind": "persist_get",
+                "name": "wins",
+                "subject": null
+              },
+              "name": "keys"
             },
             "body": {
               "line": 27,
-              "col": 34,
+              "col": 32,
               "kind": "block",
               "statements": [
                 {
@@ -255,12 +260,12 @@
             "args": [
               {
                 "line": 36,
-                "col": 20,
+                "col": 16,
                 "kind": "persist_get",
                 "name": "wins",
                 "subject": null
               },
-              { "line": 36, "col": 26, "kind": "var", "name": "sender" }
+              { "line": 36, "col": 24, "kind": "var", "name": "sender" }
             ]
           }
         ]

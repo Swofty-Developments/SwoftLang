@@ -313,22 +313,20 @@
                   {
                     "line": 31,
                     "col": 31,
-                    "kind": "call",
-                    "name": "map_keys",
-                    "args": [
-                      {
-                        "line": 31,
-                        "col": 40,
-                        "kind": "var",
-                        "name": "weights"
-                      }
-                    ]
+                    "kind": "prop",
+                    "target": {
+                      "line": 31,
+                      "col": 39,
+                      "kind": "var",
+                      "name": "weights"
+                    },
+                    "name": "keys"
                   }
                 ]
               },
               "right": {
                 "line": 31,
-                "col": 60,
+                "col": 58,
                 "kind": "string",
                 "value": "?"
               }

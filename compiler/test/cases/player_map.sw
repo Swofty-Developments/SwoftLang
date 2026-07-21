@@ -11,11 +11,11 @@ persistent wins: map<Player, Integer> = new_map()
 
 command "pmap" {
     execute {
-        // index-set and builtin form both take a Player key
+        // the 'set m at k to v' natural form takes a Player key
         set wins at sender to 10
-        map_set(wins, sender, 20)
+        set wins at sender to 20
 
-        if map_has(wins, sender) {
+        if wins has sender {
             send "tracked" to sender
         }
 
@@ -23,8 +23,8 @@ command "pmap" {
         set mine to wins[sender] otherwise 0
         send "you have ${mine}" to sender
 
-        // map_keys of a Player-keyed map is list<Player>
-        loop map_keys(wins) as p {
+        // 'keys of m' of a Player-keyed map is list<Player>
+        loop keys of wins as p {
             send "player ${p.name}" to sender
         }
 
@@ -33,6 +33,6 @@ command "pmap" {
             send "${who.name}: ${pts}" to sender
         }
 
-        map_delete(wins, sender)
+        delete wins at sender
     }
 }

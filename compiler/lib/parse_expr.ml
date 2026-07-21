@@ -3,6 +3,34 @@ open Parser_state
 
 let mke pos node = { e = node; epos = pos }
 
+(* The six DICTIONARY free builtins (map_get/set/has/delete/keys/size) were
+   removed in favour of the natural-language and method dialects. A literal call
+   to any of them is now a parse error that points at both surface forms. Note
+   this only blocks user-written calls: the natural forms desugar to the same
+   map_* / prop / method emit nodes by building the AST directly, never through
+   the call-parsing path guarded here. map_canvas is unrelated and stays. *)
+let removed_map_builtins =
+  [
+    ("map_get", "map_get is removed; read a map with 'm[k]' or 'm.get(k)'");
+    ("map_set", "map_set is removed; write 'set m at k to v' or 'm.set(k, v)'");
+    ("map_has", "map_has is removed; write 'm has k' or 'm.has(k)'");
+    ("map_delete", "map_delete is removed; write 'delete m at k' or 'm.delete(k)'");
+    ("map_keys", "map_keys is removed; write 'keys of m' or 'm.keys'");
+    ("map_size", "map_size is removed; write 'size of m' or 'm.size'");
+  ]
+
+(* A token that can begin the operand of a prefix natural expression like
+   'sorted <list>' / 'reversed <list>'. Restricted to a plain identifier that is
+   not one of the soft continuation words, so 'sorted' / 'reversed' stay legal
+   variable names anywhere they are not immediately followed by such an operand
+   (e.g. 'sorted.size', 'sorted otherwise x', a bare 'sorted'). *)
+let natural_operand_ident = function
+  | Token.IDENT s ->
+    not
+      (List.mem s
+         [ "of"; "by"; "otherwise"; "exists"; "as"; "for"; "at"; "from"; "in"; "has" ])
+  | _ -> false
+
 (* lambda bodies are ordinary statement bodies; Parse_stmt installs its body
    parser here at load time to close the expr/stmt module cycle *)
 let lambda_body_ref : (Parser_state.state -> stmt list) ref =
@@ -119,6 +147,12 @@ and parse_comparison st =
     | Token.CONTAINS ->
       ignore (advance st);
       left := mke p (EBinary ("CONTAINS", !left, parse_additive st))
+    (* natural map membership: 'm has k' -> map_has(m, k), a Boolean. Reuses the
+       existing map_has emit node; 'has' is a soft keyword so it stays a legal
+       variable name outside this infix position. *)
+    | Token.IDENT "has" ->
+      ignore (advance st);
+      left := mke p (ECall ("map_has", [ !left; parse_additive st ]))
     | Token.IDENT "exists" ->
       ignore (advance st);
       left := mke p (EUnary ("EXISTS", !left))
@@ -344,6 +378,38 @@ and parse_primary st =
       let name = expect_string st "npc name" in
       mke p (ECall ("viewers_of_npc", [ mke p (EString name) ]))
     | _ -> mke p (ECall ("viewers_of", [ parse_postfix st ])))
+  (* removed DICTIONARY free builtins: a literal map_get/map_set/... call points
+     at the natural and method forms (map_canvas is unaffected). *)
+  | Token.IDENT name
+    when peek2_tok st = Token.LPAREN && List.mem_assoc name removed_map_builtins ->
+    error st (List.assoc name removed_map_builtins)
+  (* natural collection/string accessors: '<word> of <expr>'. size/keys/values/
+     first/last reuse the zero-arg property accessors (m.size / l.first); length/
+     uppercase/lowercase reuse the existing string builtins. Context-sensitive:
+     the 'of' lookahead is required, so every one of these words stays a legal
+     variable name in any other position. *)
+  | Token.IDENT ("size" | "keys" | "values" | "first" | "last") when soft2 st "of" ->
+    let word = expect_ident st "collection accessor" in
+    expect_soft st "of";
+    mke p (EProp (parse_postfix st, word))
+  | Token.IDENT "length" when soft2 st "of" ->
+    ignore (advance st);
+    expect_soft st "of";
+    mke p (ECall ("length", [ parse_postfix st ]))
+  | Token.IDENT ("uppercase" | "lowercase") when soft2 st "of" ->
+    let word = expect_ident st "string accessor" in
+    expect_soft st "of";
+    mke p (ECall (word, [ parse_postfix st ]))
+  (* natural list sorting/reversal, reusing the sort/sort_by/reverse builtins.
+     'sorted l by <lambda>' takes an optional key function. *)
+  | Token.IDENT "sorted" when natural_operand_ident (peek2_tok st) ->
+    ignore (advance st);
+    let lst = parse_postfix st in
+    if eat_soft st "by" then mke p (ECall ("sort_by", [ lst; parse_expr st ]))
+    else mke p (ECall ("sort", [ lst ]))
+  | Token.IDENT "reversed" when natural_operand_ident (peek2_tok st) ->
+    ignore (advance st);
+    mke p (ECall ("reverse", [ parse_postfix st ]))
   (* W-blocks: block("id") / block("id", { facing: "north", ... }) — the second
      argument is an ident-keyed property brace (an EMap), not a general
      expression, so it is parsed here rather than through parse_call_args. *)

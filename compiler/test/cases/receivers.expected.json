@@ -319,8 +319,7 @@
             {
               "line": 58,
               "col": 9,
-              "kind": "call_original",
-              "arguments": null
+              "kind": "call_original"
             }
           ]
         },
@@ -331,10 +330,7 @@
             {
               "line": 62,
               "col": 9,
-              "kind": "call_original",
-              "arguments": [
-                { "line": 62, "col": 45, "kind": "var", "name": "target" }
-              ]
+              "kind": "call_original"
             }
           ]
         }

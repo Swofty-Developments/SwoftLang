@@ -124,7 +124,7 @@ let collect_sched_names (script : Ast.script) : string list =
       we t;
       we v
     | SCall (_, args) | SSpawn (_, args) -> List.iter we args
-    | SCallOriginal args -> Option.iter (List.iter we) args
+    | SCallOriginal -> ()
     | SMethodCall (recv, _, args) ->
       we recv;
       List.iter we args

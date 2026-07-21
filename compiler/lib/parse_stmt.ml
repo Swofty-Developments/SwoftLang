@@ -191,25 +191,22 @@ let rec parse_statement st =
       mks p (SReturn (Some (parse_expr st)))
     else mks p (SReturn None)
   | Token.CALL when soft2 st "original" ->
-    (* 'call original method [with arguments <expr>, ...]' — invoke the
-       overridden base receiver method (replaces the removed default()/super) *)
+    (* 'call original method' — invoke the overridden base receiver method
+       (replaces the removed default()/super) with the current bound-variable
+       values *)
     ignore (advance st);
     (* 'call' *)
     ignore (advance st);
     (* 'original' *)
     expect_soft st "method";
-    let args =
-      if eat_soft st "with" then begin
-        expect_soft st "arguments";
-        let es = ref [ parse_expr st ] in
-        while matches st Token.COMMA do
-          es := parse_expr st :: !es
-        done;
-        Some (List.rev !es)
-      end
-      else None
-    in
-    mks p (SCallOriginal args)
+    (* the old trailing argument clause was removed: forward a changed value by
+       mutating the bound variable before the bare call. Point at 'with' with a
+       migration hint rather than the generic statement-start error. *)
+    if soft st "with" then
+      error st
+        "'call original method' takes no arguments; mutate the bound variable before the bare \
+         'call original method' to forward a changed value";
+    mks p SCallOriginal
   | Token.CALL ->
     ignore (advance st);
     let name = expect_ident st "function name after 'call'" in
@@ -869,6 +866,39 @@ let rec parse_statement st =
     ignore (advance st);
     expect_soft st "for";
     mks p (SClearBelowname (parse_target st))
+  (* removed DICTIONARY free builtins as a statement call (map_set(...), ...) *)
+  | Token.IDENT name
+    when peek2_tok st = Token.LPAREN && List.mem_assoc name removed_map_builtins ->
+    error st (List.assoc name removed_map_builtins)
+  (* natural list mutation: 'add x to l' -> l.add(x), reusing the .add method
+     emit. 'add modifier ...' is matched earlier, so 'add' stays a soft keyword
+     that is only a list-append at statement head when followed by an operand. *)
+  | Token.IDENT "add" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let x = parse_expr st in
+    expect st Token.TO "'to' in 'add <item> to <list>'";
+    mks p (SMethodCall (parse_postfix st, "add", [ x ]))
+  (* natural list mutation: 'remove x from l' -> l.remove(x). The specific
+     remove-entity/block/modifier/effect/hologram/npc forms are matched earlier;
+     the 'from <list>' tail confirms this collection form. *)
+  | Token.IDENT "remove" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let x = parse_expr st in
+    expect_soft st "from";
+    mks p (SMethodCall (parse_postfix st, "remove", [ x ]))
+  (* natural map/list clear: 'clear c' -> c.clear(). 'clear title'/'clear
+     belowname' are matched earlier. *)
+  | Token.IDENT "clear" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    mks p (SMethodCall (parse_postfix st, "clear", []))
+  (* natural map delete: 'delete m at k' -> map_delete(m, k), reusing the
+     existing map_delete emit. 'delete world' is matched earlier. *)
+  | Token.IDENT "delete" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let mapexpr = parse_postfix st in
+    expect_soft st "at";
+    let key = parse_expr st in
+    mks p (SCall ("map_delete", [ mapexpr; key ]))
   | Token.IDENT name when peek2_tok st = Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);

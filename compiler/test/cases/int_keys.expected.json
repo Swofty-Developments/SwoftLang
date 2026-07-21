@@ -58,10 +58,10 @@
             "kind": "call",
             "name": "map_set",
             "args": [
-              { "line": 18, "col": 17, "kind": "var", "name": "names" },
+              { "line": 18, "col": 13, "kind": "var", "name": "names" },
               {
                 "line": 18,
-                "col": 24,
+                "col": 22,
                 "kind": "number",
                 "value": 4,
                 "integer": true
@@ -96,10 +96,10 @@
               "kind": "call",
               "name": "map_has",
               "args": [
-                { "line": 21, "col": 20, "kind": "var", "name": "names" },
+                { "line": 21, "col": 12, "kind": "var", "name": "names" },
                 {
                   "line": 21,
-                  "col": 27,
+                  "col": 22,
                   "kind": "number",
                   "value": 1,
                   "integer": true
@@ -108,7 +108,7 @@
             },
             "then": {
               "line": 21,
-              "col": 30,
+              "col": 24,
               "kind": "block",
               "statements": [
                 {
@@ -201,16 +201,19 @@
               "right": {
                 "line": 29,
                 "col": 14,
-                "kind": "call",
-                "name": "map_size",
-                "args": [
-                  { "line": 29, "col": 14, "kind": "var", "name": "names" }
-                ]
+                "kind": "prop",
+                "target": {
+                  "line": 29,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "names"
+                },
+                "name": "size"
               }
             },
             "target": {
               "line": 29,
-              "col": 43,
+              "col": 41,
               "kind": "var",
               "name": "sender"
             }
@@ -224,15 +227,18 @@
             "iterable": {
               "line": 32,
               "col": 14,
-              "kind": "call",
-              "name": "map_keys",
-              "args": [
-                { "line": 32, "col": 23, "kind": "var", "name": "names" }
-              ]
+              "kind": "prop",
+              "target": {
+                "line": 32,
+                "col": 22,
+                "kind": "var",
+                "name": "names"
+              },
+              "name": "keys"
             },
             "body": {
               "line": 32,
-              "col": 35,
+              "col": 33,
               "kind": "block",
               "statements": [
                 {
@@ -293,10 +299,10 @@
             "kind": "call",
             "name": "map_delete",
             "args": [
-              { "line": 41, "col": 20, "kind": "var", "name": "names" },
+              { "line": 41, "col": 16, "kind": "var", "name": "names" },
               {
                 "line": 41,
-                "col": 27,
+                "col": 25,
                 "kind": "number",
                 "value": 2,
                 "integer": true

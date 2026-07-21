@@ -24,7 +24,7 @@ command "sorting" {
         set by_val to sort_by_value_desc(kills)
         set by_key to sort_by_key(kills)
         set custom to sort_map_by(kills, function(name, n) return n)
-        send "maps ${map_size(by_key)} ${map_size(custom)}" to sender
+        send "maps ${size of by_key} ${size of custom}" to sender
 
         loop by_val as name -> n {
             send "${name}: ${n}" to sender

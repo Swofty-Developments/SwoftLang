@@ -195,8 +195,7 @@ and var_type ctx bctx env pos name =
       end
       else if name = "super" then begin
         err ctx pos
-          "'super' was removed; use 'call original method' (optionally 'call original method with \
-           arguments <expr>, ...') to invoke the overridden base method";
+          "'super' was removed; use 'call original method' to invoke the overridden base method";
         TAny
       end
       else begin
@@ -440,8 +439,7 @@ and call_type ctx bctx env pos name args =
   if name = "default" then begin
     (* removed: default() -> 'call original method' *)
     err ctx pos
-      "'default()' was removed; use 'call original method' (optionally 'call original method with \
-       arguments <expr>, ...') to invoke the overridden base method";
+      "'default()' was removed; use 'call original method' to invoke the overridden base method";
     List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny
   end
@@ -479,6 +477,21 @@ and call_type ctx bctx env pos name args =
 (* map builtins whose result type depends on the map's value type V; the
    registry table lists them only so name-collision checks see them (phase 10) *)
 and map_builtin_type ctx bctx env pos name args =
+  (* These map_* nodes are reached only through the natural-language surface
+     (index read 'm[k]', 'm has k', 'set m at k to v', 'delete m at k'); the
+     method forms (m.get/.set/.has/.delete) resolve via check_method instead. So
+     diagnostics name the syntax the user actually wrote, never the internal
+     node. *)
+  let disp =
+    match name with
+    | "map_get" -> "m[k]"
+    | "map_set" -> "set m at k to v"
+    | "map_has" -> "m has k"
+    | "map_delete" -> "delete m at k"
+    | "map_keys" -> "keys of m"
+    | "map_size" -> "size of m"
+    | _ -> name
+  in
   let arity =
     match name with
     | "map_keys" | "map_size" -> 1
@@ -487,38 +500,38 @@ and map_builtin_type ctx bctx env pos name args =
   in
   let got = List.length args in
   if got <> arity then begin
-    err ctx pos "'%s' expects %d argument(s), got %d" name arity got;
+    err ctx pos "'%s' expects %d argument(s), got %d" disp arity got;
     List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny
   end
   else begin
     let map_arg = List.hd args in
     let mt = type_of ctx bctx env map_arg in
-    require_present ctx env map_arg mt ~use:(Printf.sprintf "the map argument of '%s'" name);
+    require_present ctx env map_arg mt ~use:(Printf.sprintf "the map argument of '%s'" disp);
     let kty, velem =
       match unwrap mt with
       | TMap (k, v) -> (k, v)
       | TAny -> (TAny, TAny)
       | _ ->
-        err ctx map_arg.epos "'%s' expects a map here, got %s" name (ty_to_string mt);
+        err ctx map_arg.epos "'%s' expects a map here, got %s" disp (ty_to_string mt);
         (TAny, TAny)
     in
     (* the key argument (arg 2, when present) must match the map's key type K *)
     (match args with
     | _ :: key :: _ when arity >= 2 ->
       let kt = type_of ctx bctx env key in
-      require_present ctx env key kt ~use:(Printf.sprintf "the key argument of '%s'" name);
+      require_present ctx env key kt ~use:(Printf.sprintf "the key argument of '%s'" disp);
       if not (param_compat kty kt) then
-        err ctx key.epos "'%s' expects a %s key here (got %s)" name (ty_to_string kty)
+        err ctx key.epos "'%s' expects a %s key here (got %s)" disp (ty_to_string kty)
           (ty_to_string kt)
     | _ -> ());
-    (* the value argument of map_set must be present and compatible with V *)
+    (* the value argument of 'set m at k to v' must be present and compatible with V *)
     (match (name, args) with
     | "map_set", [ _; _; v ] ->
       let vt = type_of ctx bctx env v in
-      require_present ctx env v vt ~use:"the value argument of 'map_set'";
+      require_present ctx env v vt ~use:(Printf.sprintf "the value argument of '%s'" disp);
       if not (param_compat velem vt) then
-        err ctx v.epos "'map_set' expects a %s value (got %s)" (ty_to_string velem)
+        err ctx v.epos "'%s' expects a %s value (got %s)" disp (ty_to_string velem)
           (ty_to_string vt)
     | _ -> ());
     match name with
@@ -1030,8 +1043,7 @@ and check_method ctx bctx env pos recv name args ~as_stmt : ty =
   | EVar "super" ->
     (* removed: super.<method>(args) -> 'call original method' *)
     err ctx pos
-      "'super' was removed; use 'call original method' (optionally 'call original method with \
-       arguments <expr>, ...') to invoke the overridden base method";
+      "'super' was removed; use 'call original method' to invoke the overridden base method";
     List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
     TAny
   | _ ->

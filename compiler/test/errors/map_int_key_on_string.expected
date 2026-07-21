@@ -1,1 +1,1 @@
-'map_has' expects a String key here
+argument 1 of 'has' expects String, got Integer

@@ -603,16 +603,14 @@
                   "right": {
                     "line": 27,
                     "col": 14,
-                    "kind": "call",
-                    "name": "map_size",
-                    "args": [
-                      {
-                        "line": 27,
-                        "col": 14,
-                        "kind": "var",
-                        "name": "by_key"
-                      }
-                    ]
+                    "kind": "prop",
+                    "target": {
+                      "line": 27,
+                      "col": 14,
+                      "kind": "var",
+                      "name": "by_key"
+                    },
+                    "name": "size"
                   }
                 },
                 "right": {
@@ -625,16 +623,19 @@
               "right": {
                 "line": 27,
                 "col": 14,
-                "kind": "call",
-                "name": "map_size",
-                "args": [
-                  { "line": 27, "col": 14, "kind": "var", "name": "custom" }
-                ]
+                "kind": "prop",
+                "target": {
+                  "line": 27,
+                  "col": 14,
+                  "kind": "var",
+                  "name": "custom"
+                },
+                "name": "size"
               }
             },
             "target": {
               "line": 27,
-              "col": 64,
+              "col": 60,
               "kind": "var",
               "name": "sender"
             }

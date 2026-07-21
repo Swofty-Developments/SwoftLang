@@ -165,16 +165,7 @@ public final class ReceiverDispatch {
     }
 
     /**
-     * {@code call original method with arguments ...}: run the overridden base
-     * method with the explicitly supplied argument values.
-     */
-    public static void invokeOriginal(OverrideContext ctx, List<Object> args) {
-        runBase(ctx.receiver(), ctx.method(), ctx.thisValue(), args, ctx.eventWrapper(),
-                ctx.sender());
-    }
-
-    /**
-     * {@code call original method} (no arguments): run the overridden base
+     * {@code call original method}: run the overridden base
      * method with the handler's CURRENT bound variable values for each of the
      * base method's params (so a mutated arg like {@code damage} flows through).
      * Falls back to the args captured at dispatch time when no base method is

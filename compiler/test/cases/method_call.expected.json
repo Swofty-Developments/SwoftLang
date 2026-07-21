@@ -3,7 +3,7 @@
   "version": 2,
   "commands": [
     {
-      "line": 9,
+      "line": 10,
       "col": 1,
       "names": [ "collections" ],
       "permission": null,
@@ -13,31 +13,31 @@
         "async": false,
         "statements": [
           {
-            "line": 12,
+            "line": 13,
             "col": 9,
             "kind": "assign",
             "target": "nums",
             "value": {
-              "line": 12,
+              "line": 13,
               "col": 21,
               "kind": "list",
               "items": [
                 {
-                  "line": 12,
+                  "line": 13,
                   "col": 22,
                   "kind": "number",
                   "value": 3,
                   "integer": true
                 },
                 {
-                  "line": 12,
+                  "line": 13,
                   "col": 25,
                   "kind": "number",
                   "value": 1,
                   "integer": true
                 },
                 {
-                  "line": 12,
+                  "line": 13,
                   "col": 28,
                   "kind": "number",
                   "value": 2,
@@ -45,27 +45,6 @@
                 }
               ]
             }
-          },
-          {
-            "line": 13,
-            "col": 14,
-            "kind": "method_call_stmt",
-            "receiver": {
-              "line": 13,
-              "col": 9,
-              "kind": "var",
-              "name": "nums"
-            },
-            "name": "add",
-            "args": [
-              {
-                "line": 13,
-                "col": 18,
-                "kind": "number",
-                "value": 4,
-                "integer": true
-              }
-            ]
           },
           {
             "line": 14,
@@ -77,28 +56,14 @@
               "kind": "var",
               "name": "nums"
             },
-            "name": "add_all",
+            "name": "add",
             "args": [
               {
                 "line": 14,
-                "col": 22,
-                "kind": "list",
-                "items": [
-                  {
-                    "line": 14,
-                    "col": 23,
-                    "kind": "number",
-                    "value": 5,
-                    "integer": true
-                  },
-                  {
-                    "line": 14,
-                    "col": 26,
-                    "kind": "number",
-                    "value": 6,
-                    "integer": true
-                  }
-                ]
+                "col": 18,
+                "kind": "number",
+                "value": 4,
+                "integer": true
               }
             ]
           },
@@ -112,14 +77,28 @@
               "kind": "var",
               "name": "nums"
             },
-            "name": "remove",
+            "name": "add_all",
             "args": [
               {
                 "line": 15,
-                "col": 21,
-                "kind": "number",
-                "value": 1,
-                "integer": true
+                "col": 22,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 15,
+                    "col": 23,
+                    "kind": "number",
+                    "value": 5,
+                    "integer": true
+                  },
+                  {
+                    "line": 15,
+                    "col": 26,
+                    "kind": "number",
+                    "value": 6,
+                    "integer": true
+                  }
+                ]
               }
             ]
           },
@@ -133,17 +112,38 @@
               "kind": "var",
               "name": "nums"
             },
-            "name": "insert",
+            "name": "remove",
             "args": [
               {
                 "line": 16,
+                "col": 21,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 17,
+            "col": 14,
+            "kind": "method_call_stmt",
+            "receiver": {
+              "line": 17,
+              "col": 9,
+              "kind": "var",
+              "name": "nums"
+            },
+            "name": "insert",
+            "args": [
+              {
+                "line": 17,
                 "col": 21,
                 "kind": "number",
                 "value": 0,
                 "integer": true
               },
               {
-                "line": 16,
+                "line": 17,
                 "col": 24,
                 "kind": "number",
                 "value": 9,
@@ -152,15 +152,15 @@
             ]
           },
           {
-            "line": 19,
+            "line": 20,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 19,
+              "line": 20,
               "col": 17,
               "kind": "method_call",
               "receiver": {
-                "line": 19,
+                "line": 20,
                 "col": 12,
                 "kind": "var",
                 "name": "nums"
@@ -168,7 +168,7 @@
               "name": "contains",
               "args": [
                 {
-                  "line": 19,
+                  "line": 20,
                   "col": 26,
                   "kind": "number",
                   "value": 3,
@@ -177,22 +177,22 @@
               ]
             },
             "then": {
-              "line": 19,
+              "line": 20,
               "col": 29,
               "kind": "block",
               "statements": [
                 {
-                  "line": 20,
+                  "line": 21,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 20,
+                    "line": 21,
                     "col": 18,
                     "kind": "string",
                     "value": "has 3"
                   },
                   "target": {
-                    "line": 20,
+                    "line": 21,
                     "col": 29,
                     "kind": "var",
                     "name": "sender"
@@ -203,21 +203,21 @@
             "else": null
           },
           {
-            "line": 22,
+            "line": 23,
             "col": 9,
             "kind": "assign",
             "target": "idx",
             "value": {
-              "line": 22,
+              "line": 23,
               "col": 25,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 22,
+                "line": 23,
                 "col": 25,
                 "kind": "method_call",
                 "receiver": {
-                  "line": 22,
+                  "line": 23,
                   "col": 20,
                   "kind": "var",
                   "name": "nums"
@@ -225,7 +225,7 @@
                 "name": "index_of",
                 "args": [
                   {
-                    "line": 22,
+                    "line": 23,
                     "col": 34,
                     "kind": "number",
                     "value": 2,
@@ -234,19 +234,19 @@
                 ]
               },
               "right": {
-                "line": 22,
+                "line": 23,
                 "col": 47,
                 "kind": "binary",
                 "op": "SUBTRACT",
                 "left": {
-                  "line": 22,
+                  "line": 23,
                   "col": 47,
                   "kind": "number",
                   "value": 0,
                   "integer": true
                 },
                 "right": {
-                  "line": 22,
+                  "line": 23,
                   "col": 51,
                   "kind": "number",
                   "value": 1,
@@ -256,21 +256,21 @@
             }
           },
           {
-            "line": 23,
+            "line": 24,
             "col": 9,
             "kind": "assign",
             "target": "third",
             "value": {
-              "line": 23,
+              "line": 24,
               "col": 27,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 23,
+                "line": 24,
                 "col": 27,
                 "kind": "method_call",
                 "receiver": {
-                  "line": 23,
+                  "line": 24,
                   "col": 22,
                   "kind": "var",
                   "name": "nums"
@@ -278,7 +278,7 @@
                 "name": "get",
                 "args": [
                   {
-                    "line": 23,
+                    "line": 24,
                     "col": 31,
                     "kind": "number",
                     "value": 2,
@@ -287,7 +287,7 @@
                 ]
               },
               "right": {
-                "line": 23,
+                "line": 24,
                 "col": 44,
                 "kind": "number",
                 "value": 0,
@@ -296,41 +296,24 @@
             }
           },
           {
-            "line": 24,
+            "line": 25,
             "col": 9,
             "kind": "assign",
             "target": "joined",
             "value": {
-              "line": 24,
+              "line": 25,
               "col": 28,
               "kind": "method_call",
               "receiver": {
-                "line": 24,
+                "line": 25,
                 "col": 23,
                 "kind": "var",
                 "name": "nums"
               },
               "name": "joined",
               "args": [
-                { "line": 24, "col": 35, "kind": "string", "value": ", " }
+                { "line": 25, "col": 35, "kind": "string", "value": ", " }
               ]
-            }
-          },
-          {
-            "line": 25,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 25,
-              "col": 14,
-              "kind": "string",
-              "value": "size ${nums.size}, empty ${nums.is_empty}, third ${third}, idx ${idx}"
-            },
-            "target": {
-              "line": 25,
-              "col": 89,
-              "kind": "var",
-              "name": "sender"
             }
           },
           {
@@ -340,40 +323,57 @@
             "message": {
               "line": 26,
               "col": 14,
+              "kind": "string",
+              "value": "size ${nums.size}, empty ${nums.is_empty}, third ${third}, idx ${idx}"
+            },
+            "target": {
+              "line": 26,
+              "col": 89,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 27,
+              "col": 14,
               "kind": "binary",
               "op": "CONCATENATE",
               "left": {
-                "line": 26,
+                "line": 27,
                 "col": 14,
                 "kind": "binary",
                 "op": "CONCATENATE",
                 "left": {
-                  "line": 26,
+                  "line": 27,
                   "col": 14,
                   "kind": "binary",
                   "op": "CONCATENATE",
                   "left": {
-                    "line": 26,
+                    "line": 27,
                     "col": 14,
                     "kind": "binary",
                     "op": "CONCATENATE",
                     "left": {
-                      "line": 26,
+                      "line": 27,
                       "col": 14,
                       "kind": "string",
                       "value": "first "
                     },
                     "right": {
-                      "line": 26,
+                      "line": 27,
                       "col": 14,
                       "kind": "binary",
                       "op": "OR_ELSE",
                       "left": {
-                        "line": 26,
+                        "line": 27,
                         "col": 14,
                         "kind": "prop",
                         "target": {
-                          "line": 26,
+                          "line": 27,
                           "col": 14,
                           "kind": "var",
                           "name": "nums"
@@ -381,7 +381,7 @@
                         "name": "first"
                       },
                       "right": {
-                        "line": 26,
+                        "line": 27,
                         "col": 14,
                         "kind": "number",
                         "value": 0,
@@ -390,23 +390,23 @@
                     }
                   },
                   "right": {
-                    "line": 26,
+                    "line": 27,
                     "col": 14,
                     "kind": "string",
                     "value": ", last "
                   }
                 },
                 "right": {
-                  "line": 26,
+                  "line": 27,
                   "col": 14,
                   "kind": "binary",
                   "op": "OR_ELSE",
                   "left": {
-                    "line": 26,
+                    "line": 27,
                     "col": 14,
                     "kind": "prop",
                     "target": {
-                      "line": 26,
+                      "line": 27,
                       "col": 14,
                       "kind": "var",
                       "name": "nums"
@@ -414,7 +414,7 @@
                     "name": "last"
                   },
                   "right": {
-                    "line": 26,
+                    "line": 27,
                     "col": 14,
                     "kind": "number",
                     "value": 0,
@@ -423,43 +423,24 @@
                 }
               },
               "right": {
-                "line": 26,
+                "line": 27,
                 "col": 14,
                 "kind": "string",
                 "value": ", joined ${joined}"
               }
             },
             "target": {
-              "line": 26,
+              "line": 27,
               "col": 100,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 29,
-            "col": 9,
-            "kind": "assign",
-            "target": "sorted",
-            "value": {
-              "line": 29,
-              "col": 28,
-              "kind": "method_call",
-              "receiver": {
-                "line": 29,
-                "col": 23,
-                "kind": "var",
-                "name": "nums"
-              },
-              "name": "sorted",
-              "args": []
-            }
-          },
-          {
             "line": 30,
             "col": 9,
             "kind": "assign",
-            "target": "ranked",
+            "target": "sorted",
             "value": {
               "line": 30,
               "col": 28,
@@ -470,16 +451,35 @@
                 "kind": "var",
                 "name": "nums"
               },
+              "name": "sorted",
+              "args": []
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "assign",
+            "target": "ranked",
+            "value": {
+              "line": 31,
+              "col": 28,
+              "kind": "method_call",
+              "receiver": {
+                "line": 31,
+                "col": 23,
+                "kind": "var",
+                "name": "nums"
+              },
               "name": "sorted_by",
               "args": [
                 {
-                  "line": 30,
+                  "line": 31,
                   "col": 38,
                   "kind": "lambda",
                   "async": false,
                   "params": [
                     {
-                      "line": 30,
+                      "line": 31,
                       "col": 47,
                       "name": "n",
                       "type": { "base": "INTEGER" }
@@ -487,11 +487,11 @@
                   ],
                   "body": [
                     {
-                      "line": 30,
+                      "line": 31,
                       "col": 61,
                       "kind": "return",
                       "value": {
-                        "line": 30,
+                        "line": 31,
                         "col": 68,
                         "kind": "var",
                         "name": "n"
@@ -503,94 +503,21 @@
             }
           },
           {
-            "line": 31,
+            "line": 32,
             "col": 9,
             "kind": "assign",
             "target": "evens",
             "value": {
-              "line": 31,
+              "line": 32,
               "col": 27,
               "kind": "method_call",
               "receiver": {
-                "line": 31,
+                "line": 32,
                 "col": 22,
                 "kind": "var",
                 "name": "nums"
               },
               "name": "filtered",
-              "args": [
-                {
-                  "line": 31,
-                  "col": 36,
-                  "kind": "lambda",
-                  "async": false,
-                  "params": [
-                    {
-                      "line": 31,
-                      "col": 45,
-                      "name": "n",
-                      "type": { "base": "INTEGER" }
-                    }
-                  ],
-                  "body": [
-                    {
-                      "line": 31,
-                      "col": 59,
-                      "kind": "return",
-                      "value": {
-                        "line": 31,
-                        "col": 66,
-                        "kind": "binary",
-                        "op": "EQUALS",
-                        "left": {
-                          "line": 31,
-                          "col": 66,
-                          "kind": "binary",
-                          "op": "MODULO",
-                          "left": {
-                            "line": 31,
-                            "col": 66,
-                            "kind": "var",
-                            "name": "n"
-                          },
-                          "right": {
-                            "line": 31,
-                            "col": 70,
-                            "kind": "number",
-                            "value": 2,
-                            "integer": true
-                          }
-                        },
-                        "right": {
-                          "line": 31,
-                          "col": 75,
-                          "kind": "number",
-                          "value": 0,
-                          "integer": true
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "line": 32,
-            "col": 9,
-            "kind": "assign",
-            "target": "doubled",
-            "value": {
-              "line": 32,
-              "col": 29,
-              "kind": "method_call",
-              "receiver": {
-                "line": 32,
-                "col": 24,
-                "kind": "var",
-                "name": "nums"
-              },
-              "name": "mapped",
               "args": [
                 {
                   "line": 32,
@@ -614,18 +541,31 @@
                         "line": 32,
                         "col": 66,
                         "kind": "binary",
-                        "op": "MULTIPLY",
+                        "op": "EQUALS",
                         "left": {
                           "line": 32,
                           "col": 66,
-                          "kind": "var",
-                          "name": "n"
+                          "kind": "binary",
+                          "op": "MODULO",
+                          "left": {
+                            "line": 32,
+                            "col": 66,
+                            "kind": "var",
+                            "name": "n"
+                          },
+                          "right": {
+                            "line": 32,
+                            "col": 70,
+                            "kind": "number",
+                            "value": 2,
+                            "integer": true
+                          }
                         },
                         "right": {
                           "line": 32,
-                          "col": 70,
+                          "col": 75,
                           "kind": "number",
-                          "value": 2,
+                          "value": 0,
                           "integer": true
                         }
                       }
@@ -639,18 +579,78 @@
             "line": 33,
             "col": 9,
             "kind": "assign",
-            "target": "top",
+            "target": "doubled",
             "value": {
               "line": 33,
+              "col": 29,
+              "kind": "method_call",
+              "receiver": {
+                "line": 33,
+                "col": 24,
+                "kind": "var",
+                "name": "nums"
+              },
+              "name": "mapped",
+              "args": [
+                {
+                  "line": 33,
+                  "col": 36,
+                  "kind": "lambda",
+                  "async": false,
+                  "params": [
+                    {
+                      "line": 33,
+                      "col": 45,
+                      "name": "n",
+                      "type": { "base": "INTEGER" }
+                    }
+                  ],
+                  "body": [
+                    {
+                      "line": 33,
+                      "col": 59,
+                      "kind": "return",
+                      "value": {
+                        "line": 33,
+                        "col": 66,
+                        "kind": "binary",
+                        "op": "MULTIPLY",
+                        "left": {
+                          "line": 33,
+                          "col": 66,
+                          "kind": "var",
+                          "name": "n"
+                        },
+                        "right": {
+                          "line": 33,
+                          "col": 70,
+                          "kind": "number",
+                          "value": 2,
+                          "integer": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "assign",
+            "target": "top",
+            "value": {
+              "line": 34,
               "col": 25,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 33,
+                "line": 34,
                 "col": 25,
                 "kind": "method_call",
                 "receiver": {
-                  "line": 33,
+                  "line": 34,
                   "col": 20,
                   "kind": "var",
                   "name": "nums"
@@ -658,13 +658,13 @@
                 "name": "max_by",
                 "args": [
                   {
-                    "line": 33,
+                    "line": 34,
                     "col": 32,
                     "kind": "lambda",
                     "async": false,
                     "params": [
                       {
-                        "line": 33,
+                        "line": 34,
                         "col": 41,
                         "name": "n",
                         "type": { "base": "INTEGER" }
@@ -672,11 +672,11 @@
                     ],
                     "body": [
                       {
-                        "line": 33,
+                        "line": 34,
                         "col": 55,
                         "kind": "return",
                         "value": {
-                          "line": 33,
+                          "line": 34,
                           "col": 62,
                           "kind": "var",
                           "name": "n"
@@ -687,7 +687,7 @@
                 ]
               },
               "right": {
-                "line": 33,
+                "line": 34,
                 "col": 77,
                 "kind": "number",
                 "value": 0,
@@ -696,16 +696,16 @@
             }
           },
           {
-            "line": 34,
+            "line": 35,
             "col": 9,
             "kind": "assign",
             "target": "some",
             "value": {
-              "line": 34,
+              "line": 35,
               "col": 26,
               "kind": "method_call",
               "receiver": {
-                "line": 34,
+                "line": 35,
                 "col": 21,
                 "kind": "var",
                 "name": "nums"
@@ -713,30 +713,13 @@
               "name": "taken",
               "args": [
                 {
-                  "line": 34,
+                  "line": 35,
                   "col": 32,
                   "kind": "number",
                   "value": 2,
                   "integer": true
                 }
               ]
-            }
-          },
-          {
-            "line": 35,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 35,
-              "col": 14,
-              "kind": "string",
-              "value": "sorted ${sorted.size}, ranked ${ranked.size}, evens ${evens.size}"
-            },
-            "target": {
-              "line": 35,
-              "col": 85,
-              "kind": "var",
-              "name": "sender"
             }
           },
           {
@@ -747,29 +730,46 @@
               "line": 36,
               "col": 14,
               "kind": "string",
-              "value": "doubled ${doubled.size}, top ${top}, some ${some.size}"
+              "value": "sorted ${sorted.size}, ranked ${ranked.size}, evens ${evens.size}"
             },
             "target": {
               "line": 36,
+              "col": 85,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 37,
+              "col": 14,
+              "kind": "string",
+              "value": "doubled ${doubled.size}, top ${top}, some ${some.size}"
+            },
+            "target": {
+              "line": 37,
               "col": 74,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 39,
+            "line": 40,
             "col": 9,
             "kind": "assign",
             "target": "scores",
             "value": {
-              "line": 39,
+              "line": 40,
               "col": 23,
               "kind": "map_lit",
               "entries": [
                 {
                   "key": "alice",
                   "value": {
-                    "line": 39,
+                    "line": 40,
                     "col": 34,
                     "kind": "number",
                     "value": 10,
@@ -779,7 +779,7 @@
                 {
                   "key": "bob",
                   "value": {
-                    "line": 39,
+                    "line": 40,
                     "col": 45,
                     "kind": "number",
                     "value": 7,
@@ -788,28 +788,6 @@
                 }
               ]
             }
-          },
-          {
-            "line": 40,
-            "col": 16,
-            "kind": "method_call_stmt",
-            "receiver": {
-              "line": 40,
-              "col": 9,
-              "kind": "var",
-              "name": "scores"
-            },
-            "name": "set",
-            "args": [
-              { "line": 40, "col": 20, "kind": "string", "value": "carol" },
-              {
-                "line": 40,
-                "col": 29,
-                "kind": "number",
-                "value": 3,
-                "integer": true
-              }
-            ]
           },
           {
             "line": 41,
@@ -821,9 +799,16 @@
               "kind": "var",
               "name": "scores"
             },
-            "name": "delete",
+            "name": "set",
             "args": [
-              { "line": 41, "col": 23, "kind": "string", "value": "bob" }
+              { "line": 41, "col": 20, "kind": "string", "value": "carol" },
+              {
+                "line": 41,
+                "col": 29,
+                "kind": "number",
+                "value": 3,
+                "integer": true
+              }
             ]
           },
           {
@@ -836,17 +821,32 @@
               "kind": "var",
               "name": "scores"
             },
+            "name": "delete",
+            "args": [
+              { "line": 42, "col": 23, "kind": "string", "value": "bob" }
+            ]
+          },
+          {
+            "line": 43,
+            "col": 16,
+            "kind": "method_call_stmt",
+            "receiver": {
+              "line": 43,
+              "col": 9,
+              "kind": "var",
+              "name": "scores"
+            },
             "name": "put_all",
             "args": [
               {
-                "line": 42,
+                "line": 43,
                 "col": 24,
                 "kind": "map_lit",
                 "entries": [
                   {
                     "key": "dan",
                     "value": {
-                      "line": 42,
+                      "line": 43,
                       "col": 33,
                       "kind": "number",
                       "value": 1,
@@ -858,21 +858,21 @@
             ]
           },
           {
-            "line": 45,
+            "line": 46,
             "col": 9,
             "kind": "assign",
             "target": "alice",
             "value": {
-              "line": 45,
+              "line": 46,
               "col": 29,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
-                "line": 45,
+                "line": 46,
                 "col": 29,
                 "kind": "method_call",
                 "receiver": {
-                  "line": 45,
+                  "line": 46,
                   "col": 22,
                   "kind": "var",
                   "name": "scores"
@@ -880,7 +880,7 @@
                 "name": "get",
                 "args": [
                   {
-                    "line": 45,
+                    "line": 46,
                     "col": 33,
                     "kind": "string",
                     "value": "alice"
@@ -888,7 +888,7 @@
                 ]
               },
               "right": {
-                "line": 45,
+                "line": 46,
                 "col": 52,
                 "kind": "number",
                 "value": 0,
@@ -897,25 +897,25 @@
             }
           },
           {
-            "line": 46,
+            "line": 47,
             "col": 9,
             "kind": "assign",
             "target": "safe",
             "value": {
-              "line": 46,
+              "line": 47,
               "col": 28,
               "kind": "method_call",
               "receiver": {
-                "line": 46,
+                "line": 47,
                 "col": 21,
                 "kind": "var",
                 "name": "scores"
               },
               "name": "get_or",
               "args": [
-                { "line": 46, "col": 35, "kind": "string", "value": "zoe" },
+                { "line": 47, "col": 35, "kind": "string", "value": "zoe" },
                 {
-                  "line": 46,
+                  "line": 47,
                   "col": 42,
                   "kind": "number",
                   "value": 0,
@@ -925,41 +925,41 @@
             }
           },
           {
-            "line": 47,
+            "line": 48,
             "col": 9,
             "kind": "if",
             "condition": {
-              "line": 47,
+              "line": 48,
               "col": 19,
               "kind": "method_call",
               "receiver": {
-                "line": 47,
+                "line": 48,
                 "col": 12,
                 "kind": "var",
                 "name": "scores"
               },
               "name": "has",
               "args": [
-                { "line": 47, "col": 23, "kind": "string", "value": "alice" }
+                { "line": 48, "col": 23, "kind": "string", "value": "alice" }
               ]
             },
             "then": {
-              "line": 47,
+              "line": 48,
               "col": 32,
               "kind": "block",
               "statements": [
                 {
-                  "line": 48,
+                  "line": 49,
                   "col": 13,
                   "kind": "send",
                   "message": {
-                    "line": 48,
+                    "line": 49,
                     "col": 18,
                     "kind": "string",
                     "value": "has alice"
                   },
                   "target": {
-                    "line": 48,
+                    "line": 49,
                     "col": 33,
                     "kind": "var",
                     "name": "sender"
@@ -970,29 +970,10 @@
             "else": null
           },
           {
-            "line": 50,
-            "col": 9,
-            "kind": "assign",
-            "target": "byval",
-            "value": {
-              "line": 50,
-              "col": 29,
-              "kind": "method_call",
-              "receiver": {
-                "line": 50,
-                "col": 22,
-                "kind": "var",
-                "name": "scores"
-              },
-              "name": "sorted_by_value_desc",
-              "args": []
-            }
-          },
-          {
             "line": 51,
             "col": 9,
             "kind": "assign",
-            "target": "bykey",
+            "target": "byval",
             "value": {
               "line": 51,
               "col": 29,
@@ -1003,22 +984,41 @@
                 "kind": "var",
                 "name": "scores"
               },
+              "name": "sorted_by_value_desc",
+              "args": []
+            }
+          },
+          {
+            "line": 52,
+            "col": 9,
+            "kind": "assign",
+            "target": "bykey",
+            "value": {
+              "line": 52,
+              "col": 29,
+              "kind": "method_call",
+              "receiver": {
+                "line": 52,
+                "col": 22,
+                "kind": "var",
+                "name": "scores"
+              },
               "name": "sorted_by",
               "args": [
                 {
-                  "line": 51,
+                  "line": 52,
                   "col": 39,
                   "kind": "lambda",
                   "async": false,
                   "params": [
                     {
-                      "line": 51,
+                      "line": 52,
                       "col": 48,
                       "name": "k",
                       "type": { "base": "STRING" }
                     },
                     {
-                      "line": 51,
+                      "line": 52,
                       "col": 59,
                       "name": "v",
                       "type": { "base": "INTEGER" }
@@ -1026,11 +1026,11 @@
                   ],
                   "body": [
                     {
-                      "line": 51,
+                      "line": 52,
                       "col": 73,
                       "kind": "return",
                       "value": {
-                        "line": 51,
+                        "line": 52,
                         "col": 80,
                         "kind": "var",
                         "name": "v"
@@ -1042,23 +1042,6 @@
             }
           },
           {
-            "line": 52,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 52,
-              "col": 14,
-              "kind": "string",
-              "value": "map ${scores.size}, keys ${scores.keys.size}, values ${scores.values.size}"
-            },
-            "target": {
-              "line": 52,
-              "col": 94,
-              "kind": "var",
-              "name": "sender"
-            }
-          },
-          {
             "line": 53,
             "col": 9,
             "kind": "send",
@@ -1066,38 +1049,55 @@
               "line": 53,
               "col": 14,
               "kind": "string",
-              "value": "alice ${alice}, safe ${safe}, byval ${byval.size}, bykey ${bykey.size}"
+              "value": "map ${scores.size}, keys ${scores.keys.size}, values ${scores.values.size}"
             },
             "target": {
               "line": 53,
+              "col": 94,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 54,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 54,
+              "col": 14,
+              "kind": "string",
+              "value": "alice ${alice}, safe ${safe}, byval ${byval.size}, bykey ${bykey.size}"
+            },
+            "target": {
+              "line": 54,
               "col": 90,
               "kind": "var",
               "name": "sender"
             }
           },
           {
-            "line": 56,
+            "line": 57,
             "col": 9,
             "kind": "assign",
             "target": "greeting",
             "value": {
-              "line": 56,
+              "line": 57,
               "col": 25,
               "kind": "string",
               "value": "  Hello, World  "
             }
           },
           {
-            "line": 57,
+            "line": 58,
             "col": 9,
             "kind": "assign",
             "target": "clean",
             "value": {
-              "line": 57,
+              "line": 58,
               "col": 31,
               "kind": "method_call",
               "receiver": {
-                "line": 57,
+                "line": 58,
                 "col": 22,
                 "kind": "var",
                 "name": "greeting"
@@ -1107,37 +1107,37 @@
             }
           },
           {
-            "line": 58,
+            "line": 59,
             "col": 9,
             "kind": "assign",
             "target": "parts",
             "value": {
-              "line": 58,
+              "line": 59,
               "col": 28,
               "kind": "method_call",
               "receiver": {
-                "line": 58,
+                "line": 59,
                 "col": 22,
                 "kind": "var",
                 "name": "clean"
               },
               "name": "split",
               "args": [
-                { "line": 58, "col": 34, "kind": "string", "value": ", " }
+                { "line": 59, "col": 34, "kind": "string", "value": ", " }
               ]
             }
           },
           {
-            "line": 59,
+            "line": 60,
             "col": 9,
             "kind": "assign",
             "target": "up",
             "value": {
-              "line": 59,
+              "line": 60,
               "col": 25,
               "kind": "method_call",
               "receiver": {
-                "line": 59,
+                "line": 60,
                 "col": 19,
                 "kind": "var",
                 "name": "clean"
@@ -1147,16 +1147,16 @@
             }
           },
           {
-            "line": 60,
+            "line": 61,
             "col": 9,
             "kind": "assign",
             "target": "rep",
             "value": {
-              "line": 60,
+              "line": 61,
               "col": 25,
               "kind": "method_call",
               "receiver": {
-                "line": 60,
+                "line": 61,
                 "col": 20,
                 "kind": "string",
                 "value": "ab"
@@ -1164,7 +1164,7 @@
               "name": "repeated",
               "args": [
                 {
-                  "line": 60,
+                  "line": 61,
                   "col": 34,
                   "kind": "number",
                   "value": 3,
@@ -1174,72 +1174,24 @@
             }
           },
           {
-            "line": 61,
+            "line": 62,
             "col": 9,
             "kind": "assign",
             "target": "starts",
             "value": {
-              "line": 61,
+              "line": 62,
               "col": 29,
               "kind": "method_call",
               "receiver": {
-                "line": 61,
+                "line": 62,
                 "col": 23,
                 "kind": "var",
                 "name": "clean"
               },
               "name": "starts_with",
               "args": [
-                { "line": 61, "col": 41, "kind": "string", "value": "Hello" }
+                { "line": 62, "col": 41, "kind": "string", "value": "Hello" }
               ]
-            }
-          },
-          {
-            "line": 62,
-            "col": 9,
-            "kind": "send",
-            "message": {
-              "line": 62,
-              "col": 14,
-              "kind": "binary",
-              "op": "CONCATENATE",
-              "left": {
-                "line": 62,
-                "col": 14,
-                "kind": "binary",
-                "op": "CONCATENATE",
-                "left": {
-                  "line": 62,
-                  "col": 14,
-                  "kind": "string",
-                  "value": "clean '${up}' len "
-                },
-                "right": {
-                  "line": 62,
-                  "col": 14,
-                  "kind": "method_call",
-                  "receiver": {
-                    "line": 62,
-                    "col": 14,
-                    "kind": "var",
-                    "name": "clean"
-                  },
-                  "name": "length",
-                  "args": []
-                }
-              },
-              "right": {
-                "line": 62,
-                "col": 14,
-                "kind": "string",
-                "value": " len2 ${clean.length}"
-              }
-            },
-            "target": {
-              "line": 62,
-              "col": 76,
-              "kind": "var",
-              "name": "sender"
             }
           },
           {
@@ -1249,11 +1201,59 @@
             "message": {
               "line": 63,
               "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 63,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 63,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "clean '${up}' len "
+                },
+                "right": {
+                  "line": 63,
+                  "col": 14,
+                  "kind": "method_call",
+                  "receiver": {
+                    "line": 63,
+                    "col": 14,
+                    "kind": "var",
+                    "name": "clean"
+                  },
+                  "name": "length",
+                  "args": []
+                }
+              },
+              "right": {
+                "line": 63,
+                "col": 14,
+                "kind": "string",
+                "value": " len2 ${clean.length}"
+              }
+            },
+            "target": {
+              "line": 63,
+              "col": 76,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 64,
+              "col": 14,
               "kind": "string",
               "value": "parts ${parts.size}, rep ${rep}, starts ${starts}"
             },
             "target": {
-              "line": 63,
+              "line": 64,
               "col": 69,
               "kind": "var",
               "name": "sender"

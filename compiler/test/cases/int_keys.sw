@@ -14,11 +14,11 @@ command "intkeys" {
         // literal with integer keys infers map<Integer, String>
         set names to { 1: "one", 2: "two", 3: "three" }
 
-        // integer-key builtin and index-set sugar both write entries
-        map_set(names, 4, "four")
+        // the 'set m at k to v' natural form writes integer-keyed entries
+        set names at 4 to "four"
         set names at 5 to "five"
 
-        if map_has(names, 1) {
+        if names has 1 {
             send "has 1" to sender
         }
 
@@ -26,10 +26,10 @@ command "intkeys" {
         set first to names[1] otherwise "none"
         send "first ${first}" to sender
 
-        send "size ${map_size(names)}" to sender
+        send "size ${size of names}" to sender
 
-        // map_keys returns list<Integer> for an Integer-keyed map
-        loop map_keys(names) as k {
+        // 'keys of m' yields list<Integer> for an Integer-keyed map
+        loop keys of names as k {
             send "key ${k}" to sender
         }
 
@@ -38,7 +38,7 @@ command "intkeys" {
             send "${num} = ${word}" to sender
         }
 
-        map_delete(names, 2)
+        delete names at 2
 
         // persistent Integer-keyed map: index-set mutates the stored map
         set scores at 100 to "hundred"

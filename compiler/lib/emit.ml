@@ -174,10 +174,7 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
   | SCall (name, args) ->
     node
       [ ("kind", `String "call"); ("name", `String name); ("args", `List (List.map expr args)) ]
-  | SCallOriginal args ->
-    node
-      [ ("kind", `String "call_original");
-        ("arguments", match args with None -> `Null | Some es -> `List (List.map expr es)) ]
+  | SCallOriginal -> node [ ("kind", `String "call_original") ]
   | SMethodCall (recv, name, args) ->
     node
       [ ("kind", `String "method_call_stmt"); ("receiver", expr recv); ("name", `String name);

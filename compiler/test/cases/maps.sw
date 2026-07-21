@@ -1,8 +1,9 @@
 // Phase 10: the map<V> type — String-keyed dictionaries.
 //
-// Literal { "k": expr, ... }, the map_* builtins (map_get returns optional<V>),
-// the 'set m at k to v' index-set sugar, the m[k] index-read sugar (also
-// optional<V>), foreach over entries, and a restart-safe persistent map<Scalar>.
+// Literal { "k": expr, ... }, the natural-language map dialect ('set m at k to
+// v', 'm has k', 'size of m', 'keys of m', 'delete m at k'), the m[k] index-read
+// sugar (optional<V>), foreach over entries, and a restart-safe persistent
+// map<Scalar>.
 
 storage {
     backend: files "data/swoftlang"
@@ -17,11 +18,11 @@ command "maps" {
         // map literal — V is inferred as Integer from the values
         set counts to { "a": 1, "b": 2, "c": 3 }
 
-        // builtin form and the index-set sugar both write entries
-        map_set(counts, "d", 4)
+        // the 'set m at k to v' natural form writes entries
+        set counts at "d" to 4
         set counts at "e" to 5
 
-        if map_has(counts, "a") {
+        if counts has "a" {
             send "counts has a" to sender
         }
 
@@ -34,10 +35,10 @@ command "maps" {
             send "z present" to sender
         }
 
-        send "size is ${map_size(counts)}" to sender
+        send "size is ${size of counts}" to sender
 
-        // map_keys returns list<String>, iterable with a normal foreach
-        loop map_keys(counts) as key {
+        // 'keys of m' yields list<String>, iterable with a normal foreach
+        loop keys of counts as key {
             send "key ${key}" to sender
         }
 
@@ -46,10 +47,10 @@ command "maps" {
             send "${name} = ${amount}" to sender
         }
 
-        map_delete(counts, "b")
+        delete counts at "b"
 
         // index-set on a persistent map mutates the stored map in place
-        set leaderboard at sender.name to map_size(counts)
+        set leaderboard at sender.name to size of counts
         set best to leaderboard[sender.name] otherwise 0
         send "best ${best}" to sender
     }
