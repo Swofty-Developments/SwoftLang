@@ -44,27 +44,27 @@ server {
     }
 }
 
-// The four typed fishing events fold onto the rod holder: `this` binds to the
+// The four typed fishing events fold onto the rod holder: `player` binds to the
 // Player. Each fires at the matching moment of the cast/bite/catch/reel cycle.
 Player {
     // fires before the bobber exists
-    on_cast_rod() {
-        if this.world.time > 100000 {
-            send "<gray>The fish are asleep." to this
+    on_cast_rod {
+        if player.world.time > 100000 {
+            send "<gray>The fish are asleep." to player
         }
     }
 
     // the bobber dipped: reel within the window to land the catch
-    on_fish_bite() {
-        send "<aqua>Something's biting..." to this
+    on_fish_bite {
+        send "<aqua>Something's biting..." to player
     }
 
     // the catch emerges
-    on_catch_fish() {
-        send "<green>You landed something!" to this
+    on_catch_fish {
+        send "<green>You landed something!" to player
     }
 
-    on_reel_in() {
-        send "<gray>line reeled in" to this
+    on_reel_in {
+        send "<gray>line reeled in" to player
     }
 }

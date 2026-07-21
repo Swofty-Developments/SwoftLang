@@ -81,10 +81,10 @@ command "cleanse" {
 }
 
 Mob {
-    on_death(killer) {
+    on_death {
         if killer exists {
             if killer is a Player {
-                send "<gold>Kill credit: ${this.custom_id}" to killer
+                send "<gold>Kill credit: ${mob.custom_id}" to killer
             }
         }
     }

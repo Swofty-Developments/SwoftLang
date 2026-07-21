@@ -22,7 +22,7 @@ mob "zombie" {
 
     tags: { hits: map<Player, Integer> }
 
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
             set count to mob.tags.hits[attacker] otherwise 0
@@ -41,19 +41,19 @@ mob "zombie" {
 }
 
 Player {
-    on_join() {
-        send "<green>Hello, <yellow>${this.name}<green>! Welcome to the SwoftLang demo." to this
-        send "<gray>Punch your zombie 5 times to slay it — each player gets their own." to this
+    on_join {
+        send "<green>Hello, <yellow>${player.name}<green>! Welcome to the SwoftLang demo." to player
+        send "<gray>Punch your zombie 5 times to slay it — each player gets their own." to player
 
-        set visits for this to (visits for this) + 1
+        set visits for player to (visits for player) + 1
 
-        show scoreboard "hud" to this
-        show tablist "tab" to this
+        show scoreboard "hud" to player
+        show tablist "tab" to player
 
-        spawn mob "zombie" at in_front_of(this, 5) as z
-        set name of z to "<gold>Zombie <yellow>0<gray>/5" for this
+        spawn mob "zombie" at in_front_of(player, 5) as z
+        set name of z to "<gold>Zombie <yellow>0<gray>/5" for player
         set z.glowing to true
-        show z to this
+        show z to player
     }
 }
 

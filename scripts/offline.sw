@@ -101,8 +101,8 @@ function describe(subject: OfflinePlayer) {
 }
 
 Player {
-    on_join() {
-        describe(this)
-        set visits for this to visits for this + 1
+    on_join {
+        describe(player)
+        set visits for player to visits for player + 1
     }
 }

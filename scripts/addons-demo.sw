@@ -42,7 +42,7 @@ npc "guide" {
     name: "<green>Village Guide"
     skin: "Notch"
     look_at_players: true
-    on_click(player) {
+    on_click {
         send "<gold>Guide<gray> says: welcome, ${player.name}!" to player
     }
 }

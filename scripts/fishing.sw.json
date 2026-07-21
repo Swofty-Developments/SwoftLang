@@ -9,6 +9,7 @@
       "name": "PlayerCastRod",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -19,22 +20,22 @@
             "kind": "if",
             "condition": {
               "line": 52,
-              "col": 23,
+              "col": 25,
               "kind": "binary",
               "op": "GREATER_THAN",
               "left": {
                 "line": 52,
-                "col": 23,
+                "col": 25,
                 "kind": "prop",
                 "target": {
                   "line": 52,
-                  "col": 17,
+                  "col": 19,
                   "kind": "prop",
                   "target": {
                     "line": 52,
                     "col": 12,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   },
                   "name": "world"
                 },
@@ -42,7 +43,7 @@
               },
               "right": {
                 "line": 52,
-                "col": 30,
+                "col": 32,
                 "kind": "number",
                 "value": 100000,
                 "integer": true
@@ -50,7 +51,7 @@
             },
             "then": {
               "line": 52,
-              "col": 37,
+              "col": 39,
               "kind": "block",
               "statements": [
                 {
@@ -67,7 +68,7 @@
                     "line": 53,
                     "col": 50,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   }
                 }
               ]
@@ -83,6 +84,7 @@
       "name": "FishBite",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -101,7 +103,7 @@
               "line": 59,
               "col": 47,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
@@ -113,6 +115,7 @@
       "name": "PlayerCatchFish",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -131,7 +134,7 @@
               "line": 64,
               "col": 48,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
@@ -143,6 +146,7 @@
       "name": "PlayerReelIn",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -161,7 +165,7 @@
               "line": 68,
               "col": 40,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

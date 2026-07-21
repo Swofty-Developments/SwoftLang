@@ -67,6 +67,7 @@
           "name": "PlayerUseItem",
           "receiver": "Item",
           "priority": 0,
+          "self": "item",
           "params": [ "player" ],
           "execute": {
             "async": false,
@@ -91,7 +92,7 @@
                         "line": 106,
                         "col": 29,
                         "kind": "var",
-                        "name": "this"
+                        "name": "item"
                       }
                     ]
                   },
@@ -146,7 +147,7 @@
                           "line": 108,
                           "col": 38,
                           "kind": "var",
-                          "name": "this"
+                          "name": "item"
                         },
                         {
                           "line": 108,
@@ -1172,6 +1173,7 @@
           "name": "BlockDispense",
           "receiver": "Block",
           "priority": 0,
+          "self": "block",
           "params": [ "item", "direction" ],
           "execute": {
             "async": false,

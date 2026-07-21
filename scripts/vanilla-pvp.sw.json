@@ -9,6 +9,7 @@
       "name": "EntityDamage",
       "receiver": "Entity",
       "priority": 0,
+      "self": "entity",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
@@ -201,54 +202,54 @@
                         },
                         "at": {
                           "line": 75,
-                          "col": 47,
+                          "col": 49,
                           "kind": "prop",
                           "target": {
                             "line": 75,
                             "col": 42,
                             "kind": "var",
-                            "name": "this"
+                            "name": "entity"
                           },
                           "name": "location"
                         },
                         "count": {
                           "line": 75,
-                          "col": 62,
+                          "col": 64,
                           "kind": "number",
                           "value": 8,
                           "integer": true
                         },
                         "offset_x": {
                           "line": 75,
-                          "col": 71,
+                          "col": 73,
                           "kind": "number",
                           "value": 0.4,
                           "integer": false
                         },
                         "offset_y": {
                           "line": 75,
-                          "col": 76,
+                          "col": 78,
                           "kind": "number",
                           "value": 0.6,
                           "integer": false
                         },
                         "offset_z": {
                           "line": 75,
-                          "col": 81,
+                          "col": 83,
                           "kind": "number",
                           "value": 0.4,
                           "integer": false
                         },
                         "speed": {
                           "line": 75,
-                          "col": 91,
+                          "col": 93,
                           "kind": "number",
                           "value": 0.1,
                           "integer": false
                         },
                         "viewer": {
                           "line": 75,
-                          "col": 98,
+                          "col": 100,
                           "kind": "string",
                           "value": "all"
                         }
@@ -352,13 +353,13 @@
                   "target": "kb_resist",
                   "value": {
                     "line": 88,
-                    "col": 35,
+                    "col": 37,
                     "kind": "prop",
                     "target": {
                       "line": 88,
                       "col": 30,
                       "kind": "var",
-                      "name": "this"
+                      "name": "entity"
                     },
                     "name": "knockback_resistance"
                   }
@@ -477,17 +478,17 @@
                     "line": 92,
                     "col": 19,
                     "kind": "var",
-                    "name": "this"
+                    "name": "entity"
                   },
                   "from": {
                     "line": 92,
-                    "col": 34,
+                    "col": 36,
                     "kind": "var",
                     "name": "aloc"
                   },
                   "strength": {
                     "line": 92,
-                    "col": 53,
+                    "col": 55,
                     "kind": "var",
                     "name": "strength"
                   }

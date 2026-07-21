@@ -9,6 +9,7 @@
       "name": "PlayerChat",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "message" ],
       "execute": {
         "async": false,
@@ -35,7 +36,12 @@
               "kind": "string",
               "value": "You said: ${message}"
             },
-            "target": { "line": 7, "col": 40, "kind": "var", "name": "this" }
+            "target": {
+              "line": 7,
+              "col": 40,
+              "kind": "var",
+              "name": "player"
+            }
           },
           {
             "line": 10,
@@ -78,7 +84,7 @@
                     "line": 11,
                     "col": 54,
                     "kind": "var",
-                    "name": "this"
+                    "name": "player"
                   }
                 },
                 { "line": 12, "col": 13, "kind": "cancel_event" }
@@ -95,6 +101,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -107,11 +114,11 @@
               "line": 17,
               "col": 14,
               "kind": "string",
-              "value": "<green>Welcome ${this.name}!"
+              "value": "<green>Welcome ${player.name}!"
             },
             "target": {
               "line": 17,
-              "col": 48,
+              "col": 50,
               "kind": "string",
               "value": "all"
             }
@@ -124,13 +131,13 @@
               "line": 18,
               "col": 14,
               "kind": "string",
-              "value": "Hello ${this.name}!"
+              "value": "Hello ${player.name}!"
             },
             "target": {
               "line": 18,
-              "col": 39,
+              "col": 41,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

@@ -182,6 +182,7 @@
       "name": "MobDeath",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "killer" ],
       "execute": {
         "async": false,
@@ -242,11 +243,11 @@
                           "line": 87,
                           "col": 22,
                           "kind": "string",
-                          "value": "<gold>Kill credit: ${this.custom_id}"
+                          "value": "<gold>Kill credit: ${mob.custom_id}"
                         },
                         "target": {
                           "line": 87,
-                          "col": 64,
+                          "col": 63,
                           "kind": "var",
                           "name": "killer"
                         }

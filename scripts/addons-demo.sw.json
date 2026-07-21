@@ -5630,7 +5630,7 @@
               "line": 316,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 317,
@@ -5652,23 +5652,23 @@
                         "line": 317,
                         "col": 46,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 317,
-                        "col": 51,
+                        "col": 56,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 317,
-                        "col": 57,
+                        "col": 62,
                         "kind": "var",
                         "name": "cursor"
                       },
                       {
                         "line": 317,
-                        "col": 65,
+                        "col": 70,
                         "kind": "var",
                         "name": "player"
                       }
@@ -5681,7 +5681,7 @@
               "line": 319,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 320,
@@ -5697,13 +5697,13 @@
                         "line": 320,
                         "col": 33,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       },
                       {
                         "line": 320,
-                        "col": 42,
+                        "col": 40,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       }
                     ]
                   }
@@ -5722,7 +5722,7 @@
               "line": 326,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 327,
@@ -5744,23 +5744,23 @@
                         "line": 327,
                         "col": 48,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 327,
-                        "col": 53,
+                        "col": 58,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 327,
-                        "col": 59,
+                        "col": 64,
                         "kind": "var",
                         "name": "cursor"
                       },
                       {
                         "line": 327,
-                        "col": 67,
+                        "col": 72,
                         "kind": "var",
                         "name": "player"
                       }
@@ -5773,7 +5773,7 @@
               "line": 329,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 330,
@@ -5789,13 +5789,13 @@
                         "line": 330,
                         "col": 33,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       },
                       {
                         "line": 330,
-                        "col": 42,
+                        "col": 40,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       }
                     ]
                   }
@@ -5814,7 +5814,7 @@
               "line": 336,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 337,
@@ -5836,23 +5836,23 @@
                         "line": 337,
                         "col": 54,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 337,
-                        "col": 59,
+                        "col": 64,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 337,
-                        "col": 65,
+                        "col": 70,
                         "kind": "var",
                         "name": "cursor"
                       },
                       {
                         "line": 337,
-                        "col": 73,
+                        "col": 78,
                         "kind": "var",
                         "name": "player"
                       }
@@ -5865,7 +5865,7 @@
               "line": 339,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 340,
@@ -5881,13 +5881,13 @@
                         "line": 340,
                         "col": 33,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       },
                       {
                         "line": 340,
-                        "col": 42,
+                        "col": 40,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       }
                     ]
                   }
@@ -5906,7 +5906,7 @@
               "line": 347,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 348,
@@ -5928,17 +5928,17 @@
                         "line": 348,
                         "col": 42,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 348,
-                        "col": 47,
+                        "col": 52,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 348,
-                        "col": 53,
+                        "col": 58,
                         "kind": "var",
                         "name": "cursor"
                       }
@@ -5959,7 +5959,7 @@
               "line": 354,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 355,
@@ -5981,17 +5981,17 @@
                         "line": 355,
                         "col": 44,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 355,
-                        "col": 49,
+                        "col": 54,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 355,
-                        "col": 55,
+                        "col": 60,
                         "kind": "var",
                         "name": "cursor"
                       }
@@ -6012,7 +6012,7 @@
               "line": 361,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 362,
@@ -6034,17 +6034,17 @@
                         "line": 362,
                         "col": 50,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 362,
-                        "col": 55,
+                        "col": 60,
                         "kind": "var",
                         "name": "face"
                       },
                       {
                         "line": 362,
-                        "col": 61,
+                        "col": 66,
                         "kind": "var",
                         "name": "cursor"
                       }
@@ -6065,7 +6065,7 @@
               "line": 369,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 370,
@@ -6106,7 +6106,7 @@
               "line": 376,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 377,
@@ -6147,7 +6147,7 @@
               "line": 383,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 384,
@@ -6188,7 +6188,7 @@
               "line": 391,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 392,
@@ -6210,7 +6210,7 @@
                         "line": 392,
                         "col": 44,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       }
                     ]
                   }
@@ -6221,7 +6221,7 @@
               "line": 394,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 395,
@@ -6237,13 +6237,13 @@
                         "line": 395,
                         "col": 31,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       },
                       {
                         "line": 395,
-                        "col": 43,
+                        "col": 42,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       }
                     ]
                   }
@@ -6262,7 +6262,7 @@
               "line": 401,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 402,
@@ -6284,7 +6284,7 @@
                         "line": 402,
                         "col": 47,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       }
                     ]
                   }
@@ -6295,7 +6295,7 @@
               "line": 404,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 405,
@@ -6311,13 +6311,13 @@
                         "line": 405,
                         "col": 31,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       },
                       {
                         "line": 405,
-                        "col": 43,
+                        "col": 42,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       }
                     ]
                   }
@@ -6336,7 +6336,7 @@
               "line": 411,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 412,
@@ -6358,7 +6358,7 @@
                         "line": 412,
                         "col": 45,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       }
                     ]
                   }
@@ -6369,7 +6369,7 @@
               "line": 414,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 415,
@@ -6385,13 +6385,13 @@
                         "line": 415,
                         "col": 31,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       },
                       {
                         "line": 415,
-                        "col": 43,
+                        "col": 42,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       }
                     ]
                   }
@@ -6410,7 +6410,7 @@
               "line": 421,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 422,
@@ -6432,7 +6432,7 @@
                         "line": 422,
                         "col": 44,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       }
                     ]
                   }
@@ -6443,7 +6443,7 @@
               "line": 424,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 425,
@@ -6459,13 +6459,13 @@
                         "line": 425,
                         "col": 31,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       },
                       {
                         "line": 425,
-                        "col": 43,
+                        "col": 42,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       }
                     ]
                   }
@@ -6484,7 +6484,7 @@
               "line": 432,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 433,
@@ -6506,7 +6506,7 @@
                         "line": 433,
                         "col": 50,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       }
                     ]
                   }
@@ -6517,7 +6517,7 @@
               "line": 435,
               "col": 5,
               "name": "on_update",
-              "params": [ "loc", "current", "neighbours" ],
+              "params": [ "location", "block", "neighbors" ],
               "body": [
                 {
                   "line": 436,
@@ -6533,13 +6533,13 @@
                         "line": 436,
                         "col": 30,
                         "kind": "var",
-                        "name": "neighbours"
+                        "name": "neighbors"
                       },
                       {
                         "line": 436,
-                        "col": 42,
+                        "col": 41,
                         "kind": "var",
-                        "name": "current"
+                        "name": "block"
                       }
                     ]
                   }
@@ -6558,7 +6558,7 @@
               "line": 443,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 444,
@@ -6580,17 +6580,17 @@
                         "line": 444,
                         "col": 42,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 444,
-                        "col": 47,
+                        "col": 52,
                         "kind": "var",
                         "name": "cursor"
                       },
                       {
                         "line": 444,
-                        "col": 55,
+                        "col": 60,
                         "kind": "var",
                         "name": "player"
                       }
@@ -6611,7 +6611,7 @@
               "line": 450,
               "col": 5,
               "name": "on_place",
-              "params": [ "loc", "face", "cursor", "against", "player" ],
+              "params": [ "location", "face", "cursor", "against", "player" ],
               "body": [
                 {
                   "line": 451,
@@ -6633,17 +6633,17 @@
                         "line": 451,
                         "col": 43,
                         "kind": "var",
-                        "name": "loc"
+                        "name": "location"
                       },
                       {
                         "line": 451,
-                        "col": 48,
+                        "col": 53,
                         "kind": "var",
                         "name": "cursor"
                       },
                       {
                         "line": 451,
-                        "col": 56,
+                        "col": 61,
                         "kind": "var",
                         "name": "player"
                       }
@@ -7085,7 +7085,8 @@
           },
           "look_at_players": true,
           "on_click": {
-            "param": "player",
+            "self": "npc",
+            "params": [ "player" ],
             "body": [
               {
                 "line": 46,

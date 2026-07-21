@@ -137,6 +137,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -149,13 +150,13 @@
               "line": 45,
               "col": 14,
               "kind": "string",
-              "value": "<green>Hello, <yellow>${this.name}<green>! Welcome to the SwoftLang demo."
+              "value": "<green>Hello, <yellow>${player.name}<green>! Welcome to the SwoftLang demo."
             },
             "target": {
               "line": 45,
-              "col": 93,
+              "col": 95,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -172,7 +173,7 @@
               "line": 46,
               "col": 94,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -184,28 +185,28 @@
               "line": 48,
               "col": 24,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 48,
-              "col": 33,
+              "col": 35,
               "kind": "binary",
               "op": "ADD",
               "left": {
                 "line": 48,
-                "col": 33,
+                "col": 35,
                 "kind": "persist_get",
                 "name": "visits",
                 "subject": {
                   "line": 48,
-                  "col": 44,
+                  "col": 46,
                   "kind": "var",
-                  "name": "this"
+                  "name": "player"
                 }
               },
               "right": {
                 "line": 48,
-                "col": 52,
+                "col": 56,
                 "kind": "number",
                 "value": 1,
                 "integer": true
@@ -221,7 +222,7 @@
               "line": 50,
               "col": 34,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -233,7 +234,7 @@
               "line": 51,
               "col": 31,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -252,10 +253,10 @@
               "kind": "call",
               "name": "in_front_of",
               "args": [
-                { "line": 53, "col": 43, "kind": "var", "name": "this" },
+                { "line": 53, "col": 43, "kind": "var", "name": "player" },
                 {
                   "line": 53,
-                  "col": 49,
+                  "col": 51,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -279,7 +280,7 @@
               "line": 54,
               "col": 63,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -304,7 +305,7 @@
               "line": 56,
               "col": 19,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]

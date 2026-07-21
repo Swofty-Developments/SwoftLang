@@ -9,6 +9,7 @@
       "name": "PlayerJoin",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -22,13 +23,13 @@
               "line": 10,
               "col": 24,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 10,
-              "col": 32,
+              "col": 34,
               "kind": "string",
-              "value": "<red>[ADMIN] ${this.name}"
+              "value": "<red>[ADMIN] ${player.name}"
             },
             "viewer": null
           },
@@ -41,19 +42,19 @@
               "line": 11,
               "col": 31,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 11,
-              "col": 39,
+              "col": 41,
               "kind": "string",
               "value": "&6[VIP] "
             },
             "viewer": {
               "line": 11,
-              "col": 54,
+              "col": 56,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -65,11 +66,11 @@
               "line": 12,
               "col": 30,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 12,
-              "col": 38,
+              "col": 40,
               "kind": "string",
               "value": "red"
             },
@@ -84,17 +85,17 @@
               "line": 13,
               "col": 31,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "value": {
               "line": 13,
-              "col": 39,
+              "col": 41,
               "kind": "string",
               "value": " &7(AFK)"
             },
             "viewer": {
               "line": 13,
-              "col": 54,
+              "col": 56,
               "kind": "string",
               "value": "all"
             }
@@ -107,11 +108,11 @@
               "line": 14,
               "col": 26,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             },
             "viewer": {
               "line": 14,
-              "col": 35,
+              "col": 37,
               "kind": "string",
               "value": "all"
             }
@@ -201,7 +202,7 @@
               "line": 22,
               "col": 14,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           {
@@ -307,7 +308,7 @@
     {
       "line": 42,
       "col": 5,
-      "name": "ClientPlayerDiggingPacket",
+      "name": "ClientPlayerActionPacket",
       "execute": {
         "async": false,
         "statements": [
@@ -336,12 +337,12 @@
                 "line": 43,
                 "col": 29,
                 "kind": "string",
-                "value": "STARTED_DIGGING"
+                "value": "START_DIGGING"
               }
             },
             "then": {
               "line": 43,
-              "col": 47,
+              "col": 45,
               "kind": "block",
               "statements": [
                 {

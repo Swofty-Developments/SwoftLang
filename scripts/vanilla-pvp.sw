@@ -49,7 +49,7 @@ function resistance_mitigated(dmg: Double, amp: Double) {
 }
 
 // ---------------------------------------------------------------------------
-// The victim-side damage listener, on the Entity receiver. `this` binds to the
+// The victim-side damage listener, on the Entity receiver. `entity` binds to the
 // victim and `attacker` to the source; the receiver's on_hit surface does not
 // bind the incoming damage amount, so the armor/protection/resistance
 // mitigation above stays as reusable userland math and the handler applies the
@@ -58,7 +58,7 @@ function resistance_mitigated(dmg: Double, amp: Double) {
 // ---------------------------------------------------------------------------
 
 Entity {
-    on_hit(attacker) {
+    on_hit {
         if attacker exists {
             // Attack cooldown (1.9+): record the swing tick so the next hit can
             // compute its charge (cooldownTicks = 20 / attackSpeed). The
@@ -72,7 +72,7 @@ Entity {
                 set is_crit to true
             }
             if is_crit {
-                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+                spawn particle "crit" at entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
             }
 
             // Knockback: base 0.4 horizontal, +0.5 for a sprint hit, +0.5 per
@@ -85,11 +85,11 @@ Entity {
                 set sprint_bonus to 1.0
             }
             set kb_level to attacker.tags.knockback_level otherwise 0.0
-            set kb_resist to this.knockback_resistance
+            set kb_resist to entity.knockback_resistance
             set strength to (0.4 + sprint_bonus * 0.5 + kb_level * 0.5) * (1.0 - kb_resist)
 
             set aloc to attacker.location
-            knock this away from aloc with strength strength
+            knock entity away from aloc with strength strength
         }
     }
 }

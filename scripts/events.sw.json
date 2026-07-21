@@ -9,7 +9,8 @@
       "name": "EntityShoot",
       "receiver": "Entity",
       "priority": 0,
-      "params": [ "projectile", "dest", "power", "spread" ],
+      "self": "entity",
+      "params": [ "projectile", "to", "power", "spread" ],
       "execute": {
         "async": false,
         "statements": [
@@ -47,11 +48,11 @@
               "line": 16,
               "col": 14,
               "kind": "string",
-              "value": "line out: ${projectile} towards ${dest}"
+              "value": "line out: ${projectile} towards ${to}"
             },
             "target": {
               "line": 16,
-              "col": 59,
+              "col": 57,
               "kind": "string",
               "value": "all"
             }
@@ -65,6 +66,7 @@
       "name": "EntityVelocity",
       "receiver": "Entity",
       "priority": 0,
+      "self": "entity",
       "params": [ "velocity" ],
       "execute": {
         "async": false,
@@ -114,6 +116,7 @@
       "name": "ProjectileCollideWithBlock",
       "receiver": "Projectile",
       "priority": 0,
+      "self": "projectile",
       "params": [ "block", "world" ],
       "execute": {
         "async": false,
@@ -145,6 +148,7 @@
       "name": "ProjectileCollideWithEntity",
       "receiver": "Projectile",
       "priority": 0,
+      "self": "projectile",
       "params": [ "target" ],
       "execute": {
         "async": false,
@@ -175,6 +179,7 @@
       "name": "PickupItem",
       "receiver": "Item",
       "priority": 0,
+      "self": "item",
       "params": [ "player" ],
       "execute": {
         "async": false,
@@ -205,6 +210,7 @@
       "name": "PlayerBeginItemUse",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -223,7 +229,7 @@
               "line": 48,
               "col": 30,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
@@ -235,6 +241,7 @@
       "name": "PlayerFinishItemUse",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [],
       "execute": {
         "async": false,
@@ -253,7 +260,7 @@
               "line": 53,
               "col": 29,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           }
         ]
@@ -265,6 +272,7 @@
       "name": "PlayerUseItemEvent",
       "receiver": "Player",
       "priority": 0,
+      "self": "player",
       "params": [ "item", "hand" ],
       "execute": {
         "async": false,
@@ -283,7 +291,7 @@
               "line": 58,
               "col": 55,
               "kind": "var",
-              "name": "this"
+              "name": "player"
             }
           },
           { "line": 59, "col": 9, "kind": "cancel_event" }

@@ -6,12 +6,12 @@
 // real cancel support (PlayerPacketEvent path).
 
 Player {
-    on_join() {
-        set nametag of this to "<red>[ADMIN] ${this.name}"
-        set nametag prefix of this to "&6[VIP] " for this
-        set nametag color of this to red
-        set nametag suffix of this to " &7(AFK)" for all
-        reset nametag of this for all
+    on_join {
+        set nametag of player to "<red>[ADMIN] ${player.name}"
+        set nametag prefix of player to "&6[VIP] " for player
+        set nametag color of player to red
+        set nametag suffix of player to " &7(AFK)" for all
+        reset nametag of player for all
 
         send packet "ParticlePacket" {
             particle: "minecraft:flame",
@@ -19,7 +19,7 @@ Player {
             x: 100.5, y: 65.0, z: 20.5,
             offsetX: 0.5, offsetY: 0.5, offsetZ: 0.5,
             maxSpeed: 0.01, particleCount: 40
-        } to this
+        } to player
 
         send packet "TeamsPacket" {
             teamName: "nt_lobby",

@@ -9,6 +9,7 @@
       "name": "MobDamage",
       "receiver": "Mob",
       "priority": 0,
+      "self": "mob",
       "params": [ "attacker" ],
       "execute": {
         "async": false,
@@ -48,11 +49,11 @@
                     "line": 17,
                     "col": 18,
                     "kind": "string",
-                    "value": "TRACE=BASE_A:${this.custom_id}"
+                    "value": "TRACE=BASE_A:${mob.custom_id}"
                   },
                   "target": {
                     "line": 17,
-                    "col": 54,
+                    "col": 53,
                     "kind": "var",
                     "name": "attacker"
                   }
@@ -161,9 +162,8 @@
           {
             "line": 37,
             "col": 9,
-            "kind": "call",
-            "name": "default",
-            "args": []
+            "kind": "call_original",
+            "arguments": null
           }
         ]
       }
@@ -297,13 +297,7 @@
           },
           "else": null
         },
-        {
-          "line": 63,
-          "col": 9,
-          "kind": "call",
-          "name": "default",
-          "args": []
-        }
+        { "line": 63, "col": 9, "kind": "call_original", "arguments": null }
       ],
       "on_attack": null
     }
