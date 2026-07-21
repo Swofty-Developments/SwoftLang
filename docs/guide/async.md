@@ -32,11 +32,11 @@ command "race" {
     }
 }
 
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         async {                                             // 4. async block
             wait 60 ticks
-            send "<gold>Tip: type /help to get started" to event.player
+            send "<gold>Tip: type /help to get started" to this
         }
     }
 }
@@ -51,8 +51,10 @@ time:
 
 | Region | Color |
 |---|---|
-| `execute { }` | sync |
-| `execute async { }` | async |
+| `execute { }` (command) | sync |
+| `execute async { }` (command) | async |
+| receiver method body (`on_join() { }`) | sync |
+| receiver method marked async (`on_join() async { }`) | async |
 | `async function` body | async |
 | `async { }` block body | async |
 | plain `function` body | sync — even when called from async code |
@@ -193,7 +195,7 @@ top to bottom.
 
 `spawn`, by contrast, never returns a value — it's for kicking off independent work.
 Argument expressions are evaluated in the *parent* before the task detaches, so
-`spawn farewell(event.player.name)` captures the name at spawn time.
+`spawn farewell(sender.name)` captures the name at spawn time.
 
 ## What runs where
 

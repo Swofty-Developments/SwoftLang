@@ -6,8 +6,8 @@ title: Combat & PvP
 
 Minestom ships **no** combat mechanics — no armour reduction, no knockback, no crits, no
 attack cooldown, no invulnerability window, no natural regen. SwoftLang gives you the
-first-class surface to build all of it in-language: the enriched
-[`EntityDamage`](./events) event, attributes as **direct entity properties**
+first-class surface to build all of it in-language: the cancellable
+[`Entity.on_hit`](./events#entity) method, attributes as **direct entity properties**
 (`victim.armor`, `set player.max_health to 40`), the combat verbs
 (`damage … by`, `knock … away from`, `apply … to … for`, `shoot … from`), the native
 trackers as **read-only properties** (`entity.invulnerable_ticks`, `entity.fall_distance`,
@@ -17,27 +17,32 @@ is then plain SwoftLang — the whole [`vanilla-pvp.sw`](#walkthrough-vanilla-pv
 written this way.
 
 ```swoftlang
-on EntityDamage {
-    set victim to event.entity
-    // simple flat mitigation off the victim's armor property, committed back to the event
-    set event.damage to max(0.0, event.damage * (1.0 - victim.armor / 25.0))
+Entity {
+    on_hit(attacker) {
+        // veto a hit entirely — this is the victim, attacker is the source
+        if this.tags.invulnerable exists {
+            cancel event
+        }
+    }
 }
 ```
 
-## The `EntityDamage` event
+## The `Entity.on_hit` method
 
-Every hit flows through the cancellable `EntityDamage` event (see the
-[event catalog](./events#richest-event)). Its enriched fields are the entry point for a
-combat system:
+Every hit flows through the cancellable [`Entity.on_hit`](./events#entity) method. `this`
+is the victim and `attacker` is the source — the entry points for a combat system:
 
-| Field | Type | Access | Meaning |
+| Binding | Type | Access | Meaning |
 |---|---|---|---|
-| `entity` | `Entity` | ro | the victim taking the hit |
-| `damage` | `Double` | rw | the incoming amount — rewrite it to apply reduction |
+| `this` | `Entity` | — | the victim taking the hit |
 | `attacker` | `optional<Entity>` | ro | the direct attacker, when there is one |
-| `source_entity` | `optional<Entity>` | ro | the ultimate source (e.g. the shooter behind an arrow) |
-| `damage_type` | `String` | ro | the typed cause |
-| `cancelled` | `Boolean` | rw | `cancel event` to negate the hit |
+| `cancel event` | — | — | negate the hit outright |
+
+The hit surface reports *that* a hit happened and to whom, and lets you veto it or add
+feedback (knockback, crits, effects); it does not bind the numeric damage amount. Combat
+**math** — armour curves, crit multipliers — is plain SwoftLang you apply when *you* deal
+damage with the [`damage … by`](#combat-verbs) verb, or use to decide whether to
+`cancel event`.
 
 ## Attributes are entity properties
 
@@ -111,10 +116,11 @@ command "smite" {
 from the attacker's position:
 
 ```swoftlang
-on EntityDamage {
-    set attacker to event.attacker
-    if attacker exists {
-        knock event.entity away from attacker.location with strength 0.5
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            knock this away from attacker.location with strength 0.5
+        }
     }
 }
 ```
@@ -150,13 +156,13 @@ properties — they are what an i-frame check and a crit check need:
 | `e.is_climbing` | `Boolean` | positional climbing heuristic |
 
 ```swoftlang
-on EntityDamage {
-    set attacker to event.attacker
-    if attacker exists {
-        // crit: falling, airborne, not sprinting -> 1.5x + the sparkle
-        if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
-            set event.damage to event.damage * 1.5
-            spawn particle "crit" at event.entity.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            // crit: falling, airborne, not sprinting -> the sparkle
+            if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
+                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+            }
         }
     }
 }
@@ -164,25 +170,26 @@ on EntityDamage {
 
 ## Per-entity scratch state: `.tags`
 
-A combat system needs to remember things **between** hits and ticks — the last damage for
-the i-frame comparison, the last swing tick for the attack-cooldown curve, a cached
-enchant EPF, an exhaustion accumulator. All of it lives on the unified
-[`.tags`](./mobs#tags) namespace, the same one items and mobs use:
-`player.tags.<key>` and `mob.tags.<key>` read, write, and delete freeform per-entity
-values without declaring a field. A tag read is `optional<Any>`, so narrow it with `if …
-exists` or give a fallback with `otherwise`:
+A combat system needs to remember things **between** hits and ticks — the last swing tick
+for the attack-cooldown curve, a knockback level, a cached enchant EPF, an exhaustion
+accumulator. All of it lives on the unified [`.tags`](./mobs#tags) namespace, the same one
+items and mobs use: `player.tags.<key>` and `mob.tags.<key>` read, write, and delete
+freeform per-entity values without declaring a field. A tag read is `optional<Any>`, so
+narrow it with `if … exists` or give a fallback with `otherwise`:
 
 ```swoftlang
-on EntityDamage {
-    set victim to event.entity
-    set iframe to victim.invulnerable_ticks
-    set last to victim.tags.last_damage otherwise 0.0
-    // honour the 10-tick window: a weaker-or-equal hit inside it is ignored
-    if iframe > 0 and event.damage <= last {
-        cancel event
-        return
+Entity {
+    on_hit(attacker) {
+        // honour a short custom i-frame window: ignore hits while it is live
+        set iframe to this.invulnerable_ticks
+        if iframe > 0 {
+            cancel event
+            return
+        }
+        // count hits taken on the victim's own scratch state
+        set hits to this.tags.hits_taken otherwise 0
+        set this.tags.hits_taken to hits + 1
     }
-    set victim.tags.last_damage to event.damage
 }
 ```
 
@@ -198,47 +205,43 @@ The shipped `scripts/vanilla-pvp.sw` reimplements vanilla melee combat end-to-en
 only the surface above — the same job MinestomPvP does in Java, but in-language. It has
 two parts.
 
-**One damage listener.** `on EntityDamage` runs the hit through the vanilla pipeline in
-order: i-frames → armour + toughness → enchant protection → resistance → attack-cooldown
-scale → crit → knockback → write the final amount back to `event.damage`. Every step reads
-its inputs from attribute properties and `.tags` and writes its scratch state back to
-`.tags`:
+**One hit listener.** `Entity { on_hit(attacker) }` applies the vanilla combat feedback on
+every hit — attack-cooldown swing tracking, the crit sparkle, and knockback — reading its
+inputs from attribute properties and `.tags` and writing its scratch state back to `.tags`.
+`this` is the victim; the attacker-dependent steps run only `if attacker exists`:
 
 ```swoftlang
-on EntityDamage {
-    set victim to event.entity
-    set raw to event.damage
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            // attack cooldown: record the swing tick for the next hit's charge
+            set attacker.tags.last_swing to attacker.alive_ticks
 
-    // i-frames: strongest-hit-wins inside the 10-tick window
-    set iframe to victim.invulnerable_ticks
-    set last_amt to victim.tags.last_damage otherwise 0.0
-    if iframe > 0 and raw <= last_amt {
-        cancel event
-        return
+            // crit: falling, airborne, not sprinting -> the sparkle
+            if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
+                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+            }
+
+            // knockback: base + sprint bonus, scaled by the target's resistance
+            set sprint_bonus to 0.0
+            if attacker.is_sprinting {
+                set sprint_bonus to 1.0
+            }
+            set kb_resist to this.knockback_resistance
+            set strength to (0.4 + sprint_bonus * 0.5) * (1.0 - kb_resist)
+            knock this away from attacker.location with strength strength
+        }
     }
-    set incoming to raw
-    if iframe > 0 {
-        set incoming to raw - last_amt
-    }
-
-    // armour + toughness, read straight off the victim's attribute properties
-    set armor to victim.armor
-    set toughness to victim.armor_toughness
-    set effective to armor - incoming / (2.0 + toughness / 4.0)
-    set reduction to clamp(effective, armor * 0.2, 20.0)
-    set dmg to incoming * (1.0 - reduction / 25.0)
-
-    set victim.tags.last_damage to dmg
-    set event.damage to dmg
 }
 ```
 
-The attacker-dependent steps — attack cooldown, crit, knockback — run only `if attacker
-exists`. The attack-cooldown curve reads `attacker.attack_speed` and the last-swing tick
-from `attacker.tags.last_swing` (compared against `attacker.alive_ticks`), the crit check
-reads `attacker.fall_distance`, and knockback folds in the target's
-`victim.knockback_resistance` before the `knock victim away from attacker.location`
-push.
+The hit surface reports the victim and attacker but not the numeric amount, so the
+armour + toughness + protection + resistance **reduction math** stays as reusable userland
+functions, applied where the script itself deals damage with `damage … by`. The
+attack-cooldown curve reads `attacker.attack_speed` and the last-swing tick from
+`attacker.tags.last_swing` (compared against `attacker.alive_ticks`), the crit check reads
+`attacker.fall_distance`, and knockback folds in the target's `this.knockback_resistance`
+before the `knock this away from attacker.location` push.
 
 **A tick loop for regen, starvation, and exhaustion** — the loop Minestom does not run.
 A top-level `every 1 tick` schedule runs each game tick over every online player. Food,
@@ -266,37 +269,40 @@ That is the whole point of the combat surface: the reduction, crit, and regen ma
 ordinary SwoftLang, attributes and trackers are ordinary properties, and the per-entity
 bookkeeping is just `.tags`. In Skript the same behaviour needs a compiled Java addon.
 
-<MappedCompare title="Armour damage reduction on a hit" leftLabel="Skript + MinestomPvP" rightLabel="SwoftLang">
-<MappedPair label="mitigate incoming damage by armour">
+<MappedCompare title="Custom knockback on a hit" leftLabel="Skript + MinestomPvP" rightLabel="SwoftLang">
+<MappedPair label="scale knockback by the target's resistance">
 <template #skript>
 
 ```skript
-# Skript has no armour/toughness math and no writable damage-reduction
-# hook of its own — vanilla-style PvP reduction comes from a compiled
-# Java addon (MinestomPvP / an Sk-addon), configured, not scripted.
+# Skript has no attribute-aware knockback hook of its own —
+# vanilla-style PvP knockback comes from a compiled Java addon
+# (MinestomPvP / an Sk-addon), configured, not scripted.
 on damage:
-    # victim's armour value and the reduction curve are not exposed here
-    set {_dmg} to damage
-    # ...addon does the mitigation...
+    # victim's knockback resistance and a directional push are not exposed here
+    # ...addon does the knockback...
 ```
 
 </template>
 <template #swoftlang>
 
 ```swoftlang
-on EntityDamage {
-    set victim to event.entity
-    set dmg to event.damage * (1.0 - victim.armor / 25.0)
-    set event.damage to max(0.0, dmg)
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            set kb_resist to this.knockback_resistance
+            knock this away from attacker.location with strength (0.5 * (1.0 - kb_resist))
+        }
+    }
 }
 ```
 
 </template>
 <template #note>
 
-The victim's `armor` property and a writable `event.damage` are all the mitigation needs,
-so the curve is a few lines of plain arithmetic. Skript reaches for a compiled combat addon
-because the language exposes neither the attribute nor a rewritable damage amount.
+The victim is `this`, the source is `attacker`, and `knockback_resistance` is a plain
+property, so a resistance-aware push is a few lines of arithmetic plus the `knock … away
+from` verb. Skript reaches for a compiled combat addon because the language exposes neither
+the attribute nor a directional knockback hook.
 
 </template>
 </MappedPair>

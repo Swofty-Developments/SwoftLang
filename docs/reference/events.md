@@ -1,388 +1,400 @@
-# Event Catalog
+# Receivers & Events
 
-An `event <Name> { }` handler can name **any concrete Minestom event**. The catalog on
-this page is generated at build time from the pinned engine snapshot (Minestom
-`ebaa2bbf64`) — every public class under `net.minestom.server.event.**` that implements
-`Event`, plus SwoftLang's own first-class events (fishing, dispensers, mobs, TPS). Name
-one by its short catalog name or by its simple class name, and the compiler wires a
-listener for you.
+SwoftLang handles server events through **receivers** — Capitalized top-level blocks,
+one per engine subject, whose members are fixed-name methods that fire when something
+happens to that subject. A `Player { }` block groups everything that can happen to a
+player; a `Mob { }` block groups everything that can happen to a mob; and so on.
 
 ```swoftlang
-event PlayerStartSprinting {
-    execute {
-        send "${event.player.name} sprints" to event.player
+Player {
+    on_join() {
+        broadcast "<yellow>${this.name} joined the game"
+    }
+
+    on_chat(message) {
+        send "<gray>You said: ${message}" to this
     }
 }
 ```
 
-## Naming an event
+Inside every method, `this` is the subject the block is about — the joining player, the
+mob that took a hit, the block that was placed. The method's parameters bind the rest of
+the event's data, positionally, with types fixed by the catalog and names you choose.
 
-Every catalog entry answers to two spellings — the **short name** (the class name with
-the trailing `Event` dropped) and the **simple class name** itself:
+## The receiver catalog
 
-```swoftlang
-// these two declarations listen to exactly the same class
-event PlayerFinishItemUse {
-    execute {
-        send "reeled in after ${event.use_duration} ticks" to event.player
-    }
-}
-```
+A **base receiver** is a Capitalized type whose methods fire for *every* instance of that
+type. Eleven base receivers cover the engine, plus the special `Packet` block for raw
+packets:
 
-```swoftlang
-event PlayerFinishItemUseEvent {
-    execute {
-        send "reeled in after ${event.use_duration} ticks" to event.player
-    }
-}
-```
+| Receiver | `this` | Fires for |
+|---|---|---|
+| `Player` | the player | every online player |
+| `Entity` | the entity | every live entity (players, mobs, projectiles, items) |
+| `Mob` | the mob | every server-spawned mob |
+| `Item` | the item stack | the item involved in an interaction |
+| `Block` | the block | the positioned block value |
+| `Projectile` | the projectile entity | arrows, snowballs, thrown items in flight |
+| `Inventory` | the open inventory | open-inventory / GUI interactions |
+| `World` | the world (instance) | world lifecycle, ticks, chunks |
+| `Server` | the server | the global singleton + pre-login / connection events |
+| `Npc` | the npc's entity | [NPC](./npcs) clicks and ticks |
+| `Hologram` | the hologram display | [hologram](./holograms) clicks and ticks |
+| `Packet` | — | [raw inbound packets](#the-packet-receiver), keyed by class name |
 
-A misspelled name is caught at compile time, with the nearest catalog match suggested:
+A method name is checked against its receiver's table at compile time, and so is its
+parameter count — a handler that would never fire, or one that binds the wrong data, is a
+compile error (a misspelled method name gets the nearest match suggested):
 
 <!-- swoftc name=ev.sw expect=error -->
 
 ```swoftlang
-event EntityDamg {
-    execute {
-        send "hurt" to all      // [!code error]
+Player {
+    on_chat() {            // [!code error]
+        broadcast "hi"
     }
 }
 ```
 
 ```txt
-ev.sw:1:1: error: unknown event 'EntityDamg'; did you mean 'EntityDamage'?
-event EntityDamg {
-^
+ev.sw:2:5: error: Player method 'on_chat' expects 1 parameter (message: String), got 0
+    on_chat() {
+    ^
 ```
 
-## Curated typed events vs. the generated catalog
-
-Two kinds of events live in the catalog, and they differ only in how richly their
-`event.*` properties are typed.
-
-**Curated typed events** are the core surface — the ones you reach for constantly. Their
-properties carry precise SwoftLang types (a `Player`, a `Location`, an
-`optional<Item>`), and most expose short **alias** bindings so you can write `player`
-and `message` instead of `event.player` and `event.message`.
-
-**Generated catalog events** — every other class in the tables below — expose their
-properties as `Any`. A property is discovered from the class's record components and
-`getX()`/`isX()` getters; it is writable when the class ships a matching `setX(..)`
-setter (marked with `*` in the tables). `Any` values flow into `send`, interpolation,
-and further property reads directly; coerce with the usual forms when you need a
-concrete type.
-
-```swoftlang
-event EntityShoot {
-    execute {
-        // 'power' and 'spread' have setters in the catalog, so they are writable
-        set event.power to 1.5
-        set event.spread to 0.0
-        send "line out: ${event.projectile} towards ${event.to}" to all
-    }
-}
-```
-
-### The curated typed events
-
-| Event | Cancellable | Aliases | `event.*` properties |
-|---|---|---|---|
-| `PlayerChat` | yes | `player`, `message` | `player` (Player), `message` (String, rw), `cancelled` (rw) |
-| `PlayerJoin` | — | `player`, `name` | `player` (Player), `first_spawn` (Boolean), `world` (World) |
-| `PlayerUseItem` | yes | `player`, `item` | `player` (Player), `item` (Item), `custom_id` (optional&lt;String&gt;), `cancelled` (rw) |
-| `MobSpawn` | — | `mob` | `mob` (Mob) |
-| `MobDeath` | — | `mob`, `killer` | `mob` (Mob), `killer` (optional&lt;Player&gt;) |
-| `MobDamage` | yes | `mob`, `damage` | `mob` (Mob), `damage` (Double, rw), `cancelled` (rw) |
-| `BlockBreak` | yes | `player`, `block`, `location` | `player` (Player), `block` (String), `location` (Location), `cancelled` (rw) |
-| `BlockPlace` | yes | `player`, `block`, `location` | `player` (Player), `block` (String), `location` (Location), `cancelled` (rw) |
-| `ServerPing` | — | `motd` | `motd` (String, rw), `online` (Integer, rw), `max` (Integer, rw) |
-| `TpsChange` | — | `past`, `current` | `past` (Double), `current` (Double) |
-| [`PlayerCastRod`](./fishing) | yes | `player` | `player` (Player), `cancelled` (rw) |
-| [`FishBite`](./fishing) | — | `player`, `hook_location` | `player` (Player), `hook_location` (Location) |
-| [`PlayerCatchFish`](./fishing) | yes | `player`, `caught_item`, `caught_mob` | `player` (Player), `caught_item` (optional&lt;Item&gt;, rw), `caught_mob` (optional&lt;Mob&gt;), `cancelled` (rw) |
-| [`PlayerReelIn`](./fishing) | — | `player` | `player` (Player) |
-| [`BlockDispense`](./dispensers) | yes | `location`, `block`, `item`, `direction` | `location` (Location), `block` (String), `item` (optional&lt;Item&gt;, rw), `direction` (Vec), `cancelled` (rw) |
-
-::: tip `PlayerUseItem` and the engine's `PlayerUseItemEvent`
-The curated `PlayerUseItem` identifier wraps SwoftLang's **custom-items** use event — it
-is what carries `event.custom_id` and drives the [`on_click`](./items#on-click) item
-sugar. The raw engine event still has a spelling of its own: name
-`VanillaUseItem` (the typed identifier below) to listen to Minestom's
-`PlayerUseItemEvent` directly, with typed `item_stack` / `hand` / `item_use_time` rows.
+::: tip Base receivers vs. custom declarations
+A Capitalized receiver (`Mob { }`) is the **base type** — its methods run for every mob.
+A lowercase declaration with a string id (`mob "ghoul" { }`, `item "rod" { }`) is a
+**custom subtype** that carries the same method set but scoped to that one id, and
+[overrides](#overriding-a-base-receiver) the base for its instances.
 :::
 
-## Typed engine events
+## Player
 
-Between the two extremes sits a third tier: **typed engine events**. These name plain
-Minestom events — `EntityDamage`, `PlayerMove`, `PickupItem` — but their `event.*`
-properties carry precise SwoftLang types and real setters, hand-authored rather than
-discovered from getters. So `event.damage` is a writable `Double`, `event.attacker` is
-an `optional<Entity>`, `event.damage_type` is a `String` — properties the raw catalog
-never exposes. They have no short aliases; reach everything through `event.<prop>`.
+Every online player. `this` is the player.
 
-Naming one of these gets you the typed rows below, *not* the generated `Any` rows the
-tables further down would suggest for the same class. `EntityDamage` is the one to
-reach for: attack damage flows through it (the engine's `EntityAttack` is not
-cancellable), so it is where you read the victim, scale the hit, inspect the source, and
-veto lethal damage.
-
-```swoftlang
-event EntityDamage {
-    execute {
-        set event.damage to event.damage * 2.0
-        send "${event.entity} took ${event.damage} (${event.damage_type})" to all
-        if event.attacker exists {
-            send "attacker: ${event.attacker}" to all
-        }
-        if event.damage > 100.0 {
-            cancel event
-        }
-    }
-}
-```
-
-### Tier 1 — the events most scripts reach for
-
-| Event | Cancellable | `event.*` properties |
+| Method | Cancellable | Parameters |
 |---|---|---|
-| `EntityDamage` | yes | `entity` (Entity), `damage` (Double, rw), `attacker` (optional&lt;Entity&gt;), `source_entity` (optional&lt;Entity&gt;), `damage_type` (String), `cancelled` (rw) |
-| `PlayerDeath` | — | `player` (Player), `world` (World), `death_text` (String, rw), `chat_message` (String, rw) |
-| `PlayerRespawn` | — | `player` (Player), `world` (World), `respawn_position` (Location, rw) |
-| `PlayerMove` | yes | `player` (Player), `new_position` (Location, rw), `on_ground` (Boolean), `cancelled` (rw) |
-| `PlayerBlockInteract` | yes | `player` (Player), `block` (String), `location` (Location), `block_face` (String), `hand` (String), `cursor_position` (Location), `cancelled` (rw) |
-| `InventoryPreClick` | yes | `player` (Player), `slot` (Integer), `clicked_item` (Item), `cancelled` (rw) |
-| `InventoryClose` | — | `player` (Player), `from_client` (Boolean) |
-| `ItemDrop` | yes | `player` (Player), `item_stack` (Item), `cancelled` (rw) |
-| `PickupItem` | yes | `entity` (Entity), `item_stack` (Item), `item_entity` (Entity), `cancelled` (rw) |
-| `PlayerGameModeChange` | yes | `player` (Player), `new_game_mode` (String, rw), `cancelled` (rw) |
-| `PlayerDisconnect` | — | `player` (Player), `world` (World) |
-| `PlayerUseItemOnBlock` | — | `player` (Player), `item_stack` (Item), `location` (Location), `block_face` (String), `hand` (String), `cursor_position` (Location) |
+| `on_join()` | — | — |
+| `on_quit()` | — | — |
+| `on_loaded()` | — | — |
+| `on_chat(message)` | yes | `message` (String, rw) |
+| `on_move(new_position)` | yes | `new_position` (Location, rw) |
+| `on_death(death_text, chat_message)` | — | `death_text` (String, rw), `chat_message` (String, rw) |
+| `on_respawn(respawn_position)` | — | `respawn_position` (Location, rw) |
+| `on_command(command)` | yes | `command` (String, rw) |
+| `on_break_block(block, location, face)` | yes | `block` (String), `location` (Location), `face` (String) |
+| `on_place_block(block, location, face, hand)` | yes | `block` (String), `location` (Location), `face` (String), `hand` (String) |
+| `on_interact_block(block, location, face, hand)` | yes | `block` (String), `location` (Location), `face` (String), `hand` (String) |
+| `on_use_item(item, hand)` | yes | `item` (Item), `hand` (String) |
+| `on_use_item_on_block(item_stack, location, face, hand)` | — | `item_stack` (Item), `location` (Location), `face` (String), `hand` (String) |
+| `on_start_digging(block, location, face)` | yes | `block` (String), `location` (Location), `face` (String) |
+| `on_finish_digging(block, location)` | — | `block` (String), `location` (Location) |
+| `on_cancel_digging(block, location)` | — | `block` (String), `location` (Location) |
+| `on_change_held_slot(new_slot, old_slot)` | yes | `new_slot` (Integer, rw), `old_slot` (Integer) |
+| `on_swap_item(main_hand_item, off_hand_item)` | yes | `main_hand_item` (Item, rw), `off_hand_item` (Item, rw) |
+| `on_gamemode_change(new_game_mode)` | yes | `new_game_mode` (String, rw) |
+| `on_start_sprinting()` · `on_stop_sprinting()` | — | — |
+| `on_start_flying()` · `on_stop_flying()` | — | — |
+| `on_start_elytra()` · `on_stop_elytra()` | — | — |
+| `on_interact_entity(target, hand)` | — | `target` (Entity), `hand` (String) |
+| `on_spectate_entity(target)` | — | `target` (Entity) |
+| `on_teleport_to_entity(target)` | — | `target` (Entity) |
+| `on_pick_entity(target)` | — | `target` (Entity) |
+| `on_pick_block(block, location)` | — | `block` (String), `location` (Location) |
+| `on_edit_sign(block, block_position)` | — | `block` (String), `block_position` (Location) |
+| `on_edit_book()` | — | — |
+| `on_anvil_input(input)` | — | `input` (String) |
+| `on_leave_bed()` | yes | — |
+| `on_hand_animation()` | yes | — |
+| `on_input()` | — | — |
+| `on_tick()` · `on_tick_end()` | — | — |
+| `on_chunk_load(chunk_x, chunk_z)` · `on_chunk_unload(chunk_x, chunk_z)` | — | `chunk_x` (Integer), `chunk_z` (Integer) |
+| `on_skin_init(skin)` | — | `skin` (Skin, rw) |
+| `on_settings_change()` | — | — |
+| `on_resource_pack_status()` | — | — |
+| `on_plugin_message()` | — | — |
+| `on_advancement_tab()` | — | — |
+| `on_stab(item_stack)` | — | `item_stack` (Item) |
+| `on_pickup_experience(experience_count)` | yes | `experience_count` (Integer, rw) |
+| `on_drop_item(item)` | yes | `item` (Item) |
+| `on_pickup_item()` | — | — |
+| `on_packet_in()` · `on_packet_out()` | yes | — |
+| `on_begin_item_use()` | yes | — |
+| `on_cancel_item_use()` · `on_finish_item_use()` | — | — |
+| `on_outgoing_transfer(host, port)` | yes | `host` (String, rw), `port` (Integer, rw) |
+| `on_cast_rod()` · `on_fish_bite()` · `on_catch_fish()` · `on_reel_in()` | — | [fishing](./fishing) |
 
-### Tier 2 — common, fully typed
+## Entity
 
-| Event | Cancellable | `event.*` properties |
+Base for every live entity — players, mobs, projectiles, dropped items. `this` is the
+subject entity.
+
+| Method | Cancellable | Parameters |
 |---|---|---|
-| `EntityDeath` | — | `entity` (Entity), `world` (World) |
-| `EntitySpawn` | — | `entity` (Entity), `world` (World) |
-| `EntityAttack` | — | `entity` (Entity), `target` (Entity), `world` (World) |
-| `EntityTeleport` | — | `entity` (Entity), `new_position` (Location) |
-| `EntityShoot` | yes | `entity` (Entity), `projectile` (Entity), `to` (Location), `power` (Double, rw), `spread` (Double, rw), `cancelled` (rw) |
-| `EntityVelocity` | yes | `entity` (Entity), `velocity` (Vec, rw), `cancelled` (rw) |
-| `ProjectileCollideWithEntity` | yes | `target` (Entity), `world` (World), `cancelled` (rw) |
-| `PlayerEntityInteract` | — | `player` (Player), `target` (Entity), `hand` (String), `interact_position` (Location) |
-| `PlayerChangeHeldSlot` | yes | `player` (Player), `new_slot` (Integer, rw), `old_slot` (Integer), `item_in_new_slot` (Item), `item_in_old_slot` (Item), `cancelled` (rw) |
-| `PickupExperience` | yes | `player` (Player), `experience_count` (Integer, rw), `cancelled` (rw) |
-| `PlayerBeginItemUse` | yes | `player` (Player), `item_stack` (Item), `hand` (String), `item_use_duration` (Integer, rw), `animation` (String), `cancelled` (rw) |
-| `PlayerSwapItem` | yes | `player` (Player), `main_hand_item` (Item, rw), `off_hand_item` (Item, rw), `cancelled` (rw) |
-| `PlayerStartDigging` | yes | `player` (Player), `block` (String), `location` (Location), `block_face` (String), `cancelled` (rw) |
-| `InventoryClick` | — | `player` (Player), `slot` (Integer), `click_type` (String), `clicked_item` (Item), `cursor_item` (Item) |
-| `InventoryOpen` | yes | `player` (Player), `cancelled` (rw) |
-| `PlayerLoaded` | — | `player` (Player), `world` (World) |
-| `PlayerStartSprinting` · `PlayerStopSprinting` | — | `player` (Player), `world` (World) |
-| `PlayerStartFlying` · `PlayerStopFlying` | — | `player` (Player), `world` (World) |
-| `VanillaUseItem` | yes | `player` (Player), `item_stack` (Item), `hand` (String), `item_use_time` (Integer, rw), `cancelled` (rw) |
+| `on_hit(attacker)` | yes | `attacker` (optional&lt;Entity&gt;) |
+| `on_death()` | — | — |
+| `on_spawn()` · `on_despawn()` | — | — |
+| `on_attack(target)` | — | `target` (Entity) — `this` is the attacker |
+| `on_tick()` | — | — |
+| `on_teleport(new_position)` | — | `new_position` (Location) |
+| `on_velocity(velocity)` | yes | `velocity` (Vec, rw) |
+| `on_shoot(projectile, to, power, spread)` | yes | `projectile` (Entity), `to` (Location), `power` (Double, rw), `spread` (Double, rw) |
+| `on_set_fire(fire_ticks)` | yes | `fire_ticks` (Integer, rw) |
+| `on_fire_extinguish()` | yes | — |
+| `on_item_merge()` | yes | — |
+| `on_potion_add()` · `on_potion_remove()` | `on_potion_add` only | — |
+| `on_equip(equipped_item, slot)` | — | `equipped_item` (Item, rw), `slot` (String) |
+| `on_pickup_item(item_stack, item_entity)` | yes | `item_stack` (Item), `item_entity` (Entity) |
 
-`VanillaUseItem` is the vanilla `PlayerUseItemEvent` under a typed identifier of its
-own — the short name `PlayerUseItem` is taken by the [custom-items](./items) use event.
+## Mob
 
-Writing a settable property does what you'd expect — clamp a fall, redirect a
-teleport, rewrite a death message:
+`Mob <: Entity` — narrows Entity to server-spawned mobs. A lowercase `mob "id" { }`
+declaration ([Mobs](./mobs)) carries the same method set for one mob type and overrides
+the base.
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_hit(attacker)` | — | `attacker` (Entity) |
+| `on_death(killer)` | — | `killer` (optional&lt;Entity&gt;) |
+| `on_spawn()` | — | — |
+| `on_tick()` | — | — |
+| `on_attack(target)` | — | `target` (Entity) |
+| `on_target(target)` | — | `target` (optional&lt;Entity&gt;) |
+| `on_click(player)` | — | `player` (Player) |
+| `on_despawn()` | — | — |
+| `on_teleport(new_position)` | — | `new_position` (Location) |
+| `on_shoot(projectile, to, power, spread)` | yes | `projectile` (Entity), `to` (Location), `power` (Double, rw), `spread` (Double, rw) |
+
+## Item
+
+The item stack involved in an interaction. A lowercase `item "id" { }` declaration
+([Items](./items)) carries the same method set for one item and overrides the base.
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_use(player)` | yes | `player` (Player) |
+| `on_right_click(player)` | yes | `player` (Player) |
+| `on_right_click_block(player, location, face)` | — | `player` (Player), `location` (Location), `face` (String) |
+| `on_left_click(player)` | — | `player` (Player) |
+| `on_attack_entity(player, target)` | — | `player` (Player), `target` (Entity) |
+| `on_consume(player)` | — | `player` (Player) |
+| `on_drop(player)` | yes | `player` (Player) |
+| `on_pickup(player)` | — | `player` (Player) |
+| `on_swap_to(player)` | — | `player` (Player) |
+| `on_break(player)` | — | `player` (Player) |
+| `on_begin_use(player)` | yes | `player` (Player) |
+| `on_cancel_use(player)` · `on_finish_use(player)` | — | `player` (Player) |
+| `on_equip(entity, slot)` | — | `entity` (Entity), `slot` (String) |
+
+## Block
+
+The positioned block value. A lowercase `block_handler "id" { }` declaration
+([Blocks](./blocks)) carries the same method set for one block id and overrides the base.
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_place(player, location, block)` | — | `player` (Player), `location` (Location), `block` (Block) |
+| `on_break(player)` | yes | `player` (Player) |
+| `on_destroy(location, block)` | — | `location` (Location), `block` (Block) |
+| `on_interact(player, location, block)` | yes | `player` (Player), `location` (Location), `block` (Block) |
+| `on_touch(entity, location)` | — | `entity` (Entity), `location` (Location) |
+| `on_tick(location, block)` | — | `location` (Location), `block` (Block) |
+| `on_dispense(item, direction)` | yes | `item` (Item), `direction` (String) — see [Dispensers](./dispensers) |
+| `on_update(location, block)` | — | `location` (Location), `block` (Block) |
+
+## Projectile
+
+`Projectile <: Entity` — projectile lifecycle. `this` is the projectile entity. (The
+shooter side is reachable via [`Entity.on_shoot`](#entity).)
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_hit_block(block, world)` | yes | `block` (Block), `world` (World) |
+| `on_hit_entity(target)` | yes | `target` (Entity) |
+| `on_uncollide()` | — | — |
+
+## Inventory
+
+Open-inventory and GUI interactions.
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_pre_click(player, slot, clicked_item)` | yes | `player` (Player), `slot` (Integer), `clicked_item` (Item) |
+| `on_click(player, slot, click_type, clicked_item, cursor_item)` | — | `player` (Player), `slot` (Integer), `click_type` (String), `clicked_item` (Item), `cursor_item` (Item) |
+| `on_open(player)` | yes | `player` (Player) |
+| `on_close(player, from_client)` | — | `player` (Player), `from_client` (Boolean) |
+| `on_button_click(player)` | — | `player` (Player) |
+| `on_bundle_select(player, selected_item_index)` | — | `player` (Player), `selected_item_index` (Integer) |
+| `on_item_change(new_item, previous_item, slot)` | — | `new_item` (Item), `previous_item` (Item), `slot` (Integer) |
+| `on_creative_action(player, slot, clicked_item)` | yes | `player` (Player), `slot` (Integer), `clicked_item` (Item, rw) |
+
+## World
+
+The world (Minestom instance). `this` is the world.
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_tick(duration)` | — | `duration` (Integer) |
+| `on_chunk_load(chunk_x, chunk_z)` · `on_chunk_unload(chunk_x, chunk_z)` | — | `chunk_x` (Integer), `chunk_z` (Integer) |
+| `on_register()` · `on_unregister()` | — | — |
+| `on_section_invalidate()` | — | — |
+| `on_block_update(block, block_position)` | — | `block` (Block), `block_position` (Location) |
+| `on_entity_add(entity)` | yes | `entity` (Entity) |
+| `on_entity_remove(entity)` | — | `entity` (Entity) |
+
+## Server
+
+The global singleton, plus the pre-login and connection-only events that have no player
+or entity subject yet. `this` is the server ([Server config](./server-config)).
+
+| Method | Cancellable | Parameters |
+|---|---|---|
+| `on_list_ping(status)` | yes | `status` (String, rw) |
+| `on_client_ping(delay, payload)` | yes | `delay` (Integer, rw), `payload` (Integer, rw) |
+| `on_tick_monitor()` | — | — |
+| `on_pre_login(connection, username, game_profile)` | — | `connection` (Any), `username` (String, rw), `game_profile` (Any) |
+| `on_player_configuration(player, spawning_instance, hardcore)` | — | `player` (Player), `spawning_instance` (World, rw), `hardcore` (Boolean) |
+| `on_tps_change(past, current)` | — | `past` (Double), `current` (Double) — see [TPS](./maps-toasts-skins-tps) |
+
+::: tip No `Player` before login
+`on_pre_login`, `on_client_ping`, and `on_list_ping` fire before there is a `Player`
+object — they carry only a raw connection, which is why they live on `Server` rather than
+`Player`.
+:::
+
+## Npc & Hologram
+
+The [NPC](./npcs) and [hologram](./holograms) receivers reuse the same method set as their
+lowercase `npc "id" { }` / `hologram "id" { }` declarations:
+
+| Receiver | Methods |
+|---|---|
+| `Npc` | `on_click(player)`, `on_left_click(player)`, `on_tick()` |
+| `Hologram` | `on_click(player)`, `on_line_click(player, line)`, `on_tick()` |
+
+## Fan-out — one event, several receivers
+
+A single engine event can surface on more than one receiver, so you handle it wherever it
+reads most naturally. When a player breaks a block, both the block and the player see it;
+when an entity takes damage, `Entity.on_hit` fires, and if the entity is a mob,
+`Mob.on_hit` fires too.
+
+| Engine event | Receivers it surfaces on |
+|---|---|
+| block break | `Block.on_break(player)` · `Player.on_break_block(block, location, face)` |
+| block place | `Block.on_place(player, location, block)` · `Player.on_place_block(...)` |
+| block interact | `Block.on_interact(player, location, block)` · `Player.on_interact_block(...)` |
+| entity damaged | `Entity.on_hit(attacker)` · `Mob.on_hit(attacker)` |
+| item used | `Item.on_use(player)` · `Player.on_use_item(item, hand)` |
+| item dropped | `Item.on_drop(player)` · `Player.on_drop_item(item)` |
+| item picked up | `Item.on_pickup(player)` · `Entity.on_pickup_item(...)` · `Player.on_pickup_item()` |
+
+The most-specific subject fires first — a custom `mob "id"` before base `Mob` before base
+`Entity`. A [`cancel`](#cancelling) in any handler vetoes the shared underlying event;
+later handlers still run and can observe or undo the decision.
+
+## Overriding a base receiver
+
+A lowercase custom declaration (`mob "id" { }`, `item "id" { }`, `block_handler "id"
+{ }`) carries the same method set as its base receiver, and **most-specific wins**: when a
+custom method and the base method both exist, the custom one replaces the base for that
+id. To keep the base behavior, call `default()` (or the equivalent `super.<method>(...)`)
+from inside the overriding method:
 
 ```swoftlang
-event PlayerMove {
-    execute {
-        if event.on_ground {
-            set event.new_position to event.player.location
-        }
+Mob {
+    on_click(player) {
+        send "<gray>You poke a ${this.type}." to player
+    }
+}
+
+mob "ghoul" {
+    type: "ZOMBIE"
+    name: "<dark_green>Ghoul"
+    health: 40
+
+    on_click(player) {
+        send "<green>You poke the ghoul." to player
+        default()                       // also run base Mob.on_click
+    }
+
+    on_target(target) {
+        super.on_target(target)
     }
 }
 ```
 
-```swoftlang
-event PlayerGameModeChange {
-    execute {
-        send "${event.player.name} -> ${event.new_game_mode}" to event.player
-    }
-}
-```
+`default()` and `super.<method>(...)` are only legal inside an overriding method — calling
+`default()` from a base receiver or a method that overrides nothing is a compile error.
 
 ## Cancelling
 
-`cancel event` is legal on exactly the events the engine marks cancellable (the
-`Cancellable` column below, and `cancelled` in a curated event's rows). It is a compile
-error anywhere else:
+`cancel event` vetoes the underlying server event — a cancelled chat message is never
+broadcast. It is legal only inside a method the engine marks **cancellable** (the
+Cancellable column above), and only *before* the handler goes async. Anywhere else it is a
+compile error:
 
 <!-- swoftc name=nc.sw expect=error -->
 
 ```swoftlang
-event FishBite {
-    execute {
+Player {
+    on_join() {
         cancel event      // [!code error]
     }
 }
 ```
 
 ```txt
-nc.sw:3:9: error: event 'FishBite' is not cancellable
+nc.sw:3:9: error: event 'on_join' is not cancellable
         cancel event
         ^
 ```
 
-Cancellable catalog events also carry a settable `cancelled` property, so
-`set event.cancelled to true` and `cancel event` are two spellings of the same effect.
+## Async methods
 
-## Priority and async
-
-Every handler takes an optional `priority:` (lower runs first) and an `execute` body.
-Handlers run on the tick thread by default; a whole handler can be marked
-`execute async` where the work must not block a tick, following the usual
-[async coloring](/guide/async) rules.
+A method runs on the tick thread by default. Mark its body `async` where slow work must
+not block a tick, following the usual [async coloring](/guide/async) rules. Cancellation is
+sync-only, so decide and `cancel` synchronously, then hand slow work to an async method or
+a spawned task:
 
 ```swoftlang
-event PickupItem {
-    priority: 1
-
-    execute {
-        if event.cancelled {
-            send "too slow, the catch is gone" to all
+Player {
+    on_chat(message) {
+        if message contains "spoiler" {
+            cancel event
+            spawn warn_later(this)
         }
-        send "caught ${event.item_stack}" to all
+    }
+}
+
+async function warn_later(p: Player) {
+    wait 1 seconds
+    send "<red>No spoilers in chat!" to p
+}
+```
+
+## The Packet receiver
+
+`Packet { }` is the raw-packet escape hatch: a listener on inbound Minestom packets keyed
+by class name, for the rare cases the typed receivers above don't cover. Each `on
+"ClassName" { }` handler binds `player` (the sender) and `packet` (the raw packet) in
+scope. See [Packets](./packets) for the full treatment.
+
+```swoftlang
+Packet {
+    on "ClientPlayerActionPacket" {
+        broadcast "<gray>${player.name} sent a player-action packet"
     }
 }
 ```
 
-## The generated catalog
+The typed `Player.on_packet_in()` / `on_packet_out()` methods cover the common
+"a packet arrived" case; reach for `Packet { }` only when you need a specific packet class
+by name.
 
-`*` marks a property with a setter (writable). Names are the short catalog names; the
-simple class name (append `Event`) always works too. Rows here are what the compiler
-*discovers* from a class's getters — an event that also appears in the
-[typed engine events](#typed-engine-events) tables above resolves to those richer typed
-rows instead, so consult those first. Projectile-flight events —
-`EntityShoot`, `ProjectileCollideWithBlock`, `ProjectileCollideWithEntity`,
-`ProjectileUncollide` — live in the `entity` group.
+## Commands are separate
 
-### Player · `player` (47)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `AdvancementTab` | `AdvancementTabEvent` | — | action, entity, instance, player, tab_id |
-| `AsyncPlayerConfiguration` | `AsyncPlayerConfigurationEvent` | — | entity, feature_flags, first_config, hardcore*, player, spawning_instance* |
-| `AsyncPlayerPreLogin` | `AsyncPlayerPreLoginEvent` | — | connection, game_profile*, player_uuid, username* |
-| `PlayerAnvilInput` | `PlayerAnvilInputEvent` | — | entity, input, instance, inventory, player |
-| `PlayerBlockBreak` | `PlayerBlockBreakEvent` | yes | block, block_face, block_position, cancelled*, entity, instance, player, result_block* |
-| `PlayerBlockInteract` | `PlayerBlockInteractEvent` | yes | block, block_face, block_position, blocking_item_use*, cancelled*, cursor_position, entity, hand, instance, player |
-| `PlayerBlockPlace` | `PlayerBlockPlaceEvent` | yes | block*, block_face, block_position, cancelled*, cursor_position, entity, hand, instance, player |
-| `PlayerCancelDigging` | `PlayerCancelDiggingEvent` | — | block, block_position, entity, instance, player |
-| `PlayerChangeHeldSlot` | `PlayerChangeHeldSlotEvent` | yes | cancelled*, entity, instance, item_in_new_slot, item_in_old_slot, new_slot*, old_slot, player, slot* |
-| `PlayerChat` | `PlayerChatEvent` | yes | cancelled*, entity, formatted_message*, instance, player, raw_message, recipients |
-| `PlayerChunkLoad` | `PlayerChunkLoadEvent` | — | chunk_x, chunk_z, entity, instance, player |
-| `PlayerChunkUnload` | `PlayerChunkUnloadEvent` | — | chunk_x, chunk_z, entity, instance, player |
-| `PlayerCommand` | `PlayerCommandEvent` | yes | cancelled*, command*, entity, instance, player |
-| `PlayerDeath` | `PlayerDeathEvent` | — | chat_message*, death_text*, entity, instance, player |
-| `PlayerDisconnect` | `PlayerDisconnectEvent` | — | entity, instance, player |
-| `PlayerEntityInteract` | `PlayerEntityInteractEvent` | — | entity, hand, instance, interact_position, player, target |
-| `PlayerFinishDigging` | `PlayerFinishDiggingEvent` | — | block*, block_position, entity, instance, player |
-| `PlayerGameModeChange` | `PlayerGameModeChangeEvent` | yes | cancelled*, entity, instance, new_game_mode*, player |
-| `PlayerHandAnimation` | `PlayerHandAnimationEvent` | yes | cancelled*, entity, hand, instance, player |
-| `PlayerLoaded` | `PlayerLoadedEvent` | — | entity, instance, player |
-| `PlayerMove` | `PlayerMoveEvent` | yes | cancelled*, entity, instance, new_position*, on_ground, player |
-| `PlayerPacket` | `PlayerPacketEvent` | yes | cancelled*, entity, instance, packet, player |
-| `PlayerPacketOut` | `PlayerPacketOutEvent` | yes | cancelled*, entity, packet, player |
-| `PlayerPickBlock` | `PlayerPickBlockEvent` | — | block, block_position, entity, include_data, instance, player |
-| `PlayerPickEntity` | `PlayerPickEntityEvent` | — | entity, include_data, instance, player, target |
-| `PlayerPluginMessage` | `PlayerPluginMessageEvent` | — | entity, identifier, instance, message, message_string, player |
-| `PlayerPreEat` | `PlayerPreEatEvent` | yes | cancelled*, eating_time*, entity, food_item, hand, instance, item_stack, player |
-| `PlayerResourcePackStatus` | `PlayerResourcePackStatusEvent` | — | entity, player, status |
-| `PlayerRespawn` | `PlayerRespawnEvent` | — | entity, player, respawn_position* |
-| `PlayerSettingsChange` | `PlayerSettingsChangeEvent` | — | entity, player |
-| `PlayerSkinInit` | `PlayerSkinInitEvent` | — | entity, player, skin* |
-| `PlayerSpawn` | `PlayerSpawnEvent` | — | entity, first_spawn, instance, player, spawn_instance |
-| `PlayerSpectate` | `PlayerSpectateEvent` | — | entity, player, target |
-| `PlayerStartDigging` | `PlayerStartDiggingEvent` | yes | block, block_face, block_position, cancelled*, entity, instance, player |
-| `PlayerStartFlying` | `PlayerStartFlyingEvent` | — | entity, instance, player |
-| `PlayerStartFlyingWithElytra` | `PlayerStartFlyingWithElytraEvent` | — | entity, instance, player |
-| `PlayerStartSneaking` | `PlayerStartSneakingEvent` | — | entity, instance, player |
-| `PlayerStartSprinting` | `PlayerStartSprintingEvent` | — | entity, instance, player |
-| `PlayerStopFlying` | `PlayerStopFlyingEvent` | — | entity, instance, player |
-| `PlayerStopFlyingWithElytra` | `PlayerStopFlyingWithElytraEvent` | — | entity, instance, player |
-| `PlayerStopSneaking` | `PlayerStopSneakingEvent` | — | entity, instance, player |
-| `PlayerStopSprinting` | `PlayerStopSprintingEvent` | — | entity, instance, player |
-| `PlayerSwapItem` | `PlayerSwapItemEvent` | yes | cancelled*, entity, instance, main_hand_item*, off_hand_item*, player |
-| `PlayerTick` | `PlayerTickEvent` | — | entity, instance, player |
-| `PlayerTickEnd` | `PlayerTickEndEvent` | — | entity, instance, player |
-| `PlayerUseItem` | `PlayerUseItemEvent` | yes | cancelled*, entity, hand, instance, item_stack, item_use_time*, player |
-| `PlayerUseItemOnBlock` | `PlayerUseItemOnBlockEvent` | — | block_face, entity, hand, instance, item_stack, player, position |
-
-### Entity & projectile · `entity` (17)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `EntityAttack` | `EntityAttackEvent` | — | entity, instance, target |
-| `EntityDamage` | `EntityDamageEvent` | yes | cancelled*, damage, entity, instance, sound* |
-| `EntityDeath` | `EntityDeathEvent` | — | entity, instance |
-| `EntityDespawn` | `EntityDespawnEvent` | — | entity, instance |
-| `EntityFireExtinguish` | `EntityFireExtinguishEvent` | yes | cancelled*, entity, instance, natural |
-| `EntityItemMerge` | `EntityItemMergeEvent` | yes | cancelled*, entity, instance, merged, result* |
-| `EntityPotionAdd` | `EntityPotionAddEvent` | — | entity, instance, potion |
-| `EntityPotionRemove` | `EntityPotionRemoveEvent` | — | entity, instance, potion |
-| `EntitySetFire` | `EntitySetFireEvent` | yes | cancelled*, entity, fire_ticks*, instance |
-| `EntityShoot` | `EntityShootEvent` | yes | cancelled*, entity, instance, power*, projectile, spread*, to |
-| `EntitySpawn` | `EntitySpawnEvent` | — | entity, instance, spawn_instance |
-| `EntityTeleport` | `EntityTeleportEvent` | — | entity, new_position, relative_flags, teleport_position |
-| `EntityTick` | `EntityTickEvent` | — | entity, instance |
-| `EntityVelocity` | `EntityVelocityEvent` | yes | cancelled*, entity, instance, velocity* |
-| `ProjectileCollideWithBlock` | `ProjectileCollideWithBlockEvent` | yes | block, instance |
-| `ProjectileCollideWithEntity` | `ProjectileCollideWithEntityEvent` | yes | instance, target |
-| `ProjectileUncollide` | `ProjectileUncollideEvent` | — | entity, instance |
-
-### Item · `item` (7)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `EntityEquip` | `EntityEquipEvent` | — | entity, equipped_item*, instance, item_stack, slot |
-| `ItemDrop` | `ItemDropEvent` | yes | cancelled*, entity, instance, item_stack, player |
-| `PickupExperience` | `PickupExperienceEvent` | yes | cancelled*, entity, experience_count*, experience_orb, instance, player |
-| `PickupItem` | `PickupItemEvent` | yes | cancelled*, entity, instance, item_entity, item_stack, living_entity |
-| `PlayerBeginItemUse` | `PlayerBeginItemUseEvent` | yes | animation, cancelled*, entity, hand, instance, item_stack, item_use_duration*, player |
-| `PlayerCancelItemUse` | `PlayerCancelItemUseEvent` | — | entity, hand, instance, item_stack, player, riptide_spin_attack*, use_duration |
-| `PlayerFinishItemUse` | `PlayerFinishItemUseEvent` | — | entity, hand, instance, item_stack, player, riptide_spin_attack*, use_duration |
-
-### Inventory · `inventory` (5)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `InventoryClick` | `InventoryClickEvent` | — | click_type, clicked_item, cursor_item, entity, instance, inventory, player, slot |
-| `InventoryClose` | `InventoryCloseEvent` | — | entity, from_client, instance, inventory, new_inventory*, player |
-| `InventoryItemChange` | `InventoryItemChangeEvent` | — | inventory, new_item, previous_item, slot |
-| `InventoryOpen` | `InventoryOpenEvent` | yes | cancelled*, entity, instance, inventory*, player |
-| `InventoryPreClick` | `InventoryPreClickEvent` | yes | cancelled*, click_type, clicked_item*, cursor_item*, entity, instance, inventory, player, slot |
-
-### Instance · `instance` (7)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `AddEntityToInstance` | `AddEntityToInstanceEvent` | yes | cancelled*, entity, instance |
-| `InstanceChunkLoad` | `InstanceChunkLoadEvent` | — | chunk, chunk_x, chunk_z, instance |
-| `InstanceChunkUnload` | `InstanceChunkUnloadEvent` | — | chunk, chunk_x, chunk_z, instance |
-| `InstanceRegister` | `InstanceRegisterEvent` | — | instance |
-| `InstanceTick` | `InstanceTickEvent` | — | duration, instance |
-| `InstanceUnregister` | `InstanceUnregisterEvent` | — | instance |
-| `RemoveEntityFromInstance` | `RemoveEntityFromInstanceEvent` | — | entity, instance |
-
-### Server · `server` (3)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `ClientPingServer` | `ClientPingServerEvent` | yes | cancelled*, connection, delay*, payload* |
-| `ServerListPing` | `ServerListPingEvent` | yes | cancelled*, connection, ping_type, response_data* |
-| `ServerTickMonitor` | `ServerTickMonitorEvent` | — | tick_monitor |
-
-### Book · `book` (1)
-
-| Event | Class spelling | Cancellable | Discovered properties |
-|---|---|---|---|
-| `EditBook` | `EditBookEvent` | — | entity, instance, item_stack, pages, player, signed, title |
-
-::: tip Every listed event is live
-Name any row above in an `event { }` declaration today — the runtime registers a generic listener for its class and hands your handler the discovered properties. The four fishing events, the mob and TPS events, and `BlockDispense` sit alongside the engine catalog as first-class curated events.
-:::
+[`command "..." { }`](/guide/commands) declarations are not events — they define the
+slash-commands players type, and are unchanged. Receivers handle what *happens* on the
+server; commands handle what players *ask for*.

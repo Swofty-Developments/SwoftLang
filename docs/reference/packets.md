@@ -1,12 +1,12 @@
 # Raw Packets
 
 ::: danger Sharp edge — you are talking to the protocol
-`send packet` and `on packet` are SwoftLang's NMS escape hatch. Packet **names and
-field shapes are resolved at runtime** against the pinned Minestom snapshot
+`send packet` and the `Packet { }` receiver are SwoftLang's NMS escape hatch. Packet
+**names and field shapes are resolved at runtime** against the pinned Minestom snapshot
 (`minestom-snapshots:ebaa2bbf64`, 1.21.4) — the compiler checks only the statement
 shape, so a typo in a packet name or field is a *runtime* error, and a Minestom
 upgrade can rename fields under you. A malformed-but-constructible packet can
-desync or disconnect clients. `on packet` handlers run on the connection's **read
+desync or disconnect clients. `Packet` handlers run on the connection's **read
 thread**, not the tick thread. Prefer the first-class statements (displays, sounds,
 particles, nametags…) whenever one exists — reach for packets when nothing else
 does the job.
@@ -19,15 +19,15 @@ listener — the same primitives this page documents, now assembled for you in J
 ## Sending packets
 
 ```swoftlang
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         send packet "ParticlePacket" {
             particle: "minecraft:flame",
             overrideLimiter: false, longDistance: false,
             x: 100.5, y: 65.0, z: 20.5,
             offsetX: 0.5, offsetY: 0.5, offsetZ: 0.5,
             maxSpeed: 0.01, particleCount: 40
-        } to event.player
+        } to this
     }
 }
 ```
@@ -87,15 +87,15 @@ command "ghost" {
 
 ## Listening for packets
 
-`on packet "<ClientPacketName>" { execute { ... } }` is a top-level declaration that
-hooks one **inbound** client packet class. `player` and `packet` are bound; fields of
-the packet are readable as `packet.<component>` (read-only); `cancel packet` swallows
-it before default handling:
+The `Packet { }` receiver hooks **inbound** client packet classes by name. Each member
+is an `on "<ClientPacketName>" { ... }` handler; `player` (the sender) and `packet` are
+bound, fields of the packet are readable as `packet.<component>` (read-only), and
+`cancel packet` swallows it before default handling:
 
 ```swoftlang
-on packet "ClientPlayerDiggingPacket" {
-    execute {
-        if packet.status is "STARTED_DIGGING" {
+Packet {
+    on "ClientPlayerActionPacket" {
+        if packet.status is "START_DIGGING" {
             send "<red>No mining in the lobby." to player
             cancel packet
         }
@@ -103,38 +103,34 @@ on packet "ClientPlayerDiggingPacket" {
 }
 ```
 
-`cancel packet` outside a listener is a compile error:
+One `Packet { }` block can hold as many `on "..."` handlers as you like. `cancel packet`
+outside a `Packet` handler is a compile error:
 
 ```
-e_cancelpkt.sw:3:9: error: 'cancel packet' is only allowed inside an 'on packet' handler
+e_cancelpkt.sw:3:9: error: 'cancel packet' is only allowed inside a Packet handler
 ```
 
 ### The packet color
 
-`on packet` bodies are a restricted sync color of their own. They run on the
+`Packet` handler bodies are a restricted sync color of their own. They run on the
 connection's read thread — before the packet reaches the tick loop — so blocking is
 banned harder than in normal sync code:
 
 - `wait` and `spawn` are rejected; `async { }` is the one way to detach work.
 - `cancel packet` must run before the handler goes async — you can't decide to
   swallow a packet after it has already been processed.
-- `execute async` on the whole handler is rejected outright:
 
 ```
-e_pktasync.sw:1:1: error: 'on packet' handlers always run sync; use an 'async { }' block inside instead of 'execute async'
+e_pktwait.sw:3:9: error: 'wait' is not allowed inside Packet handlers; wrap the work in an 'async { }' block
 ```
 
-```
-e_pktwait.sw:3:9: error: 'wait' is not allowed inside 'on packet' handlers; wrap the work in an 'async { }' block
-```
-
-Keep listener bodies short: read fields, decide, cancel or not, and push anything
+Keep handler bodies short: read fields, decide, cancel or not, and push anything
 slow into `async { }`:
 
 ```swoftlang
-on packet "ClientInteractEntityPacket" {
-    execute {
-        set target to packet.targetId
+Packet {
+    on "ClientInteractEntityPacket" {
+        set target to packet.target_id
         async {
             // off the read thread: log, look things up, message people
             broadcast "<gray>someone poked entity ${target}"

@@ -4,7 +4,7 @@ SwoftLang ships a complete fishing engine. A player right-clicks a fishing rod, 
 flies out and settles on the water (or lava), a bite lands inside a configurable window,
 and reeling at the right moment pulls in a catch — an item that flies to the player, or
 a mob that spawns at the hook. What each rod pulls up is driven by declarative **loot
-tables**, and the whole lifecycle is exposed through four typed events.
+tables**, and the whole lifecycle is exposed through four `Player` receiver methods.
 
 ```swoftlang
 fishing_loot "overworld_water" {
@@ -89,50 +89,38 @@ server {
 With no `fishing { }` section, the engine uses its default window. Reel in before the
 bite and nothing happens; reel during the bite window and the catch is resolved.
 
-## The fishing events
+## The fishing methods
 
-Four typed events cover the lifecycle. Each binds `player`, and — like every curated
-event — exposes its properties both bare and under `event.*`.
+Four methods on the [`Player`](/reference/events#player) receiver cover the lifecycle.
+`this` is the angler, and each fires at the matching moment of the cast/bite/catch/reel
+cycle.
 
-| Event | Cancellable | Bindings | Fires |
-|---|---|---|---|
-| `PlayerCastRod` | yes | `player` | before the bobber spawns — cancel to refuse the cast |
-| `FishBite` | — | `player`, `hook_location` (Location) | when the bobber dips |
-| `PlayerCatchFish` | yes | `player`, `caught_item` (optional&lt;Item&gt;, rw), `caught_mob` (optional&lt;Mob&gt;) | just before the catch is delivered |
-| `PlayerReelIn` | — | `player` | when the line comes back in |
+| Method | Fires |
+|---|---|
+| `on_cast_rod()` | before the bobber spawns |
+| `on_fish_bite()` | when the bobber dips |
+| `on_catch_fish()` | just before the catch is delivered |
+| `on_reel_in()` | when the line comes back in |
 
-`PlayerCastRod` gates casting — a good place to enforce a permission, a region, or a
-cooldown:
+`on_cast_rod` is the moment to greet or notify the angler as the line goes out:
 
 ```swoftlang
-event PlayerCastRod {
-    execute {
-        if player.world.time > 100000 {
-            send "<gray>The fish are asleep." to player
-            cancel event
+Player {
+    on_cast_rod() {
+        if this.world.time > 100000 {
+            send "<gray>The fish are asleep." to this
         }
     }
 }
 ```
 
-`PlayerCatchFish` fires *before* delivery. `caught_item` is read-write, so you can swap
-the delivered stack; `caught_mob` is read-only; and `cancel event` (or `halt`) discards
-the catch entirely:
+`on_catch_fish` fires as the catch emerges — the loot itself is decided by the
+[`fishing_loot`](#loot-tables) tables:
 
 ```swoftlang
-event PlayerCatchFish {
-    execute {
-        if event.caught_mob exists {
-            send "<red>brace yourself..." to player
-            halt
-        }
-        if event.caught_item exists {
-            send "you landed ${event.caught_item.name}!" to player
-            if event.caught_item.material is "minecraft:pufferfish" {
-                set event.caught_item to item("COD")
-                send "<gray>...swapped the puffer for a safer cod." to player
-            }
-        }
+Player {
+    on_catch_fish() {
+        send "<green>You landed something!" to this
     }
 }
 ```
@@ -184,36 +172,23 @@ server {
     }
 }
 
-event PlayerCastRod {
-    execute {
-        if player.world.time > 100000 {
-            send "<gray>The fish are asleep." to player
-            cancel event
+Player {
+    on_cast_rod() {
+        if this.world.time > 100000 {
+            send "<gray>The fish are asleep." to this
         }
     }
-}
 
-event FishBite {
-    execute {
-        send "bite at x=${hook_location.x} z=${hook_location.z}" to player
+    on_fish_bite() {
+        send "<aqua>Something's biting..." to this
     }
-}
 
-event PlayerCatchFish {
-    execute {
-        if event.caught_mob exists {
-            send "<red>brace yourself..." to player
-            halt
-        }
-        if event.caught_item exists {
-            send "you landed ${event.caught_item.name}!" to player
-        }
+    on_catch_fish() {
+        send "<green>You landed something!" to this
     }
-}
 
-event PlayerReelIn {
-    execute {
-        send "<gray>line reeled in" to player
+    on_reel_in() {
+        send "<gray>line reeled in" to this
     }
 }
 ```

@@ -1,5 +1,5 @@
-event PlayerChat {
-    execute {
-        send "ping: ${event.player.latencey}ms" to event.player
+Player {
+    on_chat(message) {
+        send "ping: ${this.latencey}ms" to this
     }
 }

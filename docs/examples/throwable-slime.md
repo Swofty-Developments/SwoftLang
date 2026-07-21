@@ -6,7 +6,7 @@ title: Throwable slime
 
 # Throwable slime
 
-Slime balls that fly, bounce off walls and sting on contact — projectile physics owned by an async tick loop. Thrown by hand or fired from a dispenser, both feeding the same flight task. 101 lines of Skript, 155 of SwoftLang; exercises async tasks, item displays, the dispenser event and script-side math.
+Slime balls that fly, bounce off walls and sting on contact — projectile physics owned by an async tick loop. Thrown by hand, right-click launches a self-owned flight task. 101 lines of Skript, 155 of SwoftLang; exercises async tasks, item displays, receiver methods and script-side math.
 
 <MappedCompare title="throwable_slime.sk → throwable_slime.sw — the whole file, both sides">
 <MappedPair label="the aim math">
@@ -24,8 +24,7 @@ Slime balls that fly, bounce off walls and sting on contact — projectile physi
 // keep vanilla physics from eating the reflection. This port OWNS the
 // physics: an item display plus an async tick loop — velocity, gravity,
 // bounces and hits are all script state, and no respawn-on-bounce trick is
-// needed. The same fly_slime task launches a ball whether a player throws
-// one or a dispenser fires one.
+// needed. A right-click hands the ball to the fly_slime task.
 
 // sin/cos via Bhaskara I's approximation — the language ships no trig
 // builtins (same dodge as the npcs addon's atan2). Degrees in, [-1,1] out.
@@ -81,22 +80,22 @@ on right click with slime ball:
 <template #swoftlang>
 
 ```swoftlang
-event PlayerUseItem {
-    execute {
-        if event.item.material is "SLIME_BALL" {
+Player {
+    on_use_item(item, hand) {
+        if item.material is "SLIME_BALL" {
             cancel event
 
             // yaw/pitch -> unit direction (what 'make player shoot' hid)
-            set yaw to event.player.location.yaw
-            set pitch to event.player.location.pitch
+            set yaw to this.location.yaw
+            set pitch to this.location.pitch
             set dx to 0.0 - slime_sin_deg(yaw) * slime_cos_deg(pitch)
             set dy to 0.0 - slime_sin_deg(pitch)
             set dz to slime_cos_deg(yaw) * slime_cos_deg(pitch)
 
             set eye to location(
-                event.player.location.x,
-                event.player.location.y + 1.6,
-                event.player.location.z)
+                this.location.x,
+                this.location.y + 1.6,
+                this.location.z)
             set disp to spawn_item_display("SLIME_BALL", eye)
 
             // velocity 1.2, like 'shoot snowball at velocity 1.2'
@@ -105,7 +104,7 @@ event PlayerUseItem {
                 dx * 1.2, dy * 1.2, dz * 1.2)
 
             // 'subtract 1 slime ball from player's tool'
-            set event.player.held_item.amount to event.player.held_item.amount - 1
+            set this.held_item.amount to this.held_item.amount - 1
         }
     }
 }
@@ -114,54 +113,7 @@ event PlayerUseItem {
 </template>
 <template #note>
 
-`on right click with slime ball` → `PlayerUseItem` plus a material guard. The .sk's `TimeCreated` / `CollisionCount` metadata tags become plain locals of the flight task. `subtract 1 from tool` is a `held_item.amount` write.
-
-</template>
-</MappedPair>
-<MappedPair label="dispenser launch">
-<template #skript>
-
-```skript
-on dispense of slime ball:
-	cancel event
-	set {_pos} to (event-block's location) ~ (vector from (facing of block))
-	shoot snowball from {_pos} at velocity 1.2 (event-block's facing)
-	set {_proj} to the shot projectile
-	set {_item} to a slime ball
-	{_proj}.setItem({_item})
-	set {_proj}'s metadata tag "TimeCreated" to now
-	set {_proj}'s metadata tag "CollisionCount" to 0
-	remove 1 slime ball from inventory of event-block
-```
-
-</template>
-<template #swoftlang>
-
-```swoftlang
-// 'on dispense of slime ball' — the dispenser fires the same bouncing ball.
-// BlockDispense hands us the block's position and facing; cancel the vanilla
-// item eject and launch fly_slime from the block toward its facing at the
-// same velocity 1.2 the thrower uses.
-event BlockDispense {
-    execute {
-        if event.item exists {
-            if event.item.material is "SLIME_BALL" {
-                cancel event
-                set dir to event.direction
-                set disp to spawn_item_display("SLIME_BALL", event.location)
-                spawn fly_slime(disp,
-                    event.location.x, event.location.y, event.location.z,
-                    dir.x * 1.2, dir.y * 1.2, dir.z * 1.2)
-            }
-        }
-    }
-}
-```
-
-</template>
-<template #note>
-
-`on dispense of slime ball` maps straight onto the [`BlockDispense`](/reference/dispensers#the-blockdispense-event) event: it hands the handler the block's `location`, its facing `direction`, and the `item` about to leave. Cancel the vanilla eject and hand the position and direction to the *same* `fly_slime` task the thrower uses — one bouncing ball, two ways to launch it. The .sk's `~ vector from facing` offset and metadata tags fold into that shared task.
+`on right click with slime ball` → `Player { on_use_item(item, hand) }` plus a material guard; the thrower is `this` and the used stack is `item`. The .sk's `TimeCreated` / `CollisionCount` metadata tags become plain locals of the flight task. `subtract 1 from tool` is a `held_item.amount` write.
 
 </template>
 </MappedPair>

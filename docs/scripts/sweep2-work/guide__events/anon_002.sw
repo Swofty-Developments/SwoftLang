@@ -1,8 +1,6 @@
-event PlayerChat {
-    execute {
-        if event.message contains "badword" {
-            cancel event
-            send "<red>Watch your language" to event.player
-        }
+Player {
+    on_join() {
+        broadcast "<yellow>${this.name} joined the game"
+        send "<green>Welcome, ${this.name}!" to this
     }
 }

@@ -6,7 +6,7 @@ title: Player & World Properties
 a <code>/wall</code> command that teleports with a one-line write — plus three real compile errors that never reach your server.
 </StepHeader>
 
-Dotted chains — `event.player.location.y`, `args.target.held_item.amount` — are how
+Dotted chains — `this.location.y`, `args.target.held_item.amount` — are how
 scripts read and write game state. They look like field access; under the hood every hop
 goes through a **property registry**: a closed, typed table of what each kind of value
 exposes, which hops are writable, how values are coerced, and which thread the real
@@ -19,33 +19,33 @@ server.
 ## Reading
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        send "you are ${event.player.name} at y=${event.player.location.y}" to event.player
-        send "holding ${event.player.held_item.material}" to event.player
+Player {
+    on_chat(message) {
+        send "you are ${this.name} at y=${this.location.y}" to this
+        send "holding ${this.held_item.material}" to this
     }
 }
 ```
 
-Chains resolve left to right: `event` → the event object, `.player` → a `Player`,
-`.location` → a `Location` snapshot, `.y` → a `Double`. Interpolated `${...}` paths are
-the same chains with the same checks.
+Chains resolve left to right: `this` → the `Player` the method is about, `.location` → a
+`Location` snapshot, `.y` → a `Double`. Interpolated `${...}` paths are the same chains
+with the same checks.
 
 Misspell a hop and the compiler answers with a suggestion:
 
 <!-- swoftc name=ping.sw expect=error -->
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        send "ping: ${event.player.latencey}ms" to event.player   // [!code error]
+Player {
+    on_chat(message) {
+        send "ping: ${this.latencey}ms" to this   // [!code error]
     }
 }
 ```
 
 ```txt
 ping.sw:3:14: error: unknown property 'latencey' on Player; did you mean 'latency'?
-        send "ping: ${event.player.latencey}ms" to event.player
+        send "ping: ${this.latencey}ms" to this
              ^
 ```
 
@@ -54,11 +54,11 @@ ping.sw:3:14: error: unknown property 'latencey' on Player; did you mean 'latenc
 `set <chain> to <value>` writes through the same table:
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        set event.player.health to event.player.max_health
-        set event.player.gamemode to "creative"
-        set event.player.held_item.amount to 32
+Player {
+    on_chat(message) {
+        set this.health to this.max_health
+        set this.gamemode to "creative"
+        set this.held_item.amount to 32
     }
 }
 ```
@@ -90,17 +90,17 @@ Read-only properties refuse writes the same way:
 <!-- swoftc name=rename.sw expect=error -->
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        set event.player.name to "Somebody"   // [!code error]
+Player {
+    on_chat(message) {
+        set this.name to "Somebody"   // [!code error]
     }
 }
 ```
 
 ```txt
-rename.sw:3:26: error: property 'name' on Player is read-only
-        set event.player.name to "Somebody"
-                         ^
+rename.sw:3:18: error: property 'name' on Player is read-only
+        set this.name to "Somebody"
+                 ^
 ```
 
 In Skript each property has its own expression syntax, and a wrong guess fails at
@@ -174,18 +174,18 @@ location stored in a variable is just a snapshot — writing to it updates the *
 and nothing else:
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        set spot to event.player.location
+Player {
+    on_chat(message) {
+        set spot to this.location
         set spot.y to 300.0
-        send "spot.y = ${spot.y}, and you have not moved" to event.player
+        send "spot.y = ${spot.y}, and you have not moved" to this
     }
 }
 ```
 
 Here the anchor is the local variable `spot`, so the copy lands back in the variable. To
-actually move someone using a snapshot: `set event.player.location to spot` (or
-`teleport event.player to spot`).
+actually move someone using a snapshot: `set this.location to spot` (or
+`teleport this to spot`).
 :::
 
 ## World properties

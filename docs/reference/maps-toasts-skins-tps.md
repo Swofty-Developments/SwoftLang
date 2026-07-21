@@ -40,11 +40,9 @@ run 0–127, origin top-left.
 The advancement popup in the top-right corner, without declaring an advancement:
 
 ```swoftlang
-event PlayerJoin {
-    execute {
-        if event.first_spawn {
-            show toast "<gold>Welcome!" description "Have a look around" icon "COMPASS" frame task to event.player
-        }
+Player {
+    on_join() {
+        show toast "<gold>Welcome!" description "Have a look around" icon "COMPASS" frame task to this
     }
 }
 ```
@@ -120,14 +118,14 @@ command "lag" {
 }
 ```
 
-And an event, fired when the integer TPS bucket changes (crossing 19→18 fires;
-19.4→19.1 doesn't):
+And a [`Server`](/reference/events#server) method, fired when the integer TPS bucket
+changes (crossing 19→18 fires; 19.4→19.1 doesn't):
 
 ```swoftlang
-event TpsChange {
-    execute {
-        if event.current < 15.0 {
-            broadcast "<red>Server struggling: ${event.past} -> ${event.current} TPS"
+Server {
+    on_tps_change(past, current) {
+        if current < 15.0 {
+            broadcast "<red>Server struggling: ${past} -> ${current} TPS"
         }
     }
 }

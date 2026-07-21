@@ -6,10 +6,8 @@ hologram "welcome" {
     }
 }
 
-event PlayerJoin {
-    execute {
-        if event.first_spawn {
-            show hologram "welcome" to event.player
-        }
+Player {
+    on_join() {
+        show hologram "welcome" to this
     }
 }

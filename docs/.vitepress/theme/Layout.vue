@@ -2,30 +2,52 @@
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, inBrowser } from 'vitepress'
 import { findStep, guideSteps, normalizePath } from './steps'
-import { navGroups, type NavGroup } from './nav'
+import {
+  sidebarForPath,
+  versionForPath,
+  versions,
+  type NavGroup
+} from './nav'
 
 const { isDark, page, frontmatter } = useData()
 const route = useRoute()
 
-/* ---------- top-bar sections ---------- */
+/* ---------- versioning ---------- */
 
-const sections = [
-  { text: 'Guide', link: '/guide/', match: /^\/guide\// },
-  { text: 'Reference', link: '/reference/', match: /^\/reference\// },
-  { text: 'Libraries', link: '/libraries/', match: /^\/libraries\// },
-  { text: 'Examples', link: '/examples/', match: /^\/examples\// }
+// which docs version the current route belongs to (root/latest by default)
+const version = computed(() => versionForPath(route.path))
+// route prefix to keep the top-bar sections inside the active version
+const versionBase = computed(() => version.value.prefix)
+const verOpen = ref(false)
+
+/* ---------- top-bar sections (version-aware) ---------- */
+
+const baseSections = [
+  { text: 'Guide', path: '/guide/' },
+  { text: 'Reference', path: '/reference/' },
+  { text: 'Libraries', path: '/libraries/' },
+  { text: 'Examples', path: '/examples/' }
 ]
+
+const sections = computed(() =>
+  baseSections.map((s) => {
+    const link = versionBase.value + s.path
+    return { text: s.text, link, match: new RegExp('^' + link.replace(/[.]/g, '\\.')) }
+  })
+)
 
 const isHome = computed(() => frontmatter.value.layout === 'home')
 const isActive = (m: RegExp) => m.test(route.path)
 
-/* ---------- left sidebar (persistent grouped tree) ---------- */
+/* ---------- left sidebar (persistent grouped tree, version-aware) ---------- */
+
+const sidebar = computed<NavGroup[]>(() => sidebarForPath(route.path))
 
 const currentPath = computed(() => normalizePath(route.path))
 const isCurrent = (link: string) => normalizePath(link) === currentPath.value
 
 const activeGroup = computed<NavGroup | undefined>(() =>
-  navGroups.find((g) => g.match.test(route.path))
+  sidebar.value.find((g) => g.match.test(route.path))
 )
 
 // which groups are expanded; the active group opens, others collapse (toggleable)
@@ -44,6 +66,7 @@ watch(
     const g = activeGroup.value
     if (g) openGroups.value = { ...openGroups.value, [g.text]: true }
     drawerOpen.value = false
+    verOpen.value = false
   },
   { immediate: true }
 )
@@ -138,6 +161,30 @@ const nextStep = computed(() =>
         </nav>
 
         <div class="sw-tools">
+          <div class="sw-verswitch">
+            <button
+              class="sw-ver-btn"
+              :aria-expanded="verOpen"
+              aria-label="Select docs version"
+              @click.stop="verOpen = !verOpen"
+            >
+              <span class="sw-ver-label">{{ version.label }}</span>
+              <svg class="sw-ver-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <ul v-show="verOpen" class="sw-ver-menu" role="menu">
+              <li v-for="v in versions" :key="v.link" role="none">
+                <a
+                  role="menuitem"
+                  :href="v.link"
+                  class="sw-ver-item"
+                  :class="{ current: v.prefix === version.prefix }"
+                >{{ v.text }}</a>
+              </li>
+            </ul>
+          </div>
+
           <button class="sw-search-btn" aria-label="Search docs" @click="openSearch">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
@@ -186,7 +233,7 @@ const nextStep = computed(() =>
       <aside class="sw-sidebar" :class="{ open: drawerOpen }" aria-label="Documentation">
         <nav class="sw-side-scroll">
           <div
-            v-for="g in navGroups"
+            v-for="g in sidebar"
             :key="g.text"
             class="sw-side-group"
             :class="{ open: isGroupOpen(g.text), active: g === activeGroup }"
@@ -266,6 +313,8 @@ const nextStep = computed(() =>
         </p>
       </div>
     </footer>
+
+    <div v-if="verOpen" class="sw-ver-catch" aria-hidden="true" @click="verOpen = false" />
 
     <SearchBox v-if="searchLoaded && showSearch" @close="showSearch = false" />
   </div>

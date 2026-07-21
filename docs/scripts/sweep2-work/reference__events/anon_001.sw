@@ -1,5 +1,9 @@
-event PlayerStartSprinting {
-    execute {
-        send "${event.player.name} sprints" to event.player
+Player {
+    on_join() {
+        broadcast "<yellow>${this.name} joined the game"
+    }
+
+    on_chat(message) {
+        send "<gray>You said: ${message}" to this
     }
 }

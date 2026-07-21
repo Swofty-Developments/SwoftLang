@@ -6,8 +6,8 @@ storage {
 persistent total_joins: Integer = 0            // global scalar, default required
 persistent kills for Player: Integer = 0       // keyed by subject
 
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         set total_joins to total_joins + 1
     }
 }

@@ -145,10 +145,12 @@ position. Together, `place` and `remove block at` are the imperative pair for sc
 world from an event handler:
 
 ```swoftlang
-on PlayerJoin {
-    place block("minecraft:sea_lantern") at event.player.location
-    place "minecraft:oak_log" at event.player.location
-    remove block at event.player.location
+Player {
+    on_join() {
+        place block("minecraft:sea_lantern") at this.location
+        place "minecraft:oak_log" at this.location
+        remove block at this.location
+    }
 }
 ```
 

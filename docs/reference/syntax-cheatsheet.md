@@ -13,7 +13,7 @@ A `.sw` file is a sequence of top-level declarations, in any order:
 | `var name = expr` | Module-level variable, private to the file |
 | `export <declaration>` | Make a symbol importable ([libraries](/libraries/#exports)) |
 | `command "name" { ... }` | Chat command (aliases share one body) |
-| `event Name { ... }` | Server event handler |
+| `Player { ... }`, `Mob { ... }`, … | Receiver block — event methods by subject ([reference](./events)) |
 | `function name(...) { ... }` | Reusable function |
 | `async function name(...) { ... }` | Function that may `wait` |
 | `item "id" { ... }` | Custom item ([reference](./items)) |
@@ -24,7 +24,7 @@ A `.sw` file is a sequence of top-level declarations, in any order:
 | `bossbar "name" { ... }` | Boss bar ([reference](./scoreboards-tablists)) |
 | `api "/path/:param" { ... }` | HTTP route ([reference](./http-api)) |
 | `every <duration> { ... }` | Boot-started repeating task ([reference](./schedulers)) |
-| `on packet "Name" { ... }` | Inbound packet listener ([reference](./packets)) |
+| `Packet { on "Name" { ... } }` | Inbound raw-packet listeners ([reference](./packets)) |
 | `server { ... }` | Server bootstrap config ([reference](./server-config)) |
 | `storage { ... }` | Persistence backend ([reference](./server-config#storage-phase-3)) |
 | `persistent name: Type = default` | Persistent variable ([guide](/guide/persistence)) |
@@ -62,40 +62,44 @@ command "teleport" {                          // aliases share one body
 - `execute async { ... }` makes the whole handler [async](#async).
 - `sender` is always bound to the executing `Player`.
 
-## Events
+## Receivers & events
+
+Events are handled by **receiver** blocks — a Capitalized subject with fixed-name methods.
+`this` is the subject; method parameters bind the rest of the event's data:
 
 ```swoftlang
-event PlayerChat {
-    priority: 0
-
-    execute {
-        set event.message to "[Filtered] ${event.message}"
-        if event.message contains "badword" {
+Player {
+    on_chat(message) {
+        set message to "[Filtered] ${message}"
+        if message contains "badword" {
             cancel event
         }
     }
 }
 ```
 
-Known events (the compiler rejects unknown names):
+The base receivers (methods fire for every instance; the full catalog is on the
+[Receivers & Events](./events) page):
 
-| Event | Cancellable | Properties on `event` | Shortcut aliases |
-|---|---|---|---|
-| `PlayerChat` | yes | `player` (ro), `message` (rw), `cancelled` (rw) | `player`, `message` |
-| `PlayerJoin` | no | `player` (ro), `first_spawn` (ro), `world` (ro) | `player`, `name` |
-| `PlayerUseItem` | yes | `player` (ro), `item` (ro), `custom_id` (ro, `optional<String>`), `cancelled` (rw) | `player`, `item` |
-| `BlockBreak` | yes | `player` (ro), `block` (ro), `location` (ro), `cancelled` (rw) | `player`, `block`, `location` |
-| `BlockPlace` | yes | `player` (ro), `block` (ro), `location` (ro), `cancelled` (rw) | `player`, `block`, `location` |
-| `MobSpawn` | no | `mob` (ro) | `mob` |
-| `MobDeath` | no | `mob` (ro), `killer` (ro, `optional<Player>`) | `mob`, `killer` |
-| `MobDamage` | yes | `mob` (ro), `damage` (rw), `cancelled` (rw) | `mob`, `damage` |
-| `TpsChange` | no | `past` (ro), `current` (ro) | `past`, `current` |
-| `ServerPing` | no | `motd` (rw), `online` (rw), `max` (rw) | `motd` |
+| Receiver | `this` | Example methods |
+|---|---|---|
+| `Player` | the player | `on_join()`, `on_chat(message)`, `on_command(command)`, `on_death(...)` |
+| `Entity` | the entity | `on_hit(attacker)`, `on_death()`, `on_attack(target)` |
+| `Mob` | the mob | `on_spawn()`, `on_death(killer)`, `on_click(player)` |
+| `Item` | the item stack | `on_use(player)`, `on_drop(player)`, `on_consume(player)` |
+| `Block` | the block | `on_place(...)`, `on_break(player)`, `on_dispense(item, direction)` |
+| `Projectile` | the projectile | `on_hit_block(...)`, `on_hit_entity(target)` |
+| `Inventory` | the inventory | `on_pre_click(...)`, `on_open(player)`, `on_close(...)` |
+| `World` | the world | `on_tick(duration)`, `on_chunk_load(...)`, `on_entity_add(entity)` |
+| `Server` | the server | `on_list_ping(status)`, `on_tps_change(past, current)` |
+| `Packet` | — | `on "PacketClass" { }` raw-packet handlers |
 
-`cancel event` on a non-cancellable event is a compile error:
+A lowercase `mob "id" { }` / `item "id" { }` / `block_handler "id" { }` declaration carries
+the same method set for one id and overrides the base (`default()` / `super` reach it).
+`cancel event` in a non-cancellable method is a compile error:
 
 ```
-e_cancel.sw:3:9: error: event 'PlayerJoin' is not cancellable
+e_cancel.sw:3:9: error: event 'on_join' is not cancellable
         cancel event
         ^
 ```
@@ -519,8 +523,8 @@ storage {
 persistent total_joins: Integer = 0            // global scalar, default required
 persistent kills for Player: Integer = 0       // keyed by subject
 
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         set total_joins to total_joins + 1
     }
 }

@@ -28,13 +28,13 @@ command "staffchat" {
     }
 }
 
-event PlayerChat {
-    execute {
-        if staffchat for event.player {
+Player {
+    on_chat(message) {
+        if staffchat for this {
             cancel event
-            send_staff(event.player, event.message)
+            send_staff(this, message)
         } else {
-            broadcast "${event.player.display_name}<white>: ${event.message}"
+            broadcast "${this.display_name}<white>: ${message}"
         }
     }
 }

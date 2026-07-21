@@ -1,5 +1,5 @@
-event PlayerChat {
-    execute {
-        set event.player.name to "Somebody"
+Player {
+    on_chat(message) {
+        set this.name to "Somebody"
     }
 }

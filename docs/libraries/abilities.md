@@ -106,22 +106,22 @@ the guide:
 - **A self-counted tick clock.** An `every 1 ticks` block increments a module counter, so
   the addon measures cooldown windows in ticks (20 per second) without needing a
   wall-clock builtin.
-- **A single generic listener.** One [`PlayerUseItem`](/reference/events) handler reads
-  `event.custom_id` and dispatches to every registered filter for that item — the one
+- **A single generic listener.** One base [`Item.on_use`](/reference/events#item) method
+  reads `custom_id(this)` and dispatches to every registered filter for that item — the one
   place all custom-item uses flow through.
 
 ```swoftlang
 // the single generic surface: every custom-item use flows through here
-event PlayerUseItem {
-    execute {
-        set id to event.custom_id otherwise ""
+Item {
+    on_use(player) {
+        set id to custom_id(this) otherwise ""
         // dispatch 'id' to the handlers registered for it (addon internals)
     }
 }
 ```
 
 ::: tip One click side per press
-The engine `PlayerUseItem` event reports the item, not which mouse button was pressed, so
+`Item.on_use` reports the item, not which mouse button was pressed, so
 every registered filter for an item fires here. When you need genuine left/right
 separation, use the item declaration's [`on_click(<side>)`](/reference/items#on-click)
 sugar, which compiles to a side-filtered handler. `with_cooldown` composes with either.

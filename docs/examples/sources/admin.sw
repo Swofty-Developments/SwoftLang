@@ -4,10 +4,14 @@
 var prefix = "<#FF93F8><bold>ᴀᴅᴍɪɴ+</bold> <gray>»</gray>"
 var permission_message = "<red>ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴜѕᴇ ᴛʜɪѕ ᴄᴏᴍᴍᴀɴᴅ!"
 
-// gui handlers run against gui scope (player/state/slot), not module vars —
-// prefixed chat always goes through this helper
+// gui and receiver-method bodies run against their own scope (this/player/
+// state/slot), not module vars — prefixed output always goes through a helper
 function tell(target: Player, msg: String) {
     send "${prefix} ${msg}" to target
+}
+
+function warn(target: Player, msg: String) {
+    actionbar "${prefix} ${msg}" to target
 }
 
 // one function replaces five copy-pasted Skript triggers (and the gma
@@ -398,13 +402,13 @@ every 2 ticks {
     }
 }
 
-// 'on command: cancel event' while frozen — PlayerCommand fires before a
+// 'on command: cancel event' while frozen — on_command fires before a
 // command dispatches and is cancellable, so the freeze veto is a direct port
-event PlayerCommand {
-    execute {
-        if frozen for event.player {
+Player {
+    on_command(cmd) {
+        if frozen for this {
             cancel event
-            actionbar "${prefix} <light_purple>Commands can not be executed while you're frozen!" to event.player
+            warn(this, "<light_purple>Commands can not be executed while you're frozen!")
         }
     }
 }
@@ -435,11 +439,11 @@ command "mute" {
     }
 }
 
-event PlayerChat {
-    execute {
-        if muted for event.player {
+Player {
+    on_chat(message) {
+        if muted for this {
             cancel event
-            actionbar "${prefix} <light_purple>You cannot talk while being muted!" to event.player
+            warn(this, "<light_purple>You cannot talk while being muted!")
         }
     }
 }

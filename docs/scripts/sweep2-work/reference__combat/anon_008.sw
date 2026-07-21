@@ -1,26 +1,22 @@
-on EntityDamage {
-    set victim to event.entity
-    set raw to event.damage
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            // attack cooldown: record the swing tick for the next hit's charge
+            set attacker.tags.last_swing to attacker.alive_ticks
 
-    // i-frames: strongest-hit-wins inside the 10-tick window
-    set iframe to victim.invulnerable_ticks
-    set last_amt to victim.tags.last_damage otherwise 0.0
-    if iframe > 0 and raw <= last_amt {
-        cancel event
-        return
+            // crit: falling, airborne, not sprinting -> the sparkle
+            if attacker.fall_distance > 0.0 and not attacker.on_ground and not attacker.is_sprinting {
+                spawn particle "crit" at this.location count 8 offset 0.4, 0.6, 0.4 speed 0.1 to all
+            }
+
+            // knockback: base + sprint bonus, scaled by the target's resistance
+            set sprint_bonus to 0.0
+            if attacker.is_sprinting {
+                set sprint_bonus to 1.0
+            }
+            set kb_resist to this.knockback_resistance
+            set strength to (0.4 + sprint_bonus * 0.5) * (1.0 - kb_resist)
+            knock this away from attacker.location with strength strength
+        }
     }
-    set incoming to raw
-    if iframe > 0 {
-        set incoming to raw - last_amt
-    }
-
-    // armour + toughness, read straight off the victim's attribute properties
-    set armor to victim.armor
-    set toughness to victim.armor_toughness
-    set effective to armor - incoming / (2.0 + toughness / 4.0)
-    set reduction to clamp(effective, armor * 0.2, 20.0)
-    set dmg to incoming * (1.0 - reduction / 25.0)
-
-    set victim.tags.last_damage to dmg
-    set event.damage to dmg
 }

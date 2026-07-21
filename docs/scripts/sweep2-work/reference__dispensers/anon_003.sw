@@ -1,5 +1,5 @@
-event BlockDispense {
-    execute {
-        send "<gray>A dispenser fired at ${event.location}." to all players
+Block {
+    on_dispense(item, direction) {
+        send "<gray>A dispenser fired, facing ${direction}." to all players
     }
 }

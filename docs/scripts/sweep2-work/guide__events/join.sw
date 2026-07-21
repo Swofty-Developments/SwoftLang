@@ -1,5 +1,5 @@
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         cancel event
     }
 }

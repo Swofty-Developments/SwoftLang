@@ -92,10 +92,10 @@ Calling a private function from outside is a compile error that names the module
 e_private.sw:5:9: error: function 'ability_put' is private to module 'abilities' (addons/abilities.sw); add 'export' to its declaration to call it from here
 ```
 
-**Commands and events are effects, not symbols.** A `command`, `event`, `api`
-route, `every` scheduler, or `on packet` listener declared in a module registers
+**Commands and events are effects, not symbols.** A `command`, receiver block, `api`
+route, `every` scheduler, or `Packet` listener declared in a module registers
 the moment the module is imported — that's how the abilities addon installs its
-use-event listener. `export` on them is rejected:
+item-use listener. `export` on them is rejected:
 
 ```
 e_expcmd.sw:1:8: error: commands and events always register when their module is imported (they are effects, not symbols); remove 'export'

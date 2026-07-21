@@ -46,17 +46,21 @@ options:
 var prefix = "<#FF93F8><bold>ᴀᴅᴍɪɴ+</bold> <gray>»</gray>"
 var permission_message = "<red>ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴜѕᴇ ᴛʜɪѕ ᴄᴏᴍᴍᴀɴᴅ!"
 
-// gui handlers run against gui scope (player/state/slot), not module vars —
-// prefixed chat always goes through this helper
+// gui and receiver-method bodies run against their own scope (this/player/
+// state/slot), not module vars — prefixed output always goes through a helper
 function tell(target: Player, msg: String) {
     send "${prefix} ${msg}" to target
+}
+
+function warn(target: Player, msg: String) {
+    actionbar "${prefix} ${msg}" to target
 }
 ```
 
 </template>
 <template #note>
 
-`{@X}` is textual substitution at parse time; `var` is a real binding. gui handlers run against gui scope (`player`, `state`, `slot`) and don't see module vars, so every screen routes prefixed chat through the `tell()` helper. Two differences from the .sk: `permission:` takes a literal string, and a denied command shows the runtime's message instead of a per-command `permission message:`.
+`{@X}` is textual substitution at parse time; `var` is a real binding. gui and receiver-method bodies run against their own scope (`this`, `player`, `state`, `slot`) and don't see module vars, so prefixed output routes through the `tell()` / `warn()` helpers. Two differences from the .sk: `permission:` takes a literal string, and a denied command shows the runtime's message instead of a per-command `permission message:`.
 
 </template>
 </MappedPair>
@@ -953,13 +957,13 @@ on command:
 <template #swoftlang>
 
 ```swoftlang
-// 'on command: cancel event' while frozen — PlayerCommand fires before a
+// 'on command: cancel event' while frozen — on_command fires before a
 // command dispatches and is cancellable, so the freeze veto is a direct port
-event PlayerCommand {
-    execute {
-        if frozen for event.player {
+Player {
+    on_command(cmd) {
+        if frozen for this {
             cancel event
-            actionbar "${prefix} <light_purple>Commands can not be executed while you're frozen!" to event.player
+            warn(this, "<light_purple>Commands can not be executed while you're frozen!")
         }
     }
 }
@@ -968,7 +972,7 @@ event PlayerCommand {
 </template>
 <template #note>
 
-`PlayerCommand` fires before a typed command dispatches; it is cancellable and its `command` field is even writable (a handler can rewrite what runs). Here the freeze check just cancels — a one-to-one port of the .sk's `on command: cancel event`, keyed off the same persistent `frozen` flag.
+`Player.on_command` fires before a typed command dispatches; it is cancellable and its `command` parameter is even writable (a handler can rewrite what runs). Here the freeze check just cancels — a one-to-one port of the .sk's `on command: cancel event`, keyed off the same persistent `frozen` flag. Receiver bodies see `this` and their parameters, not module vars, so the prefix goes through the `warn` helper.
 
 </template>
 </MappedPair>
@@ -1043,11 +1047,11 @@ on chat:
 <template #swoftlang>
 
 ```swoftlang
-event PlayerChat {
-    execute {
-        if muted for event.player {
+Player {
+    on_chat(message) {
+        if muted for this {
             cancel event
-            actionbar "${prefix} <light_purple>You cannot talk while being muted!" to event.player
+            warn(this, "<light_purple>You cannot talk while being muted!")
         }
     }
 }
@@ -1056,7 +1060,7 @@ event PlayerChat {
 </template>
 <template #note>
 
-`send action bar` → the `actionbar` statement; the cancel is legal because `PlayerChat` is cancellable.
+`on chat` → `Player { on_chat(message) }`; the `warn` helper carries the module prefix into the action bar, and the cancel is legal because `on_chat` is cancellable.
 
 </template>
 </MappedPair>

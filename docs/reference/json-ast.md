@@ -118,17 +118,17 @@ Binary `op` values: `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `GREATER_THAN`,
 `IS_NOT_TYPE`, `CONTAINS`, `CONCATENATE`, `ADD`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`,
 `MODULO`.
 
-`event.player.name` compiles to nested `prop` nodes over a root `var`:
+`this.location.y` compiles to nested `prop` nodes over a root `var`:
 
 ```json
 {
-  "kind": "prop", "name": "name",
+  "kind": "prop", "name": "y",
   "target": {
-    "kind": "prop", "name": "player",
-    "target": { "kind": "var", "name": "event", "line": 3, "col": 14 },
-    "line": 3, "col": 20
+    "kind": "prop", "name": "location",
+    "target": { "kind": "var", "name": "this", "line": 3, "col": 12 },
+    "line": 3, "col": 17
   },
-  "line": 3, "col": 27
+  "line": 3, "col": 26
 }
 ```
 
@@ -261,14 +261,24 @@ Execute blocks everywhere have the shape `{ "async": bool, "statements": [Stmt..
 
 ## Events
 
+Each receiver method lowers to one event entry. `receiver` is the receiver type it was
+declared under (`Player`, `Mob`, …), `name` is the canonical engine event the method
+dispatches on, and `params` are the method's binder names (their types are fixed by the
+receiver table):
+
 ```json
 {
-  "line": 1, "col": 1,
+  "line": 8, "col": 5,
   "name": "PlayerChat",
+  "receiver": "Player",
   "priority": 0,
+  "params": ["message"],
   "execute": { "async": false, "statements": [ ... ] }
 }
 ```
+
+Raw-packet handlers from a `Packet { }` block lower to `packet_listeners` entries instead,
+each with the packet class `name` and an `execute` body.
 
 ## Functions
 
@@ -401,7 +411,7 @@ On failure, `swoftc` writes a machine-readable object to **stdout** (human diagn
 go to stderr) and exits 1:
 
 ```json
-{ "error": { "message": "event 'PlayerJoin' is not cancellable", "line": 3, "col": 9 } }
+{ "error": { "message": "event 'on_join' is not cancellable", "line": 3, "col": 9 } }
 ```
 
 See the [CLI reference](./cli#diagnostics) for the full contract.

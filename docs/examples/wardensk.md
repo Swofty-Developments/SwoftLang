@@ -555,18 +555,18 @@ on WardenAngerChangeEvent:
 // The .sk bridges WardenAngerChangeEvent into a custom Skript event by
 // copying event-values into a list var and re-calling it. Here gameplay
 // drives the same registry the listeners already watch: hitting a warden
-// enrages it (vanilla raises attacker anger to ~100). MobDamage carries
-// no attacker, so the nearest player takes the blame.
+// enrages it (vanilla raises attacker anger to ~100). The hit's source may be
+// a non-player, so the nearest player takes the blame.
 
-event MobDamage {
-    execute {
-        if event.mob.custom_id is "warden" {
+Mob {
+    on_hit(attacker) {
+        if this.custom_id is "warden" {
             set best to 999999999.0
             set nearest to player("")
             loop all players as p {
-                set dx to p.location.x - event.mob.location.x
-                set dy to p.location.y - event.mob.location.y
-                set dz to p.location.z - event.mob.location.z
+                set dx to p.location.x - this.location.x
+                set dy to p.location.y - this.location.y
+                set dz to p.location.z - this.location.z
                 set d to dx * dx + dy * dy + dz * dz
                 if d < best {
                     set best to d
@@ -574,7 +574,7 @@ event MobDamage {
                 }
             }
             if nearest exists {
-                increase_warden_anger(event.mob, nearest, 100)
+                increase_warden_anger(this, nearest, 100)
             }
         }
     }
@@ -584,7 +584,7 @@ event MobDamage {
 </template>
 <template #note>
 
-The .sk registers a custom event, listens to the Bukkit one, copies event-values into a list var and re-fires. Here `set_warden_anger` calls the listener chain directly, and gameplay feeds the same registry: `MobDamage` bumps anger by 100 like vanilla. `MobDamage` reports the mob but not the attacker, so the port picks the nearest player as the aggressor — a small deliberate heuristic, and the registry it feeds is the one the listeners already watch.
+The .sk registers a custom event, listens to the Bukkit one, copies event-values into a list var and re-fires. Here `set_warden_anger` calls the listener chain directly, and gameplay feeds the same registry: `Mob { on_hit }` bumps anger by 100 like vanilla. The mob is `this` and the hit's source may be a non-player, so the port picks the nearest player as the aggressor — a small deliberate heuristic, and the registry it feeds is the one the listeners already watch.
 
 </template>
 </MappedPair>

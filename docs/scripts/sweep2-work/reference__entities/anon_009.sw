@@ -20,8 +20,10 @@ mob "zombie" {
     }
 }
 
-on PlayerJoin {
-    spawn mob "zombie" at in_front_of(event.player, 5) as z
-    set name of z to "<red>Zombie <gray>0/5" for event.player
-    show z to event.player                                // reveal it to just this player
+Player {
+    on_join() {
+        spawn mob "zombie" at in_front_of(this, 5) as z
+        set name of z to "<red>Zombie <gray>0/5" for this
+        show z to this                                    // reveal it to just this player
+    }
 }

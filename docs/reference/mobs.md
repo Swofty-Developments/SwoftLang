@@ -240,38 +240,46 @@ single mob. A typed tag and a freeform `mob.tags.<other>` can coexist on the sam
 
 ## Mob events
 
-Global counterparts to the per-declaration handlers, typed in the
-[event table](./syntax-cheatsheet#events) and fired for **every** custom mob:
+The base [`Mob`](/reference/events#mob) receiver is the global counterpart to the
+per-declaration handlers — its methods fire for **every** mob, and `this` is the mob:
 
-| Event | Cancellable | Properties on `event` |
+| Method | Cancellable | Parameters |
 |---|---|---|
-| `MobSpawn` | no | `mob` |
-| `MobDeath` | no | `mob`, `killer` (`optional<Player>`) |
-| `MobDamage` | yes | `mob`, `damage` (rw), `attacker` (`optional<Player>`), `cancelled` (rw) |
+| `on_spawn()` | no | — |
+| `on_death(killer)` | no | `killer` (`optional<Entity>`) |
+| `on_hit(attacker)` | no | `attacker` (Entity) |
 
 ```swoftlang
 persistent kills for Player: Integer = 0
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            set kills for event.killer to (kills for event.killer) + 1
-            send "<gold>${event.mob.custom_id} down — ${kills for event.killer} kills" to event.killer
+Mob {
+    on_death(killer) {
+        if killer exists {
+            set k to player(killer.uuid)
+            if k exists {
+                set kills for k to (kills for k) + 1
+                send "<gold>${this.custom_id} down — ${kills for k} kills" to k
+            }
         }
     }
 }
+```
 
-event MobDamage {
-    execute {
-        if event.mob.custom_id is "lost_sheep" {
-            cancel event
+To *veto* damage, reach for the cancellable [`Entity.on_hit`](/reference/events#entity) —
+it fires for every live entity and can `cancel event`:
+
+```swoftlang
+Entity {
+    on_hit(attacker) {
+        if this.type is "SHEEP" {
+            cancel event                    // sheep take no damage
         }
     }
 }
 ```
 
 ::: tip Per-declaration vs global
-`on_death` in the declaration is the right place for behavior that belongs to the mob
-(drops flavor, death cries). The `MobDeath` event is the right place for systems that
-span all mobs — kill counters, quest progress, leaderboards.
+`on_death` inside a `mob "id" { }` declaration is the right place for behavior that
+belongs to that one mob (drops flavor, death cries). The base `Mob { on_death }` is the
+right place for systems that span all mobs — kill counters, quest progress, leaderboards.
 :::

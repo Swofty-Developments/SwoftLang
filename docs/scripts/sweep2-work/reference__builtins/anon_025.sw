@@ -1,7 +1,7 @@
-event PlayerUseItem {
-    execute {
-        if custom_id(event.item) otherwise "" is "cookie_of_truth" {
-            send "<gold>It tastes... honest." to event.player
+Item {
+    on_use(player) {
+        if custom_id(this) otherwise "" is "cookie_of_truth" {
+            send "<gold>It tastes... honest." to player
         }
     }
 }

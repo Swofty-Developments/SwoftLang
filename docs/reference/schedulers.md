@@ -173,22 +173,24 @@ cancel it **by that id** — no handle variable to carry around. The registry li
 object, so the same id means "that object's task" from anywhere.
 
 ```swoftlang
-on PlayerJoin {
-    // bind two named tasks to the joining player
-    set event.player.tasks.welcome to schedule every 20 ticks {
-        send "<gray>tick" to event.player
-    }
-    set event.player.tasks.reminder to schedule after 1 seconds every 2 seconds {
-        send "<yellow>reminder" to event.player
-    }
+Player {
+    on_join() {
+        // bind two named tasks to the joining player
+        set this.tasks.welcome to schedule every 20 ticks {
+            send "<gray>tick" to this
+        }
+        set this.tasks.reminder to schedule after 1 seconds every 2 seconds {
+            send "<yellow>reminder" to this
+        }
 
-    // query by id: 'is running' / 'is not running' is a Boolean
-    if event.player.tasks.welcome is running send "<green>welcome running" to event.player
-    if event.player.tasks.reminder is not running send "<red>reminder stopped" to event.player
+        // query by id: 'is running' / 'is not running' is a Boolean
+        if this.tasks.welcome is running send "<green>welcome running" to this
+        if this.tasks.reminder is not running send "<red>reminder stopped" to this
 
-    // cancel by id — 'cancel' and 'stop' are interchangeable here
-    cancel event.player.tasks.welcome
-    stop event.player.tasks.reminder
+        // cancel by id — 'cancel' and 'stop' are interchangeable here
+        cancel this.tasks.welcome
+        stop this.tasks.reminder
+    }
 }
 ```
 
@@ -211,9 +213,11 @@ Reading an entry gives an **`optional<Schedule>`** — missing until something i
 so it composes with the [option operators](/guide/options):
 
 ```swoftlang
-on PlayerJoin {
-    set handle to event.player.tasks.welcome        // optional<Schedule>
-    if event.player.tasks.welcome exists broadcast "welcome is bound"
+Player {
+    on_join() {
+        set handle to this.tasks.welcome        // optional<Schedule>
+        if this.tasks.welcome exists broadcast "welcome is bound"
+    }
 }
 ```
 
@@ -227,7 +231,7 @@ per-object task never outlives the thing it belongs to.
 
 | Owner | How the object is in scope |
 |---|---|
-| `Player` | any `Player` value — `event.player`, `sender`, a loop variable |
+| `Player` | any `Player` value — `this` in a `Player` method, `sender`, a loop variable |
 | `Mob` | `mob` inside [`on_spawn`](/reference/mobs), a `Mob` value elsewhere |
 | `Entity` | any [`Entity`](/reference/entities) value |
 | `Npc` | `this` inside an [npc](/reference/npcs) handler (`on_click`, `on_tick`) |
@@ -267,13 +271,15 @@ block (see [`remove block at`](/reference/blocks#placing-and-reading-blocks)) ca
 task bound to that position:
 
 ```swoftlang
-on PlayerJoin {
-    place block("minecraft:sea_lantern") at event.player.location
-    set block_at(event.player.location).tasks.pulse to schedule every 5 ticks {
-        broadcast "<aqua>pulse"
+Player {
+    on_join() {
+        place block("minecraft:sea_lantern") at this.location
+        set block_at(this.location).tasks.pulse to schedule every 5 ticks {
+            broadcast "<aqua>pulse"
+        }
+        if block_at(this.location).tasks.pulse is running broadcast "pulsing"
+        remove block at this.location      // also cancels the 'pulse' task
     }
-    if block_at(event.player.location).tasks.pulse is running broadcast "pulsing"
-    remove block at event.player.location      // also cancels the 'pulse' task
 }
 ```
 

@@ -184,15 +184,17 @@ mob "zombie" {
     }
 }
 
-on PlayerJoin {
-    spawn mob "zombie" at in_front_of(event.player, 5) as z
-    set name of z to "<red>Zombie <gray>0/5" for event.player
-    show z to event.player                                // reveal it to just this player
+Player {
+    on_join() {
+        spawn mob "zombie" at in_front_of(this, 5) as z
+        set name of z to "<red>Zombie <gray>0/5" for this
+        show z to this                                    // reveal it to just this player
+    }
 }
 ```
 
 Because the zombie is `viewable: false`, the `spawn` puts it in the world seen by nobody;
-the `show z to event.player` line is what makes it appear, and only for the joining
+the `show z to this` line is what makes it appear, and only for the joining
 player. Two players standing side by side each punch their *own* zombie: the tag map is
 keyed by `Player`, so `mob.tags.hits[attacker]` counts per attacker, and the
 `set name … for attacker` nameplate updates for that attacker alone.

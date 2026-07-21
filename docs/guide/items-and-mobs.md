@@ -102,10 +102,10 @@ restarts. `custom_id(<item>)` reads it back as an `optional<String>` — `none` 
 items, so [Step 07](/guide/options) discipline applies:
 
 ```swoftlang
-event PlayerUseItem {
-    execute {
-        if custom_id(event.item) otherwise "" is "aspect_of_the_end" {
-            send "<gray>You used the Aspect!" to event.player
+Item {
+    on_use(player) {
+        if custom_id(this) otherwise "" is "aspect_of_the_end" {
+            send "<gray>You used the Aspect!" to player
         }
     }
 }
@@ -246,18 +246,21 @@ command "cleanse" {
 `health` (rw), `max_health` (ro), `name` (rw), `location` (rw), `type` (ro), and
 `custom_id` (ro). `all_mobs("id")` lists the living instances; `despawn` removes one.
 
-Server-wide, the `MobSpawn`, `MobDeath`, and `MobDamage`
-[events](/guide/events#the-event-table) fire for every custom mob — per-mob handlers for
-the mob's own story, events for global systems:
+Server-wide, the base [`Mob`](/reference/events#mob) receiver's `on_spawn`, `on_death`, and
+`on_hit` methods fire for *every* mob — a `mob "id" { }` declaration handles that mob's own
+story, while `Mob { }` drives global systems:
 
 ```swoftlang
 persistent mob_kills for Player: Integer = 0
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            set mob_kills for event.killer to (mob_kills for event.killer) + 1
-            send "<gold>Kill #${mob_kills for event.killer}: ${event.mob.custom_id}" to event.killer
+Mob {
+    on_death(killer) {
+        if killer exists {
+            set k to player(killer.uuid)
+            if k exists {
+                set mob_kills for k to (mob_kills for k) + 1
+                send "<gold>Kill #${mob_kills for k}: ${this.custom_id}" to k
+            }
         }
     }
 }

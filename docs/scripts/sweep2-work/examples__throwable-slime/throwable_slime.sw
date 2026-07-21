@@ -4,8 +4,7 @@
 // keep vanilla physics from eating the reflection. This port OWNS the
 // physics: an item display plus an async tick loop — velocity, gravity,
 // bounces and hits are all script state, and no respawn-on-bounce trick is
-// needed. The same fly_slime task launches a ball whether a player throws
-// one or a dispenser fires one.
+// needed. A right-click hands the ball to the fly_slime task.
 
 // sin/cos via Bhaskara I's approximation — the language ships no trig
 // builtins (same dodge as the npcs addon's atan2). Degrees in, [-1,1] out.
@@ -35,22 +34,22 @@ function slime_cos_deg(a: Double) {
     return slime_sin_deg(90.0 - a)
 }
 
-event PlayerUseItem {
-    execute {
-        if event.item.material is "SLIME_BALL" {
+Player {
+    on_use_item(item, hand) {
+        if item.material is "SLIME_BALL" {
             cancel event
 
             // yaw/pitch -> unit direction (what 'make player shoot' hid)
-            set yaw to event.player.location.yaw
-            set pitch to event.player.location.pitch
+            set yaw to this.location.yaw
+            set pitch to this.location.pitch
             set dx to 0.0 - slime_sin_deg(yaw) * slime_cos_deg(pitch)
             set dy to 0.0 - slime_sin_deg(pitch)
             set dz to slime_cos_deg(yaw) * slime_cos_deg(pitch)
 
             set eye to location(
-                event.player.location.x,
-                event.player.location.y + 1.6,
-                event.player.location.z)
+                this.location.x,
+                this.location.y + 1.6,
+                this.location.z)
             set disp to spawn_item_display("SLIME_BALL", eye)
 
             // velocity 1.2, like 'shoot snowball at velocity 1.2'
@@ -59,26 +58,7 @@ event PlayerUseItem {
                 dx * 1.2, dy * 1.2, dz * 1.2)
 
             // 'subtract 1 slime ball from player's tool'
-            set event.player.held_item.amount to event.player.held_item.amount - 1
-        }
-    }
-}
-
-// 'on dispense of slime ball' — the dispenser fires the same bouncing ball.
-// BlockDispense hands us the block's position and facing; cancel the vanilla
-// item eject and launch fly_slime from the block toward its facing at the
-// same velocity 1.2 the thrower uses.
-event BlockDispense {
-    execute {
-        if event.item exists {
-            if event.item.material is "SLIME_BALL" {
-                cancel event
-                set dir to event.direction
-                set disp to spawn_item_display("SLIME_BALL", event.location)
-                spawn fly_slime(disp,
-                    event.location.x, event.location.y, event.location.z,
-                    dir.x * 1.2, dir.y * 1.2, dir.z * 1.2)
-            }
+            set this.held_item.amount to this.held_item.amount - 1
         }
     }
 }

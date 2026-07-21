@@ -44,10 +44,13 @@ FILE_ATTR = re.compile(r'file="([^"]+)"')
 CODE_ANNO = re.compile(r"\s*//\s*\[!code[^\]]*\]\s*$", re.M)
 
 TOP_LEVEL = re.compile(
-    r"^(command|event|function|async\s+function|export\s+|import\s|bossbar\s|"
-    r"gui\s|item\s|mob\s|on\s+\w|persistent\s|scoreboard\s|server\s*\{|"
+    r"^(command|function|async\s+function|export\s+|import\s|bossbar\s|"
+    r"gui\s|item\s|mob\s|persistent\s|scoreboard\s|server\s*\{|"
     r"storage\s*\{|tablist\s|var\s|api\s|every\s|fishing_loot\s|hologram\s|npc\s|"
-    r"block_handler\s|placement_rule\s)"
+    r"block_handler\s|placement_rule\s|"
+    # OOP receiver blocks (Player { }, Mob { }, ...) and the Packet block
+    r"Player\s*\{|Entity\s*\{|Mob\s*\{|Item\s*\{|Block\s*\{|Projectile\s*\{|"
+    r"Inventory\s*\{|World\s*\{|Server\s*\{|Npc\s*\{|Hologram\s*\{|Packet\s*\{)"
 )
 
 
@@ -90,13 +93,11 @@ def needs_wrap(code):
         return None
     if TOP_LEVEL.match(fm):
         return None
-    return "event" if re.search(r"\bevent\.", code) else "command"
+    return "command"
 
 
 def wrap(code, kind):
     body = "\n".join("        " + l if l.strip() else l for l in code.rstrip("\n").split("\n"))
-    if kind == "event":
-        return "event PlayerJoin {\n    execute {\n%s\n    }\n}\n" % body
     return 'command "snippetwrap" {\n    execute {\n%s\n    }\n}\n' % body
 
 
@@ -166,7 +167,7 @@ def run_check(workdir, files, addons=True):
 def main():
     only = sys.argv[1:] or None
     pages = sorted(glob.glob(os.path.join(DOCS, "**", "*.md"), recursive=True))
-    pages = [p for p in pages if "/node_modules/" not in p and "/.vitepress/" not in p and "/dist/" not in p]
+    pages = [p for p in pages if "/node_modules/" not in p and "/.vitepress/" not in p and "/dist/" not in p and "/1.1.0/" not in p]
     if only:
         pages = [p for p in pages if any(o in p for o in only)]
 

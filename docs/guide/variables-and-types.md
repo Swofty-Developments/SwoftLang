@@ -74,10 +74,10 @@ error, not silent `<none>` output in chat at runtime.
 | `Integer` | `42`, `-7` | 64-bit |
 | `Double` | `3.14`, `7 / 2.0` | `Integer / Integer` stays integer division |
 | `Boolean` | `true`, `false` | |
-| `Player` | `sender`, `event.player` | a live player on the server |
+| `Player` | `sender`, `this` in a `Player` method | a live player on the server |
 | `Location` | `location(0.5, 42.0, 0.5)` | immutable position snapshot (x, y, z, yaw, pitch) |
 | `Item` | `item("diamond_sword")` | immutable item stack |
-| `World` | `event.world`, `world("lobby")` | a server world instance |
+| `World` | `world("lobby")`, `this` in a `World` method | a server world instance |
 | `list<T>` | `["a", "b", "c"]`, `all_players()` | |
 | `optional<T>` | `player("Notch")`, `none` | present-or-missing — [Step 07](/guide/options) |
 | `either<A\|B>` | argument unions | narrowed with `is a` |

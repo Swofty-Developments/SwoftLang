@@ -1,13 +1,10 @@
-event PlayerChat {
-    execute {
-        if event.message contains "spoiler" {
+Player {
+    on_chat(message) {
+        if message contains "badword" {
+            send "<red>Watch your language." to this
             cancel event
-            spawn warn_later(event.player)
+            halt
         }
+        set message to "[chat] ${message}"
     }
-}
-
-async function warn_later(p: Player) {
-    wait 1 seconds
-    send "<red>No spoilers in chat!" to p
 }

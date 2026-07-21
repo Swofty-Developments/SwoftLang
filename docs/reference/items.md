@@ -300,25 +300,25 @@ Identity survives anything the ItemStack survives: the id and every tag ride the
 itself, so a custom item dropped, stored in a chest GUI, or moved across inventories
 still answers to `custom_id`.
 
-## The `PlayerUseItem` event
+## The `Item.on_use` method
 
-Using any custom item fires [`PlayerUseItem`](./events) — for every custom item, whether
-or not it declares an `on_click`. Reach for it when a single handler should span many
-item ids; reach for `on_click` when the behavior belongs to one item and you want
-left/right separation.
+Using any custom item fires the base [`Item.on_use`](./events#item) method — for every
+custom item, whether or not it declares an `on_click`. Reach for it when a single handler
+should span many item ids; reach for `on_click` when the behavior belongs to one item and
+you want left/right separation.
 
 ```swoftlang
-event PlayerUseItem {
-    execute {
-        if event.custom_id otherwise "" is "aspect_of_the_end" {
-            send "<gray>You used the Aspect!" to event.player
+Item {
+    on_use(player) {
+        if custom_id(this) otherwise "" is "aspect_of_the_end" {
+            send "<gray>You used the Aspect!" to player
         }
     }
 }
 ```
 
-`event.player` (`Player`), `event.item` (`Item`), and `event.custom_id`
-(`optional<String>`) are bound; the event is cancellable.
+`this` is the used `Item`, `player` is the `Player` who used it, and `custom_id(this)`
+reads the declaration id as an `optional<String>`; the method is cancellable.
 
 ::: tip Build a gameplay system
 Stats, cooldowns, and named abilities are things you *build* on top of this — tags for

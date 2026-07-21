@@ -1,7 +1,7 @@
-event PlayerChat {
-    execute {
-        set event.player.health to event.player.max_health
-        set event.player.gamemode to "creative"
-        set event.player.held_item.amount to 32
+Player {
+    on_chat(message) {
+        set this.health to this.max_health
+        set this.gamemode to "creative"
+        set this.held_item.amount to 32
     }
 }

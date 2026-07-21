@@ -100,10 +100,10 @@ on join:
 <template #swoftlang>
 
 ```swoftlang
-event PlayerJoin {
-    execute {
-        send "<green>Welcome, ${event.player.name}!" to event.player
-        send "<gray>${event.player.name} joined" to all
+Player {
+    on_join() {
+        send "<green>Welcome, ${this.name}!" to this
+        send "<gray>${this.name} joined" to all
     }
 }
 ```
@@ -126,11 +126,14 @@ on death of monster:
 ```swoftlang
 persistent kills for Player: Integer = 0
 
-event MobDeath {
-    execute {
-        if event.killer exists {
-            set kills for event.killer to kills for event.killer + 1
-            send "<yellow>${kills for event.killer} kills" to event.killer
+Mob {
+    on_death(killer) {
+        if killer exists {
+            set k to player(killer.uuid)
+            if k exists {
+                set kills for k to kills for k + 1
+                send "<yellow>${kills for k} kills" to k
+            }
         }
     }
 }
@@ -139,9 +142,10 @@ event MobDeath {
 </template>
 <template #note>
 
-`event.killer` is `optional<Player>` — mobs die to lava too. Skript hands you an
-`attacker` that might silently be nothing; SwoftLang won't compile until the
-`exists` check is there. The `persistent … for Player` declaration replaces the
+`Mob.on_death` binds `killer` as `optional<Entity>` — mobs die to lava too, and to
+non-players. Skript hands you an `attacker` that might silently be nothing; SwoftLang
+won't compile until the `exists` checks are there, and `player(killer.uuid)` resolves the
+online player who scores the kill. The `persistent … for Player` declaration replaces the
 `{kills::%uuid%}` list-variable idiom: typed, defaulted, and saved across restarts.
 
 </template>
@@ -190,7 +194,7 @@ laggy server.
 
 ## The compiler knows your property table
 
-<p>Every <code>event.player.…</code> access is checked against the real Minestom-backed property table — with typo suggestions and read-only enforcement, before the server ever boots.</p>
+<p>Every <code>this.…</code> property access is checked against the real Minestom-backed property table — with typo suggestions and read-only enforcement, before the server ever boots.</p>
 <p class="more"><a href="/guide/properties">Properties guide →</a></p>
 </div>
 <div class="pillar-code">
@@ -198,9 +202,9 @@ laggy server.
 <!-- swoftc name=welcome.sw expect=error -->
 
 ```swoftlang
-event PlayerJoin {
-    execute {
-        send "hi ${event.player.nmae}" to event.player // [!code error]
+Player {
+    on_join() {
+        send "hi ${this.nmae}" to this // [!code error]
     }
 }
 ```
@@ -210,7 +214,7 @@ event PlayerJoin {
 
 ```txt
 welcome.sw:3:14: error: unknown property 'nmae' on Player; did you mean 'name'?
-        send "hi ${event.player.nmae}" to event.player
+        send "hi ${this.nmae}" to this
              ^
 ```
 
@@ -300,10 +304,10 @@ command "menu" {
 ```swoftlang
 persistent visits for Player: Integer = 0
 
-event PlayerJoin {
-    execute {
-        set visits for event.player to visits for event.player + 1
-        send "<gray>Visit #${visits for event.player}" to event.player
+Player {
+    on_join() {
+        set visits for this to visits for this + 1
+        send "<gray>Visit #${visits for this}" to this
     }
 }
 ```

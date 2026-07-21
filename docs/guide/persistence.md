@@ -60,10 +60,10 @@ per-variable regex patterns in a config file.
 ```swoftlang
 persistent total_joins: Integer = 0
 
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         set total_joins to total_joins + 1
-        broadcast "<green>${event.player.name} is join #${total_joins}"
+        broadcast "<green>${this.name} is join #${total_joins}"
     }
 }
 ```
@@ -93,16 +93,16 @@ one value per subject:
 persistent kills for Player: Integer = 0
 persistent last_seen for Player: String = "never"
 
-event PlayerJoin {
-    execute {
-        send "kills on record: ${kills for event.player}" to event.player
-        set last_seen for event.player to "today"
+Player {
+    on_join() {
+        send "kills on record: ${kills for this}" to this
+        set last_seen for this to "today"
     }
 }
 ```
 
 Access is `kills for <expr>`, where the expression must typecheck to the subject type.
-Assignment mirrors it: `set kills for event.player to ...`.
+Assignment mirrors it: `set kills for this to ...`.
 
 The checker keeps the two shapes apart — bare access to a keyed variable doesn't
 compile:

@@ -4,7 +4,7 @@ Dispenser and dropper blocks carry a real block-entity inventory. Fill one, trig
 and it pops an item in the direction it faces —
 launching arrows, snowballs, eggs, and ender pearls as projectiles, and ejecting
 everything else as a dropped item. Every fire passes through the cancellable
-`BlockDispense` event, and a script can fire one directly with `dispense from`.
+`Block.on_dispense` method, and a script can fire one directly with `dispense from`.
 
 ```swoftlang
 command "dispense-demo" {
@@ -49,38 +49,35 @@ dispense from location(10.0, 65.0, 10.0)
 The expression must be a `Location`; if the block there is not a dispenser or dropper,
 the statement is a no-op at that position (nothing to fire).
 
-## The `BlockDispense` event
+## The `Block.on_dispense` method
 
-Every fire — lever, redstone, or `dispense from` — raises `BlockDispense` *before* the
-item moves, so a handler can watch it, swap what comes out, or stop it entirely.
+Every fire — lever, redstone, or `dispense from` — calls the [`Block`](/reference/events#block)
+receiver's `on_dispense` method *before* the item moves, so a handler can watch it, swap
+what comes out, or stop it entirely. `this` is the dispenser block (its type is
+`this.id`), and the method is cancellable.
 
-| Property | Type | Access | Meaning |
+| Binding | Type | Access | Meaning |
 |---|---|---|---|
-| `location` | `Location` | ro | the dispenser's position |
-| `block` | `String` | ro | the block type (`dispenser` or `dropper`) |
-| `item` | `optional<Item>` | rw | the item about to be dispensed — `none` when the block is empty |
-| `direction` | `Vec` | ro | the facing direction the item will take |
-| `cancelled` | `Boolean` | rw | set to stop the dispense |
+| `this` | `Block` | — | the dispenser block; `this.id` is the type (`minecraft:dispenser` / `minecraft:dropper`) |
+| `item` | `Item` | rw | the item about to be dispensed |
+| `direction` | `String` | ro | the facing direction the item will take |
 
 ```swoftlang
-event BlockDispense {
-    execute {
-        send "<gray>A dispenser fired at ${event.location}." to all players
+Block {
+    on_dispense(item, direction) {
+        send "<gray>A dispenser fired, facing ${direction}." to all players
     }
 }
 ```
 
-Because `item` is read-write and `optional`, you can substitute the payload — handle the
-empty case with the usual [optional](/guide/options) discipline:
+Because `item` is read-write, you can substitute the payload:
 
 ```swoftlang
-event BlockDispense {
-    execute {
-        if event.item exists {
-            if event.item.material is "minecraft:arrow" {
-                // turn every dispensed arrow into a snowball
-                set event.item to item("SNOWBALL")
-            }
+Block {
+    on_dispense(item, direction) {
+        if item.material is "minecraft:arrow" {
+            // turn every dispensed arrow into a snowball
+            set item to item("SNOWBALL")
         }
     }
 }
@@ -89,9 +86,9 @@ event BlockDispense {
 Cancel to jam the block — nothing leaves it:
 
 ```swoftlang
-event BlockDispense {
-    execute {
-        if event.block is "dropper" {
+Block {
+    on_dispense(item, direction) {
+        if this.id is "minecraft:dropper" {
             cancel event
         }
     }

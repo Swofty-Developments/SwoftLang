@@ -1,5 +1,8 @@
-on EntityDamage {
-    set victim to event.entity
-    set dmg to event.damage * (1.0 - victim.armor / 25.0)
-    set event.damage to max(0.0, dmg)
+Entity {
+    on_hit(attacker) {
+        if attacker exists {
+            set kb_resist to this.knockback_resistance
+            knock this away from attacker.location with strength (0.5 * (1.0 - kb_resist))
+        }
+    }
 }

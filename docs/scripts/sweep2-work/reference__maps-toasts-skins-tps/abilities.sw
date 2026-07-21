@@ -99,12 +99,13 @@ function ability_dispatch(user: Player, held: Item, id: String) {
     ability_fire("use:${id}:right", user, held)
 }
 
-// the single generic surface: every custom-item use flows through here
-event PlayerUseItem {
-    execute {
-        set id to event.custom_id otherwise ""
+// the single generic surface: every custom-item use flows through here. `this`
+// binds to the used ItemStack, `player` to the user.
+Item {
+    on_use(player) {
+        set id to custom_id(this) otherwise ""
         if id is not "" {
-            ability_dispatch(event.player, event.item, id)
+            ability_dispatch(player, this, id)
         }
     }
 }

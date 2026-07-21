@@ -11,7 +11,7 @@ shown failing, that's real compiler output, byte for byte.</p>
 <a class="sw-hub-card" href="/reference/maps"><span class="sw-hub-body"><span class="sw-hub-title">Maps</span><span class="sw-hub-desc">The <code>map&lt;V&gt;</code> type — literals, <code>map_*</code> builtins, index sugar, iteration, persistent scalar maps.</span></span></a>
 <a class="sw-hub-card" href="/reference/collections"><span class="sw-hub-body"><span class="sw-hub-title">Collections &amp; Strings</span><span class="sw-hub-desc">The <code>receiver.method(args)</code> forms — list, map, and String methods, pure vs mutating, and the zero-arg accessors.</span></span></a>
 <a class="sw-hub-card" href="/reference/builtins"><span class="sw-hub-body"><span class="sw-hub-title">Builtins</span><span class="sw-hub-desc">Every builtin function with checked signatures.</span></span></a>
-<a class="sw-hub-card" href="/reference/events"><span class="sw-hub-body"><span class="sw-hub-title">Event Catalog</span><span class="sw-hub-desc">Every Minestom event you can handle — a curated typed core plus the full generated catalog.</span></span></a>
+<a class="sw-hub-card" href="/reference/events"><span class="sw-hub-body"><span class="sw-hub-title">Receivers & Events</span><span class="sw-hub-desc">The receiver catalog — every receiver, its methods, fan-out, and the override rule.</span></span></a>
 <a class="sw-hub-card" href="/reference/cli"><span class="sw-hub-body"><span class="sw-hub-title">CLI — swoftc</span><span class="sw-hub-desc">Compile and check, sidecars, exit codes, how the runtime finds the binary.</span></span></a>
 </div>
 </div>

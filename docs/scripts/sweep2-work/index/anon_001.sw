@@ -1,6 +1,6 @@
-event PlayerJoin {
-    execute {
-        send "<green>Welcome, ${event.player.name}!" to event.player
-        send "<gray>${event.player.name} joined" to all
+Player {
+    on_join() {
+        send "<green>Welcome, ${this.name}!" to this
+        send "<gray>${this.name} joined" to all
     }
 }

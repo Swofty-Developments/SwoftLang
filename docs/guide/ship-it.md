@@ -203,14 +203,14 @@ hop to the tick thread by themselves, and that `player(...)` lookup is the same
 
 ## A dynamic MOTD
 
-The `ServerPing` [event](/guide/events#the-event-table) fires on every server-list
-ping, with writable `motd`, `online`, and `max`:
+The [`Server`](/reference/events#server) receiver's `on_list_ping` method fires on every
+server-list ping, with a writable `status` line — the MOTD players see in their server
+list:
 
 ```swoftlang
-event ServerPing {
-    execute {
-        set event.motd to "<green>${length(all_players())} adventurers online"
-        set event.max to 1000
+Server {
+    on_list_ping(status) {
+        set status to "<green>${length(all_players())} adventurers online"
     }
 }
 ```
@@ -238,9 +238,9 @@ server {
     }
 }
 
-event ServerPing {
-    execute {
-        set event.motd to "<green>${length(all_players())} adventurers online"
+Server {
+    on_list_ping(status) {
+        set status to "<green>${length(all_players())} adventurers online"
     }
 }
 

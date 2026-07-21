@@ -1,9 +1,7 @@
-event PlayerChat {
-    priority: 0
-
-    execute {
-        set event.message to "[Filtered] ${event.message}"
-        if event.message contains "badword" {
+Player {
+    on_chat(message) {
+        set message to "[Filtered] ${message}"
+        if message contains "badword" {
             cancel event
         }
     }

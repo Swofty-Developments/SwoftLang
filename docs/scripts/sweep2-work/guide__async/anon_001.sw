@@ -13,11 +13,11 @@ command "race" {
     }
 }
 
-event PlayerJoin {
-    execute {
+Player {
+    on_join() {
         async {                                             // 4. async block
             wait 60 ticks
-            send "<gold>Tip: type /help to get started" to event.player
+            send "<gold>Tip: type /help to get started" to this
         }
     }
 }

@@ -1,12 +1,8 @@
-event PlayerChat {
-    priority: 0
-
-    execute {
-        if event.message contains "badword" {
-            send "<red>Watch your language." to event.player
+Player {
+    on_chat(message) {
+        if message contains "badword" {
             cancel event
-            halt
+            send "<red>Watch your language" to this
         }
-        set event.message to "[chat] ${event.message}"
     }
 }
