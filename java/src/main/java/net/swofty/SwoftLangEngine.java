@@ -51,6 +51,7 @@ public class SwoftLangEngine {
     private final List<net.swofty.model.NpcModel> npcs = new ArrayList<>();
     private final List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
     private final List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
+    private final List<net.swofty.model.StructDefModel> structs = new ArrayList<>();
     private ServerConfigModel serverConfig;
     private StorageConfigModel storageConfig;
 
@@ -158,6 +159,7 @@ public class SwoftLangEngine {
         npcs.clear();
         blockHandlers.clear();
         placementRules.clear();
+        structs.clear();
         serverConfig = null;
         storageConfig = null;
 
@@ -179,6 +181,7 @@ public class SwoftLangEngine {
                 npcs.addAll(parsed.npcs());
                 blockHandlers.addAll(parsed.blockHandlers());
                 placementRules.addAll(parsed.placementRules());
+                structs.addAll(parsed.structs());
                 if (parsed.server() != null) {
                     if (serverConfig != null) {
                         System.err.println("Error: duplicate server block in "
@@ -200,11 +203,18 @@ public class SwoftLangEngine {
                 e.printStackTrace();
             }
         }
+        // §1 struct declarations must be registered before persistence
+        // initializes (initializePersistence runs right after this), so a
+        // persistent struct can resolve its field types for serialization.
+        net.swofty.structs.StructRegistry.clear();
+        for (net.swofty.model.StructDefModel struct : structs) {
+            net.swofty.structs.StructRegistry.register(struct);
+        }
         System.out.println("Processed " + guis.size() + " guis, " + scoreboards.size()
                 + " scoreboards, " + tablists.size() + " tablists, " + bossbars.size()
                 + " bossbars, " + persistents.size() + " persistents, " + items.size()
                 + " items, " + mobs.size() + " mobs, " + packetHandlers.size()
-                + " packet handlers");
+                + " packet handlers, " + structs.size() + " structs");
     }
 
     /**

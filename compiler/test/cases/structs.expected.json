@@ -1,0 +1,534 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 21,
+      "col": 1,
+      "names": [ "guilds" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 23,
+            "col": 9,
+            "kind": "assign",
+            "target": "g",
+            "value": {
+              "line": 23,
+              "col": 18,
+              "kind": "struct_new",
+              "struct": "Guild",
+              "fields": [
+                {
+                  "name": "name",
+                  "value": {
+                    "line": 23,
+                    "col": 32,
+                    "kind": "string",
+                    "value": "Knights"
+                  }
+                },
+                {
+                  "name": "members",
+                  "value": {
+                    "line": 23,
+                    "col": 52,
+                    "kind": "list",
+                    "items": [
+                      {
+                        "line": 23,
+                        "col": 53,
+                        "kind": "var",
+                        "name": "sender"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "bank",
+                  "value": {
+                    "line": 23,
+                    "col": 68,
+                    "kind": "call",
+                    "name": "new_map",
+                    "args": []
+                  }
+                },
+                {
+                  "name": "home",
+                  "value": { "line": 23, "col": 85, "kind": "none" }
+                },
+                {
+                  "name": "hq",
+                  "value": {
+                    "line": 23,
+                    "col": 95,
+                    "kind": "struct_new",
+                    "struct": "Point",
+                    "fields": [
+                      {
+                        "name": "x",
+                        "value": {
+                          "line": 23,
+                          "col": 106,
+                          "kind": "number",
+                          "value": 5,
+                          "integer": true
+                        }
+                      },
+                      {
+                        "name": "y",
+                        "value": {
+                          "line": 23,
+                          "col": 112,
+                          "kind": "number",
+                          "value": 5,
+                          "integer": true
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "${g.name} lvl ${g.level}"
+            },
+            "target": {
+              "line": 24,
+              "col": 44,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 25,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 25, "col": 13, "kind": "var", "name": "g" },
+            "name": "level",
+            "value": {
+              "line": 25,
+              "col": 26,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 25,
+                "col": 26,
+                "kind": "prop",
+                "target": {
+                  "line": 25,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "g"
+                },
+                "name": "level"
+              },
+              "right": {
+                "line": 25,
+                "col": 34,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "call",
+            "name": "map_set",
+            "args": [
+              {
+                "line": 26,
+                "col": 15,
+                "kind": "prop",
+                "target": {
+                  "line": 26,
+                  "col": 13,
+                  "kind": "var",
+                  "name": "g"
+                },
+                "name": "bank"
+              },
+              { "line": 26, "col": 23, "kind": "string", "value": "gold" },
+              {
+                "line": 26,
+                "col": 33,
+                "kind": "number",
+                "value": 100,
+                "integer": true
+              }
+            ]
+          },
+          {
+            "line": 27,
+            "col": 9,
+            "kind": "method_call_stmt",
+            "receiver": {
+              "line": 27,
+              "col": 25,
+              "kind": "prop",
+              "target": { "line": 27, "col": 23, "kind": "var", "name": "g" },
+              "name": "members"
+            },
+            "name": "add",
+            "args": [
+              { "line": 27, "col": 13, "kind": "var", "name": "sender" }
+            ]
+          },
+          {
+            "line": 28,
+            "col": 15,
+            "kind": "set_prop",
+            "target": { "line": 28, "col": 13, "kind": "var", "name": "g" },
+            "name": "home",
+            "value": {
+              "line": 28,
+              "col": 23,
+              "kind": "call",
+              "name": "location_of",
+              "args": [
+                { "line": 28, "col": 35, "kind": "var", "name": "sender" }
+              ]
+            }
+          },
+          {
+            "line": 29,
+            "col": 18,
+            "kind": "set_prop",
+            "target": {
+              "line": 29,
+              "col": 15,
+              "kind": "prop",
+              "target": { "line": 29, "col": 13, "kind": "var", "name": "g" },
+              "name": "hq"
+            },
+            "name": "x",
+            "value": {
+              "line": 29,
+              "col": 23,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 30,
+              "col": 14,
+              "kind": "string",
+              "value": "hq at ${g.hq.x}, ${g.hq.y}"
+            },
+            "target": {
+              "line": 30,
+              "col": 46,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 31,
+            "col": 9,
+            "kind": "assign",
+            "target": "snap",
+            "value": {
+              "line": 31,
+              "col": 23,
+              "kind": "method_call",
+              "receiver": {
+                "line": 31,
+                "col": 21,
+                "kind": "var",
+                "name": "g"
+              },
+              "name": "copy",
+              "args": []
+            }
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "call",
+            "name": "level_up",
+            "args": [ { "line": 32, "col": 18, "kind": "var", "name": "g" } ]
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 33,
+              "col": 14,
+              "kind": "string",
+              "value": "level is now ${g.level}, snapshot ${snap.level}"
+            },
+            "target": {
+              "line": 33,
+              "col": 67,
+              "kind": "var",
+              "name": "sender"
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "guild",
+            "subject": {
+              "line": 34,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": { "line": 34, "col": 33, "kind": "var", "name": "g" }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "assign",
+            "target": "gd",
+            "value": {
+              "line": 35,
+              "col": 19,
+              "kind": "persist_get",
+              "name": "guild",
+              "subject": {
+                "line": 35,
+                "col": 29,
+                "kind": "var",
+                "name": "sender"
+              }
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 36,
+              "col": 14,
+              "kind": "string",
+              "value": "stored ${gd.name}"
+            },
+            "target": {
+              "line": 36,
+              "col": 37,
+              "kind": "var",
+              "name": "sender"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [
+    {
+      "line": 17,
+      "col": 1,
+      "name": "level_up",
+      "async": false,
+      "params": [
+        { "line": 17, "col": 19, "name": "g", "type": { "base": "Guild" } }
+      ],
+      "body": [
+        {
+          "line": 18,
+          "col": 11,
+          "kind": "set_prop",
+          "target": { "line": 18, "col": 9, "kind": "var", "name": "g" },
+          "name": "level",
+          "value": {
+            "line": 18,
+            "col": 22,
+            "kind": "binary",
+            "op": "ADD",
+            "left": {
+              "line": 18,
+              "col": 22,
+              "kind": "prop",
+              "target": { "line": 18, "col": 20, "kind": "var", "name": "g" },
+              "name": "level"
+            },
+            "right": {
+              "line": 18,
+              "col": 30,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": null,
+  "persistents": [
+    {
+      "line": 15,
+      "col": 1,
+      "name": "guild",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "Guild" },
+      "default": {
+        "line": 15,
+        "col": 38,
+        "kind": "struct_new",
+        "struct": "Guild",
+        "fields": [
+          {
+            "name": "name",
+            "value": { "line": 15, "col": 52, "kind": "string", "value": "" }
+          },
+          {
+            "name": "members",
+            "value": { "line": 15, "col": 65, "kind": "list", "items": [] }
+          },
+          {
+            "name": "bank",
+            "value": {
+              "line": 15,
+              "col": 75,
+              "kind": "call",
+              "name": "new_map",
+              "args": []
+            }
+          },
+          {
+            "name": "home",
+            "value": { "line": 15, "col": 92, "kind": "none" }
+          },
+          {
+            "name": "hq",
+            "value": {
+              "line": 15,
+              "col": 102,
+              "kind": "struct_new",
+              "struct": "Point",
+              "fields": [
+                {
+                  "name": "x",
+                  "value": {
+                    "line": 15,
+                    "col": 113,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "structs": [
+    {
+      "line": 1,
+      "col": 1,
+      "name": "Point",
+      "fields": [
+        {
+          "line": 2,
+          "col": 5,
+          "name": "x",
+          "type": { "base": "INTEGER" },
+          "default": null
+        },
+        {
+          "line": 3,
+          "col": 5,
+          "name": "y",
+          "type": { "base": "INTEGER" },
+          "default": {
+            "line": 3,
+            "col": 18,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        }
+      ]
+    },
+    {
+      "line": 6,
+      "col": 1,
+      "name": "Guild",
+      "fields": [
+        {
+          "line": 7,
+          "col": 5,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        },
+        {
+          "line": 8,
+          "col": 5,
+          "name": "level",
+          "type": { "base": "INTEGER" },
+          "default": {
+            "line": 8,
+            "col": 22,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          }
+        },
+        {
+          "line": 9,
+          "col": 5,
+          "name": "members",
+          "type": { "base": "LIST", "subtypes": [ { "base": "PLAYER" } ] },
+          "default": null
+        },
+        {
+          "line": 10,
+          "col": 5,
+          "name": "bank",
+          "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+          "default": null
+        },
+        {
+          "line": 11,
+          "col": 5,
+          "name": "home",
+          "type": {
+            "base": "OPTIONAL",
+            "subtypes": [ { "base": "LOCATION" } ]
+          },
+          "default": null
+        },
+        {
+          "line": 12,
+          "col": 5,
+          "name": "hq",
+          "type": { "base": "Point" },
+          "default": null
+        }
+      ]
+    }
+  ]
+}

@@ -23,6 +23,7 @@ let make_ctx file =
     mob_ids = Hashtbl.create 16;
     custom_mobs = Hashtbl.create 16;
     custom_items = Hashtbl.create 16;
+    structs = Hashtbl.create 16;
     scoreboards = Hashtbl.create 8;
     tablists = Hashtbl.create 8;
     bossbars = Hashtbl.create 8;
@@ -65,6 +66,7 @@ let collect_sched_names (script : Ast.script) : string list =
     | EPersistGet (_, s) -> Option.iter we s
     | EMap fields -> List.iter (fun (_, v) -> we v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> we v) entries
+    | EStructNew (_, fields) -> List.iter (fun (_, v) -> we v) fields
     | EString _ | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
       ()
@@ -507,6 +509,7 @@ let check_initializer_calls ctx own_fns (mv : module_var) =
     | EPersistGet (_, subject) -> Option.iter walk subject
     | EMap fields -> List.iter (fun (_, v) -> walk v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> walk v) entries
+    | EStructNew (_, fields) -> List.iter (fun (_, v) -> walk v) fields
     | ELambda _ | ESchedule _ -> () (* deferred bodies run after initialization *)
     | EString _ | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
@@ -546,6 +549,7 @@ let check_module_vars ctx (script : Ast.script) =
     script.module_vars
 
 let check_module_body ctx (script : Ast.script) =
+  List.iter (check_struct_decl ctx) script.structs;
   List.iter (check_persistent ctx) script.persistents;
   check_storages ctx script.storages;
   List.iter (check_function ctx) script.functions;
@@ -585,9 +589,13 @@ let run_all (modules : module_input list) : Diagnostics.error list =
     List.map
       (fun tm ->
         let ctx = make_ctx tm.tm_file in
-        (* §2: custom type names must be visible before any type annotation
-           (function params, persistents, mob tags) is resolved *)
+        (* §1/§2: custom type names (mobs/items) and struct names must be
+           visible before any type annotation (function params, persistents,
+           struct fields, mob tags) is resolved. Register every type NAME first,
+           then resolve struct field types (which may reference other structs). *)
+        register_struct_names ctx tm.tm_script;
         register_custom_types ctx tm.tm_script;
+        register_struct_fields ctx tm.tm_script;
         register_functions ctx tm.tm_script;
         List.iter (register_persistent ctx) tm.tm_script.persistents;
         register_items ctx tm.tm_script.items;
@@ -646,6 +654,7 @@ let run_all (modules : module_input list) : Diagnostics.error list =
         let s = ms.ms_input.tm_script in
         List.iter (fun it -> claim ms "item" it.it_id it.it_pos) s.items;
         List.iter (fun mb -> claim ms "mob" mb.mb_id mb.mb_pos) s.mobs;
+        List.iter (fun (sd : struct_decl) -> claim ms "struct" sd.su_tyname sd.su_pos) s.structs;
         List.iter (fun g -> claim ms "gui" g.g_name g.g_pos) s.guis;
         List.iter (fun sb -> claim ms "scoreboard" sb.sb_name sb.sb_pos) s.scoreboards;
         List.iter (fun tl -> claim ms "tablist" tl.tl_name tl.tl_pos) s.tablists;
@@ -722,7 +731,16 @@ let run_all (modules : module_input list) : Diagnostics.error list =
               (fun it ->
                 if it.it_exported && not (Hashtbl.mem ctx.custom_items it.it_tyname) then
                   Hashtbl.replace ctx.custom_items it.it_tyname it.it_id)
-              dep.ms_input.tm_script.items)
+              dep.ms_input.tm_script.items;
+            (* exported struct types become visible for nominal use in the
+               importer (type positions, construction, 'is a') *)
+            List.iter
+              (fun (sd : struct_decl) ->
+                if sd.su_exported && not (Hashtbl.mem ctx.structs sd.su_tyname) then
+                  match Hashtbl.find_opt dep.ms_ctx.structs sd.su_tyname with
+                  | Some si -> Hashtbl.replace ctx.structs sd.su_tyname si
+                  | None -> ())
+              dep.ms_input.tm_script.structs)
         ms.ms_input.tm_imports)
     states;
 

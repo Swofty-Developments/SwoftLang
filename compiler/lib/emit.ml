@@ -95,6 +95,17 @@ let rec expr (e : Ast.expr) : Yojson.Safe.t =
     node
       [ ("kind", `String "map");
         ("entries", `Assoc (List.map (fun (k, v) -> (k, expr v)) entries)) ]
+  | EStructNew (name, fields) ->
+    (* §1 struct construction: the type name plus the supplied fields, as an
+       ordered {name: value} list so source order (and the runtime's field
+       binding) is preserved *)
+    node
+      [ ("kind", `String "struct_new"); ("struct", `String name);
+        ( "fields",
+          `List
+            (List.map
+               (fun (k, v) -> `Assoc [ ("name", `String k); ("value", expr v) ])
+               fields) ) ]
   | EMapLit entries ->
     (* map<K, V> literal: an ordered list of {key,value} entries so duplicate
        keys and insertion order survive to the LinkedHashMap runtime. A String
@@ -660,6 +671,7 @@ let references_player_expr =
     | EPersistGet (_, s) -> Option.fold ~none:false ~some:e_p s
     | EMap fs -> List.exists (fun (_, v) -> e_p v) fs
     | EMapLit es -> List.exists (fun (_, v) -> e_p v) es
+    | EStructNew (_, fs) -> List.exists (fun (_, v) -> e_p v) fs
     | ELambda { lam_body; _ } -> List.exists s_p lam_body
     | ESchedule { sc_body; _ } -> List.exists s_p sc_body
     | ETaskRunning { tr_owner; _ } -> e_p tr_owner
@@ -966,6 +978,22 @@ let fishing_loot (fl : fishing_loot) =
          ("catches", `List (List.map fishing_catch fl.fl_catches));
        ])
 
+(* §1 structs: a struct declaration emits its name and its fields (each with a
+   resolved type, an optional default, and — only when set — the phase-3
+   reactive marker, kept off by default so the shape stays minimal). *)
+let struct_field (f : struct_field) =
+  `Assoc
+    (with_pos f.srf_pos
+       ([ ("name", `String f.srf_name); ("type", data_type f.srf_type);
+          ("default", opt expr f.srf_default) ]
+       @ (if f.srf_reactive then [ ("reactive", `Bool true) ] else [])))
+
+let struct_decl (sd : struct_decl) =
+  `Assoc
+    (with_pos sd.su_pos
+       [ ("name", `String sd.su_tyname);
+         ("fields", `List (List.map struct_field sd.su_fields)) ])
+
 let persistent pd =
   `Assoc
     (with_pos pd.pd_pos
@@ -1071,7 +1099,10 @@ let script_fields ~modular (s : Ast.script) =
       ]
   in
   let content =
-    (if s.holograms = [] then []
+    (if s.structs = [] then []
+     else
+       [ ("structs", `List (List.map (fun sd -> mark sd.su_exported (struct_decl sd)) s.structs)) ])
+    @ (if s.holograms = [] then []
      else
        [ ("holograms", `List (List.map (fun h -> mark h.h_exported (hologram h)) s.holograms)) ])
     @ (if s.npcs = [] then []

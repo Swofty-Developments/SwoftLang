@@ -7,6 +7,10 @@ type state = {
   (* persistent declaration table (name -> keyed?), collected in a prescan so
      keyed persistent names are known before any body parses *)
   persists : (string, bool) Hashtbl.t;
+  (* §1 struct type names, collected in a prescan so `Struct { ... }`
+     construction is recognised at any use site regardless of declaration
+     order (and never mistaken for a Capitalized variable before a block) *)
+  structs : (string, unit) Hashtbl.t;
 }
 
 (* Two-pass support: scan the raw token stream for top-level (brace depth 0)
@@ -30,6 +34,31 @@ let prescan_persistents tokens =
     | _ -> ()
   done;
   tbl
+
+(* §1 structs: scan the raw token stream for top-level (brace depth 0)
+   `struct <Capitalized>` declarations before real parsing, so a
+   `Struct { ... }` construction is recognised anywhere. `export struct` keeps
+   the `struct` keyword at depth 0, so it is caught too. *)
+let prescan_structs tokens =
+  let tbl = Hashtbl.create 8 in
+  let n = Array.length tokens in
+  let depth = ref 0 in
+  for i = 0 to n - 1 do
+    let t, _, _ = tokens.(i) in
+    match t with
+    | Token.LBRACE -> incr depth
+    | Token.RBRACE -> decr depth
+    | Token.IDENT "struct" when !depth = 0 && i + 1 < n -> (
+      match tokens.(i + 1) with
+      | Token.IDENT name, _, _
+        when String.length name > 0 && name.[0] >= 'A' && name.[0] <= 'Z' ->
+        Hashtbl.replace tbl name ()
+      | _ -> ())
+    | _ -> ()
+  done;
+  tbl
+
+let is_struct_name st name = Hashtbl.mem st.structs name
 
 let persist_lookup st tok =
   match tok with

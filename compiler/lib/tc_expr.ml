@@ -61,7 +61,10 @@ let rec type_of ctx bctx env e : ty =
   | EBool _ -> TBoolean
   | ENone -> TOptional TAny
   | EType name ->
-    if not (List.mem name known_type_names || is_custom_mob ctx name || is_custom_item ctx name)
+    if
+      not
+        (List.mem name known_type_names || is_custom_mob ctx name || is_custom_item ctx name
+       || is_struct ctx name)
     then warn ctx e.epos "unknown type '%s' in 'is a' check" name;
     TAny
   | EVar name -> var_type ctx bctx env e.epos name
@@ -124,6 +127,7 @@ let rec type_of ctx bctx env e : ty =
     in
     let elem = match vts with [] -> TAny | t :: rest -> List.fold_left join t rest in
     TMap (kty, elem)
+  | EStructNew (name, fields) -> struct_new_type ctx bctx env e.epos name fields
   | ELoaderStorage _ ->
     (* backend config is literal syntax, validated by the parser *)
     TWorldLoader
@@ -175,6 +179,44 @@ let rec type_of ctx bctx env e : ty =
     ignore (type_of ctx bctx env x);
     TAny
   | EBinary (op, l, r) -> binary_type ctx bctx env e.epos op l r
+
+(* §1 struct construction `Struct { f: expr, ... }`: totality (every field
+   without a default must be supplied), per-field type-checking, and unknown /
+   duplicate field detection. Yields the nominal TStruct type. *)
+and struct_new_type ctx bctx env pos name fields =
+  match Hashtbl.find_opt ctx.structs name with
+  | None ->
+    let candidates = Hashtbl.fold (fun k _ acc -> k :: acc) ctx.structs [] in
+    err ctx pos "unknown struct type '%s'%s" name (suggestion name candidates);
+    List.iter (fun (_, v) -> ignore (type_of ctx bctx env v)) fields;
+    TAny
+  | Some si ->
+    let provided = Hashtbl.create 8 in
+    List.iter
+      (fun (fname, v) ->
+        if Hashtbl.mem provided fname then
+          err ctx v.epos "duplicate field '%s' in construction of struct '%s'" fname name;
+        Hashtbl.replace provided fname ();
+        match List.assoc_opt fname si.si_fields with
+        | None ->
+          err ctx v.epos "unknown field '%s' in construction of struct '%s'%s" fname name
+            (suggestion fname (List.map fst si.si_fields));
+          ignore (type_of ctx bctx env v)
+        | Some fty ->
+          let vt = type_of ctx bctx env v in
+          (match fty with
+          | TOptional _ -> ()
+          | _ -> require_present ctx env v vt ~use:(Printf.sprintf "field '%s'" fname));
+          if not (param_compat fty vt) then
+            err ctx v.epos "field '%s' of struct '%s' expects %s, got %s" fname name
+              (ty_to_string fty) (ty_to_string vt))
+      fields;
+    (match List.filter (fun r -> not (Hashtbl.mem provided r)) si.si_required with
+    | [] -> ()
+    | missing ->
+      err ctx pos "construction of struct '%s' is missing required field(s): %s" name
+        (String.concat ", " missing));
+    TStruct name
 
 and var_type ctx bctx env pos name =
   match SM.find_opt name env.facts with
@@ -247,6 +289,15 @@ and prop_type ctx bctx env whole target name =
       let owner = unwrap tt in
       (match owner with
       | TAny -> TAny
+      (* §1 structs: field access resolves against the struct's field table;
+         an unknown field errors with the valid set *)
+      | TStruct n -> (
+        match List.assoc_opt name (struct_fields ctx n) with
+        | Some t -> t
+        | None ->
+          err ctx whole.epos "unknown field '%s' on struct %s%s" name n
+            (suggestion name (List.map fst (struct_fields ctx n)));
+          TAny)
       | TEither ts ->
         err ctx whole.epos
           "cannot access property '%s' on either<%s>; narrow it first with 'is a'" name
@@ -1040,6 +1091,25 @@ and check_block_method ctx bctx env pos recv name args ~as_stmt : ty =
     | "get_tag" -> TOptional TAny
     | _ -> TAny))
 
+(* §1 structs: the only struct method is `copy()` — a shallow structural copy
+   (a new struct with the same field values; nested reference values are shared).
+   It returns a new struct, so it is expression-only. *)
+and check_struct_method ctx bctx env pos n name args ~as_stmt : ty =
+  match name with
+  | "copy" ->
+    if as_stmt then
+      err ctx pos
+        "method 'copy' returns a new %s and has no effect as a statement; use its result (e.g. \
+         'set g to g.copy()')"
+        n;
+    if args <> [] then err ctx pos "method 'copy' takes no arguments, got %d" (List.length args);
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TStruct n
+  | _ ->
+    err ctx pos "unknown method '%s' on struct %s; the only struct method is 'copy'" name n;
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TAny
+
 and check_method ctx bctx env pos recv name args ~as_stmt : ty =
   match recv.e with
   | EVar "super" ->
@@ -1051,6 +1121,9 @@ and check_method ctx bctx env pos recv name args ~as_stmt : ty =
   | _ ->
   let rt = type_of ctx bctx env recv in
   require_present ctx env recv rt ~use:"the method receiver";
+  match unwrap rt with
+  | TStruct n -> check_struct_method ctx bctx env pos n name args ~as_stmt
+  | _ ->
   if unwrap rt = TBlock then check_block_method ctx bctx env pos recv name args ~as_stmt
   else
   match method_owner_of rt with
@@ -1218,6 +1291,9 @@ and is_type_facts ctx bctx env l tn negated =
         (* players ARE offline players (phase 8): an OfflinePlayer member
            test is true for Player values too *)
       else if tn = "OfflinePlayer" then fun t -> t = TOfflinePlayer || t = TPlayer
+        (* §1 structs: a struct-name test matches exactly that nominal struct
+           (used to narrow an either<StructA|StructB> member) *)
+      else if is_struct ctx tn then fun t -> t = TStruct tn
       else
         match ty_of_type_name tn with
         | Some tt -> fun t -> t = tt

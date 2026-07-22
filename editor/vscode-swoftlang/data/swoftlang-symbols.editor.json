@@ -14,9 +14,9 @@
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
   "declarations": [
-    "item", "mob", "npc", "hologram", "gui", "scoreboard", "tablist",
-    "bossbar", "server", "storage", "persistent", "api", "fishing_loot",
-    "block_handler", "placement_rule"
+    "struct", "item", "mob", "npc", "hologram", "gui", "scoreboard",
+    "tablist", "bossbar", "server", "storage", "persistent", "api",
+    "fishing_loot", "block_handler", "placement_rule"
   ],
   "receivers": [
     "Player", "Entity", "Mob", "Item", "Block", "Projectile", "Inventory",

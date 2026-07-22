@@ -1150,6 +1150,29 @@ and check_set_prop ctx bctx env pos target name value =
       is_tags_ty (with_quiet ctx (fun () -> type_of ctx bctx env target))
       || inside_tags ctx bctx env target ->
     ()
+  (* §1 structs: writing a struct field. Handled before the generic path so an
+     optional-typed field can be set to 'none' without a presence error. All
+     struct fields are mutable. *)
+  | _
+    when (match unwrap (with_quiet ctx (fun () -> type_of ctx bctx env target)) with
+         | TStruct _ -> true
+         | _ -> false) ->
+    let tt = type_of ctx bctx env target in
+    require_present ctx env target tt ~use:"this value";
+    (match unwrap tt with
+    | TStruct n -> (
+      match List.assoc_opt name (struct_fields ctx n) with
+      | None ->
+        err ctx pos "unknown field '%s' on struct %s%s" name n
+          (suggestion name (List.map fst (struct_fields ctx n)))
+      | Some fty ->
+        (match fty with
+        | TOptional _ -> ()
+        | _ -> require_present ctx env value vt ~use:"the assigned value");
+        if not (param_compat fty vt) then
+          err ctx value.epos "field '%s' of struct %s expects %s (got %s)" name n
+            (ty_to_string fty) (ty_to_string vt))
+    | _ -> ())
   | _ -> (
     require_present ctx env value vt ~use:"the assigned value";
     let tt = type_of ctx bctx env target in

@@ -956,8 +956,26 @@ public final class Builtins {
         if (receiver instanceof net.swofty.blocks.BlockValue block) {
             return blockMethod(context, block, name, args);
         }
+        if (receiver instanceof net.swofty.structs.StructValue struct) {
+            return structMethod(struct, name);
+        }
         throw new ScriptError("cannot call method '" + name + "' on "
                 + Values.displayString(receiver));
+    }
+
+    // -------------------------- struct methods ------------------------
+
+    /**
+     * Struct instance method dispatch (§1.4). Only {@code copy()} exists for
+     * now: a shallow structural copy (new struct, same field values; nested
+     * reference values are shared). Struct methods are otherwise a non-goal.
+     */
+    private static Object structMethod(net.swofty.structs.StructValue struct, String name) {
+        if (name.equals("copy")) {
+            return struct.copy();
+        }
+        throw new ScriptError("unknown struct method '" + name + "' on '"
+                + struct.typeName() + "' (structs support .copy() only)");
     }
 
     // -------------------------- block methods -------------------------

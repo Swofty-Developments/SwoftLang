@@ -24,5 +24,10 @@ public enum BaseType {
     MAP,
     OPTIONAL,
     EITHER,
+    // A nominal struct / custom-type reference carried by name (§1 structs,
+    // §2 nominal custom types). The name lives in DataType.typeName; the
+    // struct registry resolves it to a StructDefModel for construction and
+    // persistence dispatch.
+    STRUCT,
     UNKNOWN
 }

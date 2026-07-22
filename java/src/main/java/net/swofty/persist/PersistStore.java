@@ -18,8 +18,13 @@ import net.swofty.ScriptError;
 import net.swofty.model.PersistentDeclModel;
 import net.swofty.model.StorageBackendModel;
 import net.swofty.model.StorageConfigModel;
+import net.swofty.model.StructDefModel;
+import net.swofty.model.StructFieldModel;
 import net.swofty.nativebridge.representation.BaseType;
+import net.swofty.nativebridge.representation.DataType;
 import net.swofty.props.NoneValue;
+import net.swofty.structs.StructRegistry;
+import net.swofty.structs.StructValue;
 
 /**
  * In-memory facade over a SwoftStorage backend. Every declared persistent
@@ -154,6 +159,12 @@ public final class PersistStore {
         // copy; it persists only if the caller writes it back with persist_set.
         if (def instanceof net.swofty.runtime.MapValue map) {
             return new net.swofty.runtime.MapValue(map);
+        }
+        // a struct is likewise a mutable reference: hand absent rows a fresh
+        // shallow copy so a caller mutating a field can't corrupt the shared
+        // default (and thus every other absent subject)
+        if (def instanceof StructValue struct) {
+            return struct.copy();
         }
         return def;
     }
@@ -407,6 +418,22 @@ public final class PersistStore {
                     return value;
                 }
                 break;
+            case PLAYER:
+                // a Player value persists by uuid; keep the live reference here
+                // (serialization to uuid happens at flush, see toJson)
+                if (value instanceof net.minestom.server.entity.Player) {
+                    return value;
+                }
+                break;
+            case STRUCT:
+                // a struct persists as a JSON object of its fields; keep the
+                // live StructValue reference so a later persist_set of the
+                // mutated instance re-flushes the whole blob (map/list semantics)
+                if (value instanceof StructValue struct
+                        && struct.typeName().equals(decl.type().getTypeName())) {
+                    return value;
+                }
+                break;
             case LIST:
                 if (value instanceof List<?> list) {
                     return validateListValues(decl, list);
@@ -498,6 +525,8 @@ public final class PersistStore {
                 return null;
             case ITEM:
                 return value instanceof net.minestom.server.item.ItemStack ? value : null;
+            case PLAYER:
+                return value instanceof net.minestom.server.entity.Player ? value : null;
             default:
                 return null;
         }
@@ -512,6 +541,7 @@ public final class PersistStore {
             case LOCATION: return v instanceof net.minestom.server.coordinate.Pos;
             case VEC: return v instanceof net.minestom.server.coordinate.Vec;
             case ITEM: return v instanceof net.minestom.server.item.ItemStack;
+            case PLAYER: return v instanceof net.minestom.server.entity.Player;
             default: return false;
         }
     }
@@ -584,6 +614,10 @@ public final class PersistStore {
                 return vecFromJson(element);
             case ITEM:
                 return itemFromJson(element);
+            case PLAYER:
+                return playerFromJson(element);
+            case STRUCT:
+                return structFromJson(type, element);
             case LIST:
                 return listFromJson(listElementType(type), element);
             case MAP:
@@ -658,6 +692,87 @@ public final class PersistStore {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Resolve a stored Player (a uuid string) back to the live online Player,
+     * or null (resolve-or-cull, §3.2): a player who is offline at load can't be
+     * re-resolved, so the row is treated as bad and falls back to the default +
+     * warn. A non-string or unparseable blob is likewise a bad row.
+     */
+    private static Object playerFromJson(JsonElement blob) {
+        if (blob == null || !blob.isJsonPrimitive()) {
+            return null;
+        }
+        try {
+            java.util.UUID uuid = java.util.UUID.fromString(blob.getAsString());
+            return net.minestom.server.MinecraftServer.getConnectionManager()
+                    .getOnlinePlayerByUuid(uuid);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deserialize a stored struct blob (a JSON object of its fields, §3.2) into a
+     * live {@link StructValue}, dispatching each field by its declared type
+     * (nested structs, list/map/optional, Location/Vec/Item/Player-uuid, scalars).
+     * A missing/null field is only valid for an optional field (reloads as none);
+     * any missing required field, an unknown struct type, a non-object blob, or a
+     * bad field value makes the whole row bad (null) so the caller falls back to
+     * the default + warn.
+     */
+    private static Object structFromJson(DataType type, JsonElement blob) {
+        if (blob == null || !blob.isJsonObject()) {
+            return null;
+        }
+        StructDefModel def = StructRegistry.get(type.getTypeName());
+        if (def == null) {
+            return null;
+        }
+        com.google.gson.JsonObject object = blob.getAsJsonObject();
+        LinkedHashMap<String, Object> values = new LinkedHashMap<>();
+        for (StructFieldModel field : def.fields()) {
+            JsonElement element = object.get(field.name());
+            Object value;
+            if (element == null || element.isJsonNull()) {
+                if (field.type().getBaseType() == BaseType.OPTIONAL) {
+                    value = NoneValue.INSTANCE;
+                } else {
+                    return null;
+                }
+            } else {
+                value = coerceStoredValue(field.type(), element);
+                if (value == null) {
+                    return null;
+                }
+            }
+            values.put(field.name(), value);
+        }
+        return new StructValue(def.name(), values);
+    }
+
+    /**
+     * Serialize a struct instance to a JSON object of its fields, in declaration
+     * order (§3.2). Each field is dispatched by its runtime value type via
+     * {@link #toJson} — so nested structs recurse, Players emit their uuid, and
+     * Location/Vec/Item/list/map/optional reuse the rich-persistence encodings.
+     */
+    private static JsonElement structToJson(StructValue struct) {
+        com.google.gson.JsonObject object = new com.google.gson.JsonObject();
+        StructDefModel def = StructRegistry.get(struct.typeName());
+        if (def == null) {
+            // unknown struct type (registry cleared / never declared): emit the
+            // raw field map so no data is silently dropped
+            for (Map.Entry<String, Object> entry : struct.fields().entrySet()) {
+                object.add(entry.getKey(), toJson(entry.getValue()));
+            }
+            return object;
+        }
+        for (StructFieldModel field : def.fields()) {
+            object.add(field.name(), toJson(struct.getField(field.name())));
+        }
+        return object;
     }
 
     /**
@@ -777,6 +892,16 @@ public final class PersistStore {
         if (value instanceof Number number) {
             return new JsonPrimitive(number);
         }
+        // Player -> uuid string (reconnect-stable; resolve-or-cull on load).
+        if (value instanceof net.minestom.server.entity.Player player) {
+            return new JsonPrimitive(player.getUuid().toString());
+        }
+        // struct -> JSON object of its fields (§3.2), each field dispatched by
+        // its declared type. Placed before the generic Map branch: a StructValue
+        // is not a Map, but keep the ordering explicit.
+        if (value instanceof StructValue struct) {
+            return structToJson(struct);
+        }
         // Location -> {x,y,z,yaw,pitch}. A script Location is a bare Pos with no
         // attached world, so no "world" field is emitted (see locationFromJson:
         // world is a lazy-resolve hint, not part of the value); load reads back
@@ -877,7 +1002,8 @@ public final class PersistStore {
             net.swofty.nativebridge.representation.DataType type) {
         BaseType base = type.getBaseType();
         return isScalar(base) || base == BaseType.LOCATION
-                || base == BaseType.VEC || base == BaseType.ITEM;
+                || base == BaseType.VEC || base == BaseType.ITEM
+                || base == BaseType.PLAYER;
     }
 
     /**
@@ -905,6 +1031,68 @@ public final class PersistStore {
         if (base == BaseType.OPTIONAL) {
             net.swofty.nativebridge.representation.DataType inner = listElementType(type);
             return inner != null && isLeafPersistable(inner);
+        }
+        // a struct persists (§3.2) iff every one of its fields is persistable;
+        // struct fields may themselves be leaves, nested structs, or
+        // list/map/optional of those (richer than a top-level persistent, whose
+        // collection elements must be leaves)
+        if (base == BaseType.STRUCT) {
+            return isStructPersistable(type, new java.util.HashSet<>());
+        }
+        return false;
+    }
+
+    /**
+     * A struct is persistable when it is declared and every field type is
+     * field-persistable. The visiting set guards against a cyclic struct
+     * declaration recursing forever (a cycle is optimistically treated as OK;
+     * the typechecker rejects genuinely infinite value structs).
+     */
+    private static boolean isStructPersistable(DataType type, Set<String> visiting) {
+        String name = type.getTypeName();
+        if (name == null || !visiting.add(name)) {
+            return name != null; // already visiting == cycle == accept
+        }
+        try {
+            StructDefModel def = StructRegistry.get(name);
+            if (def == null) {
+                return false;
+            }
+            for (StructFieldModel field : def.fields()) {
+                if (!isFieldPersistable(field.type(), visiting)) {
+                    return false;
+                }
+            }
+            return true;
+        } finally {
+            visiting.remove(name);
+        }
+    }
+
+    /**
+     * A struct field type is persistable when it is a leaf (scalar / Location /
+     * Vec / Item / Player-uuid), a nested persistable struct, or a
+     * list/map/optional whose element is itself field-persistable.
+     */
+    private static boolean isFieldPersistable(DataType type, Set<String> visiting) {
+        BaseType base = type.getBaseType();
+        if (isLeafPersistable(type)) {
+            return true;
+        }
+        if (base == BaseType.STRUCT) {
+            return isStructPersistable(type, visiting);
+        }
+        if (base == BaseType.LIST) {
+            DataType element = listElementType(type);
+            return element != null && isFieldPersistable(element, visiting);
+        }
+        if (base == BaseType.MAP) {
+            DataType value = mapValueType(type);
+            return value != null && isFieldPersistable(value, visiting);
+        }
+        if (base == BaseType.OPTIONAL) {
+            DataType inner = listElementType(type);
+            return inner != null && isFieldPersistable(inner, visiting);
         }
         return false;
     }

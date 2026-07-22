@@ -304,8 +304,8 @@ let register_persistent ctx (pd : persistent_decl) =
         pd.pd_name;
     Hashtbl.add ctx.persists pd.pd_name
       {
-        pi_subject = Option.map ty_of_dt pd.pd_subject;
-        pi_ty = ty_of_dt pd.pd_type;
+        pi_subject = Option.map (resolve_ty ctx) pd.pd_subject;
+        pi_ty = resolve_ty ctx pd.pd_type;
       }
   end
 
@@ -317,9 +317,44 @@ let persistable_value = function
   | TString | TInteger | TDouble | TBoolean | TLocation | TVec | TItem -> true
   | _ -> false
 
+(* §3.2 struct serializability: a struct may be persistent iff every field is a
+   serializable type. The serializable set for struct fields is a superset of
+   the top-level persistable values: it additionally admits Player /
+   OfflinePlayer (serialized by uuid) and nested serializable structs. The walk
+   is cycle-guarded (a struct that reaches itself is assumed fine — its concrete
+   leaves were checked on the way in). *)
+let rec serializable_ty ctx ~seen ty =
+  match ty with
+  | TString | TInteger | TDouble | TBoolean | TLocation | TVec | TItem | TPlayer | TOfflinePlayer
+    ->
+    true
+  | TOptional t | TList t -> serializable_ty ctx ~seen t
+  | TMap ((TString | TInteger | TPlayer), v) -> serializable_ty ctx ~seen v
+  | TStruct n ->
+    List.mem n seen
+    ||
+    (match Hashtbl.find_opt ctx.structs n with
+    | Some si -> List.for_all (fun (_, t) -> serializable_ty ctx ~seen:(n :: seen) t) si.si_fields
+    | None -> true)
+  | _ -> false
+
+(* the first field of struct `n` whose type is not serializable, for the
+   persistence diagnostic (names the offending direct field). *)
+let first_nonserializable_field ctx n =
+  match Hashtbl.find_opt ctx.structs n with
+  | None -> None
+  | Some si -> List.find_opt (fun (_, t) -> not (serializable_ty ctx ~seen:[ n ] t)) si.si_fields
+
 let check_persistent ctx (pd : persistent_decl) =
   let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
-  let declared = ty_of_dt pd.pd_type in
+  let declared = resolve_ty ctx pd.pd_type in
+  (* the struct at the value leaf of the declared type, if any — for the
+     serializability diagnostic that names the offending field *)
+  let struct_leaf =
+    match declared with
+    | TStruct n | TOptional (TStruct n) | TList (TStruct n) | TMap (_, TStruct n) -> Some n
+    | _ -> None
+  in
   let reject_live () =
     err ctx pd.pd_pos
       "persistent '%s' cannot store a live Player/Entity value; persist the uuid (String) or a \
@@ -327,6 +362,24 @@ let check_persistent ctx (pd : persistent_decl) =
       pd.pd_name
   in
   (match declared with
+  (* §3.2 a struct (or optional/list/map of one) is persistent iff all its
+     fields are serializable; otherwise name the offending field *)
+  | (TStruct _ | TOptional (TStruct _) | TList (TStruct _) | TMap (_, TStruct _))
+    when (match struct_leaf with Some n -> serializable_ty ctx ~seen:[] (TStruct n) | None -> false)
+    ->
+    ()
+  | TStruct _ | TOptional (TStruct _) | TList (TStruct _) | TMap (_, TStruct _) -> (
+    match struct_leaf with
+    | Some n -> (
+      match first_nonserializable_field ctx n with
+      | Some (fn, ft) ->
+        err ctx pd.pd_pos
+          "persistent '%s' cannot store struct '%s': field '%s' has non-serializable type %s"
+          pd.pd_name n fn (ty_to_string ft)
+      | None ->
+        err ctx pd.pd_pos "persistent '%s' cannot store struct '%s' (a field is non-serializable)"
+          pd.pd_name n)
+    | None -> ())
   (* bare persistable value, or an optional/list of one *)
   | t when persistable_value t -> ()
   | TOptional t when persistable_value t -> ()
@@ -388,8 +441,10 @@ let register_custom_types ctx (script : Ast.script) =
     if Tc_types.ty_of_type_name name <> None then
       err ctx pos
         "custom %s type '%s' collides with a built-in type name — choose another name" kind name
-    else if Hashtbl.mem ctx.custom_mobs name || Hashtbl.mem ctx.custom_items name then
-      err ctx pos "duplicate custom type '%s'" name
+    else if
+      Hashtbl.mem ctx.custom_mobs name || Hashtbl.mem ctx.custom_items name
+      || Hashtbl.mem ctx.structs name
+    then err ctx pos "duplicate custom type '%s'" name
     else Hashtbl.replace tbl name id
   in
   List.iter
@@ -398,6 +453,82 @@ let register_custom_types ctx (script : Ast.script) =
   List.iter
     (fun (it : item_decl) -> claim ctx.custom_items "item" it.it_tyname it.it_id it.it_pos)
     script.items
+
+(* §1 structs: publish the Capitalized struct names (pass 1a), rejecting a name
+   that collides with a built-in type or another custom/struct type. The name
+   must be visible before any type annotation — including other structs' fields
+   — resolves. Fields are filled in a second sub-pass (register_struct_fields)
+   once every type name is known. *)
+let register_struct_names ctx (script : Ast.script) =
+  List.iter
+    (fun (sd : struct_decl) ->
+      let name = sd.su_tyname in
+      if Tc_types.ty_of_type_name name <> None then
+        err ctx sd.su_pos
+          "struct type '%s' collides with a built-in type name — choose another name" name
+      else if
+        Hashtbl.mem ctx.custom_mobs name || Hashtbl.mem ctx.custom_items name
+        || Hashtbl.mem ctx.structs name
+      then err ctx sd.su_pos "duplicate custom type '%s'" name
+      else Hashtbl.replace ctx.structs name { si_fields = []; si_required = [] })
+    script.structs
+
+(* §1 structs (pass 1b): resolve each struct's field types now that every type
+   name is registered, so a field may reference another struct. Records the
+   ordered (name -> ty) fields and the names of fields lacking a default (the
+   totality set for construction). *)
+let register_struct_fields ctx (script : Ast.script) =
+  List.iter
+    (fun (sd : struct_decl) ->
+      let seen = Hashtbl.create 8 in
+      let fields =
+        List.filter_map
+          (fun (f : struct_field) ->
+            if Hashtbl.mem seen f.srf_name then begin
+              err ctx f.srf_pos "duplicate field '%s' in struct '%s'" f.srf_name sd.su_tyname;
+              None
+            end
+            else begin
+              Hashtbl.replace seen f.srf_name ();
+              Some (f.srf_name, resolve_ty ctx f.srf_type)
+            end)
+          sd.su_fields
+      in
+      let required =
+        List.filter_map
+          (fun (f : struct_field) ->
+            if f.srf_default = None && List.mem_assoc f.srf_name fields then Some f.srf_name
+            else None)
+          sd.su_fields
+      in
+      Hashtbl.replace ctx.structs sd.su_tyname { si_fields = fields; si_required = required })
+    script.structs
+
+(* §1 structs: check the declaration itself — each field default (if any) is
+   present (unless the field is optional) and type-compatible with the field's
+   declared type. Field types are resolved leniently (an unknown Capitalized
+   name degrades to Any, like the nominal-type surface elsewhere). *)
+let check_struct_decl ctx (sd : struct_decl) =
+  let bctx =
+    { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
+      in_schedule = false; override = None }
+  in
+  List.iter
+    (fun (f : struct_field) ->
+      let fty = resolve_ty ctx f.srf_type in
+      match f.srf_default with
+      | None -> ()
+      | Some e ->
+        let dt = type_of ctx bctx empty_env e in
+        (match fty with
+        | TOptional _ -> ()
+        | _ ->
+          require_present ctx empty_env e dt
+            ~use:(Printf.sprintf "the default value of field '%s'" f.srf_name));
+        if not (param_compat fty dt) then
+          err ctx e.epos "the default value of field '%s' must be %s (got %s)" f.srf_name
+            (ty_to_string fty) (ty_to_string dt))
+    sd.su_fields
 
 let register_items ctx items =
   List.iter

@@ -290,6 +290,7 @@ public class SwoftJsonLoader {
         List<NpcModel> npcs = new ArrayList<>();
         List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
         List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
+        List<net.swofty.model.StructDefModel> structs = new ArrayList<>();
 
         List<ModuleRegistry.Module> loaded = new ArrayList<>();
         for (StagedModule stagedModule : staged) {
@@ -366,6 +367,7 @@ public class SwoftJsonLoader {
             npcs.addAll(part.npcs());
             blockHandlers.addAll(part.blockHandlers());
             placementRules.addAll(part.placementRules());
+            structs.addAll(part.structs());
         }
 
         // module vars initialize at load, in dependency order
@@ -376,7 +378,7 @@ public class SwoftJsonLoader {
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs, blockHandlers, placementRules);
+                holograms, npcs, blockHandlers, placementRules, structs);
     }
 
     /**
@@ -530,10 +532,16 @@ public class SwoftJsonLoader {
             placementRules.add(buildPlacementRule(element.getAsJsonObject()));
         }
 
+        // §1 struct declarations
+        List<net.swofty.model.StructDefModel> structs = new ArrayList<>();
+        for (JsonElement element : optArray(root, "structs")) {
+            structs.add(buildStructDef(element.getAsJsonObject()));
+        }
+
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs, blockHandlers, placementRules);
+                holograms, npcs, blockHandlers, placementRules, structs);
     }
 
     /**
@@ -969,7 +977,20 @@ public class SwoftJsonLoader {
     }
 
     private static DataType buildDataType(JsonObject obj) {
-        DataType dataType = new DataType(BaseType.valueOf(obj.get("base").getAsString()));
+        String baseName = obj.get("base").getAsString();
+        // A nominal struct / custom type is emitted with its Capitalized name
+        // verbatim (e.g. "Guild", "Point") instead of a builtin base keyword;
+        // carry it as a STRUCT base with the name attached so the struct
+        // registry and persistence layer can resolve it.
+        BaseType baseType;
+        try {
+            baseType = BaseType.valueOf(baseName);
+        } catch (IllegalArgumentException notBuiltin) {
+            DataType nominal = new DataType(BaseType.STRUCT);
+            nominal.setTypeName(baseName);
+            return nominal;
+        }
+        DataType dataType = new DataType(baseType);
         BaseType base = dataType.getBaseType();
         if (base == BaseType.EITHER || base == BaseType.OPTIONAL || base == BaseType.LIST
                 || base == BaseType.MAP) {
@@ -1798,6 +1819,22 @@ public class SwoftJsonLoader {
                 }
                 return new ObjectLiteralExpression(entries);
             }
+            case "struct_new": {
+                // Guild { name: "...", ... } struct construction (§1.2). Fields
+                // are an ordered [{name, value}] list; the runtime fills any
+                // omitted defaulted field from the struct declaration.
+                List<net.swofty.nativebridge.execution.expressions
+                        .StructConstructionExpression.FieldInit> inits = new ArrayList<>();
+                for (JsonElement element : obj.getAsJsonArray("fields")) {
+                    JsonObject field = element.getAsJsonObject();
+                    inits.add(new net.swofty.nativebridge.execution.expressions
+                            .StructConstructionExpression.FieldInit(
+                            field.get("name").getAsString(),
+                            buildExpression(field.getAsJsonObject("value"))));
+                }
+                return new net.swofty.nativebridge.execution.expressions
+                        .StructConstructionExpression(obj.get("struct").getAsString(), inits);
+            }
             case "map":
                 // { key: expr, ... } nested object (send packet payloads)
                 return new ObjectLiteralExpression(buildFieldMap(obj.get("entries")));
@@ -2144,6 +2181,26 @@ public class SwoftJsonLoader {
                 optString(backendObj, "user"),
                 optString(backendObj, "password"),
                 firstString(backendObj, "uri", "url", "connection"));
+    }
+
+    private static net.swofty.model.StructDefModel buildStructDef(JsonObject obj) {
+        List<net.swofty.model.StructFieldModel> fields = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "fields")) {
+            JsonObject field = element.getAsJsonObject();
+            fields.add(new net.swofty.model.StructFieldModel(
+                    field.get("name").getAsString(),
+                    buildDataType(field.getAsJsonObject("type")),
+                    has(field, "default") && field.get("default").isJsonObject()
+                            ? buildExpression(field.getAsJsonObject("default")) : null,
+                    has(field, "reactive") && field.get("reactive").getAsBoolean(),
+                    has(field, "line") ? field.get("line").getAsInt() : -1,
+                    has(field, "col") ? field.get("col").getAsInt() : -1));
+        }
+        return new net.swofty.model.StructDefModel(
+                obj.get("name").getAsString(),
+                fields,
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
     }
 
     private static PersistentDeclModel buildPersistent(JsonObject obj) {

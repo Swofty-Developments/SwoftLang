@@ -348,6 +348,15 @@ def main():
                     "2": {"name": "entity.name.function.swoftlang"},
                 },
             },
+            # a struct declaration names a nominal type (§1): color the
+            # Capitalized type name as a class, like 'event Name'
+            {
+                "match": r"\b(struct)\s+([A-Za-z_][A-Za-z0-9_]*)",
+                "captures": {
+                    "1": {"name": "storage.type.declaration.swoftlang"},
+                    "2": {"name": "entity.name.class.swoftlang"},
+                },
+            },
             # block-declaration keywords (item, mob, npc, gui, ...) + the named
             # def introducers (command, event, function, schedule)
             {

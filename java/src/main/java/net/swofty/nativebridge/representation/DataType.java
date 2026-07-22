@@ -6,7 +6,11 @@ import java.util.List;
 public class DataType {
     private BaseType baseType;
     private List<DataType> subTypes = new ArrayList<>();
-    
+    // For BaseType.STRUCT: the nominal type name (e.g. "Guild", "Point") kept
+    // verbatim from the compiler so the struct registry can resolve it. null
+    // for every builtin base type.
+    private String typeName;
+
     public DataType(BaseType baseType) {
         this.baseType = baseType;
     }
@@ -14,16 +18,26 @@ public class DataType {
     public DataType(DataType other) {
         this.baseType = other.baseType;
         this.subTypes = other.subTypes;
+        this.typeName = other.typeName;
     }
-    
+
     public void addSubType(DataType subType) {
         this.subTypes.add(subType);
     }
-    
+
     public BaseType getBaseType() {
         return baseType;
     }
-    
+
+    /** The nominal struct/custom-type name for a STRUCT base; null otherwise. */
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
     public List<DataType> getSubTypes() {
         return subTypes;
     }
@@ -52,6 +66,10 @@ public class DataType {
             return sb.toString();
         }
         
+        if (baseType == BaseType.STRUCT) {
+            return typeName != null ? typeName : "struct";
+        }
+
         switch (baseType) {
             case STRING: return "String";
             case INTEGER: return "Integer";

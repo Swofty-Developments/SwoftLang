@@ -463,6 +463,10 @@
       "kind": "keyword"
     },
     {
+      "name": "struct",
+      "kind": "declaration"
+    },
+    {
       "name": "item",
       "kind": "declaration"
     },

@@ -48,6 +48,14 @@ type pinfo = {
   pi_ty : ty;
 }
 
+(* §1 structs: the resolved shape of a declared struct type — its fields in
+   source order (name -> resolved ty) and the names of the fields WITHOUT a
+   default (which must all be supplied at construction for totality). *)
+type sinfo = {
+  si_fields : (string * ty) list;
+  si_required : string list;
+}
+
 type ctx = {
   file : string;
   mutable errors : Diagnostics.error list;
@@ -63,6 +71,10 @@ type ctx = {
      any type annotation is resolved. *)
   custom_mobs : (string, string) Hashtbl.t;
   custom_items : (string, string) Hashtbl.t;
+  (* §1 structs: struct type name -> its resolved fields. Populated in pass 1
+     (names first, then field types) before any type annotation resolves, so a
+     struct is usable as a nominal type in var/field/param/return/'is a'. *)
+  structs : (string, sinfo) Hashtbl.t;
   (* declared UI / scheduler names, for reference validation of statements
      that name a declaration (show/hide scoreboard|tablist|bossbar "name",
      open/replace gui "name", cancel schedule "name"). These identifiers land
@@ -282,6 +294,12 @@ let check_persist_shadow ctx pos what name =
 
 let is_custom_mob ctx name = Hashtbl.mem ctx.custom_mobs name
 let is_custom_item ctx name = Hashtbl.mem ctx.custom_items name
+let is_struct ctx name = Hashtbl.mem ctx.structs name
+
+(* §1 structs: the fields of a declared struct (name -> resolved ty), in source
+   order; [] for an unknown name. *)
+let struct_fields ctx name =
+  match Hashtbl.find_opt ctx.structs name with Some si -> si.si_fields | None -> []
 
 (* ctx-aware type resolution: like Tc_types.ty_of_dt but a bare Capitalized name
    that is not a builtin resolves against the declared custom types (Ghoul ->
@@ -293,6 +311,7 @@ let rec resolve_ty ctx (dt : data_type) : ty =
     match Tc_types.ty_of_dt (DSimple n) with
     | TAny when is_custom_mob ctx n -> TCustomMob n
     | TAny when is_custom_item ctx n -> TCustomItem n
+    | TAny when is_struct ctx n -> TStruct n
     | t -> t)
   | DEither ts -> TEither (List.map (resolve_ty ctx) ts)
   | DOptional t -> TOptional (resolve_ty ctx t)

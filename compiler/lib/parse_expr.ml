@@ -422,6 +422,22 @@ and parse_primary st =
     in
     expect st Token.RPAREN "')' to close block(...)";
     mke p (ECall ("block", args))
+  (* §1 struct construction: `Struct { field: expr, ... }`. Recognised only for
+     a prescanned struct type name, so a Capitalized variable followed by a
+     block (rare, but legal) is never misparsed as a construction. *)
+  | Token.IDENT name when peek2_tok st = Token.LBRACE && is_struct_name st name ->
+    ignore (advance st);
+    expect st Token.LBRACE "'{' after struct type name";
+    let fields = ref [] in
+    while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+      let fname = expect_ident st "struct field name" in
+      expect st Token.COLON "':' after struct field name";
+      let value = parse_expr st in
+      fields := (fname, value) :: !fields;
+      ignore (matches st Token.COMMA)
+    done;
+    expect st Token.RBRACE "'}' to close struct construction";
+    mke p (EStructNew (name, List.rev !fields))
   | Token.IDENT name when peek2_tok st = Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);
@@ -502,7 +518,8 @@ and interp_string st p s =
     | exception Lexer.Error _ -> None
     | tokens -> (
       let sub =
-        { file = st.file; tokens = Array.of_list tokens; pos = 0; persists = st.persists }
+        { file = st.file; tokens = Array.of_list tokens; pos = 0; persists = st.persists;
+          structs = st.structs }
       in
       match parse_expr sub with
       | exception Diagnostics.Error _ -> None

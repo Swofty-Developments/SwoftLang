@@ -10,7 +10,7 @@ open Parse_content
    events always register — they are effects, not symbols — so 'export' on
    them is rejected with an explanatory error. *)
 let parse_exported st ~functions ~guis ~scoreboards ~tablists ~bossbars ~holograms ~npcs ~items
-    ~mobs =
+    ~mobs ~structs =
   ignore (advance st);
   (* 'export' *)
   match peek_tok st with
@@ -31,6 +31,8 @@ let parse_exported st ~functions ~guis ~scoreboards ~tablists ~bossbars ~hologra
   | Token.IDENT "npc" -> npcs := { (parse_npc st) with n_exported = true } :: !npcs
   | Token.IDENT "item" -> items := { (parse_item_decl st) with it_exported = true } :: !items
   | Token.IDENT "mob" -> mobs := { (parse_mob_decl st) with mb_exported = true } :: !mobs
+  | Token.IDENT "struct" ->
+    structs := { (parse_struct_decl st) with su_exported = true } :: !structs
   | Token.COMMAND ->
     error st
       "commands always register when their module is imported (they are effects, not symbols); \
@@ -38,8 +40,8 @@ let parse_exported st ~functions ~guis ~scoreboards ~tablists ~bossbars ~hologra
   | t ->
     error st
       (Printf.sprintf
-         "'export' can only prefix 'function', 'item', 'mob', 'gui', 'scoreboard', 'tablist', \
-          'bossbar', 'hologram', or 'npc' declarations, found %s"
+         "'export' can only prefix 'function', 'item', 'mob', 'struct', 'gui', 'scoreboard', \
+          'tablist', 'bossbar', 'hologram', or 'npc' declarations, found %s"
          (Token.describe t))
 
 let parse ~file source =
@@ -48,7 +50,10 @@ let parse ~file source =
     with Lexer.Error (msg, line, col) -> Diagnostics.raise_error ~file ~line ~col msg
   in
   let tokens = Array.of_list tokens in
-  let st = { file; tokens; pos = 0; persists = prescan_persistents tokens } in
+  let st =
+    { file; tokens; pos = 0; persists = prescan_persistents tokens;
+      structs = prescan_structs tokens }
+  in
   let imports = ref [] in
   let module_vars = ref [] in
   let commands = ref [] in
@@ -71,6 +76,7 @@ let parse ~file source =
   let block_handlers = ref [] in
   let placement_rules = ref [] in
   let receivers = ref [] in
+  let structs = ref [] in
   while peek_tok st <> Token.EOF do
     match peek_tok st with
     | Token.COMMAND -> commands := parse_command_group st :: !commands
@@ -92,7 +98,7 @@ let parse ~file source =
       imports := { im_spec; im_pos } :: !imports
     | Token.IDENT "export" ->
       parse_exported st ~functions ~guis ~scoreboards ~tablists ~bossbars ~holograms ~npcs ~items
-        ~mobs
+        ~mobs ~structs
     | Token.IDENT "var" ->
       let mv_pos = pos_here st in
       ignore (advance st);
@@ -113,6 +119,7 @@ let parse ~file source =
     | Token.IDENT "persistent" -> persistents := parse_persistent st :: !persistents
     | Token.IDENT "item" -> items := parse_item_decl st :: !items
     | Token.IDENT "mob" -> mobs := parse_mob_decl st :: !mobs
+    | Token.IDENT "struct" -> structs := parse_struct_decl st :: !structs
     (* The flat 'on <Event> { }' shorthand and the top-level 'on packet "..." { }'
        statement were both removed. Events live on capitalized receiver blocks;
        raw packets live in the `Packet { on "Class" { } }` receiver block. *)
@@ -142,8 +149,8 @@ let parse ~file source =
       error st
         (Printf.sprintf
            "Expected 'import', 'export', 'var', 'command', 'function', 'gui', 'scoreboard', \
-            'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', 'persistent', 'item', \
-            'mob', 'api', 'every', 'fishing_loot', 'block_handler', 'placement_rule', a receiver \
+            'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', 'persistent', 'struct', \
+            'item', 'mob', 'api', 'every', 'fishing_loot', 'block_handler', 'placement_rule', a receiver \
             block (Player/Entity/Mob/Item/Block/Projectile/Inventory/World/Server/Npc/Hologram), \
             or 'Packet', found %s"
            (Token.describe t))
@@ -162,6 +169,7 @@ let parse ~file source =
     servers = List.rev !servers;
     storages = List.rev !storages;
     persistents = List.rev !persistents;
+    structs = List.rev !structs;
     items = List.rev !items;
     mobs = List.rev !mobs;
     packet_listeners = List.rev !packet_listeners;

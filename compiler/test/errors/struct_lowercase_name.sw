@@ -1,0 +1,3 @@
+struct guild {
+    name: String
+}

@@ -28,6 +28,31 @@ let parse_custom_type_name st ~kw =
       (Printf.sprintf "Expected a Capitalized type name after '%s', found %s" kw
          (Token.describe t))
 
+(* §1 struct declaration: `struct Name { field: Type [= default] ... }`. Fields
+   are comma-optional (newline-separated is idiomatic). The Capitalized name is
+   enforced by parse_custom_type_name (lowercase / string form -> the shared
+   "types must start with an uppercase letter" diagnostic). *)
+let parse_struct_decl st =
+  let su_pos = pos_here st in
+  ignore (advance st);
+  (* 'struct' *)
+  let su_tyname = parse_custom_type_name st ~kw:"struct" in
+  expect st Token.LBRACE "'{' after struct type name";
+  let fields = ref [] in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    let srf_pos = pos_here st in
+    (* room for the phase-3 @EventReceiver field modifier: not parsed yet *)
+    let srf_reactive = false in
+    let srf_name = expect_ident st "struct field name" in
+    expect st Token.COLON "':' after struct field name";
+    let srf_type = Parse_type.parse_type st in
+    let srf_default = if matches st Token.EQUALS then Some (parse_expr st) else None in
+    fields := { srf_name; srf_type; srf_default; srf_reactive; srf_pos } :: !fields;
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close struct body";
+  { su_tyname; su_exported = false; su_fields = List.rev !fields; su_pos }
+
 (* key: expr pairs, comma-optional; used by the item attributes { } block *)
 let parse_kv_block st ~what =
   expect st Token.LBRACE (Printf.sprintf "'{' after '%s'" what);

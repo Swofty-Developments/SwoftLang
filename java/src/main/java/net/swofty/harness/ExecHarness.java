@@ -403,7 +403,15 @@ public class ExecHarness {
         String json = file.getName().endsWith(".json")
                 ? Files.readString(file.toPath())
                 : SwoftcCompiler.compile(file);
-        return SwoftJsonLoader.load(json);
+        ParsedScript parsed = SwoftJsonLoader.load(json);
+        // §1 structs: the headless harness has no engine collect phase, so
+        // register struct declarations here — construction and persistence
+        // dispatch both resolve them through StructRegistry.
+        net.swofty.structs.StructRegistry.clear();
+        for (net.swofty.model.StructDefModel struct : parsed.structs()) {
+            net.swofty.structs.StructRegistry.register(struct);
+        }
+        return parsed;
     }
 
     private static void runAllBlocks(ParsedScript parsed) {

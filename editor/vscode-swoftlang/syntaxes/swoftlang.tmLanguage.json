@@ -280,8 +280,7 @@
           }
         },
         {
-          "comment": "nominal custom-type decl head: `mob Ghoul` / `item AspectOfTheEnd` — the Capitalized name is the type",
-          "match": "\\b(mob|item)\\s+([A-Z][A-Za-z0-9_]*)",
+          "match": "\\b(struct)\\s+([A-Za-z_][A-Za-z0-9_]*)",
           "captures": {
             "1": {
               "name": "storage.type.declaration.swoftlang"
@@ -293,7 +292,7 @@
         },
         {
           "name": "storage.type.declaration.swoftlang",
-          "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|storage|tablist|server|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
+          "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|storage|tablist|server|struct|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
         }
       ]
     },

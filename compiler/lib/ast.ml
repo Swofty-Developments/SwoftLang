@@ -60,6 +60,11 @@ and expr_node =
   | ELambda of { lam_async : bool; lam_params : param list; lam_body : stmt list }
   (* nested field map inside 'send packet' values, e.g. action: { type: "...", ... } *)
   | EMap of (string * expr) list
+  (* §1 struct construction: `Struct { field: expr, ... }`. The first component
+     is the Capitalized struct type name; the second is the supplied fields in
+     source order. Totality (every non-default field supplied) and per-field
+     type-checking are enforced by the typechecker. *)
+  | EStructNew of string * (string * expr) list
   (* map<K, V> literal in value position: { "key": expr, ... } or { 1: expr, ... }.
      Keys are all String or all Integer (phase 11); mixed keys are a checker
      error. Distinct from EMap (packet field records with ident keys). *)
@@ -564,6 +569,25 @@ type storage_conf = {
   st_pos : pos;
 }
 
+(* §1 struct declaration: a nominal record type. A field is `name: Type
+   [= default]`. srf_reactive reserves room for the phase-3 @EventReceiver
+   annotation (reactive instance receivers); it is always false for now — the
+   annotation is not yet parsed and no dispatch is generated. *)
+type struct_field = {
+  srf_name : string;
+  srf_type : data_type;
+  srf_default : expr option;
+  srf_reactive : bool;
+  srf_pos : pos;
+}
+
+type struct_decl = {
+  su_tyname : string;
+  su_exported : bool;
+  su_fields : struct_field list;
+  su_pos : pos;
+}
+
 type persistent_decl = {
   pd_name : string;
   pd_subject : data_type option;
@@ -803,6 +827,7 @@ type script = {
   servers : server_conf list;
   storages : storage_conf list;
   persistents : persistent_decl list;
+  structs : struct_decl list;
   items : item_decl list;
   mobs : mob_decl list;
   packet_listeners : packet_listener list;

@@ -41,6 +41,11 @@ type ty =
      distinct for 'is a' narrowing and type positions. *)
   | TCustomMob of string
   | TCustomItem of string
+  (* §1 structs: a declared `struct Guild { ... }` becomes a Capitalized nominal
+     record type carrying its type name. Invariant nominal — distinct from every
+     other struct and from its fields; a reference (mutable) value like map/list.
+     Field lookup is against the per-unit struct table on the typechecker ctx. *)
+  | TStruct of string
   | TList of ty
   | TMap of ty * ty (* map<K, V>: key type (String|Integer), value type (phase 11) *)
   | TOptional of ty
@@ -76,6 +81,7 @@ let rec ty_to_string = function
   | TOfflinePlayer -> "OfflinePlayer"
   | TCustomMob n -> n
   | TCustomItem n -> n
+  | TStruct n -> n
   | TList t -> "list<" ^ ty_to_string t ^ ">"
   (* String-keyed maps print as map<V> (the back-compat spelling); an
      Integer-keyed map prints its key type too (phase 11) *)
@@ -2541,9 +2547,9 @@ let collection_ops = [ "of"; "has"; "sorted"; "reversed"; "first"; "last" ]
    one opens a first-class declaration block. *)
 let declaration_keywords =
   [
-    "item"; "mob"; "npc"; "hologram"; "gui"; "scoreboard"; "tablist"; "bossbar";
-    "server"; "storage"; "persistent"; "api"; "fishing_loot"; "block_handler";
-    "placement_rule";
+    "struct"; "item"; "mob"; "npc"; "hologram"; "gui"; "scoreboard"; "tablist";
+    "bossbar"; "server"; "storage"; "persistent"; "api"; "fishing_loot";
+    "block_handler"; "placement_rule";
   ]
 
 (* the freeform per-object namespaces reachable as <obj>.<ns>.<key>: .tags
