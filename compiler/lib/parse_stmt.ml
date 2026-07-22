@@ -15,6 +15,61 @@ let fresh_place_var () =
   incr place_counter;
   Printf.sprintf "__place_%d" !place_counter
 
+(* v1.5.0 phase 3.5: detect whether a method-call receiver's place-path is rooted
+   at a persistent value. Returns the persistent (name, subject) plus a rebuild
+   that reconstructs the receiver with its EPersistGet root swapped for [root']
+   (a fresh temp). Recurses through the field ('.f' -> EProp) and index ('[k]' ->
+   map_get) segments a place path is built from, mirroring how {!finish_persist_place}
+   walks a persistent place. None for any receiver not ultimately rooted at a
+   persistent name. *)
+let rec persist_root_rewrite (e : Ast.expr) =
+  match e.e with
+  | EPersistGet (name, subject) -> Some (name, subject, fun root' -> root')
+  | EProp (target, field) -> (
+    match persist_root_rewrite target with
+    | Some (name, subject, rebuild) ->
+      Some (name, subject, fun root' -> mke e.epos (EProp (rebuild root', field)))
+    | None -> None)
+  | ECall ("map_get", [ coll; key ]) -> (
+    match persist_root_rewrite coll with
+    | Some (name, subject, rebuild) ->
+      Some (name, subject, fun root' -> mke e.epos (ECall ("map_get", [ rebuild root'; key ])))
+    | None -> None)
+  | _ -> None
+
+(* The in-place collection mutators: the list methods (add / add_all / remove /
+   remove_at / insert / clear) and the map methods (set / delete / put_all /
+   clear). A statement-position call to one of these is what mutates a live
+   collection; a read method (contains / size / ...) is not a statement. *)
+let is_collection_mutator = function
+  | "add" | "add_all" | "remove" | "remove_at" | "insert" | "clear" | "set"
+  | "delete" | "put_all" ->
+    true
+  | _ -> false
+
+(* v1.5.0 phase 3.5: build a statement-position method-call, making it persist-
+   aware. When a mutating collection method's receiver is rooted at a persistent
+   place, the bare in-place mutation is visible in memory but never marks the
+   owning row dirty (lost on the next flush) nor rebuilds the reactive liveness
+   index (§4.2). Thread it through the SAME bind/mutate/persist_set desugaring
+   {!finish_persist_place} uses for 'set ... at': one evaluation of the root is
+   bound to a temp, the mutation runs through that temp, and the SAME object is
+   re-stored so the flush dirties + re-serializes the row and the index rebuilds
+   (correct for present rows AND for absent rows, whose get() hands out a fresh
+   copy that only becomes durable once re-stored). Non-mutating methods and non-
+   persistent receivers keep the bare emit (no value-semantics/JSON change). *)
+let mk_method_mutation p receiver name args =
+  if is_collection_mutator name then
+    match persist_root_rewrite receiver with
+    | Some (pname, subject, rebuild) ->
+      let tmp = fresh_place_var () in
+      let bind = mks p (SAssign (tmp, mke p (EPersistGet (pname, subject)))) in
+      let mutation = mks p (SMethodCall (rebuild (mke p (EVar tmp)), name, args)) in
+      let writeback = mks p (SPersistSet (pname, subject, mke p (EVar tmp))) in
+      mks p (SBlock [ bind; mutation; writeback ])
+    | None -> mks p (SMethodCall (receiver, name, args))
+  else mks p (SMethodCall (receiver, name, args))
+
 (* W-tasks: destructure a parsed postfix expression into (owner, id) when it is a
    `<owner>.tasks.<id>` member access — the shape that keys the per-object task
    registry. Returns None for anything else. *)
@@ -71,6 +126,46 @@ let tasks_member_ahead st i0 =
     done;
     !found
   end
+
+(* v1.5.0 phase 3.5: lookahead for 'remove <elem> from <persistent place>'. The
+   remove-effect form ('remove <String> from <entity>', matched earlier) would
+   otherwise greedily claim any 'remove "x" from ...', so a String element can
+   never be removed from a persistent list. When the from-operand is rooted at a
+   persistent name — a bare 'name' or a parenthesized '(name ...)' place — this
+   is a list element removal and the effect form must yield (parsing then falls
+   through to the natural 'remove x from l' branch, which is persist-aware).
+   Scans from just after 'remove' for the first depth-0 soft 'from' on the same
+   line, then checks whether the operand that follows is a persistent place. *)
+let remove_from_persistent_ahead st =
+  let toks = st.tokens in
+  let n = Array.length toks in
+  let tok_at i =
+    if i >= 0 && i < n then (
+      let t, _, _ = toks.(i) in
+      t)
+    else Token.EOF
+  in
+  let _, start_line, _ = toks.(st.pos) in
+  let i = ref (st.pos + 1) in
+  let depth = ref 0 in
+  let found = ref false in
+  let stop = ref false in
+  while (not !stop) && (not !found) && !i < n do
+    let t, line, _ = toks.(!i) in
+    if line > start_line then stop := true
+    else begin
+      (match t with
+      | Token.LPAREN | Token.LBRACKET -> incr depth
+      | Token.RPAREN | Token.RBRACKET -> if !depth > 0 then decr depth else stop := true
+      | Token.IDENT "from" when !depth = 0 ->
+        let after = tok_at (!i + 1) in
+        let root = if after = Token.LPAREN then tok_at (!i + 2) else after in
+        if persist_lookup st root <> None then found := true else stop := true
+      | _ -> ());
+      incr i
+    end
+  done;
+  !found
 
 (* npc skin form (GROUP C), shared by the npc{} declaration and
    'set npc "n" skin ...': skin(texture, signature) direct properties, or a
@@ -471,7 +566,9 @@ let rec parse_statement st =
       | _ -> error st "expected '<entity>.<attribute>' after 'from' in remove modifier statement"
     in
     mks p (SRemoveModifier { rm_id; rm_entity; rm_attr; rm_attr_pos })
-  | Token.IDENT "remove" when (match peek2_tok st with Token.STRING _ -> true | _ -> false) ->
+  | Token.IDENT "remove"
+    when (match peek2_tok st with Token.STRING _ -> true | _ -> false)
+         && not (remove_from_persistent_ahead st) ->
     ignore (advance st);
     let re_effect = parse_expr st in
     expect_soft st "from";
@@ -918,7 +1015,8 @@ let rec parse_statement st =
     ignore (advance st);
     let x = parse_expr st in
     expect st Token.TO "'to' in 'add <item> to <list>'";
-    mks p (SMethodCall (parse_postfix st, "add", [ x ]))
+    let recv = parse_postfix st in
+    mk_method_mutation p recv "add" [ x ]
   (* natural list mutation: 'remove x from l' -> l.remove(x). The specific
      remove-entity/block/modifier/effect/hologram/npc forms are matched earlier;
      the 'from <list>' tail confirms this collection form. *)
@@ -926,12 +1024,19 @@ let rec parse_statement st =
     ignore (advance st);
     let x = parse_expr st in
     expect_soft st "from";
-    mks p (SMethodCall (parse_postfix st, "remove", [ x ]))
+    let recv = parse_postfix st in
+    mk_method_mutation p recv "remove" [ x ]
   (* natural map/list clear: 'clear c' -> c.clear(). 'clear title'/'clear
      belowname' are matched earlier. *)
-  | Token.IDENT "clear" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+  | Token.IDENT "clear"
+    when (starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN)
+         (* '(name for subj)' place: a parenthesized persistent root is a clear
+            target, not a 'clear(...)' function call — mirrors the 'set'/method-
+            call handling of parenthesized persistent places. *)
+         || (peek2_tok st = Token.LPAREN && persist_lookup st (peek3_tok st) <> None) ->
     ignore (advance st);
-    mks p (SMethodCall (parse_postfix st, "clear", []))
+    let recv = parse_postfix st in
+    mk_method_mutation p recv "clear" []
   (* natural map delete: 'delete m at k' -> map_delete(m, k), reusing the
      existing map_delete emit. 'delete world' is matched earlier.
 
@@ -970,10 +1075,25 @@ let rec parse_statement st =
        read) is a valid statement here. *)
     let e = parse_postfix st in
     (match e.e with
-    | EMethod (recv, name, args) -> mks e.epos (SMethodCall (recv, name, args))
+    | EMethod (recv, name, args) -> mk_method_mutation e.epos recv name args
     | _ ->
       error st
         "expected a method call like 'list.add(x)' or an assignment like 'set ... to ...'")
+  | Token.LPAREN ->
+    (* v1.5.0 phase 3.5: a statement-position method call whose receiver is a
+       parenthesized place — '(list for subj).add(x)', '(m for subj).clear()'.
+       A statement can never otherwise begin with '(', so parse the whole
+       postfix expression; only a method call is a valid statement, and
+       mk_method_mutation makes a persistent-rooted receiver re-store (the
+       keyed '(name for subj)' receiver reaches its persistent root here the
+       same way 'set (g for subj).field' does). *)
+    let e = parse_postfix st in
+    (match e.e with
+    | EMethod (recv, name, args) -> mk_method_mutation e.epos recv name args
+    | _ ->
+      error st
+        "expected a method call like '(list for subj).add(x)' or an assignment \
+         like 'set ... to ...'")
   | tok ->
     error st (Printf.sprintf "Unexpected %s at start of statement" (Token.describe tok))
 
