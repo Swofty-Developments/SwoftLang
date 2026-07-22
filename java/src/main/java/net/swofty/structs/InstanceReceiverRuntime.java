@@ -97,6 +97,20 @@ public final class InstanceReceiverRuntime {
     }
 
     /**
+     * Total number of live reactive bindings across every {@code
+     * (subjectType, method)} key (diagnostics/tests). A hot-reload smoke asserts
+     * this is rebuilt (not doubled) after repeated reloads — the reactive index
+     * must re-derive from the surviving persistent roots, never accumulate.
+     */
+    public static int bindingCount() {
+        int total = 0;
+        for (List<Binding> bindings : index.values()) {
+            total += bindings.size();
+        }
+        return total;
+    }
+
+    /**
      * Rebuild the liveness index from the persistent roots (§4.2). Cheap no-op
      * when disarmed. Called on load, on registration, and after every persistent
      * write so a struct dropped into (or removed from) a persistent goes live (or

@@ -527,10 +527,10 @@ public final class PersistStore {
      * of the mutated map re-flushes the whole blob.
      */
     private Object validateMapValues(PersistentDeclModel decl, net.swofty.runtime.MapValue map) {
-        BaseType element = mapElementType(decl.type());
+        net.swofty.nativebridge.representation.DataType element = mapValueType(decl.type());
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             Object v = entry.getValue();
-            if (NoneValue.isNone(v) || !matchesLeaf(element, v)) {
+            if (NoneValue.isNone(v) || !matchesElement(element, v)) {
                 throw new ScriptError("persistent map '" + decl.name() + "' holds "
                         + decl.type() + ", but key '" + entry.getKey()
                         + "' has incompatible value: " + v);
@@ -548,9 +548,8 @@ public final class PersistStore {
     private Object validateListValues(PersistentDeclModel decl, List<?> list) {
         net.swofty.nativebridge.representation.DataType elemType =
                 listElementType(decl.type());
-        BaseType element = elemType != null ? elemType.getBaseType() : BaseType.UNKNOWN;
         for (Object v : list) {
-            if (NoneValue.isNone(v) || !matchesLeaf(element, v)) {
+            if (NoneValue.isNone(v) || !matchesElement(elemType, v)) {
                 throw new ScriptError("persistent list '" + decl.name() + "' holds "
                         + decl.type() + ", but an element has incompatible value: " + v);
             }
@@ -619,17 +618,56 @@ public final class PersistStore {
     }
 
     /**
-     * The VALUE type of a map. Two subtype shapes are accepted: the legacy
-     * single-subtype {@code map<V>} (key implicitly String) uses subtype[0] as
-     * the value; a keyed {@code map<K,V>} carries [K, V] and uses subtype[1].
-     * STRING when a bare map slipped through.
+     * Whether a live value matches a declared container-ELEMENT type — the
+     * runtime twin of the checker's {@code serializable_ty} for a container
+     * position. Beyond {@link #matchesLeaf} (scalars / Location / Vec / Item /
+     * Player-uuid) this admits a {@link StructValue} of the declared struct type
+     * and recurses through nested list/map/optional elements, so a
+     * {@code persistent duels: Map<String, Duel>} accepts a Duel value (its
+     * fields are serialized/rehydrated by {@code structToJson}/{@code
+     * structFromJson}). Without this a persistence-rooted reactive struct could
+     * never be stored, and §4.2 liveness would have no surviving root.
      */
-    private static BaseType mapElementType(net.swofty.nativebridge.representation.DataType type) {
-        List<net.swofty.nativebridge.representation.DataType> subs = type.getSubTypes();
-        if (subs.isEmpty()) {
-            return BaseType.STRING;
+    private static boolean matchesElement(
+            net.swofty.nativebridge.representation.DataType type, Object v) {
+        if (type == null) {
+            return false;
         }
-        return subs.size() >= 2 ? subs.get(1).getBaseType() : subs.get(0).getBaseType();
+        BaseType base = type.getBaseType();
+        switch (base) {
+            case STRUCT:
+                return v instanceof StructValue struct
+                        && (type.getTypeName() == null
+                                || struct.typeName().equals(type.getTypeName()));
+            case LIST: {
+                if (!(v instanceof List<?> list)) {
+                    return false;
+                }
+                net.swofty.nativebridge.representation.DataType el = listElementType(type);
+                for (Object e : list) {
+                    if (NoneValue.isNone(e) || !matchesElement(el, e)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            case MAP: {
+                if (!(v instanceof net.swofty.runtime.MapValue map)) {
+                    return false;
+                }
+                net.swofty.nativebridge.representation.DataType val = mapValueType(type);
+                for (Object e : map.values()) {
+                    if (NoneValue.isNone(e) || !matchesElement(val, e)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            case OPTIONAL:
+                return NoneValue.isNone(v) || matchesElement(listElementType(type), v);
+            default:
+                return matchesLeaf(base, v);
+        }
     }
 
     /**
@@ -1351,10 +1389,19 @@ public final class PersistStore {
     }
 
     /**
-     * A persistent may hold a leaf value (scalar / Location / Vec / Item) or a
-     * one-level list/map of those leaves. list&lt;T&gt; serializes as a JSON
-     * array and map&lt;K, T&gt; as a whole-map JSON object per row; nested
-     * lists/maps and collections of non-leaf types are not persistable.
+     * A persistent may hold a leaf value (scalar / Location / Vec / Item /
+     * Player-uuid), a persistable struct, or a list/map/optional whose element is
+     * itself container-persistable. list&lt;T&gt; serializes as a JSON array and
+     * map&lt;K, T&gt; as a whole-map JSON object per row; both encode/decode
+     * recurse into struct elements ({@code structToJson} / {@code structFromJson}),
+     * so a {@code Map<String, Duel>} or {@code List<Guild>} of a serializable
+     * struct persists exactly like the compiler's checker (tc_decl serializable_ty)
+     * accepts it. This mirrors {@link #isFieldPersistable} for the container
+     * element rather than {@link #isLeafPersistable}: the old leaf-only gate
+     * wrongly rejected the canonical persistence-rooted reactive struct
+     * ({@code persistent duels: Map<String, Duel>}) even though the checker
+     * approved it and both serialization paths handle it — leaving the reactive
+     * instance's liveness with no surviving persistent root to re-derive from.
      */
     private static boolean isPersistable(
             net.swofty.nativebridge.representation.DataType type) {
@@ -1364,22 +1411,20 @@ public final class PersistStore {
         }
         if (base == BaseType.LIST) {
             net.swofty.nativebridge.representation.DataType element = listElementType(type);
-            return element != null && isLeafPersistable(element);
+            return element != null && isFieldPersistable(element, new java.util.HashSet<>());
         }
         if (base == BaseType.MAP) {
             net.swofty.nativebridge.representation.DataType value = mapValueType(type);
-            return value != null && isLeafPersistable(value);
+            return value != null && isFieldPersistable(value, new java.util.HashSet<>());
         }
-        // optional<T> persists exactly like T (present) or JSON null (none);
-        // the typechecker only allows a leaf T inside the optional
+        // optional<T> persists exactly like T (present) or JSON null (none)
         if (base == BaseType.OPTIONAL) {
             net.swofty.nativebridge.representation.DataType inner = listElementType(type);
-            return inner != null && isLeafPersistable(inner);
+            return inner != null && isFieldPersistable(inner, new java.util.HashSet<>());
         }
         // a struct persists (§3.2) iff every one of its fields is persistable;
         // struct fields may themselves be leaves, nested structs, or
-        // list/map/optional of those (richer than a top-level persistent, whose
-        // collection elements must be leaves)
+        // list/map/optional of those
         if (base == BaseType.STRUCT) {
             return isStructPersistable(type, new java.util.HashSet<>());
         }

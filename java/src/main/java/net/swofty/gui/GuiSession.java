@@ -149,6 +149,10 @@ public final class GuiSession {
         return inventory;
     }
 
+    Player player() {
+        return player;
+    }
+
     String modelName() {
         return model.name();
     }

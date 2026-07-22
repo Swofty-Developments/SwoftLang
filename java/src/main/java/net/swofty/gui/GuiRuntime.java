@@ -65,6 +65,35 @@ public final class GuiRuntime {
     }
 
     /**
+     * Hot-reload teardown (#58): force-close every open gui session so no player
+     * is left interacting with a previous declaration's click handlers, cancel
+     * each session's live render timers (session.close cancels its {@code Task}
+     * list), drop the per-player nav stacks, and clear the registered gui models
+     * so a reloaded script that removed or renamed a gui leaves no ghost
+     * definition behind. The global inventory/packet/disconnect listeners wired
+     * by init() are stateless and stay (idempotent) — they retarget at the
+     * freshly-registered GUIS. Snapshot the sessions first: closeInventory() re-
+     * enters onInventoryClose (which mutates SESSIONS), and session.close() is
+     * idempotent, so the second close from this loop is a safe no-op.
+     */
+    public static void teardown() {
+        for (GuiSession session : new java.util.ArrayList<>(SESSIONS.values())) {
+            try {
+                Player player = session.player();
+                if (player != null) {
+                    player.closeInventory();
+                }
+                session.close(GuiSession.CloseReason.SERVER_EXITED);
+            } catch (Throwable t) {
+                System.err.println("[gui] session teardown failed: " + t);
+            }
+        }
+        SESSIONS.clear();
+        NAV.clear();
+        GUIS.clear();
+    }
+
+    /**
      * Register a gui declaration loaded from a script
      */
     public static void register(GuiModel gui) {

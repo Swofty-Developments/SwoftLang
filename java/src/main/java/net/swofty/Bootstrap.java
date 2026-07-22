@@ -26,13 +26,21 @@ public class Bootstrap {
         // --debug [port]: host the live debug tracer (VS Code extension Part 3)
         // on the given ws port (default 25580) and hot-reload on script save.
         int debugPort = parseDebugPort(args);
+        // --watch <dir>: standalone hot-reload of the scripts in <dir> on any
+        // .sw change, WITHOUT the debug tracer. Reuses the exact ReloadWatcher +
+        // engine.reload() path (which runs the central ReloadRegistry teardown),
+        // so a watch reload dismantles every live subsystem the same way #58
+        // does. When absent, the engine watches its default "scripts" dir.
+        String watchDir = parseWatchDir(args);
 
         // Load SwoftLang scripts BEFORE MinecraftServer.init: auth is now a
         // construction-time choice (MinecraftServer.init(Auth)) rather than a
         // post-init toggle, and the auth kind comes from the server { } block,
         // so the script config must be resolved first. initialize() only parses
         // scripts and collects declarations — it never touches MinecraftServer.
-        swoftLangEngine = new SwoftLangEngine();
+        swoftLangEngine = watchDir != null
+                ? new SwoftLangEngine(watchDir, "sw")
+                : new SwoftLangEngine();
         swoftLangEngine.initialize();
         ServerConfigModel config = swoftLangEngine.getServerConfig();
 
@@ -94,6 +102,11 @@ public class Bootstrap {
             new net.swofty.debug.ReloadWatcher(swoftLangEngine).start();
             MinecraftServer.getSchedulerManager().buildShutdownTask(
                     net.swofty.debug.DebugServer::stop);
+        } else if (watchDir != null) {
+            // standalone --watch (no tracer): same ReloadWatcher/reload path,
+            // just without the DebugServer. --debug already starts the watcher,
+            // so only start it here when the tracer is off (avoid a duplicate).
+            new net.swofty.debug.ReloadWatcher(swoftLangEngine).start();
         }
 
         // Start the server
@@ -156,6 +169,20 @@ public class Bootstrap {
             return 25580;
         }
         return -1;
+    }
+
+    /**
+     * Parse {@code --watch <dir>} from the CLI. Returns the directory argument
+     * right after the flag (the scripts dir to watch + hot-reload), or null when
+     * the flag is absent or has no following argument.
+     */
+    private static String parseWatchDir(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if ("--watch".equals(args[i]) && i + 1 < args.length) {
+                return args[i + 1];
+            }
+        }
+        return null;
     }
 
     /**

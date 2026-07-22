@@ -254,6 +254,17 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 1 && args[0].equals("--reload-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = ReloadSmoke.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 1 && args[0].equals("--debug-smoke")) {
             int code;
             try {
