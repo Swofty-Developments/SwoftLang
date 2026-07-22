@@ -1,23 +1,13 @@
-struct Duel {
-    @EventReceiver a: Player
-    @EventReceiver b: Player
-    arena: Location
-    score: Map<Player, Integer>
+struct Guild {
+    schema: 2
 
-    a {                          // the field name opens its handler block
-        on_death {               // Player's vocabulary, because a : Player
-            // full struct context is in scope as bare names: a, b, arena, score
-            set score at b to (score[b] otherwise 0) + 1
-            teleport a to arena
-            broadcast "<yellow>${b.name} takes the lead"
-        }
-    }
+    name: String
+    tag: String = ""
 
-    b {
-        on_death {
-            set score at a to (score[a] otherwise 0) + 1
-            teleport b to arena
-            broadcast "<yellow>${a.name} takes the lead"
-        }
+    migrate to 2 {
+        set name to raw["title"] otherwise "Unnamed"
+        set tag to ""
     }
 }
+
+persistent guilds: Map<String, Guild> = new_map()

@@ -4,7 +4,7 @@
 runtime never sees a `.sw` file it hasn't blessed.
 
 ```
-Usage: swoftc compile <file.sw...> [--addon-path <dir>] [-o <out.json>] | swoftc check <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --version
+Usage: swoftc compile <file.sw...> [--addon-path <dir>] [-o <out.json>] | swoftc check <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --check-props | swoftc --version
 ```
 
 ## Commands
@@ -61,6 +61,24 @@ Dumps the compiler's property registry as JSON — every `owner` / `name` / `typ
 This table must match the Java runtime's `PropertyRegistry`; the Java test harness
 consumes this exact output to keep the two sides honest. It's also handy for building
 editor tooling.
+
+### `swoftc --check-props [--json]`
+
+Validates the compiler's property/accessor ownership tables against its type catalogs —
+the internal consistency check behind property reconciliation. It confirms that every
+dotted property (`player.health`, `item.name`, …) the typechecker knows about is owned by
+exactly the right type with a matching type and `writable` flag, catching a registry that
+has drifted from the catalogs before it can mistype a script.
+
+```sh
+$ swoftc --check-props
+check-props: 0 issues — property ownership tables agree with the catalogs
+```
+
+Each issue is printed as one `kind  owner.prop  detail` line; `--json` emits a machine
+report (`{ "clean": bool, "issue_count": N, "issues": [...] }`) for tooling. Exit code is
+`0` when clean, `1` when any issue is found — so it drops straight into CI as a compiler
+self-check alongside `swoftc check`.
 
 ## Exit codes
 
@@ -147,3 +165,50 @@ Rules of thumb:
 coloring, property names, GUI slot math, sidebar caps. If CI is green, the scripts
 load.
 :::
+
+## Hot reload & `--watch` {#hot-reload}
+
+`swoftc` is the compile half of the dev loop; the runtime is the reload half. Start the
+server with **`--watch <dir>`** and it watches that scripts directory and hot-reloads on
+every `.sw` change — no restart, no dropped session:
+
+```sh
+# recompile + reload scripts/ on any .sw save
+java -jar server.jar --watch scripts
+```
+
+On a save the runtime recompiles the changed file with `swoftc` (surfacing any error), and
+on success applies a tick-safe reload. Editor save-bursts are debounced, and a **compile
+error keeps the previous version running** — a broken edit never takes the server down.
+(`--debug [port]` starts the same watcher alongside the live tracer.)
+
+### A reload fully tears down old state
+
+The reason a reload behaves like a clean restart of your program — no ghost handlers, no
+schedulers firing twice — is that it dismantles *every* live, program-derived subsystem
+before loading the new compiled program. A central teardown registry runs each subsystem's
+cleanup in reverse (last-created-first) order, then the fresh program re-registers
+everything from scratch. What gets torn down and rebuilt:
+
+- **schedulers & tasks** — every `every`/`schedule`/`repeat`, named *and* anonymous, is
+  cancelled;
+- **event & packet handlers** — all listeners are removed, so a renamed or deleted handler
+  leaves nothing behind;
+- **spawned entities & mobs** and script projectiles;
+- **HUDs & GUIs** — open GUI sessions, scoreboards, tablists, and bossbars (their
+  auto-refresh timers cancelled), plus holograms, NPCs, and displays;
+- **the reactive-instance index** and the struct/nominal-type registries;
+- the **HTTP server** and any playing songs.
+
+### Persistent state survives
+
+What a reload deliberately **keeps** is your durable state. The
+[persistence](/guide/persistence) store is not part of the teardown: persistent variables
+stay in memory across the reload (no flush-and-reload round trip), so counters, homes,
+guilds, and [reactive structs](/reference/structs#reactive) carry straight over. After the
+new program re-registers, the reactive-instance liveness is **re-derived from the surviving
+persistent roots** — the durable actors that were live before the reload are live again,
+now running the new code. Loaded worlds and session state survive too.
+
+The result is the tight loop persistence was built for: edit a handler, save, and the new
+logic runs against the same accumulated state, with the old runtime wiring fully gone.

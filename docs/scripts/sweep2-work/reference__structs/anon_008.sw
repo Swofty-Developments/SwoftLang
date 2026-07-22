@@ -2,15 +2,27 @@ struct Duel {
     @EventReceiver a: Player
     @EventReceiver b: Player
     arena: Location
+    score: Map<Player, Integer>
 
-    a { on_chat { cancel event  broadcast "<gray>[duel] ${a.name}: ${message}" } }
-    b { on_chat { cancel event  broadcast "<gray>[duel] ${b.name}: ${message}" } }
+    a { on_death { set score at b to (score[b] otherwise 0) + 1  teleport a to arena } }
+    b { on_death { set score at a to (score[a] otherwise 0) + 1  teleport b to arena } }
 }
 
 persistent duels: Map<String, Duel> = new_map()
 
-Player {
-    on_chat {
-        send "<dark_gray>(logged)" to player      // the global layer, runs first
+command "duel" {
+    execute {
+        if sender is a Player {
+            // live the instant it lands in `duels`
+            set duels at "arena-1" to Duel {
+                a: sender, b: sender, arena: sender.location, score: new_map()
+            }
+        }
+    }
+}
+
+command "endduel" {
+    execute {
+        delete duels at "arena-1"      // stops reacting, durably
     }
 }

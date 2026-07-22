@@ -160,7 +160,8 @@ export interface DocVersion {
 
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
-  { text: '1.6.0 (latest)', link: '/', label: 'v1.6.0', prefix: '' },
+  { text: '1.7.0 (latest)', link: '/', label: 'v1.7.0', prefix: '' },
+  { text: '1.6.0', link: '/1.6.0/', label: 'v1.6.0', prefix: '/1.6.0' },
   { text: '1.5.0', link: '/1.5.0/', label: 'v1.5.0', prefix: '/1.5.0' },
   { text: '1.4.0', link: '/1.4.0/', label: 'v1.4.0', prefix: '/1.4.0' },
   { text: '1.3.0', link: '/1.3.0/', label: 'v1.3.0', prefix: '/1.3.0' },
@@ -214,6 +215,8 @@ export const navGroups130: NavGroup[] = makeVersionGroups('/1.3.0')
 export const navGroups140: NavGroup[] = makeVersionGroups('/1.4.0')
 /* 1.5.0 introduced structs, so its page set matches root — no drops. */
 export const navGroups150: NavGroup[] = makeVersionGroups('/1.5.0', new Set())
+/* 1.6.0 has structs too — no drops. */
+export const navGroups160: NavGroup[] = makeVersionGroups('/1.6.0', new Set())
 
 /** The frozen 1.1.0 tree — its OWN pages under `/1.1.0/`, with 1.1.0 labels. */
 const guideItems110: NavLink[] = guideSteps.map((s) => ({
@@ -329,6 +332,7 @@ const V120 = /^\/1\.2\.0\//
 const V130 = /^\/1\.3\.0\//
 const V140 = /^\/1\.4\.0\//
 const V150 = /^\/1\.5\.0\//
+const V160 = /^\/1\.6\.0\//
 
 /** The sidebar tree for a given route (version-aware). */
 export function sidebarForPath(path: string): NavGroup[] {
@@ -337,6 +341,7 @@ export function sidebarForPath(path: string): NavGroup[] {
   if (V130.test(path)) return navGroups130
   if (V140.test(path)) return navGroups140
   if (V150.test(path)) return navGroups150
+  if (V160.test(path)) return navGroups160
   return navGroups
 }
 

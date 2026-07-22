@@ -79,10 +79,15 @@ three things:
   been written reads as the default, so `total_joins` is always a plain `Integer`, never
   an `optional`. No migration dance, no "was it initialized" checks.
 
-Live handles never persist. A `Player` (or any `Entity`) is a runtime connection, not a
-value — declaring `persistent x: Player` is a compile error with the fix in the hint:
-persist the uuid `String` or a respawnable snapshot instead. The rule bites through
-collections too, so `List<Player>` and `Map<String, Entity>` are rejected the same way.
+A live `Entity` never persists — it's a runtime connection, not a value — so
+`persistent mobs: List<Entity>` is a compile error, with the fix in the hint: persist a
+respawnable snapshot instead. A **`Player`** is the exception: it has a stable uuid, so it
+persists *as a value* — stored by that uuid and thawed back to the live player on load (or
+quietly dropped if they've never been seen). See
+[Players as persistent values](#player-values) below. The one shape still rejected is a
+*bare* top-level `persistent p: Player`: with no `none` or default to fall back to, there's
+nowhere for an unresolvable uuid to land — wrap it in an `Optional<Player>` (or a `list`,
+`map`, or struct field) and it's fine.
 
 ## Keyed variables: `for Player`
 
@@ -160,8 +165,36 @@ above starts empty and stays empty until someone dies).
 
 Map keys may be `String`, `Integer`, or `Player` (a `Player` key is stored by uuid), and
 map *values*, list elements, and the target of an `optional` must themselves be a
-persistable value type. So `Map<String, Item>` is fine; `Map<String, Player>` is the
-live-handle error again.
+persistable value type — or a `Player`, which persists by uuid (below). So both
+`Map<String, Item>` and `Map<String, Player>` are fine; only `Map<String, Entity>` is the
+live-handle error, because a bare `Entity` has no stable identity to store.
+
+### Players as persistent values {#player-values}
+
+A `Player` is stored by its **uuid**, so it counts as a persistable value anywhere a value
+type is allowed *except* on its own at the top level (a bare `persistent p: Player` has no
+fallback for an unresolvable uuid — use `Optional<Player>`). Inside a `list`, an
+`optional`, as a `map` *value*, or as a struct field, it just works:
+
+```swoftlang
+persistent party for Player: List<Player> = []
+persistent rival for Player: Optional<Player> = none
+persistent duel_partner: Map<String, Player> = new_map()
+
+struct Bout {
+    challenger: Player
+    opponent: Optional<Player>
+    round: Integer = 1
+}
+
+persistent bouts: Map<String, Bout> = new_map()
+```
+
+On load each uuid is **resolved or culled**: an online player thaws back to the live
+`Player`, and a uuid whose player isn't reachable is dropped from the `list`/`map` (or an
+`optional` reads back `none`). You store durable membership — a party, a rivalry, a
+bracket — and read live handles back out, with the "have they logged in this session?"
+bookkeeping handled for you.
 
 ### Save a home, save a kit
 
@@ -250,6 +283,118 @@ Storing a struct persistently also makes any [`@EventReceiver`](/reference/struc
 field on it *live* — reachability from a persistent root is what activates a reactive
 struct's handlers. See [Structs → persistent state](/reference/structs#persistent) for the
 full treatment.
+
+## Schema migration {#schema-migration}
+
+Persistent structs are records on disk, and records drift: you rename a field, split one
+into two, change a type, add a column. The core guarantee is that **loading never crashes on
+drift** — a stored row that doesn't match today's struct is reconciled on read, never
+rejected. There are two levels, and most changes need only the first.
+
+### Additive & subtractive auto-heal (no ceremony)
+
+Add a field or remove one and *do nothing else*. On load, every stored row is healed against
+the current struct:
+
+- **A field the row is missing** (you just added it) fills from the field's declared
+  default.
+- **A field the row still has but the struct dropped** is simply ignored.
+
+Nothing to declare, nothing to version:
+
+<!-- swoftc name=profile.sw -->
+
+```swoftlang
+// v1 stored { name, title }. This is v2: `nickname` is new (old rows heal to
+// "friend"), and the old `title` column is gone (dropped on load). No schema
+// bump, no migrate block — reads stay total and nothing crashes.
+struct Profile {
+    name: String
+    nickname: String = "friend"
+    joins: Integer = 0
+}
+
+persistent profile for Player: Profile = Profile { name: "" }
+```
+
+This is the same [totality](/reference/structs) that makes every persistent read return a
+value: a healed row is indistinguishable from one written fresh.
+
+### Explicit migration: `schema` + `migrate to`
+
+Auto-heal can't guess a **rename**, a **type change**, or a **backfill from another field** —
+that's a value transformation, not a fill-with-default. For those, version the struct with
+`schema: N` and describe each hop with a `migrate to N { }` block.
+
+Start from a v1 struct:
+
+```swoftlang
+struct Guild {
+    title: String
+    coins: Integer = 0
+}
+
+persistent guilds: Map<String, Guild> = new_map()
+```
+
+Evolve it — rename `title` to `name`, add a `tag`, widen `coins` to a `balance: Double`, add
+a `motd` — and spell out how an old row becomes a new one:
+
+<!-- swoftc name=guild.sw -->
+
+```swoftlang
+struct Guild {
+    schema: 3
+
+    name: String
+    tag: String = ""
+    balance: Double = 0.0
+    motd: String = ""
+
+    // v1 -> v2: `title` was renamed to `name`; `tag` is brand new.
+    migrate to 2 {
+        set name to raw["title"] otherwise "Unnamed"
+        set tag to ""
+    }
+
+    // v2 -> v3: the old whole-number `coins` value flows in through `raw`
+    // (typed Any) and lands in the Double `balance`; seed `motd` from `name`.
+    migrate to 3 {
+        set balance to raw["coins"] otherwise 0.0
+        set motd to "Welcome to ${name}"
+    }
+}
+
+persistent guilds: Map<String, Guild> = new_map()
+```
+
+The pieces:
+
+- **`schema: N`** — the struct's current version (default `1`). Every stored row is tagged
+  with the schema it was written under; a row tagged older than `N` is upgraded on load.
+- **`migrate to N { }`** — the upgrade *to* version `N`, run when a row below `N` is loaded.
+  Blocks run in ascending order, so a v1 row loaded against `schema: 3` runs `migrate to 2`
+  then `migrate to 3`. `N` must be between `2` and the declared `schema` (version 1 is the
+  initial schema — nothing migrates *to* it).
+- **`raw["oldName"]`** — inside a migrate block, `raw` is a `Map<String, Any>` of the row's
+  *previously stored* fields, so you can read columns that no longer exist on the struct
+  (like `title` and `coins` above). `otherwise <fallback>` supplies a value when the key is
+  absent, keeping the read total.
+- **The block assigns the struct's current fields.** Each `set` targets a field of the
+  struct (assigning anything else is a compile error), and the value must fit that field's
+  type — the migration is typechecked like any other code.
+
+The checker enforces the shape: a `migrate to 1` (or `to 0`), a target above `schema`, a
+duplicate `migrate to N`, or a `set` to an unknown field are all compile errors, so a
+migration that couldn't run can't ship. And because schema/migrate only make sense on data
+that reaches disk, they're rejected on a struct that isn't persistent-capable (name the
+offending non-serializable field).
+
+::: tip Which level do I need?
+Adding or removing a field → nothing, auto-heal covers it. Renaming, changing a type, or
+computing one field from another → bump `schema` and add a `migrate to`. Either way, a live
+server loading old data never crashes on the mismatch.
+:::
 
 ## The `storage` block
 

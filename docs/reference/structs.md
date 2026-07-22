@@ -238,6 +238,42 @@ The fix is the familiar one from [persistence](/guide/persistence): store the uu
 `String` and re-resolve the entity when you need it, rather than persisting the live
 handle.
 
+### Schema & migration {#schema}
+
+A persistent struct is a record on disk, and its shape changes over releases. Two constructs
+keep old data loadable — the full worked treatment is in
+[Persistence → Schema migration](/guide/persistence#schema-migration); the struct-body syntax
+is:
+
+- **`schema: N`** — a reserved struct-body statement declaring the struct's current version
+  (default `1`). A stored row is tagged with the schema it was written under.
+- **`migrate to N { <stmts> }`** — the upgrade run when a row older than `N` is loaded.
+  Inside the block, `raw` is a `Map<String, Any>` of the row's previously stored fields
+  (read a dropped/renamed column with `raw["oldName"] otherwise <fallback>`), and each
+  statement `set`s a *current* field of the struct.
+
+```swoftlang
+struct Guild {
+    schema: 2
+
+    name: String
+    tag: String = ""
+
+    migrate to 2 {
+        set name to raw["title"] otherwise "Unnamed"
+        set tag to ""
+    }
+}
+
+persistent guilds: Map<String, Guild> = new_map()
+```
+
+Adding or removing a field needs *neither* — auto-heal fills a missing field from its default
+and drops fields the struct no longer declares, so `schema`/`migrate` are only for renames,
+type changes, and cross-field backfills. The checker requires each `migrate to N` to have `N`
+in `2..schema` with no duplicates, requires every `set` target to be a real field, and
+rejects `schema`/`migrate` on a struct that isn't persistent-capable.
+
 ## Reactive fields — instance receivers {#reactive}
 
 The headline feature. Annotate a struct field with **`@EventReceiver`** and it becomes an

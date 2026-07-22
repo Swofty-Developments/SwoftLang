@@ -4,25 +4,20 @@ struct Duel {
     arena: Location
     score: Map<Player, Integer>
 
-    a { on_death { set score at b to (score[b] otherwise 0) + 1  teleport a to arena } }
-    b { on_death { set score at a to (score[a] otherwise 0) + 1  teleport b to arena } }
-}
-
-persistent duels: Map<String, Duel> = new_map()
-
-command "duel" {
-    execute {
-        if sender is a Player {
-            // live the instant it lands in `duels`
-            set duels at "arena-1" to Duel {
-                a: sender, b: sender, arena: sender.location, score: new_map()
-            }
+    a {                          // the field name opens its handler block
+        on_death {               // Player's vocabulary, because a : Player
+            // full struct context is in scope as bare names: a, b, arena, score
+            set score at b to (score[b] otherwise 0) + 1
+            teleport a to arena
+            broadcast "<yellow>${b.name} takes the lead"
         }
     }
-}
 
-command "endduel" {
-    execute {
-        delete duels at "arena-1"      // stops reacting, durably
+    b {
+        on_death {
+            set score at a to (score[a] otherwise 0) + 1
+            teleport b to arena
+            broadcast "<yellow>${a.name} takes the lead"
+        }
     }
 }
