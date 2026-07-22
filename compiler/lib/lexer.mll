@@ -84,6 +84,11 @@ rule token = parse
 
 and string_body sline scol buf = parse
   | '"' { Buffer.contents buf }
+  | "${"
+      (* enter a balanced interpolation context: nested string literals and
+         their quotes must NOT close the enclosing string. The raw fragment
+         (quotes and all) is copied verbatim so it can be re-lexed later. *)
+      { Buffer.add_string buf "${"; interp_body sline scol 1 buf lexbuf }
   | "\\n" { Buffer.add_char buf '\n'; string_body sline scol buf lexbuf }
   | "\\t" { Buffer.add_char buf '\t'; string_body sline scol buf lexbuf }
   | "\\r" { Buffer.add_char buf '\r'; string_body sline scol buf lexbuf }
@@ -99,6 +104,41 @@ and string_body sline scol buf = parse
         string_body sline scol buf lexbuf }
   | eof { raise (Error ("Unterminated string literal", sline, scol)) }
   | _ as c { Buffer.add_char buf c; string_body sline scol buf lexbuf }
+
+(* inside a ${ ... } interpolation. [depth] counts open braces; the outer
+   string only resumes when the matching '}' brings depth back to 0. Content
+   is copied verbatim (no escape decoding) so the fragment re-lexes exactly. *)
+and interp_body sline scol depth buf = parse
+  | '{' { Buffer.add_char buf '{'; interp_body sline scol (depth + 1) buf lexbuf }
+  | '}'
+      { Buffer.add_char buf '}';
+        if depth <= 1 then string_body sline scol buf lexbuf
+        else interp_body sline scol (depth - 1) buf lexbuf }
+  | '"' { Buffer.add_char buf '"'; interp_str sline scol depth buf lexbuf }
+  | '\n'
+      { Lexing.new_line lexbuf;
+        Buffer.add_char buf '\n';
+        interp_body sline scol depth buf lexbuf }
+  | eof { raise (Error ("Unterminated string literal", sline, scol)) }
+  | _ as c { Buffer.add_char buf c; interp_body sline scol depth buf lexbuf }
+
+(* a nested string literal inside ${ ... }: copied verbatim, including escapes,
+   so an inner '"' or '}' does not confuse the enclosing contexts. *)
+and interp_str sline scol depth buf = parse
+  | '"' { Buffer.add_char buf '"'; interp_body sline scol depth buf lexbuf }
+  | "\\\"" { Buffer.add_string buf "\\\""; interp_str sline scol depth buf lexbuf }
+  | "\\\\" { Buffer.add_string buf "\\\\"; interp_str sline scol depth buf lexbuf }
+  | '\\' (_ as c)
+      { if c = '\n' then Lexing.new_line lexbuf;
+        Buffer.add_char buf '\\';
+        Buffer.add_char buf c;
+        interp_str sline scol depth buf lexbuf }
+  | '\n'
+      { Lexing.new_line lexbuf;
+        Buffer.add_char buf '\n';
+        interp_str sline scol depth buf lexbuf }
+  | eof { raise (Error ("Unterminated string literal", sline, scol)) }
+  | _ as c { Buffer.add_char buf c; interp_str sline scol depth buf lexbuf }
 
 and block_comment sline scol = parse
   | "*/" { () }

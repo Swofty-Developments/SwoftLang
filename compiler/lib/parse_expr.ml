@@ -525,6 +525,35 @@ and interp_string st p s =
       | exception Diagnostics.Error _ -> None
       | e -> if peek_tok sub = Token.EOF then Some (reposition p e) else None)
   in
+  (* find the '}' that closes a '${' opened at [open_i], honouring nested
+     braces and string literals so a '}' inside a nested string (or map
+     literal) does not close the interpolation prematurely *)
+  let find_close open_i =
+    let n = String.length s in
+    let depth = ref 1 in
+    let k = ref (open_i + 2) in
+    let result = ref None in
+    let in_str = ref false in
+    while !result = None && !k < n do
+      let c = s.[!k] in
+      if !in_str then begin
+        if c = '\\' && !k + 1 < n then k := !k + 2
+        else begin
+          if c = '"' then in_str := false;
+          incr k
+        end
+      end
+      else begin
+        (match c with
+         | '"' -> in_str := true
+         | '{' -> incr depth
+         | '}' -> decr depth; if !depth = 0 then result := Some !k
+         | _ -> ());
+        incr k
+      end
+    done;
+    !result
+  in
   let n = String.length s in
   let parts = ref [] in
   let buf = Buffer.create n in
@@ -539,7 +568,7 @@ and interp_string st p s =
   while !i < n do
     let consumed =
       if !i + 1 < n && s.[!i] = '$' && s.[!i + 1] = '{' then
-        match String.index_from_opt s (!i + 2) '}' with
+        match find_close !i with
         | Some j ->
           let frag = String.sub s (!i + 2) (j - !i - 2) in
           let raw = String.sub s !i (j - !i + 1) in

@@ -3,8 +3,8 @@ let version = "2.0.0"
 let usage () =
   prerr_endline
     "Usage: swoftc compile <file.sw...> [--addon-path <dir>] [-o <out.json>] | swoftc check \
-     <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --dump-symbols | \
-     swoftc --version";
+     <file.sw...> [--addon-path <dir>] | swoftc --property-table | swoftc --check-props [--json] \
+     | swoftc --dump-symbols | swoftc --version";
   exit 2
 
 (* Resolve entries + transitive imports into one compilation unit. Module
@@ -114,6 +114,16 @@ let () =
   | _ :: [ "--version" ] -> print_endline ("swoftc " ^ version)
   | _ :: [ "--property-table" ] ->
     print_endline (Yojson.Safe.pretty_to_string (Swoftlang.Registry.property_table_json ()))
+  | _ :: [ "--check-props" ] ->
+    let text, ok = Swoftlang.Check_props.report_text () in
+    print_string text;
+    if not ok then exit 1
+  | _ :: [ "--check-props"; "--json" ] ->
+    let json = Swoftlang.Check_props.report_json () in
+    print_endline (Yojson.Safe.pretty_to_string json);
+    (match json with
+    | `Assoc kv when List.assoc_opt "clean" kv = Some (`Bool true) -> ()
+    | _ -> exit 1)
   | _ :: [ "--dump-symbols" ] ->
     print_endline (Yojson.Safe.pretty_to_string (Swoftlang.Registry.dump_symbols_json ()))
   | _ :: "compile" :: rest ->

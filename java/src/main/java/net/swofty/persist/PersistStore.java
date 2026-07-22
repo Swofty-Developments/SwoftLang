@@ -473,6 +473,13 @@ public final class PersistStore {
                     return value;
                 }
                 break;
+            case OFFLINE_PLAYER:
+                // an OfflinePlayer value persists by uuid (uuid-stable identity);
+                // keep the live OfflinePlayerValue reference (uuid emitted at flush)
+                if (value instanceof net.swofty.players.OfflinePlayerValue) {
+                    return value;
+                }
+                break;
             case STRUCT:
                 // a struct persists as a JSON object of its fields; keep the
                 // live StructValue reference so a later persist_set of the
@@ -575,6 +582,8 @@ public final class PersistStore {
                 return value instanceof net.minestom.server.item.ItemStack ? value : null;
             case PLAYER:
                 return value instanceof net.minestom.server.entity.Player ? value : null;
+            case OFFLINE_PLAYER:
+                return value instanceof net.swofty.players.OfflinePlayerValue ? value : null;
             default:
                 return null;
         }
@@ -590,6 +599,7 @@ public final class PersistStore {
             case VEC: return v instanceof net.minestom.server.coordinate.Vec;
             case ITEM: return v instanceof net.minestom.server.item.ItemStack;
             case PLAYER: return v instanceof net.minestom.server.entity.Player;
+            case OFFLINE_PLAYER: return v instanceof net.swofty.players.OfflinePlayerValue;
             default: return false;
         }
     }
@@ -664,6 +674,8 @@ public final class PersistStore {
                 return itemFromJson(element);
             case PLAYER:
                 return playerFromJson(element);
+            case OFFLINE_PLAYER:
+                return offlinePlayerFromJson(element);
             case STRUCT:
                 return structFromJson(type, element);
             case LIST:
@@ -756,6 +768,25 @@ public final class PersistStore {
             java.util.UUID uuid = java.util.UUID.fromString(blob.getAsString());
             return net.minestom.server.MinecraftServer.getConnectionManager()
                     .getOnlinePlayerByUuid(uuid);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Resolve a stored OfflinePlayer (a uuid string) back to an
+     * {@link net.swofty.players.OfflinePlayerValue}. Unlike a live Player this
+     * never culls: an offline identity is always resolvable — the name is
+     * re-hydrated from the seen-players store (or "unknown" when unseen). A
+     * non-string / unparseable blob is a bad row (null).
+     */
+    private static Object offlinePlayerFromJson(JsonElement blob) {
+        if (blob == null || !blob.isJsonPrimitive()) {
+            return null;
+        }
+        try {
+            java.util.UUID uuid = java.util.UUID.fromString(blob.getAsString());
+            return net.swofty.players.SeenPlayersStore.byUuid(uuid.toString());
         } catch (Exception e) {
             return null;
         }
@@ -944,6 +975,12 @@ public final class PersistStore {
         if (value instanceof net.minestom.server.entity.Player player) {
             return new JsonPrimitive(player.getUuid().toString());
         }
+        // OfflinePlayer -> uuid string (uuid-stable; name re-resolved on load).
+        // Symmetric with a Player value and with mapKeyToJsonKey, so an
+        // OfflinePlayer value and an OfflinePlayer map key store the same form.
+        if (value instanceof net.swofty.players.OfflinePlayerValue offline) {
+            return new JsonPrimitive(offline.uuid());
+        }
         // struct -> JSON object of its fields (§3.2), each field dispatched by
         // its declared type. Placed before the generic Map branch: a StructValue
         // is not a Map, but keep the ordering explicit.
@@ -1051,7 +1088,7 @@ public final class PersistStore {
         BaseType base = type.getBaseType();
         return isScalar(base) || base == BaseType.LOCATION
                 || base == BaseType.VEC || base == BaseType.ITEM
-                || base == BaseType.PLAYER;
+                || base == BaseType.PLAYER || base == BaseType.OFFLINE_PLAYER;
     }
 
     /**

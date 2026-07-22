@@ -1,0 +1,150 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 11,
+      "col": 5,
+      "name": "PlayerJoin",
+      "receiver": "Player",
+      "priority": 0,
+      "self": "player",
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 12,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 12,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_1",
+                "value": {
+                  "line": 12,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "team",
+                  "subject": null
+                }
+              },
+              {
+                "line": 12,
+                "col": 9,
+                "kind": "method_call_stmt",
+                "receiver": {
+                  "line": 12,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_1"
+                },
+                "name": "add",
+                "args": [
+                  { "line": 12, "col": 13, "kind": "var", "name": "player" }
+                ]
+              },
+              {
+                "line": 12,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "team",
+                "subject": null,
+                "value": {
+                  "line": 12,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_1"
+                }
+              }
+            ]
+          },
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "champion",
+            "subject": null,
+            "value": {
+              "line": 13,
+              "col": 25,
+              "kind": "var",
+              "name": "player"
+            }
+          },
+          {
+            "line": 14,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "captains",
+            "subject": null,
+            "value": {
+              "line": 14,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 14,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "captains",
+                  "subject": null
+                },
+                { "line": 14, "col": 25, "kind": "string", "value": "red" },
+                { "line": 14, "col": 34, "kind": "var", "name": "player" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 1,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 6,
+      "col": 1,
+      "name": "team",
+      "subject": null,
+      "type": { "base": "LIST", "subtypes": [ { "base": "PLAYER" } ] },
+      "default": { "line": 6, "col": 33, "kind": "list", "items": [] }
+    },
+    {
+      "line": 7,
+      "col": 1,
+      "name": "champion",
+      "subject": null,
+      "type": { "base": "OPTIONAL", "subtypes": [ { "base": "PLAYER" } ] },
+      "default": { "line": 7, "col": 41, "kind": "none" }
+    },
+    {
+      "line": 8,
+      "col": 1,
+      "name": "captains",
+      "subject": null,
+      "type": { "base": "MAP", "subtypes": [ { "base": "PLAYER" } ] },
+      "default": {
+        "line": 8,
+        "col": 44,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      }
+    }
+  ]
+}

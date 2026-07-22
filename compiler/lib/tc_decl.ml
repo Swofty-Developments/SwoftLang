@@ -317,6 +317,18 @@ let persistable_value = function
   | TString | TInteger | TDouble | TBoolean | TLocation | TVec | TItem -> true
   | _ -> false
 
+(* value types that persist inside a persistent CONTAINER position (a list
+   element, an optional inner, or a map value): the persistable scalars, PLUS
+   Player / OfflinePlayer which serialize by uuid and rehydrate by uuid
+   (resolve-or-cull on load, per the entity-ref rule — an offline Player drops
+   from a list / reads back as none). Base Entity/Mob are excluded: they are not
+   uuid-stable snapshots and stay rejected as values. A BARE Player is likewise
+   still rejected at top level (there is no none/default to cull an unresolvable
+   uuid to); only the container positions admit it. *)
+let persist_elem_value = function
+  | TPlayer | TOfflinePlayer -> true
+  | t -> persistable_value t
+
 (* §3.2 struct serializability: a struct may be persistent iff every field is a
    serializable type. The serializable set for struct fields is a superset of
    the top-level persistable values: it additionally admits Player /
@@ -406,19 +418,26 @@ let check_persistent ctx (pd : persistent_decl) =
         err ctx pd.pd_pos "persistent '%s' cannot store struct '%s' (a field is non-serializable)"
           pd.pd_name n)
     | None -> ())
-  (* bare persistable value, or an optional/list of one *)
+  (* bare persistable value (scalar/Location/Vec/Item — not a bare Player) *)
   | t when persistable_value t -> ()
-  | TOptional t when persistable_value t -> ()
-  | TList t when persistable_value t -> ()
+  (* an optional/list whose element is a persistable value OR Player /
+     OfflinePlayer (serialized by uuid, resolve-or-cull on load) *)
+  | TOptional t when persist_elem_value t -> ()
+  | TList t when persist_elem_value t -> ()
   (* phase 10: a persistent may be a map keyed by String, Integer or Player
-     (Player serialized by uuid on the Java side); values may be any
-     persistable value type. Serialized as JSON to the backend. *)
-  | TMap ((TString | TInteger | TPlayer), v) when persistable_value v -> ()
-  (* live handles anywhere in the value position — actionable hint *)
+     (Player serialized by uuid on the Java side); values may be any persistable
+     value type, plus Player / OfflinePlayer (also serialized by uuid).
+     Serialized as JSON to the backend. *)
+  | TMap ((TString | TInteger | TPlayer), v) when persist_elem_value v -> ()
+  (* live handles that stay rejected as VALUES: a bare Player (no none/default to
+     cull an unresolvable uuid to) and Entity in every position (not a uuid-
+     stable snapshot). Player/OfflinePlayer in a list/optional/map value are
+     accepted above; Mob/other non-uuid handles fall through to the errors
+     below. *)
   | TPlayer | TEntity
-  | TOptional (TPlayer | TEntity)
-  | TList (TPlayer | TEntity)
-  | TMap (_, (TPlayer | TEntity)) ->
+  | TOptional TEntity
+  | TList TEntity
+  | TMap (_, TEntity) ->
     reject_live ()
   | TMap ((TString | TInteger | TPlayer), v) ->
     err ctx pd.pd_pos

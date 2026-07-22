@@ -92,6 +92,29 @@ let property_table_case () =
           "--property-table output does not match property-table.json; regenerate the fixture \
            and update the Java PropertyRegistry to match"
 
+(* #57: --check-props must be clean — every event:* property row resolves to a
+   concrete catalog accessor with matching type + writability. Asserts both the
+   human mode (exit 0, "0 issues") and the machine mode against a golden. *)
+let check_props_case () =
+  incr total;
+  let code, out, err = run_capture "--check-props" in
+  if code <> 0 then fail "--check-props: expected exit 0, got %d (stdout: %s stderr: %s)" code out err
+  else if not (contains out "0 issues") then
+    fail "--check-props: expected a clean report, got:\n%s" out;
+  incr total;
+  let jcode, jout, jerr = run_capture "--check-props --json" in
+  if jcode <> 0 then fail "--check-props --json: expected exit 0, got %d (stderr: %s)" jcode jerr
+  else
+    match Yojson.Safe.from_string jout with
+    | exception _ -> fail "--check-props --json: stdout is not valid JSON: %s" jout
+    | actual ->
+      let expected = Yojson.Safe.from_file "check-props.expected.json" in
+      if norm actual <> norm expected then
+        fail
+          "--check-props --json does not match check-props.expected.json; property \
+           ownership drifted from the catalogs (or regenerate the fixture)\n--- actual ---\n%s"
+          (Yojson.Safe.pretty_to_string actual)
+
 let list_cases dir suffix =
   Sys.readdir dir |> Array.to_list
   |> List.filter (fun f -> Filename.check_suffix f suffix)
@@ -102,6 +125,7 @@ let () =
   List.iter golden_case (list_cases "cases" ".sw");
   List.iter error_case (list_cases "errors" ".sw");
   property_table_case ();
+  check_props_case ();
   if !failures > 0 then begin
     Printf.printf "%d of %d test(s) failed\n" !failures !total;
     exit 1
