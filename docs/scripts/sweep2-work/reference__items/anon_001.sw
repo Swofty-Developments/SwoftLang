@@ -1,4 +1,4 @@
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare

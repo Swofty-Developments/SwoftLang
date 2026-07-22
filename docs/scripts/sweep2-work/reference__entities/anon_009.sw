@@ -1,4 +1,4 @@
-mob "zombie" {
+mob Zombie {
     type: "ZOMBIE"
     viewable: false                          // spawns hidden — handed out per player
 
@@ -22,7 +22,7 @@ mob "zombie" {
 
 Player {
     on_join {
-        spawn mob "zombie" at in_front_of(player, 5) as z
+        spawn mob Zombie at in_front_of(player, 5) as z
         set name of z to "<red>Zombie <gray>0/5" for player
         show z to player                                    // reveal it to just this player
     }

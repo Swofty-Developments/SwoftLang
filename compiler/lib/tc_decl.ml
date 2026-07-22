@@ -378,6 +378,27 @@ let valid_item_id id =
          (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c = '_' || c = '.' || c = '-')
        id
 
+(* §2 nominal custom types: publish the Capitalized type names so they resolve
+   in type positions ('boss: Ghoul', 'is a Ghoul', 'spawn mob Ghoul'). Runs in
+   pass 1 BEFORE any type annotation (function params, persistents, mob tags) is
+   resolved, and before register_items/register_mobs validate the id tables. A
+   name that collides with a builtin type or with the other kind is rejected. *)
+let register_custom_types ctx (script : Ast.script) =
+  let claim tbl kind (name : string) id pos =
+    if Tc_types.ty_of_type_name name <> None then
+      err ctx pos
+        "custom %s type '%s' collides with a built-in type name — choose another name" kind name
+    else if Hashtbl.mem ctx.custom_mobs name || Hashtbl.mem ctx.custom_items name then
+      err ctx pos "duplicate custom type '%s'" name
+    else Hashtbl.replace tbl name id
+  in
+  List.iter
+    (fun (mb : mob_decl) -> claim ctx.custom_mobs "mob" mb.mb_tyname mb.mb_id mb.mb_pos)
+    script.mobs;
+  List.iter
+    (fun (it : item_decl) -> claim ctx.custom_items "item" it.it_tyname it.it_id it.it_pos)
+    script.items
+
 let register_items ctx items =
   List.iter
     (fun (it : item_decl) ->

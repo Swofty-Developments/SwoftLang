@@ -27,15 +27,18 @@ public record ItemDefModel(
         Map<String, Double> attributes,
         Map<String, Object> tags,
         List<ItemClickHandlerModel> onClick,
-        Map<String, InlineHandler> handlers) {
+        Map<String, InlineHandler> handlers,
+        String typeName) {
 
     /** Pre-inline-handlers shape, kept for existing call sites/smoke tests. */
     public ItemDefModel(String id, String material, String skull, String name,
             String rarity, boolean glint, int amount, ExecuteBlock lore,
             Map<String, Double> attributes, Map<String, Object> tags,
             List<ItemClickHandlerModel> onClick) {
+        // legacy/back-compat callers have no nominal type name; the id doubles
+        // as the type name so 'is a <id>' still resolves
         this(id, material, skull, name, rarity, glint, amount, lore,
-                attributes, tags, onClick, Map.of());
+                attributes, tags, onClick, Map.of(), id);
     }
 
     /** The generic first-class handler for {@code event}, or null. */

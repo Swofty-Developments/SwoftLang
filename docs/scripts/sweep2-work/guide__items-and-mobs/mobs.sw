@@ -1,4 +1,4 @@
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     name: "<gray>Rotten Scimitar"
     rarity: uncommon
@@ -8,7 +8,7 @@ item "rotten_scimitar" {
     }
 }
 
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     name: "<red>Crypt Ghoul <green>${mob.health}<red>❤"
     health: 200

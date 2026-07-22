@@ -16,22 +16,18 @@
             "line": 27,
             "col": 9,
             "kind": "spawn_mob",
-            "id": {
-              "line": 27,
-              "col": 19,
-              "kind": "string",
-              "value": "guardian"
-            },
+            "type_name": "Guardian",
+            "id": "guardian",
             "at": {
               "line": 27,
-              "col": 33,
+              "col": 31,
               "kind": "call",
               "name": "in_front_of",
               "args": [
-                { "line": 27, "col": 45, "kind": "var", "name": "sender" },
+                { "line": 27, "col": 43, "kind": "var", "name": "sender" },
                 {
                   "line": 27,
-                  "col": 53,
+                  "col": 51,
                   "kind": "number",
                   "value": 3,
                   "integer": true
@@ -263,6 +259,7 @@
     {
       "line": 4,
       "col": 1,
+      "type_name": "Guardian",
       "id": "guardian",
       "type": "IRON_GOLEM",
       "name": {

@@ -1,10 +1,10 @@
 command "boss" {
     execute {
-        spawn mob "gholu" at location(0, 64, 0)
+        spawn mob Gholu at location(0, 64, 0)
     }
 }
 
-mob "ghoul" {
+mob Ghoul {
     type: "ZOMBIE"
     health: 100
 }

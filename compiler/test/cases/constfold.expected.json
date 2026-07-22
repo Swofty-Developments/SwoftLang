@@ -13,6 +13,7 @@
     {
       "line": 1,
       "col": 1,
+      "type_name": "FoldedBlade",
       "id": "folded_blade",
       "material": "IRON_SWORD",
       "skull": null,
@@ -51,6 +52,7 @@
     {
       "line": 10,
       "col": 1,
+      "type_name": "FoldedGhoul",
       "id": "folded_ghoul",
       "type": "ZOMBIE",
       "name": null,

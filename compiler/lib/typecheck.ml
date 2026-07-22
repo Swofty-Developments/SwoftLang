@@ -1,6 +1,5 @@
 open Ast
 open Registry
-open Tc_types
 open Tc_env
 open Tc_decl
 
@@ -22,6 +21,8 @@ let make_ctx file =
     persists = Hashtbl.create 16;
     item_ids = Hashtbl.create 16;
     mob_ids = Hashtbl.create 16;
+    custom_mobs = Hashtbl.create 16;
+    custom_items = Hashtbl.create 16;
     scoreboards = Hashtbl.create 8;
     tablists = Hashtbl.create 8;
     bossbars = Hashtbl.create 8;
@@ -167,8 +168,8 @@ let collect_sched_names (script : Ast.script) : string list =
       we gi_id;
       we gi_target;
       Option.iter we gi_amount
-    | SSpawnMob { sm_id; sm_at; _ } ->
-      we sm_id;
+    | SSpawnMob { sm_target; sm_at; _ } ->
+      (match sm_target with MSById e -> we e | MSByType _ -> ());
       we sm_at
     | SDespawnMob e -> we e
     | SSetNametag { nt_target; nt_value; nt_viewer; _ } ->
@@ -468,7 +469,7 @@ let register_functions ctx (script : Ast.script) =
             f_params =
               List.map
                 (fun (p : Ast.param) ->
-                  (p.p_name, match p.p_type with Some dt -> ty_of_dt dt | None -> TAny))
+                  (p.p_name, match p.p_type with Some dt -> resolve_ty ctx dt | None -> TAny))
                 f.params;
             f_ret = TAny;
           }
@@ -584,6 +585,9 @@ let run_all (modules : module_input list) : Diagnostics.error list =
     List.map
       (fun tm ->
         let ctx = make_ctx tm.tm_file in
+        (* §2: custom type names must be visible before any type annotation
+           (function params, persistents, mob tags) is resolved *)
+        register_custom_types ctx tm.tm_script;
         register_functions ctx tm.tm_script;
         List.iter (register_persistent ctx) tm.tm_script.persistents;
         register_items ctx tm.tm_script.items;
@@ -706,7 +710,19 @@ let run_all (modules : module_input list) : Diagnostics.error list =
               (fun mb ->
                 if mb.mb_exported && not (Hashtbl.mem ctx.mob_ids mb.mb_id) then
                   Hashtbl.add ctx.mob_ids mb.mb_id ())
-              dep.ms_input.tm_script.mobs)
+              dep.ms_input.tm_script.mobs;
+            (* exported custom type names become visible for nominal use in the
+               importer (type positions, 'is a', 'spawn mob Ghoul') *)
+            List.iter
+              (fun mb ->
+                if mb.mb_exported && not (Hashtbl.mem ctx.custom_mobs mb.mb_tyname) then
+                  Hashtbl.replace ctx.custom_mobs mb.mb_tyname mb.mb_id)
+              dep.ms_input.tm_script.mobs;
+            List.iter
+              (fun it ->
+                if it.it_exported && not (Hashtbl.mem ctx.custom_items it.it_tyname) then
+                  Hashtbl.replace ctx.custom_items it.it_tyname it.it_id)
+              dep.ms_input.tm_script.items)
         ms.ms_input.tm_imports)
     states;
 

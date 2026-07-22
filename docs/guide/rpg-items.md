@@ -24,7 +24,7 @@ plain typed round-tripping data on the stack:
 ```swoftlang
 import "abilities"
 
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare

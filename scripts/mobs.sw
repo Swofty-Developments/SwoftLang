@@ -3,7 +3,7 @@
 // drops (the scimitar chains to a declared custom item), and all three
 // per-mob handlers. lost_sheep: passive mob with a vanilla-only drop.
 
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     name: "Rotten Scimitar"
     rarity: uncommon
@@ -20,7 +20,7 @@ item "rotten_scimitar" {
     }
 }
 
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     name: "<red>Crypt Ghoul <green>${mob.health}<red>❤"
     health: 200
@@ -48,7 +48,7 @@ mob "crypt_ghoul" {
     }
 }
 
-mob "lost_sheep" {
+mob LostSheep {
     type: "SHEEP"
     name: "<yellow>Lost Sheep"
     health: 20
@@ -65,7 +65,7 @@ mob "lost_sheep" {
 
 command "ghoul" {
     execute {
-        spawn mob "crypt_ghoul" at location(10, 64, 20) as m
+        spawn mob CryptGhoul at location(10, 64, 20) as m
         set m.health to m.max_health / 2
         send "<gray>Spawned ${m.custom_id} at half health." to sender
     }

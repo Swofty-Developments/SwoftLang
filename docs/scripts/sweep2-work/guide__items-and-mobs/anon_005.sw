@@ -1,6 +1,6 @@
 command "ghoul" {
     execute {
-        spawn mob "crypt_ghoul" at location(10, 64, 20) as m
+        spawn mob CryptGhoul at location(10, 64, 20) as m
         set m.health to m.max_health / 2
         send "<gray>Spawned ${m.custom_id} at half health." to sender
     }

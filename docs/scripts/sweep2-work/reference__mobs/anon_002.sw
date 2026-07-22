@@ -1,10 +1,10 @@
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     name: "Rotten Scimitar"
     rarity: uncommon
 }
 
-mob "armed_ghoul" {
+mob ArmedGhoul {
     type: "ZOMBIE"
 
     drops {

@@ -1,4 +1,4 @@
-mob "lost_sheep" {
+mob LostSheep {
     type: "SHEEP"
     name: "<yellow>Lost Sheep"
     health: 20

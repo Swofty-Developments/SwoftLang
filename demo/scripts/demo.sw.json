@@ -241,22 +241,18 @@
             "line": 53,
             "col": 9,
             "kind": "spawn_mob",
-            "id": {
-              "line": 53,
-              "col": 19,
-              "kind": "string",
-              "value": "zombie"
-            },
+            "type_name": "Zombie",
+            "id": "zombie",
             "at": {
               "line": 53,
-              "col": 31,
+              "col": 29,
               "kind": "call",
               "name": "in_front_of",
               "args": [
-                { "line": 53, "col": 43, "kind": "var", "name": "player" },
+                { "line": 53, "col": 41, "kind": "var", "name": "player" },
                 {
                   "line": 53,
-                  "col": 51,
+                  "col": 49,
                   "kind": "number",
                   "value": 5,
                   "integer": true
@@ -608,6 +604,7 @@
     {
       "line": 17,
       "col": 1,
+      "type_name": "Zombie",
       "id": "zombie",
       "type": "ZOMBIE",
       "name": null,

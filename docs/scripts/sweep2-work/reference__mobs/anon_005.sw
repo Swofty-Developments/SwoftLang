@@ -1,4 +1,4 @@
-mob "guardian" {
+mob Guardian {
     type: "IRON_GOLEM"
     name: "<gold>Guardian"
     health: 100

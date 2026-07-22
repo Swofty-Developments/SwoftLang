@@ -60,7 +60,7 @@
           "line": 31,
           "col": 9,
           "name": "mystery",
-          "type": { "base": "UNKNOWN" },
+          "type": { "base": "Wobble" },
           "default": null
         }
       ],

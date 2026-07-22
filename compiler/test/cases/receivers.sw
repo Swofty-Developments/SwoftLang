@@ -48,7 +48,7 @@ Block {
 
 // A custom mob that OVERRIDES base Mob methods (most-specific wins). The bodies
 // may 'call original method' to run the overridden base method.
-mob "ghoul" {
+mob Ghoul {
     type: "ZOMBIE"
     name: "<dark_green>Ghoul"
     health: 40

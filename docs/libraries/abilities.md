@@ -11,7 +11,7 @@ once per player per cooldown window, showing an actionbar countdown while it wai
 ```swoftlang
 import "abilities"
 
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare
@@ -61,7 +61,7 @@ command "wire" {
     }
 }
 
-item "aspect_of_the_end" { material: "DIAMOND_SWORD" tags: { damage: 100 } }
+item AspectOfTheEnd { material: "DIAMOND_SWORD" tags: { damage: 100 } }
 ```
 
 ### `with_cooldown(seconds, handler)` {#with_cooldown}
@@ -89,8 +89,8 @@ command "wire" {
     }
 }
 
-item "blink_staff" { material: "BLAZE_ROD" }
-item "spark_wand" { material: "STICK" }
+item BlinkStaff { material: "BLAZE_ROD" }
+item SparkWand { material: "STICK" }
 ```
 
 ## How it's built

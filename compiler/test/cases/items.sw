@@ -2,7 +2,7 @@
 // NBT tags + the on_click sugar. No stats{}/ability{} — gameplay systems are
 // built in userland with event handlers (see the abilities.sw addon).
 
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare
@@ -43,7 +43,7 @@ item "aspect_of_the_end" {
     }
 }
 
-item "grappling_hook" {
+item GrapplingHook {
     skull: "abc123texturehash"
     rarity: epic
     tags: {

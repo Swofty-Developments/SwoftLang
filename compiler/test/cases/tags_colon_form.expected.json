@@ -13,6 +13,7 @@
     {
       "line": 3,
       "col": 1,
+      "type_name": "ColonItem",
       "id": "colon_item",
       "material": "STICK",
       "skull": null,

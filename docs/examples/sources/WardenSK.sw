@@ -14,7 +14,7 @@
 // The .sk imports org.bukkit.entity.Entity and calls Paper methods through
 // skript-reflect. No reflection here: the warden is a declared custom mob
 // and every "syntax" below is an exported, typechecked function.
-mob "warden" {
+mob Warden {
     type: "WARDEN"
     name: "<dark_aqua>Warden"
     health: 500
@@ -42,7 +42,7 @@ function warden_put(key: String, value) {
 
 export function summon_warden(at: Location) {
     set warden_count to warden_count + 1
-    spawn mob "warden" at at as w
+    spawn mob Warden at at as w
     set w.name to "<dark_aqua>Warden #${warden_count}"
     return w
 }

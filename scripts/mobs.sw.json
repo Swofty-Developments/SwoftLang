@@ -16,35 +16,31 @@
             "line": 68,
             "col": 9,
             "kind": "spawn_mob",
-            "id": {
-              "line": 68,
-              "col": 19,
-              "kind": "string",
-              "value": "crypt_ghoul"
-            },
+            "type_name": "CryptGhoul",
+            "id": "crypt_ghoul",
             "at": {
               "line": 68,
-              "col": 36,
+              "col": 33,
               "kind": "call",
               "name": "location",
               "args": [
                 {
                   "line": 68,
-                  "col": 45,
+                  "col": 42,
                   "kind": "number",
                   "value": 10,
                   "integer": true
                 },
                 {
                   "line": 68,
-                  "col": 49,
+                  "col": 46,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
                   "line": 68,
-                  "col": 53,
+                  "col": 50,
                   "kind": "number",
                   "value": 20,
                   "integer": true
@@ -274,6 +270,7 @@
     {
       "line": 6,
       "col": 1,
+      "type_name": "RottenScimitar",
       "id": "rotten_scimitar",
       "material": "GOLDEN_SWORD",
       "skull": null,
@@ -323,6 +320,7 @@
     {
       "line": 23,
       "col": 1,
+      "type_name": "CryptGhoul",
       "id": "crypt_ghoul",
       "type": "ZOMBIE",
       "name": {
@@ -473,6 +471,7 @@
     {
       "line": 51,
       "col": 1,
+      "type_name": "LostSheep",
       "id": "lost_sheep",
       "type": "SHEEP",
       "name": {

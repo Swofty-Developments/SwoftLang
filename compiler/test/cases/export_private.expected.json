@@ -117,6 +117,7 @@
         {
           "line": 15,
           "col": 8,
+          "type_name": "MixBlade",
           "id": "mix_blade",
           "material": "IRON_SWORD",
           "skull": null,
@@ -138,6 +139,7 @@
         {
           "line": 20,
           "col": 1,
+          "type_name": "MixSecret",
           "id": "mix_secret",
           "material": "STICK",
           "skull": null,

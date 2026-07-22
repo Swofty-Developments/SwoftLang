@@ -202,6 +202,21 @@ public final class Values {
             case "Map":
                 return obj instanceof MapValue;
             default:
+                // §2 nominal custom types: 'is a Ghoul' / 'is a AspectOfTheEnd'
+                // check the subject's runtime specialization. The runtime still
+                // keys defs by their resolved id; each def carries its nominal
+                // type name so the check compares the declared type name.
+                if (obj instanceof net.swofty.mobs.SwoftMob mob) {
+                    return typeName.equals(mob.getDef().typeName());
+                }
+                if (obj instanceof ItemStack stack) {
+                    String customId = net.swofty.items.ItemRegistry.customId(stack);
+                    if (customId != null) {
+                        net.swofty.model.ItemDefModel def =
+                                net.swofty.items.ItemRegistry.get(customId);
+                        return def != null && typeName.equals(def.typeName());
+                    }
+                }
                 return false;
         }
     }

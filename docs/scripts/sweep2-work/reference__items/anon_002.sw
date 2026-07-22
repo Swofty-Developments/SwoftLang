@@ -1,4 +1,4 @@
-item "farmer_boots" {
+item FarmerBoots {
     material: "GOLDEN_BOOTS"
     name: "<green>Farmer Boots"
     rarity: uncommon

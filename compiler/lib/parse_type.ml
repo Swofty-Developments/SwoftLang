@@ -83,9 +83,16 @@ let rec parse_type st =
     (match base_of_name name with
     | Some base -> DSimple base
     | None ->
-      Printf.eprintf "%s:%d:%d: warning: unknown type '%s', treating as UNKNOWN\n" st.file line
-        col name;
-      DSimple "UNKNOWN")
+      (* §2 nominal custom types: a Capitalized unknown name is a candidate
+         custom type (mob/item); preserve it verbatim so the typechecker can
+         resolve it against the declared types. A lowercase unknown name is a
+         genuine typo — keep the legacy warning + UNKNOWN degradation. *)
+      if String.length name > 0 && name.[0] >= 'A' && name.[0] <= 'Z' then DSimple name
+      else begin
+        Printf.eprintf "%s:%d:%d: warning: unknown type '%s', treating as UNKNOWN\n" st.file line
+          col name;
+        DSimple "UNKNOWN"
+      end)
   | t, _, _ ->
     error st (Printf.sprintf "Expected type name, found %s" (Token.describe t))
 

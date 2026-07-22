@@ -4,7 +4,7 @@
 // environment, so ${item_id}, ${tags.x}, and ${tags.meta.tier} render, and
 // the lore block's if/loop can branch on that in-scope data.
 
-item "flame_blade" {
+item FlameBlade {
     material: "DIAMOND_SWORD"
     name: "<red>Flame Blade"
     rarity: rare

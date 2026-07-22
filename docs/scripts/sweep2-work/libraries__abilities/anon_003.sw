@@ -14,5 +14,5 @@ command "wire" {
     }
 }
 
-item "blink_staff" { material: "BLAZE_ROD" }
-item "spark_wand" { material: "STICK" }
+item BlinkStaff { material: "BLAZE_ROD" }
+item SparkWand { material: "STICK" }

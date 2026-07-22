@@ -272,6 +272,7 @@
     {
       "line": 51,
       "col": 1,
+      "type_name": "Ghoul",
       "id": "ghoul",
       "type": "ZOMBIE",
       "name": {
@@ -316,23 +317,13 @@
                 "name": "player"
               }
             },
-            {
-              "line": 58,
-              "col": 9,
-              "kind": "call_original"
-            }
+            { "line": 58, "col": 9, "kind": "call_original" }
           ]
         },
         "on_target": {
           "self": "mob",
           "params": [ "target" ],
-          "body": [
-            {
-              "line": 62,
-              "col": 9,
-              "kind": "call_original"
-            }
-          ]
+          "body": [ { "line": 62, "col": 9, "kind": "call_original" } ]
         }
       }
     }

@@ -1,4 +1,4 @@
-mob "sentinel" {
+mob Sentinel {
     type: "IRON_GOLEM"
     name: "<gray>Sentinel"
     on_spawn {

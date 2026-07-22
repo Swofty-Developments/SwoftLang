@@ -14,7 +14,7 @@ storage {
 
 persistent visits for Player: Integer = 0
 
-mob "zombie" {
+mob Zombie {
     type: "ZOMBIE"
     health: 200
     ai: none
@@ -50,7 +50,7 @@ Player {
         show scoreboard "hud" to player
         show tablist "tab" to player
 
-        spawn mob "zombie" at in_front_of(player, 5) as z
+        spawn mob Zombie at in_front_of(player, 5) as z
         set name of z to "<gold>Zombie <yellow>0<gray>/5" for player
         set z.glowing to true
         show z to player

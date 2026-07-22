@@ -1,4 +1,4 @@
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     health: 200
 }

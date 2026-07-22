@@ -133,7 +133,7 @@ lifecycle — the entire feature in one file:
 <!-- swoftc name=fishing_full.sw -->
 
 ```swoftlang
-item "glimmering_cod" {
+item GlimmeringCod {
     material: "COD"
     name: "<aqua>Glimmering Cod"
     rarity: rare
@@ -142,7 +142,7 @@ item "glimmering_cod" {
     }
 }
 
-mob "sea_walker" {
+mob SeaWalker {
     type: "ZOMBIE"
     name: "<dark_aqua>Sea Walker"
     health: 40

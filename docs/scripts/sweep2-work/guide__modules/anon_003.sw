@@ -1,6 +1,6 @@
 import "abilities"
 
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     rarity: rare
 }

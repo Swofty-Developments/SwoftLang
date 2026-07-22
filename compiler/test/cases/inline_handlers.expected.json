@@ -125,6 +125,7 @@
     {
       "line": 9,
       "col": 1,
+      "type_name": "MagicWand",
       "id": "magic_wand",
       "material": "BLAZE_ROD",
       "skull": null,
@@ -241,6 +242,7 @@
     {
       "line": 31,
       "col": 1,
+      "type_name": "Boss",
       "id": "boss",
       "type": "WITHER",
       "name": {

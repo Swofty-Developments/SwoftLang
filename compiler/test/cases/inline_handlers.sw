@@ -6,7 +6,7 @@
 
 // An item ("item" = the ItemStack) with the big new handler set, including a
 // multi-arg block handler and a brace-free one-liner.
-item "magic_wand" {
+item MagicWand {
     material: "BLAZE_ROD"
     name: "<gold>Magic Wand"
 
@@ -28,7 +28,7 @@ item "magic_wand" {
 // A mob ("mob" = the Mob) mixing an already-shipped dedicated handler
 // (on_death, top-level JSON) with the new generic ones (on_click / on_target /
 // on_tick, under "handlers").
-mob "boss" {
+mob Boss {
     type: "WITHER"
     name: "<dark_red>The Boss"
     health: 300

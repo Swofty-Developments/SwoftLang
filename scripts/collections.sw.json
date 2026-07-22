@@ -94,10 +94,10 @@
             "kind": "call",
             "name": "map_set",
             "args": [
-              { "line": 14, "col": 17, "kind": "var", "name": "kills" },
+              { "line": 14, "col": 13, "kind": "var", "name": "kills" },
               {
                 "line": 14,
-                "col": 24,
+                "col": 22,
                 "kind": "number",
                 "value": 105,
                 "integer": true
@@ -149,16 +149,14 @@
                 "right": {
                   "line": 21,
                   "col": 14,
-                  "kind": "call",
-                  "name": "map_size",
-                  "args": [
-                    {
-                      "line": 21,
-                      "col": 14,
-                      "kind": "var",
-                      "name": "ranked"
-                    }
-                  ]
+                  "kind": "prop",
+                  "target": {
+                    "line": 21,
+                    "col": 14,
+                    "kind": "var",
+                    "name": "ranked"
+                  },
+                  "name": "size"
                 }
               },
               "right": {
@@ -170,7 +168,7 @@
             },
             "target": {
               "line": 21,
-              "col": 62,
+              "col": 60,
               "kind": "var",
               "name": "sender"
             }
@@ -221,45 +219,48 @@
                 {
                   "line": 28,
                   "col": 28,
-                  "kind": "call",
-                  "name": "map_keys",
-                  "args": [
-                    { "line": 28, "col": 37, "kind": "var", "name": "kills" }
-                  ]
+                  "kind": "prop",
+                  "target": {
+                    "line": 28,
+                    "col": 36,
+                    "kind": "var",
+                    "name": "kills"
+                  },
+                  "name": "keys"
                 },
                 {
                   "line": 28,
-                  "col": 45,
+                  "col": 43,
                   "kind": "lambda",
                   "async": false,
                   "params": [
-                    { "line": 28, "col": 54, "name": "id", "type": null }
+                    { "line": 28, "col": 52, "name": "id", "type": null }
                   ],
                   "body": [
                     {
                       "line": 28,
-                      "col": 58,
+                      "col": 56,
                       "kind": "return",
                       "value": {
                         "line": 28,
-                        "col": 70,
+                        "col": 68,
                         "kind": "binary",
                         "op": "OR_ELSE",
                         "left": {
                           "line": 28,
-                          "col": 70,
+                          "col": 68,
                           "kind": "call",
                           "name": "map_get",
                           "args": [
                             {
                               "line": 28,
-                              "col": 65,
+                              "col": 63,
                               "kind": "var",
                               "name": "kills"
                             },
                             {
                               "line": 28,
-                              "col": 71,
+                              "col": 69,
                               "kind": "var",
                               "name": "id"
                             }
@@ -267,7 +268,7 @@
                         },
                         "right": {
                           "line": 28,
-                          "col": 85,
+                          "col": 83,
                           "kind": "number",
                           "value": 0,
                           "integer": true
@@ -607,15 +608,18 @@
             "iterable": {
               "line": 54,
               "col": 14,
-              "kind": "call",
-              "name": "map_keys",
-              "args": [
-                { "line": 54, "col": 23, "kind": "var", "name": "by_weight" }
-              ]
+              "kind": "prop",
+              "target": {
+                "line": 54,
+                "col": 22,
+                "kind": "var",
+                "name": "by_weight"
+              },
+              "name": "keys"
             },
             "body": {
               "line": 54,
-              "col": 42,
+              "col": 40,
               "kind": "block",
               "statements": [
                 {
@@ -696,22 +700,20 @@
                   {
                     "line": 59,
                     "col": 33,
-                    "kind": "call",
-                    "name": "map_keys",
-                    "args": [
-                      {
-                        "line": 59,
-                        "col": 42,
-                        "kind": "var",
-                        "name": "weights"
-                      }
-                    ]
+                    "kind": "prop",
+                    "target": {
+                      "line": 59,
+                      "col": 41,
+                      "kind": "var",
+                      "name": "weights"
+                    },
+                    "name": "keys"
                   }
                 ]
               },
               "right": {
                 "line": 59,
-                "col": 62,
+                "col": 60,
                 "kind": "number",
                 "value": 1,
                 "integer": true

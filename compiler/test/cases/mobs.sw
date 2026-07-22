@@ -1,4 +1,4 @@
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     rarity: uncommon
     attributes: {
@@ -6,7 +6,7 @@ item "rotten_scimitar" {
     }
 }
 
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     name: "<red>Crypt Ghoul <green>${mob.health}<red>!"
     health: 200
@@ -34,7 +34,7 @@ mob "crypt_ghoul" {
     }
 }
 
-mob "harmless_chicken" {
+mob HarmlessChicken {
     type: "CHICKEN"
     name: "<yellow>Cluckers"
     health: 10
@@ -43,7 +43,7 @@ mob "harmless_chicken" {
 
 command "ghoul" {
     execute {
-        spawn mob "crypt_ghoul" at location(10, 64, 20) as m
+        spawn mob CryptGhoul at location(10, 64, 20) as m
         set m.name to "<red>Angry Ghoul"
         set m.health to m.max_health / 2
         teleport sender to m.location

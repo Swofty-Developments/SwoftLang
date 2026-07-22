@@ -1,4 +1,4 @@
-item "folded_blade" {
+item FoldedBlade {
     material: "IRON_SWORD"
     amount: 1 + 1
     attributes: {
@@ -7,7 +7,7 @@ item "folded_blade" {
     }
 }
 
-mob "folded_ghoul" {
+mob FoldedGhoul {
     type: "ZOMBIE"
     health: 100 * 2
     damage: 30 - 5

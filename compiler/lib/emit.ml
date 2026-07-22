@@ -242,10 +242,17 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
     node
       [ ("kind", `String "give_item"); ("id", expr gi_id); ("target", expr gi_target);
         ("amount", opt expr gi_amount) ]
-  | SSpawnMob { sm_id; sm_at; sm_as } ->
+  | SSpawnMob { sm_target; sm_at; sm_as } ->
+    (* §2: by-type spawn carries the nominal type name and the resolved runtime
+       id; by-id spawn carries the dynamic id expression *)
+    let target_fields =
+      match sm_target with
+      | MSByType t -> [ ("type_name", `String t.mst_name); ("id", `String t.mst_id) ]
+      | MSById e -> [ ("id", expr e) ]
+    in
     node
-      [ ("kind", `String "spawn_mob"); ("id", expr sm_id); ("at", expr sm_at);
-        ("as", opt str sm_as) ]
+      ((("kind", `String "spawn_mob") :: target_fields)
+      @ [ ("at", expr sm_at); ("as", opt str sm_as) ])
   | SDespawnMob target -> node [ ("kind", `String "despawn_mob"); ("target", expr target) ]
   | SSetNametag { nt_part; nt_target; nt_value; nt_viewer } ->
     node
@@ -851,6 +858,7 @@ let item_decl it =
   `Assoc
     (with_pos it.it_pos
        ([
+          ("type_name", `String it.it_tyname);
           ("id", `String it.it_id);
           ("material", opt str it.it_material);
           ("skull", opt str it.it_skull);
@@ -890,6 +898,7 @@ let mob_decl mb =
   `Assoc
     (with_pos mb.mb_pos
        ([
+          ("type_name", `String mb.mb_tyname);
           ("id", `String mb.mb_id);
           ("type", opt (fun (t, _) -> `String t) mb.mb_type);
           ("name", opt expr mb.mb_name);

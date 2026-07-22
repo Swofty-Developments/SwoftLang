@@ -76,6 +76,7 @@
     {
       "line": 23,
       "col": 1,
+      "type_name": "Critter",
       "id": "critter",
       "type": "CHICKEN",
       "name": null,
@@ -97,6 +98,7 @@
     {
       "line": 29,
       "col": 1,
+      "type_name": "GhoulD",
       "id": "ghoul_d",
       "type": "ZOMBIE",
       "name": null,
@@ -159,18 +161,14 @@
             },
             "else": null
           },
-          {
-            "line": 37,
-            "col": 9,
-            "kind": "call_original",
-            "arguments": null
-          }
+          { "line": 37, "col": 9, "kind": "call_original" }
         ]
       }
     },
     {
       "line": 42,
       "col": 1,
+      "type_name": "GhoulN",
       "id": "ghoul_n",
       "type": "ZOMBIE",
       "name": null,
@@ -239,6 +237,7 @@
     {
       "line": 55,
       "col": 1,
+      "type_name": "GhoulX",
       "id": "ghoul_x",
       "type": "ZOMBIE",
       "name": null,
@@ -297,7 +296,7 @@
           },
           "else": null
         },
-        { "line": 63, "col": 9, "kind": "call_original", "arguments": null }
+        { "line": 63, "col": 9, "kind": "call_original" }
       ],
       "on_attack": null
     }

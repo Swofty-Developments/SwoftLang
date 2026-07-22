@@ -4,7 +4,7 @@ Mob {
     }
 }
 
-mob "ghoul" {
+mob Ghoul {
     type: "ZOMBIE"
     name: "<dark_green>Ghoul"
     health: 40

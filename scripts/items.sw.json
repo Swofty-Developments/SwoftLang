@@ -1204,6 +1204,7 @@
         {
           "line": 13,
           "col": 1,
+          "type_name": "AspectOfTheEnd",
           "id": "aspect_of_the_end",
           "material": "DIAMOND_SWORD",
           "skull": null,
@@ -1301,6 +1302,7 @@
         {
           "line": 32,
           "col": 1,
+          "type_name": "CryptKey",
           "id": "crypt_key",
           "material": null,
           "skull": "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081",
@@ -1451,6 +1453,7 @@
         {
           "line": 55,
           "col": 1,
+          "type_name": "FarmerBoots",
           "id": "farmer_boots",
           "material": "GOLDEN_BOOTS",
           "skull": null,

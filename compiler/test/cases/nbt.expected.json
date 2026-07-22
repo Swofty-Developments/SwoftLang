@@ -387,6 +387,7 @@
     {
       "line": 6,
       "col": 1,
+      "type_name": "MysticBlade",
       "id": "mystic_blade",
       "material": "DIAMOND_SWORD",
       "skull": null,

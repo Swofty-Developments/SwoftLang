@@ -1,11 +1,11 @@
-mob "sentinel" {
+mob Sentinel {
     type: "IRON_GOLEM"
     viewable: false
 }
 
 command "audience" {
     execute {
-        spawn mob "sentinel" at in_front_of(sender, 3) as g
+        spawn mob Sentinel at in_front_of(sender, 3) as g
         show g to sender
         loop viewers of g as watcher {
             send "<gray>${watcher.name} can see the sentinel" to watcher

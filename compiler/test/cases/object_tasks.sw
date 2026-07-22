@@ -40,7 +40,7 @@ Player {
 }
 
 // a task on a Mob (this = the Mob), bound once on spawn
-mob "sentinel" {
+mob Sentinel {
     type: "IRON_GOLEM"
     name: "<gray>Sentinel"
     on_spawn {

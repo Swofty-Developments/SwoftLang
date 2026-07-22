@@ -57,6 +57,12 @@ type ctx = {
   (* declared custom item / mob ids, for literal give/spawn/drops validation *)
   item_ids : (string, unit) Hashtbl.t;
   mob_ids : (string, unit) Hashtbl.t;
+  (* §2 nominal custom types: type name (e.g. "Ghoul") -> resolved runtime id.
+     A name in custom_mobs is usable as a nominal Mob subtype in type positions
+     and in 'is a'; likewise custom_items for Item. Populated in pass 1 before
+     any type annotation is resolved. *)
+  custom_mobs : (string, string) Hashtbl.t;
+  custom_items : (string, string) Hashtbl.t;
   (* declared UI / scheduler names, for reference validation of statements
      that name a declaration (show/hide scoreboard|tablist|bossbar "name",
      open/replace gui "name", cancel schedule "name"). These identifiers land
@@ -271,3 +277,24 @@ let require_boolish ctx e t =
 let check_persist_shadow ctx pos what name =
   if Hashtbl.mem ctx.persists name then
     err ctx pos "%s '%s' shadows the persistent variable '%s' — rename one of them" what name name
+
+(* §2 nominal custom types --- *)
+
+let is_custom_mob ctx name = Hashtbl.mem ctx.custom_mobs name
+let is_custom_item ctx name = Hashtbl.mem ctx.custom_items name
+
+(* ctx-aware type resolution: like Tc_types.ty_of_dt but a bare Capitalized name
+   that is not a builtin resolves against the declared custom types (Ghoul ->
+   TCustomMob "Ghoul", AspectOfTheEnd -> TCustomItem "AspectOfTheEnd"). An
+   unknown name still degrades to TAny, matching the pre-existing leniency. *)
+let rec resolve_ty ctx (dt : data_type) : ty =
+  match dt with
+  | DSimple n -> (
+    match Tc_types.ty_of_dt (DSimple n) with
+    | TAny when is_custom_mob ctx n -> TCustomMob n
+    | TAny when is_custom_item ctx n -> TCustomItem n
+    | t -> t)
+  | DEither ts -> TEither (List.map (resolve_ty ctx) ts)
+  | DOptional t -> TOptional (resolve_ty ctx t)
+  | DList t -> TList (resolve_ty ctx t)
+  | DMap (k, v) -> TMap (resolve_ty ctx k, resolve_ty ctx v)

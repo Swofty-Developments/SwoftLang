@@ -2,13 +2,13 @@
 // matching, weighted item/mob catches, per-catch messages), the server{}
 // fishing bite window, and the four curated fishing events.
 
-item "enchanted_fish" {
+item EnchantedFish {
     material: "COD"
     name: "<aqua>Enchanted Fish"
     rarity: rare
 }
 
-mob "sea_walker" {
+mob SeaWalker {
     type: "ZOMBIE"
     name: "Sea Walker"
     health: 40

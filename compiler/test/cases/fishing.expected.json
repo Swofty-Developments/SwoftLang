@@ -191,6 +191,7 @@
     {
       "line": 5,
       "col": 1,
+      "type_name": "EnchantedFish",
       "id": "enchanted_fish",
       "material": "COD",
       "skull": null,
@@ -213,6 +214,7 @@
     {
       "line": 11,
       "col": 1,
+      "type_name": "SeaWalker",
       "id": "sea_walker",
       "type": "ZOMBIE",
       "name": {

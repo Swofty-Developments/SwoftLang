@@ -7,7 +7,7 @@ only — cooldowns, abilities, and stat systems are built on top with [events](.
 tags, and [addons](/libraries/abilities).
 
 ```swoftlang
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare
@@ -53,7 +53,7 @@ command "sword" {
 <!-- swoftc name=matskull.sw expect=error -->
 
 ```swoftlang
-item "confused" {
+item Confused {
     material: "STICK"
     skull: "abc"      // [!code error]
 }
@@ -61,7 +61,7 @@ item "confused" {
 
 ```txt
 matskull.sw:1:1: error: item "confused" cannot have both 'material' and 'skull'
-item "confused" {
+item Confused {
 ^
 ```
 
@@ -81,7 +81,7 @@ message:
 <!-- swoftc name=rar.sw expect=error -->
 
 ```swoftlang
-item "relic" {
+item Relic {
     material: "NETHER_STAR"
     rarity: legendary      // [!code error]
 }
@@ -103,7 +103,7 @@ built.
 MiniMessage in the strings is converted at build time.
 
 ```swoftlang
-item "farmer_boots" {
+item FarmerBoots {
     material: "GOLDEN_BOOTS"
     name: "<green>Farmer Boots"
     rarity: uncommon
@@ -144,7 +144,7 @@ compounds. Scalars become typed Minestom tags; compounds and lists become NBT st
 The shape round-trips: what you write is what you read back.
 
 ```swoftlang
-item "crypt_key" {
+item CryptKey {
     skull: "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
     name: "<gold>Crypt Key"
     rarity: epic
@@ -189,7 +189,7 @@ command "c" {
     }
 }
 
-item "k" { material: "STICK" tags: { uses: 3 } }
+item K { material: "STICK" tags: { uses: 3 } }
 ```
 
 ```txt
@@ -201,7 +201,7 @@ tagopt.sw:4:26: error: the left operand of '+' is optional<Any> and may be missi
 The two fixes are the familiar ones — `otherwise` for a fallback, `exists` to narrow:
 
 ```swoftlang
-item "crypt_key" { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
+item CryptKey { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
 
 command "use-key" {
     execute {
@@ -226,7 +226,7 @@ handler is cancellable. A tag write inside re-renders the item's lore and flushe
 to the hand.
 
 ```swoftlang
-item "crypt_key" {
+item CryptKey {
     skull: "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
     name: "<gold>Crypt Key"
     rarity: epic
@@ -247,7 +247,7 @@ The filter set is closed:
 <!-- swoftc name=ocf.sw expect=error -->
 
 ```swoftlang
-item "k" {
+item K {
     material: "STICK"
     on_click(middle) {      // [!code error]
         send "x" to player

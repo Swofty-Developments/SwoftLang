@@ -1,4 +1,4 @@
-item "gem" {
+item Gem {
     material: "EMERALD"
 }
 

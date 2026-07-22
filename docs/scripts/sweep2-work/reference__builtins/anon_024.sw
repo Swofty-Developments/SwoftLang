@@ -1,4 +1,4 @@
-item "cookie_of_truth" {
+item CookieOfTruth {
     material: "COOKIE"
     name: "Cookie of Truth"
     rarity: rare

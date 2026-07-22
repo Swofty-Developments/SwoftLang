@@ -68,9 +68,9 @@ ev.sw:3:38: error: variable 'attacker' is never assigned
 ```
 
 ::: tip Base receivers vs. custom declarations
-A Capitalized receiver (`Mob { }`) is the **base type** — its methods run for every mob.
-A lowercase declaration with a string id (`mob "ghoul" { }`, `item "rod" { }`) is a
-**custom subtype** that carries the same method set but scoped to that one id, and
+The base receiver (`Mob { }`) is the **base type** — its methods run for every mob.
+A custom nominal declaration (`mob Ghoul { }`, `item Rod { }`) is a
+**custom subtype** that carries the same method set but scoped to that one type, and
 [overrides](#overriding-a-base-receiver) the base for its instances.
 :::
 
@@ -155,7 +155,7 @@ bound as `entity`.
 ## Mob
 
 `Mob <: Entity` — narrows Entity to server-spawned mobs. The subject is bound as `mob`. A
-lowercase `mob "id" { }` declaration ([Mobs](./mobs)) carries the same method set for one
+`mob <MobType> { }` declaration ([Mobs](./mobs)) carries the same method set for one
 mob type and overrides the base.
 
 | Method | Cancellable | Bound variables |
@@ -173,14 +173,14 @@ mob type and overrides the base.
 
 ## Item
 
-The item stack involved in an interaction. The subject is bound as `item`. A lowercase
-`item "id" { }` declaration ([Items](./items)) carries the same method set for one item and
+The item stack involved in an interaction. The subject is bound as `item`. An
+`item <ItemType> { }` declaration ([Items](./items)) carries the same method set for one item and
 overrides the base.
 
 `item` is the base `ItemStack`, so it carries the base-Item properties (`material`, `amount`,
 `name`, `lore`, read-only `tags`). A custom id is not a base-Item property — it is reached as
 `custom_id(item)`, whose type is `optional<String>`: empty for a vanilla stack, set only when
-the stack is a custom `item "id"`.
+the stack is a custom item type.
 
 | Method | Cancellable | Bound variables |
 |---|---|---|
@@ -314,13 +314,13 @@ when an entity takes damage, `Entity.on_hit` fires, and if the entity is a mob,
 | item dropped | `Item.on_drop` · `Player.on_drop_item` |
 | item picked up | `Item.on_pickup` · `Entity.on_pickup_item` · `Player.on_pickup_item` |
 
-The most-specific subject fires first — a custom `mob "id"` before base `Mob` before base
+The most-specific subject fires first — a custom `mob <MobType>` before base `Mob` before base
 `Entity`. A [`cancel`](#cancelling) in any handler vetoes the shared underlying event;
 later handlers still run and can observe or undo the decision.
 
 ## Overriding a base receiver
 
-A lowercase custom declaration (`mob "id" { }`, `item "id" { }`, `block_handler "id"
+A custom declaration (`mob <MobType> { }`, `item <ItemType> { }`, `block_handler "id"
 { }`) carries the same method set as its base receiver, and **most-specific wins**: when a
 custom method and the base method both exist, the custom one replaces the base for that
 id. To keep the base behavior, write `call original method` from inside the overriding
@@ -334,7 +334,7 @@ Mob {
     }
 }
 
-mob "ghoul" {
+mob Ghoul {
     type: "ZOMBIE"
     name: "<dark_green>Ghoul"
     health: 40

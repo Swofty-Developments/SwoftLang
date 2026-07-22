@@ -2,7 +2,7 @@
 // (medium + optional world matching, custom items and mobs, per-catch
 // messages), the server{} bite window, and the four typed fishing events.
 
-item "glimmering_cod" {
+item GlimmeringCod {
     material: "COD"
     name: "<aqua>Glimmering Cod"
     rarity: rare
@@ -11,7 +11,7 @@ item "glimmering_cod" {
     }
 }
 
-mob "sea_walker" {
+mob SeaWalker {
     type: "ZOMBIE"
     name: "<dark_aqua>Sea Walker"
     health: 40

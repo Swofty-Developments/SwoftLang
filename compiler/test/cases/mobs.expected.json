@@ -16,35 +16,31 @@
             "line": 46,
             "col": 9,
             "kind": "spawn_mob",
-            "id": {
-              "line": 46,
-              "col": 19,
-              "kind": "string",
-              "value": "crypt_ghoul"
-            },
+            "type_name": "CryptGhoul",
+            "id": "crypt_ghoul",
             "at": {
               "line": 46,
-              "col": 36,
+              "col": 33,
               "kind": "call",
               "name": "location",
               "args": [
                 {
                   "line": 46,
-                  "col": 45,
+                  "col": 42,
                   "kind": "number",
                   "value": 10,
                   "integer": true
                 },
                 {
                   "line": 46,
-                  "col": 49,
+                  "col": 46,
                   "kind": "number",
                   "value": 64,
                   "integer": true
                 },
                 {
                   "line": 46,
-                  "col": 53,
+                  "col": 50,
                   "kind": "number",
                   "value": 20,
                   "integer": true
@@ -309,6 +305,7 @@
     {
       "line": 1,
       "col": 1,
+      "type_name": "RottenScimitar",
       "id": "rotten_scimitar",
       "material": "GOLDEN_SWORD",
       "skull": null,
@@ -334,6 +331,7 @@
     {
       "line": 9,
       "col": 1,
+      "type_name": "CryptGhoul",
       "id": "crypt_ghoul",
       "type": "ZOMBIE",
       "name": {
@@ -484,6 +482,7 @@
     {
       "line": 37,
       "col": 1,
+      "type_name": "HarmlessChicken",
       "id": "harmless_chicken",
       "type": "CHICKEN",
       "name": {

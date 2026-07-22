@@ -162,7 +162,7 @@ its own nameplate, despawning only for the player who slays it. It leans on four
 viewer:
 
 ```swoftlang
-mob "zombie" {
+mob Zombie {
     type: "ZOMBIE"
     viewable: false                          // spawns hidden — handed out per player
 
@@ -186,7 +186,7 @@ mob "zombie" {
 
 Player {
     on_join {
-        spawn mob "zombie" at in_front_of(player, 5) as z
+        spawn mob Zombie at in_front_of(player, 5) as z
         set name of z to "<red>Zombie <gray>0/5" for player
         show z to player                                    // reveal it to just this player
     }
@@ -216,14 +216,14 @@ e.sw:6:35: error: the left operand of '+' is optional<Integer> and may be missin
 entity to an audience with `show … to all`:
 
 ```swoftlang
-mob "sentinel" {
+mob Sentinel {
     type: "IRON_GOLEM"
     viewable: false
 }
 
 command "audience" {
     execute {
-        spawn mob "sentinel" at in_front_of(sender, 3) as g
+        spawn mob Sentinel at in_front_of(sender, 3) as g
         show g to sender
         loop viewers of g as watcher {
             send "<gray>${watcher.name} can see the sentinel" to watcher

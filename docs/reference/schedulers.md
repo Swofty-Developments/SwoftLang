@@ -7,7 +7,7 @@ async-colored on virtual threads, tick-aligned — no busy loops, no timer plugi
 ## `every` blocks
 
 ```swoftlang
-mob "boss_wither" {
+mob BossWither {
     type: "WITHER"
     health: 600
 }
@@ -242,7 +242,7 @@ Binding a task from inside a construct's own handler uses the construct's bound 
 (`player`, `mob`, `npc`, `hologram`, …), so the task's lifetime is naturally the construct's:
 
 ```swoftlang
-mob "sentinel" {
+mob Sentinel {
     type: "IRON_GOLEM"
     name: "<gray>Sentinel"
     on_spawn {

@@ -47,7 +47,7 @@ front, or treat every route as public.
 parameters, readable as `request.params.<name>`:
 
 ```swoftlang
-item "care_package" {
+item CarePackage {
     material: "CHEST"
     name: "Care Package"
     rarity: common

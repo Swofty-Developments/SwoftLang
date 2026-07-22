@@ -191,6 +191,7 @@
     {
       "line": 5,
       "col": 1,
+      "type_name": "GlimmeringCod",
       "id": "glimmering_cod",
       "material": "COD",
       "skull": null,
@@ -225,6 +226,7 @@
     {
       "line": 14,
       "col": 1,
+      "type_name": "SeaWalker",
       "id": "sea_walker",
       "type": "ZOMBIE",
       "name": {

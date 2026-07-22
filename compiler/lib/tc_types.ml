@@ -1,12 +1,24 @@
 open Ast
 open Registry
 
+(* §2 nominal custom types: the base type a custom Ghoul/AspectOfTheEnd stands
+   for (Ghoul -> Mob, AspectOfTheEnd -> Item). Every other type is its own base. *)
+let base_ty = function
+  | TCustomMob _ -> TMob
+  | TCustomItem _ -> TItem
+  | t -> t
+
 let rec join a b =
   if a = b then a
   else
     match (a, b) with
     | TAny, _ | _, TAny -> TAny
     | TInteger, TDouble | TDouble, TInteger -> TDouble
+    (* §2 nominal custom types join with their base (and with a different custom
+       sibling) at the base: two distinct Ghoul/Zombie meet at Mob *)
+    | TCustomMob _, (TMob | TCustomMob _) | TMob, TCustomMob _ -> TMob
+    | TCustomItem _, (TItem | TCustomItem _) | TItem, TCustomItem _ -> TItem
+    | TCustomMob _, TEntity | TEntity, TCustomMob _ -> TEntity
     (* Mob is a subtype of Entity (phase 7) *)
     | TMob, TEntity | TEntity, TMob -> TEntity
     (* Player is a subtype of OfflinePlayer (phase 8) *)

@@ -174,6 +174,7 @@
     {
       "line": 5,
       "col": 1,
+      "type_name": "AspectOfTheEnd",
       "id": "aspect_of_the_end",
       "material": "DIAMOND_SWORD",
       "skull": null,
@@ -408,6 +409,7 @@
     {
       "line": 46,
       "col": 1,
+      "type_name": "GrapplingHook",
       "id": "grappling_hook",
       "material": null,
       "skull": "abc123texturehash",

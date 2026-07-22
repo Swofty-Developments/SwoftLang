@@ -12,12 +12,12 @@ Player {
     }
 }
 
-export item "mix_blade" {
+export item MixBlade {
     material: "IRON_SWORD"
     name: "Mix Blade"
 }
 
-item "mix_secret" {
+item MixSecret {
     material: "STICK"
     name: "Secret Stick"
 }

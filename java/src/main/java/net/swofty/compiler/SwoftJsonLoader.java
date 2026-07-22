@@ -660,7 +660,13 @@ public class SwoftJsonLoader {
                 glint,
                 amount,
                 has(obj, "lore") ? buildExecuteBlock(obj.get("lore")) : null,
-                attributes, tags, onClick, buildInlineHandlers(obj));
+                attributes, tags, onClick, buildInlineHandlers(obj),
+                // §2 nominal custom types: the Capitalized type name
+                // (AspectOfTheEnd) is a compile-time handle; the runtime keys the
+                // def by id but keeps the type name for 'is a AspectOfTheEnd'
+                // checks. Older ASTs without the field fall back to the id.
+                has(obj, "type_name") ? obj.get("type_name").getAsString()
+                        : obj.get("id").getAsString());
     }
 
     /**
@@ -769,7 +775,13 @@ public class SwoftJsonLoader {
                 has(obj, "on_hit") ? buildExecuteBlock(obj.get("on_hit")) : null,
                 buildInlineHandlers(obj),
                 buildMobTags(obj),
-                !has(obj, "viewable") || obj.get("viewable").getAsBoolean());
+                !has(obj, "viewable") || obj.get("viewable").getAsBoolean(),
+                // §2 nominal custom types: the Capitalized type name (Ghoul) is a
+                // compile-time handle; the runtime keys the def by id but keeps
+                // the type name for 'is a Ghoul' specialization checks. Older ASTs
+                // without the field fall back to the id.
+                has(obj, "type_name") ? obj.get("type_name").getAsString()
+                        : obj.get("id").getAsString());
     }
 
     /**

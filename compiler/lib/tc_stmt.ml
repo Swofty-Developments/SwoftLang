@@ -382,13 +382,34 @@ let rec check_stmt ctx bctx env st : env * bool =
         err ctx a.epos "give amount must be a number (got %s)" (ty_to_string at)
     | None -> ());
     (env, false)
-  | SSpawnMob { sm_id; sm_at; sm_as } ->
-    let idt = type_of ctx bctx env sm_id in
-    require_present ctx env sm_id idt ~use:"the mob id";
-    (match idt with
-    | TString | TAny -> ()
-    | _ -> err ctx sm_id.epos "mob id must be a String (got %s)" (ty_to_string idt));
-    check_mob_id_literal ctx sm_id ~where:"'spawn mob'";
+  | SSpawnMob { sm_target; sm_at; sm_as } ->
+    (* §2: 'spawn mob Ghoul' binds the nominal subtype (x : Ghoul), resolved and
+       compile-checked here; 'spawn mob by id <expr>' stays the base Mob. *)
+    let binding_ty =
+      match sm_target with
+      | MSByType t -> (
+        match Hashtbl.find_opt ctx.custom_mobs t.mst_name with
+        | Some id ->
+          t.mst_id <- id;
+          TCustomMob t.mst_name
+        | None ->
+          if is_custom_item ctx t.mst_name then
+            err ctx t.mst_pos
+              "'%s' is a custom item, not a mob — it cannot be spawned with 'spawn mob'"
+              t.mst_name
+          else
+            err ctx t.mst_pos "unknown custom mob type '%s'%s" t.mst_name
+              (suggestion t.mst_name
+                 (Hashtbl.fold (fun k _ acc -> k :: acc) ctx.custom_mobs []));
+          TMob)
+      | MSById e ->
+        let idt = type_of ctx bctx env e in
+        require_present ctx env e idt ~use:"the mob id";
+        (match idt with
+        | TString | TAny -> ()
+        | _ -> err ctx e.epos "mob id must be a String (got %s)" (ty_to_string idt));
+        TMob
+    in
     let at = type_of ctx bctx env sm_at in
     require_present ctx env sm_at at ~use:"the spawn location";
     (match at with
@@ -398,7 +419,7 @@ let rec check_stmt ctx bctx env st : env * bool =
       match sm_as with
       | Some v ->
         check_persist_shadow ctx st.spos "spawn binding" v;
-        bind env v TMob
+        bind env v binding_ty
       | None -> env
     in
     (env, false)
@@ -936,7 +957,9 @@ and check_ui_target ?(what = "show this") ctx bctx env t =
 and check_viewer_entity ctx bctx env e ~what =
   let t = type_of ctx bctx env e in
   require_present ctx env e t ~use:"the entity";
-  match unwrap t with
+  (* §2 nominal custom types: a custom mob (TCustomMob) is a Mob and so a valid
+     viewer-entity target — reduce to its base before matching *)
+  match base_ty (unwrap t) with
   | TEntity | TMob | TAny -> ()
   | _ ->
     err ctx e.epos "can only %s an entity or mob (got %s)" what (ty_to_string t)

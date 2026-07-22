@@ -5,7 +5,7 @@ numbers, AI mode, a drop table, and handlers for its lifecycle. Spawning one is 
 single statement.
 
 ```swoftlang
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     name: "<red>Crypt Ghoul <green>${mob.health}<red>❤"
     health: 200
@@ -26,7 +26,7 @@ mob "crypt_ghoul" {
 
 command "ghoul" {
     execute {
-        spawn mob "crypt_ghoul" at location(10, 64, 20) as m
+        spawn mob CryptGhoul at location(10, 64, 20) as m
         set m.health to m.max_health / 2
         send "<gray>Spawned ${m.custom_id} at half health." to sender
     }
@@ -65,13 +65,13 @@ against **custom items first**, then vanilla materials — so a declared
 [`item`](./items) and `"ROTTEN_FLESH"` sit in the same table:
 
 ```swoftlang
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     name: "Rotten Scimitar"
     rarity: uncommon
 }
 
-mob "armed_ghoul" {
+mob ArmedGhoul {
     type: "ZOMBIE"
 
     drops {
@@ -92,7 +92,7 @@ e_drop.sw:4:14: error: unknown item 'not_a_thing_xyz' in drops; declare it with 
 
 | Form | Effect |
 |---|---|
-| `spawn mob "id" at <location> [as <var>]` | spawns one instance; `as` binds it as a `Mob` |
+| `spawn mob <MobType> at <location> [as <var>]` | spawns one instance; `as` binds it as that mob type |
 | `despawn <mob>` | removes the entity |
 | `all_mobs()` | `list<Mob>` — every live custom mob |
 | `all_mobs("id")` | `list<Mob>` — live instances of one declaration |
@@ -101,7 +101,7 @@ Like `give item`, a literal id in `spawn mob` must name a declaration — unknow
 are compile errors, not silent no-ops at 2 a.m.
 
 ```swoftlang
-mob "lost_sheep" {
+mob LostSheep {
     type: "SHEEP"
     name: "<yellow>Lost Sheep"
     health: 20
@@ -134,7 +134,7 @@ every entity property (`uuid`, `glowing`, `gravity`, `invisible`, `on_fire`, `si
 `passengers`, …) reads and writes on a `Mob` value too:
 
 ```swoftlang
-mob "sentry" {
+mob Sentry {
     type: "IRON_GOLEM"
     health: 100
 }
@@ -142,7 +142,7 @@ mob "sentry" {
 command "sentry" {
     execute {
         // in_front_of(player, distance) is a Location: 'distance' blocks ahead of the eye line
-        spawn mob "sentry" at in_front_of(sender, 3) as g
+        spawn mob Sentry at in_front_of(sender, 3) as g
         set g.glowing to true
         set g.gravity to false
         send "spawned ${g.uuid}" to sender
@@ -163,7 +163,7 @@ binds `mob` and `attacker` — an `optional<Player>`, `none` when the
 damage has no player source (fall, fire, another mob):
 
 ```swoftlang
-mob "guardian" {
+mob Guardian {
     type: "IRON_GOLEM"
     name: "<gold>Guardian"
     health: 100
@@ -188,14 +188,14 @@ on a live mob (or any [`Entity`](./entities)) without declaring a field. A read 
 `optional<Any>` (the tag may be unset), a write stores, and `set ... to none` deletes:
 
 ```swoftlang
-mob "elite" {
+mob Elite {
     type: "ZOMBIE"
     health: 40
 }
 
 command "promote" {
     execute {
-        spawn mob "elite" at location(0, 64, 0) as g
+        spawn mob Elite at location(0, 64, 0) as g
         set g.tags.level to 5                    // store
         set lvl to g.tags.level otherwise 0      // read with a fallback
         send "level ${lvl}" to sender
@@ -218,7 +218,7 @@ freeform `optional<Any>`. Each entry is `name: <Type>` — a typed, indexable st
 starts empty:
 
 ```swoftlang
-mob "zombie" {
+mob Zombie {
     type: "ZOMBIE"
     viewable: false
 
@@ -279,7 +279,7 @@ Entity {
 ```
 
 ::: tip Per-declaration vs global
-`on_death` inside a `mob "id" { }` declaration is the right place for behavior that
+`on_death` inside a `mob <MobType> { }` declaration is the right place for behavior that
 belongs to that one mob (drops flavor, death cries). The base `Mob { on_death }` is the
 right place for systems that span all mobs — kill counters, quest progress, leaderboards.
 :::

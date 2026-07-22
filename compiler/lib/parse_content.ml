@@ -6,6 +6,28 @@ open Parse_expr
 open Parse_stmt
 open Parse_decl
 
+(* parse the Capitalized type-name head of a mob/item decl. Rejects the old
+   `mob "id"` string form and a lowercase name, pointing at the new spelling. *)
+let parse_custom_type_name st ~kw =
+  match peek_tok st with
+  | Token.STRING s ->
+    error st
+      (Printf.sprintf
+         "types must start with an uppercase letter — write `%s %s`; the old `%s \"%s\"` string \
+          form is gone (the string is now the optional `id:` field)"
+         kw (pascal_of_id s) kw s)
+  | Token.IDENT name when name.[0] >= 'A' && name.[0] <= 'Z' ->
+    ignore (advance st);
+    name
+  | Token.IDENT name ->
+    error st
+      (Printf.sprintf "types must start with an uppercase letter — write `%s %s`" kw
+         (pascal_of_id name))
+  | t ->
+    error st
+      (Printf.sprintf "Expected a Capitalized type name after '%s', found %s" kw
+         (Token.describe t))
+
 (* key: expr pairs, comma-optional; used by the item attributes { } block *)
 let parse_kv_block st ~what =
   expect st Token.LBRACE (Printf.sprintf "'{' after '%s'" what);
@@ -36,8 +58,9 @@ let item_click_filters = [ "left"; "right"; "any" ]
 let parse_item_decl st =
   let it_pos = pos_here st in
   ignore (advance st);
-  let it_id = expect_string st "item id" in
-  expect st Token.LBRACE "'{' after item id";
+  let it_tyname = parse_custom_type_name st ~kw:"item" in
+  expect st Token.LBRACE "'{' after item type name";
+  let id = ref None in
   let material = ref None in
   let skull = ref None in
   let name = ref None in
@@ -52,6 +75,11 @@ let parse_item_decl st =
   let dup field = error st (Printf.sprintf "Duplicate item field '%s'" field) in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     (match peek_tok st with
+    | Token.IDENT "id" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'id'";
+      if !id <> None then dup "id";
+      id := Some (expect_string st "item id")
     | Token.IDENT "material" ->
       ignore (advance st);
       expect st Token.COLON "':' after 'material'";
@@ -138,7 +166,8 @@ let parse_item_decl st =
   done;
   expect st Token.RBRACE "'}' to close item body";
   {
-    it_id;
+    it_tyname;
+    it_id = (match !id with Some s -> s | None -> snake_of_typename it_tyname);
     it_exported = false;
     it_material = !material;
     it_skull = !skull;
@@ -200,8 +229,9 @@ let parse_mob_tags st =
 let parse_mob_decl st =
   let mb_pos = pos_here st in
   ignore (advance st);
-  let mb_id = expect_string st "mob id" in
-  expect st Token.LBRACE "'{' after mob id";
+  let mb_tyname = parse_custom_type_name st ~kw:"mob" in
+  expect st Token.LBRACE "'{' after mob type name";
+  let id = ref None in
   let typ = ref None in
   let name = ref None in
   let health = ref None in
@@ -219,6 +249,11 @@ let parse_mob_decl st =
   let dup field = error st (Printf.sprintf "Duplicate mob field '%s'" field) in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     (match peek_tok st with
+    | Token.IDENT "id" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'id'";
+      if !id <> None then dup "id";
+      id := Some (expect_string st "mob id")
     | Token.IDENT "type" ->
       ignore (advance st);
       expect st Token.COLON "':' after 'type'";
@@ -310,9 +345,10 @@ let parse_mob_decl st =
     ignore (matches st Token.COMMA)
   done;
   expect st Token.RBRACE "'}' to close mob body";
-  if !typ = None then error st (Printf.sprintf "mob \"%s\" requires 'type:'" mb_id);
+  if !typ = None then error st (Printf.sprintf "mob %s requires 'type:'" mb_tyname);
   {
-    mb_id;
+    mb_tyname;
+    mb_id = (match !id with Some s -> s | None -> snake_of_typename mb_tyname);
     mb_exported = false;
     mb_type = !typ;
     mb_name = !name;

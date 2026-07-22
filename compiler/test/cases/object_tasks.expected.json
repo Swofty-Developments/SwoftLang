@@ -725,6 +725,7 @@
     {
       "line": 43,
       "col": 1,
+      "type_name": "Sentinel",
       "id": "sentinel",
       "type": "IRON_GOLEM",
       "name": {

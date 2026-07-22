@@ -838,27 +838,27 @@
             "target": "r",
             "value": {
               "line": 53,
-              "col": 18,
+              "col": 19,
               "kind": "binary",
               "op": "OR_ELSE",
               "left": {
                 "line": 53,
-                "col": 18,
+                "col": 19,
                 "kind": "call",
                 "name": "map_get",
                 "args": [
-                  { "line": 53, "col": 26, "kind": "var", "name": "m" },
-                  { "line": 53, "col": 29, "kind": "string", "value": "a" }
+                  { "line": 53, "col": 18, "kind": "var", "name": "m" },
+                  { "line": 53, "col": 20, "kind": "string", "value": "a" }
                 ]
               },
               "right": {
                 "line": 53,
-                "col": 44,
+                "col": 35,
                 "kind": "unary",
                 "op": "NEGATE",
                 "operand": {
                   "line": 53,
-                  "col": 45,
+                  "col": 36,
                   "kind": "number",
                   "value": 1,
                   "integer": true
@@ -874,7 +874,7 @@
               "line": 54,
               "col": 14,
               "kind": "string",
-              "value": "alias.builtin ${r}"
+              "value": "alias.natural ${r}"
             },
             "target": {
               "line": 54,

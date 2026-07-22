@@ -61,8 +61,8 @@ let rec type_of ctx bctx env e : ty =
   | EBool _ -> TBoolean
   | ENone -> TOptional TAny
   | EType name ->
-    if not (List.mem name known_type_names) then
-      warn ctx e.epos "unknown type '%s' in 'is a' check" name;
+    if not (List.mem name known_type_names || is_custom_mob ctx name || is_custom_item ctx name)
+    then warn ctx e.epos "unknown type '%s' in 'is a' check" name;
     TAny
   | EVar name -> var_type ctx bctx env e.epos name
   | EProp (target, name) -> prop_type ctx bctx env e target name
@@ -674,7 +674,9 @@ and builtin_call_type ctx bctx env pos name args looked =
     | [ a ] ->
       let t = type_of ctx bctx env a in
       require_present ctx env a t ~use:"the entity in 'viewers of'";
-      (match unwrap t with
+      (* §2 nominal custom types: a custom mob (TCustomMob) is a Mob — reduce to
+         its base before matching *)
+      (match base_ty (unwrap t) with
       | TEntity | TMob | TAny -> ()
       | _ ->
         err ctx a.epos "'viewers of' expects an Entity or Mob (got %s)" (ty_to_string t))
@@ -1135,6 +1137,12 @@ and param_compat pty at =
   (* Player <: OfflinePlayer (phase 8): a live player flows anywhere an
      offline record is expected; the reverse needs '.player exists' narrowing *)
   | TOfflinePlayer, TPlayer -> true
+  (* §2 nominal subtyping: a custom Ghoul flows where its base Mob (or Entity)
+     is expected; an AspectOfTheEnd where Item is expected. The reverse (a plain
+     Mob into a Ghoul-typed slot) is NOT allowed — it needs 'is a' narrowing. *)
+  | TMob, TCustomMob _ -> true
+  | TEntity, TCustomMob _ -> true
+  | TItem, TCustomItem _ -> true
   | TOptional pi, TOptional ai -> param_compat pi ai
   | TOptional pi, a -> param_compat pi a
   | TList pi, TList ai -> param_compat pi ai
@@ -1248,6 +1256,17 @@ and is_type_facts ctx bctx env l tn negated =
          runtime online-instance check — the positive branch narrows to the
          live Player, the negative branch keeps the offline record *)
       | TOfflinePlayer when tn = "Player" -> Some (TPlayer, TOfflinePlayer)
+      (* §2 nominal downcast: 'is a Ghoul' narrows a base Mob (or Entity, or a
+         differently-typed custom mob) to the tested custom subtype in the
+         positive branch; the negative branch keeps the wider type. Likewise
+         'is a AspectOfTheEnd' on an Item. *)
+      | (TMob | TEntity | TCustomMob _) when is_custom_mob ctx tn ->
+        Some (TCustomMob tn, cur)
+      | (TItem | TCustomItem _) when is_custom_item ctx tn -> Some (TCustomItem tn, cur)
+      | TOptional (TMob | TEntity | TCustomMob _) when is_custom_mob ctx tn ->
+        Some (TCustomMob tn, TOptional (base_ty (unwrap cur)))
+      | TOptional (TItem | TCustomItem _) when is_custom_item ctx tn ->
+        Some (TCustomItem tn, TOptional (base_ty (unwrap cur)))
       | _ -> None
     in
     (match narrowed with

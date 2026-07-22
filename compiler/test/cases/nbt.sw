@@ -3,7 +3,7 @@
 // Works on ANY Item value — registry items, custom_item(), held_item,
 // event.item — not just declared items.
 
-item "mystic_blade" {
+item MysticBlade {
     material: "DIAMOND_SWORD"
     tags: {
         tier: 1

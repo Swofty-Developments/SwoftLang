@@ -1,8 +1,8 @@
-item "shiny_pebble" {
+item ShinyPebble {
     material: "STONE"
 }
 
-mob "generous_ghoul" {
+mob GenerousGhoul {
     type: "ZOMBIE"
     health: 10
     drops {

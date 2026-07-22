@@ -29,7 +29,8 @@ public record MobDefModel(
         ExecuteBlock onHit,
         Map<String, InlineHandler> handlers,
         Map<String, MobTagDecl> tags,
-        boolean viewable) {
+        boolean viewable,
+        String typeName) {
 
     /** Pre-on_hit shape, kept for existing call sites and smoke tests. */
     public MobDefModel(String id, String type, Expression name, double health,
@@ -55,8 +56,10 @@ public record MobDefModel(
             ExecuteBlock onSpawn, ExecuteBlock onDeath, ExecuteBlock onDamage,
             ExecuteBlock onAttack, ExecuteBlock onHit,
             Map<String, InlineHandler> handlers) {
+        // legacy/back-compat callers have no nominal type name; the id doubles
+        // as the type name so 'is a <id>' still resolves
         this(id, type, name, health, damage, speed, ai, drops,
-                onSpawn, onDeath, onDamage, onAttack, onHit, handlers, Map.of(), true);
+                onSpawn, onDeath, onDamage, onAttack, onHit, handlers, Map.of(), true, id);
     }
 
     /** The generic first-class handler for {@code event}, or null. */

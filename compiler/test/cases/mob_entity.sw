@@ -1,7 +1,7 @@
 // Mob composes the ENTITY property table (Mob <: Entity), entity/mob tags, the
 // on_hit handler, the MobDamage 'attacker' row, and in_front_of().
 
-mob "guardian" {
+mob Guardian {
     type: "IRON_GOLEM"
     name: "<gold>Guardian"
     health: 100
@@ -24,7 +24,7 @@ mob "guardian" {
 command "guard" {
     execute {
         // in_front_of(player, distance) is a Location builtin
-        spawn mob "guardian" at in_front_of(sender, 3) as g
+        spawn mob Guardian at in_front_of(sender, 3) as g
 
         // composed Entity rows on a Mob value
         send "uuid ${g.uuid}" to sender

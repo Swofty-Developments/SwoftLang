@@ -6,4 +6,4 @@ command "c" {
     }
 }
 
-item "k" { material: "STICK" tags: { uses: 3 } }
+item K { material: "STICK" tags: { uses: 3 } }

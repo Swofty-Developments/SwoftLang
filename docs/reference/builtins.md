@@ -561,7 +561,7 @@ A fresh stack of a [declared custom item](./items) — stats, tags, lore, and id
 included. A literal id must name a declaration.
 
 ```swoftlang
-item "cookie_of_truth" {
+item CookieOfTruth {
     material: "COOKIE"
     name: "Cookie of Truth"
     rarity: rare
@@ -590,7 +590,7 @@ Item {
     }
 }
 
-item "cookie_of_truth" {
+item CookieOfTruth {
     material: "COOKIE"
     name: "Cookie of Truth"
     rarity: rare
@@ -605,7 +605,7 @@ Every live [custom mob](./mobs), or just one declaration's instances. Literal id
 must name a declaration.
 
 ```swoftlang
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     health: 200
 }

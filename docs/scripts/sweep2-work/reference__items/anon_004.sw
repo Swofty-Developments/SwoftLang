@@ -1,4 +1,4 @@
-item "crypt_key" { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
+item CryptKey { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
 
 command "use-key" {
     execute {

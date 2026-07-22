@@ -1,4 +1,4 @@
-item "aspect" {
+item Aspect {
     material: "DIAMOND_SWORD"
     rarity: rare
     attributes: {

@@ -117,6 +117,36 @@ let expect_soft st kw =
   if not (eat_soft st kw) then
     error st (Printf.sprintf "Expected '%s', found %s" kw (Token.describe (peek_tok st)))
 
+(* §2 nominal custom types: snake_case derives the default runtime id from a
+   Capitalized type name (Ghoul -> "ghoul", AspectOfTheEnd ->
+   "aspect_of_the_end"); pascal_of_id builds a PascalCase migration hint from an
+   old string id ("aspect_of_the_end" -> "AspectOfTheEnd"). *)
+let snake_of_typename s =
+  let b = Buffer.create (String.length s * 2) in
+  let len = String.length s in
+  let is_upper c = c >= 'A' && c <= 'Z' in
+  String.iteri
+    (fun i c ->
+      if is_upper c then begin
+        (if i > 0 then
+           let prev = s.[i - 1] in
+           let next_lower = i + 1 < len && s.[i + 1] >= 'a' && s.[i + 1] <= 'z' in
+           if (prev >= 'a' && prev <= 'z') || (prev >= '0' && prev <= '9')
+              || (is_upper prev && next_lower)
+           then Buffer.add_char b '_');
+        Buffer.add_char b (Char.lowercase_ascii c)
+      end
+      else Buffer.add_char b c)
+    s;
+  Buffer.contents b
+
+let pascal_of_id s =
+  String.split_on_char '_' s
+  |> List.concat_map (String.split_on_char ' ')
+  |> List.filter (fun p -> p <> "")
+  |> List.map String.capitalize_ascii
+  |> String.concat ""
+
 let ident_like = function
   | Token.IDENT s -> Some s
   | Token.EVENT -> Some "event"

@@ -20,13 +20,13 @@ Mob {
 }
 
 // A plain mob: no custom on_hit -> only the base runs.
-mob "critter" {
+mob Critter {
     type: "CHICKEN"
     health: 10
 }
 
 // Overrides on_hit and calls the original: B then (via the call) the base A, once.
-mob "ghoul_d" {
+mob GhoulD {
     type: "ZOMBIE"
     health: 40
 
@@ -39,7 +39,7 @@ mob "ghoul_d" {
 }
 
 // Overrides on_hit and does NOT call the original: base is suppressed.
-mob "ghoul_n" {
+mob GhoulN {
     type: "ZOMBIE"
     health: 40
 
@@ -52,7 +52,7 @@ mob "ghoul_n" {
 
 // Overrides on_death (a dedicated field) but the base declares NO on_death, so
 // `call original method` must be a safe no-op.
-mob "ghoul_x" {
+mob GhoulX {
     type: "ZOMBIE"
     health: 40
 

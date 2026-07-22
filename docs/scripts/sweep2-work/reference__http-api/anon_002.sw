@@ -1,4 +1,4 @@
-item "care_package" {
+item CarePackage {
     material: "CHEST"
     name: "Care Package"
     rarity: common

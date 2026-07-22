@@ -16,8 +16,8 @@ A `.sw` file is a sequence of top-level declarations, in any order:
 | `Player { ... }`, `Mob { ... }`, … | Receiver block — event methods by subject ([reference](./events)) |
 | `function name(...) { ... }` | Reusable function |
 | `async function name(...) { ... }` | Function that may `wait` |
-| `item "id" { ... }` | Custom item ([reference](./items)) |
-| `mob "id" { ... }` | Custom mob ([reference](./mobs)) |
+| `item <ItemType> { ... }` | Custom item ([reference](./items)) |
+| `mob <MobType> { ... }` | Custom mob ([reference](./mobs)) |
 | `gui "name" { ... }` | Declarative inventory GUI ([reference](./gui)) |
 | `scoreboard "name" { ... }` | Sidebar ([reference](./scoreboards-tablists)) |
 | `tablist "name" { ... }` | Player-list columns ([reference](./scoreboards-tablists)) |
@@ -94,7 +94,7 @@ The base receivers (methods fire for every instance; the full catalog is on the
 | `Server` | `server` | `on_list_ping`, `on_tps_change` |
 | `Packet` | — | `on "PacketClass" { }` raw-packet handlers |
 
-A lowercase `mob "id" { }` / `item "id" { }` / `block_handler "id" { }` declaration carries
+A `mob <MobType> { }` / `item <ItemType> { }` / `block_handler "id" { }` declaration carries
 the same method set for one id and overrides the base (`call original method` reaches it).
 `cancel event` in a non-cancellable method is a compile error:
 
@@ -428,7 +428,7 @@ copy-on-write: the runtime reads the deepest settable *anchor* (`location`,
 | actionbar | `actionbar <expr> to <p> [for <dur>]` |
 | belowname | `belowname <expr> for <p>`, `set belowname score to <expr> for <p>`, `clear belowname for <p>` |
 | [items](./items) | `give item "id" to <p> [amount <n>]` |
-| [mobs](./mobs) | `spawn mob "id" at <loc> [as <var>]`, `despawn <mob>` |
+| [mobs](./mobs) | `spawn mob <MobType> at <loc> [as <var>]`, `despawn <mob>` |
 | [viewers](./entities#per-viewer) | `show <entity> to <p\|all>`, `hide <entity> from <p\|all>`, `set name of <entity> to <expr> for <p>`; `viewers of <entity>` (expr → `list<Player>`) |
 | [nametags](./nametags) | `set nametag [prefix\|suffix\|color] of <p> to <expr> [for <viewer\|all>]`, `reset nametag of <p> [for ...]` |
 | [packets](./packets) | `send packet "Name" { field: expr, ... } to <target>`, `cancel packet` |

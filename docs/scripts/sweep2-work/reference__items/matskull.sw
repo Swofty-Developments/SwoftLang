@@ -1,4 +1,4 @@
-item "confused" {
+item Confused {
     material: "STICK"
     skull: "abc"
 }

@@ -1,4 +1,4 @@
-mob "boss_wither" {
+mob BossWither {
     type: "WITHER"
     health: 600
 }

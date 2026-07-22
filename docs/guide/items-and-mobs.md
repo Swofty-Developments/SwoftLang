@@ -15,7 +15,7 @@ item id is a compile error.
 ## Declaring an item
 
 ```swoftlang
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare
@@ -66,7 +66,7 @@ command /kit:
 <template #swoftlang>
 
 ```swoftlang
-item "aspect_of_the_end" {
+item AspectOfTheEnd {
     material: "DIAMOND_SWORD"
     name: "<blue>Aspect of the End"
     rarity: rare
@@ -131,7 +131,7 @@ Three optional pieces turn a decorated item into interactive equipment:
   flushes back to the hand.
 
 ```swoftlang
-item "crypt_key" {
+item CryptKey {
     skull: "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
     name: "<gold>Crypt Key"
     rarity: epic
@@ -162,7 +162,7 @@ for the numbers, lore for the display, events or an addon for the behavior. [Ste
 <!-- swoftc name=mobs.sw -->
 
 ```swoftlang
-item "rotten_scimitar" {
+item RottenScimitar {
     material: "GOLDEN_SWORD"
     name: "<gray>Rotten Scimitar"
     rarity: uncommon
@@ -172,7 +172,7 @@ item "rotten_scimitar" {
     }
 }
 
-mob "crypt_ghoul" {
+mob CryptGhoul {
     type: "ZOMBIE"
     name: "<red>Crypt Ghoul <green>${mob.health}<red>❤"
     health: 200
@@ -218,7 +218,7 @@ typed mob rows.
 
 ## Spawning and querying
 
-These commands live in the same file as the `mob "crypt_ghoul"` declaration above —
+These commands live in the same file as the `mob CryptGhoul` declaration above —
 spawning an undeclared mob id is a compile error.
 
 <!-- swoftc prelude=mobs.sw -->
@@ -226,7 +226,7 @@ spawning an undeclared mob id is a compile error.
 ```swoftlang
 command "ghoul" {
     execute {
-        spawn mob "crypt_ghoul" at location(10, 64, 20) as m
+        spawn mob CryptGhoul at location(10, 64, 20) as m
         set m.health to m.max_health / 2
         send "<gray>Spawned ${m.custom_id} at half health." to sender
     }
@@ -247,7 +247,7 @@ command "cleanse" {
 `custom_id` (ro). `all_mobs("id")` lists the living instances; `despawn` removes one.
 
 Server-wide, the base [`Mob`](/reference/events#mob) receiver's `on_spawn`, `on_death`, and
-`on_hit` methods fire for *every* mob — a `mob "id" { }` declaration handles that mob's own
+`on_hit` methods fire for *every* mob — a `mob <MobType> { }` declaration handles that mob's own
 story, while `Mob { }` drives global systems:
 
 ```swoftlang

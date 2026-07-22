@@ -35,6 +35,12 @@ type ty =
   | TBlock (* an immutable block value from block(...) / block_at(...) (W-blocks) *)
   | TVec (* an x/y/z velocity vector from velocity(x, y, z) (phase 7) *)
   | TOfflinePlayer (* a seen-store player record (phase 8); Player is a subtype *)
+  (* §2 nominal custom types: a declared 'mob Ghoul'/'item AspectOfTheEnd' becomes
+     a Capitalized nominal type carrying its type name. TCustomMob <: TMob and
+     TCustomItem <: TItem — structurally identical to the base (same props), but
+     distinct for 'is a' narrowing and type positions. *)
+  | TCustomMob of string
+  | TCustomItem of string
   | TList of ty
   | TMap of ty * ty (* map<K, V>: key type (String|Integer), value type (phase 11) *)
   | TOptional of ty
@@ -68,6 +74,8 @@ let rec ty_to_string = function
   | TBlock -> "Block"
   | TVec -> "Vec"
   | TOfflinePlayer -> "OfflinePlayer"
+  | TCustomMob n -> n
+  | TCustomItem n -> n
   | TList t -> "list<" ^ ty_to_string t ^ ">"
   (* String-keyed maps print as map<V> (the back-compat spelling); an
      Integer-keyed map prints its key type too (phase 11) *)
@@ -1286,7 +1294,11 @@ let block_props =
     ro "tasks" TTasks;
   ]
 
-let props_of_ty = function
+let rec props_of_ty = function
+  (* §2 nominal custom types are structurally their base: a Ghoul has every Mob
+     property, an AspectOfTheEnd every Item property *)
+  | TCustomMob _ -> props_of_ty TMob
+  | TCustomItem _ -> props_of_ty TItem
   | TString -> Some string_props
   | TBlock -> Some block_props
   | TList elem -> Some (list_props elem)
@@ -1350,6 +1362,8 @@ let is_tasks_ty = function TTasks -> true | _ -> false
    stable identity, so .tasks is rejected on it. *)
 let is_task_owner = function
   | TPlayer | TMob | TEntity | TDisplay | TBlock | TOfflinePlayer | TAny -> true
+  (* a custom mob is a Mob: it carries the same .tasks registry *)
+  | TCustomMob _ -> true
   | _ -> false
 
 (* --- inline event handlers on item/mob/hologram/npc declarations

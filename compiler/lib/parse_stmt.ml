@@ -273,13 +273,43 @@ let rec parse_statement st =
   | Token.IDENT "spawn" when soft2 st "mob" && peek3_tok st <> Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);
-    let sm_id = parse_expr st in
+    (* §2: 'spawn mob Ghoul' spawns by the compile-time custom type; 'spawn mob
+       by id <expr>' is the data-driven dynamic spawn (base Mob). The old
+       'spawn mob "id"' string form is gone. *)
+    let sm_target =
+      if soft st "by" then begin
+        ignore (advance st);
+        expect_soft st "id";
+        MSById (parse_expr st)
+      end
+      else begin
+        let mst_pos = pos_here st in
+        match peek_tok st with
+        | Token.IDENT name when name.[0] >= 'A' && name.[0] <= 'Z' ->
+          ignore (advance st);
+          MSByType { mst_name = name; mst_pos; mst_id = "" }
+        | Token.STRING s ->
+          error st
+            (Printf.sprintf
+               "types must start with an uppercase letter — write `spawn mob %s`; for a \
+                data-driven id use `spawn mob by id \"%s\"`"
+               (pascal_of_id s) s)
+        | Token.IDENT name ->
+          error st
+            (Printf.sprintf "types must start with an uppercase letter — write `spawn mob %s`"
+               (pascal_of_id name))
+        | t ->
+          error st
+            (Printf.sprintf "Expected a Capitalized mob type name after 'spawn mob', found %s"
+               (Token.describe t))
+      end
+    in
     expect_soft st "at";
     let sm_at = parse_expr st in
     let sm_as =
       if matches st Token.AS then Some (expect_ident st "variable name after 'as'") else None
     in
-    mks p (SSpawnMob { sm_id; sm_at; sm_as })
+    mks p (SSpawnMob { sm_target; sm_at; sm_as })
   | Token.IDENT "despawn" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
     ignore (advance st);
     mks p (SDespawnMob (parse_expr st))

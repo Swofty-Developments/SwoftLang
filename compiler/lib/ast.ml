@@ -161,7 +161,7 @@ and stmt_node =
   | SFill of skin
   | SPersistSet of string * expr option * expr
   | SGiveItem of { gi_id : expr; gi_target : expr; gi_amount : expr option }
-  | SSpawnMob of { sm_id : expr; sm_at : expr; sm_as : string option }
+  | SSpawnMob of { sm_target : mob_spawn_target; sm_at : expr; sm_as : string option }
   | SDespawnMob of expr
   | SSetNametag of {
       nt_part : string option; (* None = whole nametag; Some prefix|suffix|color *)
@@ -345,6 +345,17 @@ and gui_open = {
   go_target : expr;
   go_init : (string * expr) list;
 }
+
+(* the subject of a 'spawn mob' statement (§2 nominal custom types).
+   - MSByType: 'spawn mob Ghoul' — spawn by the compile-time custom type name;
+     the binding is the nominal subtype (x : Ghoul). mst_id is the resolved
+     runtime id (snake_case of the name, or the decl's explicit id:); it is
+     filled in by the typechecker and read at emit.
+   - MSById: 'spawn mob by id <expr>' — data-driven dynamic spawn by a runtime
+     string id; the binding is the base Mob. *)
+and mob_spawn_target =
+  | MSByType of { mst_name : string; mst_pos : pos; mutable mst_id : string }
+  | MSById of expr
 
 type argument = {
   arg_name : string;
@@ -566,6 +577,10 @@ type persistent_decl = {
    event handlers; the language keeps identity, appearance, lore, and NBT) --- *)
 
 type item_decl = {
+  (* §2 nominal custom types: the Capitalized type name (e.g. AspectOfTheEnd) is
+     the compile-time handle; it_id is the stable runtime/interop string key
+     (explicit 'id:' or snake_case of the type name). *)
+  it_tyname : string;
   it_id : string;
   it_exported : bool;
   it_material : string option; (* XOR skull *)
@@ -612,6 +627,11 @@ type mob_tag = {
 }
 
 type mob_decl = {
+  (* §2 nominal custom types: the Capitalized type name (e.g. Ghoul) is the
+     compile-time handle; mb_id is the stable runtime/interop string key
+     (explicit 'id:' or snake_case of the type name). mb_type stays the
+     Minestom entity-type string, unchanged. *)
+  mb_tyname : string;
   mb_id : string;
   mb_exported : bool;
   mb_type : (string * pos) option; (* required; checked against EntityType names *)

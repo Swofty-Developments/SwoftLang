@@ -13,7 +13,7 @@
           "line": 5,
           "col": 9,
           "name": "thing",
-          "type": { "base": "UNKNOWN" },
+          "type": { "base": "Thing" },
           "default": null
         }
       ],

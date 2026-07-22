@@ -13,6 +13,7 @@
     {
       "line": 7,
       "col": 1,
+      "type_name": "FlameBlade",
       "id": "flame_blade",
       "material": "DIAMOND_SWORD",
       "skull": null,

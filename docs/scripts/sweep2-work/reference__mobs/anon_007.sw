@@ -1,4 +1,4 @@
-mob "zombie" {
+mob Zombie {
     type: "ZOMBIE"
     viewable: false
 
