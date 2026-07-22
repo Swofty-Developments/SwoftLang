@@ -34,7 +34,7 @@ command "sentry" {
         show npc "sentry" to all
         hide npc "sentry" from sender
 
-        // viewers of npc "n" reads the fake player's getViewers -> list<Player>
+        // viewers of npc "n" reads the fake player's getViewers -> List<Player>
         loop viewers of npc "sentry" as p {
             send "<gray>You can see the sentry." to p
         }

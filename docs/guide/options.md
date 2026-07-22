@@ -7,17 +7,17 @@ a <code>/find</code> command that looks players up by name and can't crash on a 
 </StepHeader>
 
 SwoftLang has no null. No `NullPointerException`, no "value was silently empty and your
-message rendered as blank". A value that might be absent has type `optional<T>`, the
+message rendered as blank". A value that might be absent has type `Optional<T>`, the
 absent value is written `none`, and the compiler **proves you handled the missing case
 before it lets you touch the value**.
 
 ## Where optionals come from
 
-Four places produce an `optional<T>`:
+Four places produce an `Optional<T>`:
 
-1. **Builtins that can miss.** `player("Notch")` returns `optional<Player>` — Notch is
-   probably not on your server. Likewise `world(name)` returns `optional<World>`.
-2. **Optional command arguments.** `who: optional<Player>` is `none` when the caller
+1. **Builtins that can miss.** `player("Notch")` returns `Optional<Player>` — Notch is
+   probably not on your server. Likewise `world(name)` returns `Optional<World>`.
+2. **Optional command arguments.** `who: Optional<Player>` is `none` when the caller
    omits it ([Step 02](/guide/commands#arguments)).
 3. **Functions with mixed return paths** — some paths `return` a value, some fall off the
    end ([below](#functions-that-might-not-return-a-value)).
@@ -63,7 +63,7 @@ command "find" {
 <template #error>
 
 ```txt
-find.sw:4:14: error: this value is optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+find.sw:4:14: error: this value is Optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
         send "hi ${target.name}" to sender
              ^
 ```
@@ -78,7 +78,7 @@ prove it exists, or provide a fallback.
 ## Exit 1: `exists` narrowing
 
 `if <expr> exists { ... }` proves presence. Inside the branch, the type is `Player` — not
-`optional<Player>` — and property access is legal. In the `else` branch the compiler
+`Optional<Player>` — and property access is legal. In the `else` branch the compiler
 knows it's **missing**, and using it is still an error there:
 
 ```swoftlang
@@ -102,7 +102,7 @@ The negative test reads the way you'd say it — `is missing` is sugar for `not 
 ```swoftlang
 command "greet" {
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
     execute {
         if args.who is missing {
@@ -191,7 +191,7 @@ command "find" {
 
 Skript's `is set` is a runtime check you *may* write; nothing complains if you skip it.
 SwoftLang's `exists` is the same check, but skipping it doesn't compile — and inside the
-branch the type has genuinely narrowed from `optional<Player>` to `Player`, so
+branch the type has genuinely narrowed from `Optional<Player>` to `Player`, so
 `target.latency` is legal there and only there.
 
 </template>
@@ -214,7 +214,7 @@ command /greet [<player>]:
 ```swoftlang
 command "greet" {
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
     execute {
         set target to args.who otherwise sender
@@ -258,7 +258,7 @@ command "hunt" {
 ```
 
 `find_target` returns on one path and falls off the end on the other, so its inferred
-return type is `optional<Player>`. Callers handle it with the exact same two tools. No
+return type is `Optional<Player>`. Callers handle it with the exact same two tools. No
 annotation needed — the compiler reads the flow.
 
 ## Maybe-assigned variables
@@ -282,24 +282,24 @@ command "label" {
 label.sw:6:24: error: variable 'label' may not be assigned on all paths; assign it in every branch or check it with 'if label exists'
         send uppercase(label) to sender
                        ^
-label.sw:6:24: error: 'uppercase' expects a String here, got optional<String>
+label.sw:6:24: error: 'uppercase' expects a String here, got Optional<String>
         send uppercase(label) to sender
                        ^
 ```
 
 Two errors, one story: the flow analysis saw a path where `label` was never assigned,
-typed it `optional<String>`, and then the builtin signature check refused it. Fix it by
+typed it `Optional<String>`, and then the builtin signature check refused it. Fix it by
 assigning in every branch (`else { set label to "console" }`), or treat it as the
 optional it is.
 
-## `either<A|B>` uses the same narrowing
+## `Either<A|B>` uses the same narrowing
 
 Union types are the sibling feature: a value that is definitely present but could be one
 of several types. `is a` / `is not a` narrow them per-branch, exactly like `exists` — and
 the `else` branch narrows to *the other* member:
 
 ```swoftlang
-function describe(dest: either<Player|Location>) {
+function describe(dest: Either<Player|Location>) {
     if dest is a Player {
         return "the player ${dest.name}"
     } else {
@@ -321,7 +321,7 @@ Skip the narrowing and:
 ```swoftlang
 command "visit" {
     arguments {
-        dest: either<Player|Location>
+        dest: Either<Player|Location>
     }
     execute {
         send "heading to x=${args.dest.x}" to sender   // [!code error]
@@ -330,22 +330,22 @@ command "visit" {
 ```
 
 ```txt
-visit.sw:6:14: error: cannot access property 'x' on either<Player|Location>; narrow it first with 'is a'
+visit.sw:6:14: error: cannot access property 'x' on Either<Player|Location>; narrow it first with 'is a'
         send "heading to x=${args.dest.x}" to sender
              ^
 ```
 
-The two compose: an `optional<either<Player|Location>>` narrows first by `exists`, then
+The two compose: an `Optional<Either<Player|Location>>` narrows first by `exists`, then
 by `is a`.
 
 ## The rules on one card
 
 | You have | To get the value | Result |
 |---|---|---|
-| `optional<T>` | `if x exists { ... }` | `T` inside the branch; known-missing in `else` |
-| `optional<T>` | `if x is missing { halt }` | `T` afterwards |
-| `optional<T>` | `x otherwise fallback` | `T` (first present value) |
-| `either<A\|B>` | `if x is a A { ... }` | `A` inside; `B` in `else` |
+| `Optional<T>` | `if x exists { ... }` | `T` inside the branch; known-missing in `else` |
+| `Optional<T>` | `if x is missing { halt }` | `T` afterwards |
+| `Optional<T>` | `x otherwise fallback` | `T` (first present value) |
+| `Either<A\|B>` | `if x is a A { ... }` | `A` inside; `B` in `else` |
 | unassigned-on-some-paths | assign on all paths, or treat as optional | plain type |
 
 ::: tip Why this matters on a game server

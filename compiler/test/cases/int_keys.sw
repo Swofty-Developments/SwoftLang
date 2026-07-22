@@ -1,4 +1,4 @@
-// Phase 11: Integer map keys. map<Integer, V> alongside map<String, V>, with
+// Phase 11: Integer map keys. Map<Integer, V> alongside Map<String, V>, with
 // key-type-aware builtins, index sugar, foreach, and a persistent Integer map.
 
 storage {
@@ -7,11 +7,11 @@ storage {
 }
 
 // a persistent Integer-keyed map of scalars survives restarts
-persistent scores: map<Integer, String> = new_map()
+persistent scores: Map<Integer, String> = new_map()
 
 command "intkeys" {
     execute {
-        // literal with integer keys infers map<Integer, String>
+        // literal with integer keys infers Map<Integer, String>
         set names to { 1: "one", 2: "two", 3: "three" }
 
         // the 'set m at k to v' natural form writes integer-keyed entries
@@ -22,13 +22,13 @@ command "intkeys" {
             send "has 1" to sender
         }
 
-        // index read yields optional<V>: combine with 'otherwise'
+        // index read yields Optional<V>: combine with 'otherwise'
         set first to names[1] otherwise "none"
         send "first ${first}" to sender
 
         send "size ${size of names}" to sender
 
-        // 'keys of m' yields list<Integer> for an Integer-keyed map
+        // 'keys of m' yields List<Integer> for an Integer-keyed map
         loop keys of names as k {
             send "key ${k}" to sender
         }

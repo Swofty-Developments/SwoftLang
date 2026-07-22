@@ -138,9 +138,9 @@ The base types are `String`, `Integer`, `Double`, `Boolean`, `Player`, and `Loca
 [Step 04](/guide/variables-and-types) has the full type system. Two more argument shapes
 are worth knowing now and understanding later:
 
-- `dest: either<Player|Location>` — accepts more than one type; you tell them apart with
+- `dest: Either<Player|Location>` — accepts more than one type; you tell them apart with
   `is a` ([Step 07](/guide/options#either-a-b-uses-the-same-narrowing)).
-- `who: optional<Player>` — the argument may be absent, and the type system makes you
+- `who: Optional<Player>` — the argument may be absent, and the type system makes you
   deal with that ([Step 07](/guide/options) is entirely about this).
 
 <MappedCompare>
@@ -188,7 +188,7 @@ a scrambled message.
 ```swoftlang
 command "smite" {
     arguments {
-        victim: either<Player|Location>
+        victim: Either<Player|Location>
     }
     execute {
         if args.victim is not a Player {

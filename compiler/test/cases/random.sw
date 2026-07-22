@@ -15,7 +15,7 @@ command "random" {
             send "heads" to sender
         }
 
-        // random element of a list is optional<T> (none when empty)
+        // random element of a list is Optional<T> (none when empty)
         set loot to ["sword", "shield", "potion"]
         set drop to random_in(loot) otherwise "nothing"
         send "drop ${drop}" to sender

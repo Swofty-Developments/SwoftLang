@@ -10,7 +10,7 @@ command "staffchat" {
     description: "Toggle staff chat, or send one message to it"
 
     arguments {
-        message: optional<String>
+        message: Optional<String>
     }
 
     execute {

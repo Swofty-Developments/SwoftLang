@@ -44,7 +44,7 @@ command "staffchat" {
     description: "Toggle staff chat, or send one message to it"
 
     arguments {
-        message: optional<String>
+        message: Optional<String>
     }
 
     execute {
@@ -66,7 +66,7 @@ command "staffchat" {
 </template>
 <template #note>
 
-`{staffchat::%player's uuid%}` is a runtime map keyed by hand-stringified uuids, and it dies with the server. `persistent staffchat for Player` survives restarts and the player *is* the key. The `[<text>]` optional argument becomes `optional<String>` — and the `is missing` check is not convention, it's required: using `args.message` unchecked is a compile error.
+`{staffchat::%player's uuid%}` is a runtime map keyed by hand-stringified uuids, and it dies with the server. `persistent staffchat for Player` survives restarts and the player *is* the key. The `[<text>]` optional argument becomes `Optional<String>` — and the `is missing` check is not convention, it's required: using `args.message` unchecked is a compile error.
 
 </template>
 </MappedPair>

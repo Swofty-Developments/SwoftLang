@@ -6,8 +6,8 @@ share. A *natural-language* phrasing reads like English — `add x to l`, `size 
 compile to exactly the same runtime; reach for whichever reads better at the call site.
 The switch below flips every example on this page between the two.
 
-A method resolves by the receiver's static type — the compiler knows a `list<Integer>`
-from a `map<String, V>` from a `String` and offers only that type's methods, checking
+A method resolves by the receiver's static type — the compiler knows a `List<Integer>`
+from a `Map<String, V>` from a `String` and offers only that type's methods, checking
 argument types and arity at compile time. Operations split into two shapes:
 
 - **Pure / query forms** return a value and never touch the receiver — `sorted l` /
@@ -30,10 +30,10 @@ The size and endpoint accessors read a collection without changing it:
 | Natural language | Method / property | On | Returns |
 |---|---|---|---|
 | `size of c` | `c.size` | list, map, String | `Integer` |
-| `first of l` | `l.first` | list | `optional<T>` |
-| `last of l` | `l.last` | list | `optional<T>` |
-| `keys of m` | `m.keys` | map | `list<K>` |
-| `values of m` | `m.values` | map | `list<V>` |
+| `first of l` | `l.first` | list | `Optional<T>` |
+| `last of l` | `l.last` | list | `Optional<T>` |
+| `keys of m` | `m.keys` | map | `List<K>` |
+| `values of m` | `m.values` | map | `List<V>` |
 | `length of s` | `s.length` | String | `Integer` |
 | — | `c.is_empty` | list, map | `Boolean` |
 
@@ -122,9 +122,9 @@ Membership, sorting, and reversal each have a natural form; the rest are method-
 | Natural language | Method | Returns |
 |---|---|---|
 | `l contains x` | `l.contains(x)` | `Boolean` |
-| `sorted l` | `l.sorted()` | `list<T>` |
-| `sorted l by <fn>` | `l.sorted_by(fn)` | `list<T>` |
-| `reversed l` | `l.reversed()` | `list<T>` |
+| `sorted l` | `l.sorted()` | `List<T>` |
+| `sorted l by <fn>` | `l.sorted_by(fn)` | `List<T>` |
+| `reversed l` | `l.reversed()` | `List<T>` |
 
 <DialectCode title="Sort and search" file="list-query.sw">
 <template #natural>
@@ -172,18 +172,18 @@ receiver alone:
 
 | Method | Returns | Notes |
 |---|---|---|
-| `.index_of(x)` | `optional<Integer>` | position of `x`, or `none` |
-| `.get(i)` | `optional<T>` | element at index `i`, or `none` |
+| `.index_of(x)` | `Optional<Integer>` | position of `x`, or `none` |
+| `.get(i)` | `Optional<T>` | element at index `i`, or `none` |
 | `.count(x)` | `Integer` | how many times `x` occurs |
 | `.joined(sep)` | `String` | join elements with `sep` |
-| `.sorted_by_desc(key)` | `list<T>` | by a `key(elem)` lambda, descending |
-| `.shuffled()` | `list<T>` | randomly shuffled copy |
-| `.filtered(pred)` | `list<T>` | elements where `pred(elem)` is true |
-| `.mapped(fn)` | `list<U>` | `fn(elem)` over every element |
-| `.taken(n)` | `list<T>` | first `n` elements |
-| `.dropped(n)` | `list<T>` | all but the first `n` |
-| `.min_by(key)` | `optional<T>` | element with the smallest key |
-| `.max_by(key)` | `optional<T>` | element with the largest key |
+| `.sorted_by_desc(key)` | `List<T>` | by a `key(elem)` lambda, descending |
+| `.shuffled()` | `List<T>` | randomly shuffled copy |
+| `.filtered(pred)` | `List<T>` | elements where `pred(elem)` is true |
+| `.mapped(fn)` | `List<U>` | `fn(elem)` over every element |
+| `.taken(n)` | `List<T>` | first `n` elements |
+| `.dropped(n)` | `List<T>` | all but the first `n` |
+| `.min_by(key)` | `Optional<T>` | element with the smallest key |
+| `.max_by(key)` | `Optional<T>` | element with the largest key |
 
 The lambda methods take the element type; `.filtered` needs a `Boolean` lambda, `.sorted_by`
 / `.min_by` / `.max_by` a comparable (number or String) key, and `.mapped` may return any
@@ -210,7 +210,7 @@ command "list-methods" {
 
 The full set of map operations — reads, writes, membership, `keys of` / `values of`,
 deletion, and `clear` — is covered in both dialects on the [Maps page](./maps#operations).
-Beyond those, maps carry method-only helpers. Reads return an `optional<V>` because the key
+Beyond those, maps carry method-only helpers. Reads return an `Optional<V>` because the key
 may be absent — narrow with `exists` or supply an `otherwise`; `.get_or(k, default)` bakes
 the fallback in and returns a plain `V`.
 
@@ -218,11 +218,11 @@ the fallback in and returns a plain `V`.
 |---|---|---|
 | `.get_or(k, default)` | `V` | value for `k`, else `default` |
 | `.put_all(other)` | — | copy every entry of another map |
-| `.sorted_by_key()` | `map<K, V>` | new map, ordered by key ascending |
-| `.sorted_by_key_desc()` | `map<K, V>` | ordered by key descending |
-| `.sorted_by_value()` | `map<K, V>` | ordered by value ascending |
-| `.sorted_by_value_desc()` | `map<K, V>` | ordered by value descending |
-| `.sorted_by(key)` | `map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
+| `.sorted_by_key()` | `Map<K, V>` | new map, ordered by key ascending |
+| `.sorted_by_key_desc()` | `Map<K, V>` | ordered by key descending |
+| `.sorted_by_value()` | `Map<K, V>` | ordered by value ascending |
+| `.sorted_by_value_desc()` | `Map<K, V>` | ordered by value descending |
+| `.sorted_by(key)` | `Map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
 
 ```swoftlang
 command "map-methods" {
@@ -290,9 +290,9 @@ Everything else is method-only:
 | `.starts_with(s)` | `Boolean` | prefix test |
 | `.ends_with(s)` | `Boolean` | suffix test |
 | `.replace(from, to)` | `String` | replace every `from` with `to` |
-| `.split(sep)` | `list<String>` | split on `sep` |
+| `.split(sep)` | `List<String>` | split on `sep` |
 | `.substring(start, end)` | `String` | characters `[start, end)` |
-| `.index_of(s)` | `optional<Integer>` | position of `s`, or `none` |
+| `.index_of(s)` | `Optional<Integer>` | position of `s`, or `none` |
 | `.repeated(n)` | `String` | the String repeated `n` times |
 | `.reversed()` | `String` | characters reversed |
 | `.padded_left(n, pad)` | `String` | left-pad to width `n` with `pad` |

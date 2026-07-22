@@ -2,7 +2,7 @@ command "warp" {
     description: "Send someone to spawn"
 
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
 
     execute async {

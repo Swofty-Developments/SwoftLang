@@ -20,7 +20,7 @@ mob Zombie {
     ai: none
     viewable: false                   
 
-    tags: { hits: map<Player, Integer> }
+    tags: { hits: Map<Player, Integer> }
 
     on_hit {
         if attacker exists {
@@ -63,7 +63,7 @@ command "teleport" {
 
     arguments {
         player: Player = sender
-        target: either<Player|Location>
+        target: Either<Player|Location>
     }
 
     execute {

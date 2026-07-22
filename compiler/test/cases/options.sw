@@ -9,9 +9,9 @@ command "opt" {
     description: "option types and narrowing"
 
     arguments {
-        who: optional<Player>
-        dest: either<Player|Location>=sender
-        tags: list<String>
+        who: Optional<Player>
+        dest: Either<Player|Location>=sender
+        tags: List<String>
     }
 
     execute {

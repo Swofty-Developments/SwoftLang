@@ -15,13 +15,13 @@ struct Point {
 struct Guild {
     name: String
     level: Integer = 1
-    bank: map<String, Integer>
+    bank: Map<String, Integer>
     hq: Point
 }
 
 struct Duel {
     arena: Location
-    score: map<String, Integer>
+    score: Map<String, Integer>
 }
 
 persistent gstate: Guild = Guild { name: "server", bank: new_map(), hq: Point { x: 0 } }

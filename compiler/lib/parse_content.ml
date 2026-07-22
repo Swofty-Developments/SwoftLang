@@ -265,7 +265,7 @@ let parse_drops st =
 let looks_like_type st =
   match peek_tok st with
   | Token.EITHER -> true
-  | Token.IDENT ("optional" | "list" | "map") -> peek2_tok st = Token.LT
+  | Token.IDENT ("Optional" | "List" | "Map") -> peek2_tok st = Token.LT
   | Token.IDENT name -> Parse_type.base_of_name name <> None && peek2_tok st <> Token.LPAREN
   | _ -> false
 

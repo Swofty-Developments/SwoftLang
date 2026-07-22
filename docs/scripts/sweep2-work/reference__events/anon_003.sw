@@ -7,4 +7,4 @@ struct Duel {
     }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()

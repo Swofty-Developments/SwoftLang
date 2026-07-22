@@ -179,7 +179,7 @@ overrides the base.
 
 `item` is the base `ItemStack`, so it carries the base-Item properties (`material`, `amount`,
 `name`, `lore`, read-only `tags`). A custom id is not a base-Item property — it is reached as
-`custom_id(item)`, whose type is `optional<String>`: empty for a vanilla stack, set only when
+`custom_id(item)`, whose type is `Optional<String>`: empty for a vanilla stack, set only when
 the stack is a custom item type.
 
 | Method | Cancellable | Bound variables |
@@ -372,7 +372,7 @@ struct Duel {
     }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()
 ```
 
 An instance is live exactly while it is reachable from a `persistent` root, so its handlers

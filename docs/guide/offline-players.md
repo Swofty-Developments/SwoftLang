@@ -17,7 +17,7 @@ bridge between them.
 Every join and quit is recorded in a **seen-store** that rides your
 [storage backend](/guide/persistence#the-storage-block). You query it with
 `offline_player(name)` — an instant, tick-safe lookup that returns an
-`optional<OfflinePlayer>`, `none` if the server has never seen that name:
+`Optional<OfflinePlayer>`, `none` if the server has never seen that name:
 
 ```swoftlang
 set found to offline_player("Notch")
@@ -33,7 +33,7 @@ An `OfflinePlayer` carries `name`, `uuid`, `first_seen`, `last_seen`,
 
 ## The bridge back to a live player
 
-`found.player` is an `optional<Player>`: the live `Player` when they're connected, `none`
+`found.player` is an `Optional<Player>`: the live `Player` when they're connected, `none`
 when they're not. That single property is the crossing between offline records and live
 players, and because it's an `optional`, the checker makes you handle the "not online"
 case before you can message them:

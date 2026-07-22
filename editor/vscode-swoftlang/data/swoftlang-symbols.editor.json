@@ -9,7 +9,7 @@
     "title", "actionbar", "fill", "clone", "replace", "despawn", "destroy",
     "mount", "dismount", "dispense", "draw", "repeat", "skin", "name",
     "line", "entry", "blank", "belowname", "fade", "damage", "knock",
-    "apply", "shoot", "is", "not", "and", "or", "either", "contains", "as",
+    "apply", "shoot", "is", "not", "and", "or", "Either", "contains", "as",
     "to", "in", "of", "all", "players", "true", "false"
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
@@ -81,8 +81,8 @@
   "types": [
     "String", "Integer", "Double", "Boolean", "Player", "OfflinePlayer",
     "Location", "Item", "World", "Mob", "Entity", "Display", "Vec", "Block",
-    "Schedule", "Song", "Server", "Skin", "Canvas", "list", "map",
-    "optional", "either"
+    "Schedule", "Song", "Server", "Skin", "Canvas", "List", "Map",
+    "Optional", "Either"
   ],
   "namespaces": [ "tags", "tasks", "attributes" ],
   "annotations": [ "@EventReceiver" ],
@@ -113,7 +113,7 @@
       { "name": "alive_ticks", "type": "Integer", "writable": false },
       { "name": "tags", "type": "EntityTags", "writable": false },
       { "name": "tasks", "type": "Tasks", "writable": false },
-      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "player", "type": "Optional<Player>", "writable": false },
       { "name": "first_seen", "type": "String", "writable": false },
       { "name": "last_seen", "type": "String", "writable": false },
       { "name": "has_played_before", "type": "Boolean", "writable": false },
@@ -157,13 +157,13 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "OfflinePlayer": [
       { "name": "name", "type": "String", "writable": false },
       { "name": "uuid", "type": "String", "writable": false },
       { "name": "online", "type": "Boolean", "writable": false },
-      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "player", "type": "Optional<Player>", "writable": false },
       { "name": "first_seen", "type": "String", "writable": false },
       { "name": "last_seen", "type": "String", "writable": false },
       { "name": "has_played_before", "type": "Boolean", "writable": false }
@@ -186,9 +186,9 @@
       { "name": "silent", "type": "Boolean", "writable": true },
       { "name": "pose", "type": "String", "writable": true },
       { "name": "sneaking", "type": "Boolean", "writable": true },
-      { "name": "passengers", "type": "list<Entity>", "writable": false },
-      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
-      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "passengers", "type": "List<Entity>", "writable": false },
+      { "name": "vehicle", "type": "Optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "Optional<Entity>", "writable": false },
       { "name": "alive", "type": "Boolean", "writable": false },
       { "name": "removed", "type": "Boolean", "writable": false },
       { "name": "on_ground", "type": "Boolean", "writable": false },
@@ -236,7 +236,7 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "Entity": [
       { "name": "type", "type": "String", "writable": false },
@@ -252,9 +252,9 @@
       { "name": "silent", "type": "Boolean", "writable": true },
       { "name": "pose", "type": "String", "writable": true },
       { "name": "sneaking", "type": "Boolean", "writable": true },
-      { "name": "passengers", "type": "list<Entity>", "writable": false },
-      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
-      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "passengers", "type": "List<Entity>", "writable": false },
+      { "name": "vehicle", "type": "Optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "Optional<Entity>", "writable": false },
       { "name": "alive", "type": "Boolean", "writable": false },
       { "name": "removed", "type": "Boolean", "writable": false },
       { "name": "on_ground", "type": "Boolean", "writable": false },
@@ -303,19 +303,19 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "Item": [
       { "name": "material", "type": "String", "writable": true },
       { "name": "amount", "type": "Integer", "writable": true },
       { "name": "name", "type": "String", "writable": true },
-      { "name": "lore", "type": "list<String>", "writable": true },
+      { "name": "lore", "type": "List<String>", "writable": true },
       { "name": "tags", "type": "ItemTags", "writable": false }
     ],
     "Block": [
       { "name": "id", "type": "String", "writable": false },
-      { "name": "properties", "type": "map<String>", "writable": false },
-      { "name": "nbt", "type": "optional<String>", "writable": false },
+      { "name": "properties", "type": "Map<String>", "writable": false },
+      { "name": "nbt", "type": "Optional<String>", "writable": false },
       { "name": "tasks", "type": "Tasks", "writable": false }
     ],
     "Location": [
@@ -384,6 +384,901 @@
       { "name": "query", "type": "String", "writable": false },
       { "name": "body", "type": "String", "writable": false },
       { "name": "params", "type": "RequestParams", "writable": false }
+    ]
+  },
+  "packets": {
+    "AcknowledgeBlockChangePacket": [
+      { "name": "sequence", "type": "Integer" }
+    ],
+    "ActionBarPacket": [ { "name": "text", "type": "String" } ],
+    "AdvancementsPacket": [
+      { "name": "reset", "type": "Boolean" },
+      { "name": "advancement_mappings", "type": "Any" },
+      { "name": "identifiers_to_remove", "type": "Any" },
+      { "name": "progress_mappings", "type": "Any" },
+      { "name": "show_advancements", "type": "Boolean" }
+    ],
+    "AttachEntityPacket": [
+      { "name": "attached_entity_id", "type": "Integer" },
+      { "name": "holding_entity_id", "type": "Integer" }
+    ],
+    "BlockActionPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "action_id", "type": "Integer" },
+      { "name": "action_param", "type": "Integer" },
+      { "name": "block_id", "type": "Integer" }
+    ],
+    "BlockBreakAnimationPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "block_position", "type": "Location" },
+      { "name": "destroy_stage", "type": "Integer" }
+    ],
+    "BlockChangePacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "block_state_id", "type": "Integer" }
+    ],
+    "BlockEntityDataPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "type", "type": "Any" },
+      { "name": "data", "type": "Any" }
+    ],
+    "BossBarPacket": [
+      { "name": "uuid", "type": "Any" }, { "name": "action", "type": "Any" }
+    ],
+    "BundlePacket": [],
+    "CameraPacket": [ { "name": "camera_id", "type": "Integer" } ],
+    "ChangeGameStatePacket": [
+      { "name": "reason", "type": "Any" },
+      { "name": "value", "type": "Double" }
+    ],
+    "ChunkBatchFinishedPacket": [
+      { "name": "batch_size", "type": "Integer" }
+    ],
+    "ChunkBatchStartPacket": [],
+    "ChunkBiomesPacket": [ { "name": "chunks", "type": "Any" } ],
+    "ChunkDataPacket": [
+      { "name": "chunk_x", "type": "Integer" },
+      { "name": "chunk_z", "type": "Integer" },
+      { "name": "chunk_data", "type": "Any" },
+      { "name": "light_data", "type": "Any" }
+    ],
+    "ClearDialogPacket": [],
+    "ClearTitlesPacket": [ { "name": "reset", "type": "Boolean" } ],
+    "ClientAcceptCodeOfConductPacket": [],
+    "ClientAdvancementTabPacket": [
+      { "name": "action", "type": "Any" },
+      { "name": "tab_identifier", "type": "String" }
+    ],
+    "ClientAnimationPacket": [ { "name": "hand", "type": "String" } ],
+    "ClientAttackPacket": [ { "name": "target_id", "type": "Integer" } ],
+    "ClientChangeDifficultyPacket": [
+      { "name": "difficulty", "type": "Any" },
+      { "name": "locked", "type": "Boolean" }
+    ],
+    "ClientChangeGameModePacket": [
+      { "name": "game_mode", "type": "String" }
+    ],
+    "ClientChatAckPacket": [ { "name": "offset", "type": "Integer" } ],
+    "ClientChatMessagePacket": [
+      { "name": "message", "type": "String" },
+      { "name": "timestamp", "type": "Integer" },
+      { "name": "salt", "type": "Integer" },
+      { "name": "signature", "type": "Any" },
+      { "name": "ack_offset", "type": "Integer" },
+      { "name": "ack_list", "type": "Any" },
+      { "name": "checksum", "type": "Integer" }
+    ],
+    "ClientChatSessionUpdatePacket": [
+      { "name": "chat_session", "type": "Any" }
+    ],
+    "ClientChunkBatchReceivedPacket": [
+      { "name": "target_chunks_per_tick", "type": "Double" }
+    ],
+    "ClientClickWindowButtonPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "button_id", "type": "Integer" }
+    ],
+    "ClientClickWindowPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "state_id", "type": "Integer" },
+      { "name": "slot", "type": "Integer" },
+      { "name": "button", "type": "Integer" },
+      { "name": "click_type", "type": "Any" },
+      { "name": "changed_slots", "type": "Any" },
+      { "name": "clicked_item", "type": "Any" }
+    ],
+    "ClientCloseWindowPacket": [ { "name": "window_id", "type": "Integer" } ],
+    "ClientCommandChatPacket": [ { "name": "message", "type": "String" } ],
+    "ClientConfigurationAckPacket": [],
+    "ClientCookieResponsePacket": [
+      { "name": "key", "type": "String" }, { "name": "value", "type": "Any" }
+    ],
+    "ClientCreativeInventoryActionPacket": [
+      { "name": "slot", "type": "Integer" },
+      { "name": "item", "type": "Item" }
+    ],
+    "ClientCustomClickActionPacket": [
+      { "name": "key", "type": "Any" }, { "name": "payload", "type": "Any" }
+    ],
+    "ClientDebugSubscriptionRequestPacket": [
+      { "name": "subscriptions", "type": "Any" }
+    ],
+    "ClientEditBookPacket": [
+      { "name": "slot", "type": "Integer" },
+      { "name": "pages", "type": "Any" },
+      { "name": "title", "type": "String" }
+    ],
+    "ClientEncryptionResponsePacket": [
+      { "name": "shared_secret", "type": "Any" },
+      { "name": "encrypted_verify_token", "type": "Any" }
+    ],
+    "ClientEntityActionPacket": [
+      { "name": "player_id", "type": "Integer" },
+      { "name": "action", "type": "Any" },
+      { "name": "horse_jump_boost", "type": "Integer" }
+    ],
+    "ClientFinishConfigurationPacket": [],
+    "ClientGenerateStructurePacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "level", "type": "Integer" },
+      { "name": "keep_jigsaws", "type": "Boolean" }
+    ],
+    "ClientHandshakePacket": [
+      { "name": "protocol_version", "type": "Integer" },
+      { "name": "server_address", "type": "String" },
+      { "name": "server_port", "type": "Integer" },
+      { "name": "intent", "type": "Any" }
+    ],
+    "ClientHeldItemChangePacket": [ { "name": "slot", "type": "Integer" } ],
+    "ClientInputPacket": [ { "name": "flags", "type": "Integer" } ],
+    "ClientInteractEntityPacket": [
+      { "name": "target_id", "type": "Integer" },
+      { "name": "hand", "type": "String" },
+      { "name": "location", "type": "Vec" },
+      { "name": "using_secondary_action", "type": "Boolean" }
+    ],
+    "ClientKeepAlivePacket": [ { "name": "id", "type": "Integer" } ],
+    "ClientLockDifficultyPacket": [ { "name": "locked", "type": "Boolean" } ],
+    "ClientLoginAcknowledgedPacket": [],
+    "ClientLoginPluginResponsePacket": [
+      { "name": "message_id", "type": "Integer" },
+      { "name": "data", "type": "Any" }
+    ],
+    "ClientLoginStartPacket": [
+      { "name": "username", "type": "String" },
+      { "name": "profile_id", "type": "Any" }
+    ],
+    "ClientNameItemPacket": [ { "name": "item_name", "type": "String" } ],
+    "ClientPickItemFromBlockPacket": [
+      { "name": "pos", "type": "Location" },
+      { "name": "include_data", "type": "Boolean" }
+    ],
+    "ClientPickItemFromEntityPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "include_data", "type": "Boolean" }
+    ],
+    "ClientPingRequestPacket": [ { "name": "number", "type": "Integer" } ],
+    "ClientPlaceRecipePacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "recipe_display_id", "type": "Integer" },
+      { "name": "make_all", "type": "Boolean" }
+    ],
+    "ClientPlayerAbilitiesPacket": [ { "name": "flags", "type": "Integer" } ],
+    "ClientPlayerActionPacket": [
+      { "name": "status", "type": "Any" },
+      { "name": "block_position", "type": "Location" },
+      { "name": "block_face", "type": "String" },
+      { "name": "sequence", "type": "Integer" }
+    ],
+    "ClientPlayerBlockPlacementPacket": [
+      { "name": "hand", "type": "String" },
+      { "name": "block_position", "type": "Location" },
+      { "name": "block_face", "type": "String" },
+      { "name": "cursor_position_x", "type": "Double" },
+      { "name": "cursor_position_y", "type": "Double" },
+      { "name": "cursor_position_z", "type": "Double" },
+      { "name": "inside_block", "type": "Boolean" },
+      { "name": "hit_world_border", "type": "Boolean" },
+      { "name": "sequence", "type": "Integer" }
+    ],
+    "ClientPlayerLoadedPacket": [],
+    "ClientPlayerPositionAndRotationPacket": [
+      { "name": "position", "type": "Location" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientPlayerPositionPacket": [
+      { "name": "position", "type": "Location" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientPlayerPositionStatusPacket": [
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientPlayerRotationPacket": [
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientPluginMessagePacket": [
+      { "name": "channel", "type": "String" },
+      { "name": "data", "type": "Any" }
+    ],
+    "ClientPongPacket": [ { "name": "id", "type": "Integer" } ],
+    "ClientQueryBlockNbtPacket": [
+      { "name": "transaction_id", "type": "Integer" },
+      { "name": "block_position", "type": "Location" }
+    ],
+    "ClientQueryEntityNbtPacket": [
+      { "name": "transaction_id", "type": "Integer" },
+      { "name": "entity_id", "type": "Integer" }
+    ],
+    "ClientRecipeBookSeenRecipePacket": [
+      { "name": "index", "type": "Integer" }
+    ],
+    "ClientResourcePackStatusPacket": [
+      { "name": "id", "type": "Any" }, { "name": "status", "type": "Any" }
+    ],
+    "ClientSelectBundleItemPacket": [
+      { "name": "slot", "type": "Integer" },
+      { "name": "selected_index", "type": "Integer" }
+    ],
+    "ClientSelectKnownPacksPacket": [ { "name": "entries", "type": "Any" } ],
+    "ClientSelectTradePacket": [
+      { "name": "selected_slot", "type": "Integer" }
+    ],
+    "ClientSetBeaconEffectPacket": [
+      { "name": "primary_effect", "type": "Any" },
+      { "name": "secondary_effect", "type": "Any" }
+    ],
+    "ClientSetGameRulesPacket": [ { "name": "entries", "type": "Any" } ],
+    "ClientSetRecipeBookStatePacket": [
+      { "name": "book_type", "type": "Any" },
+      { "name": "book_open", "type": "Boolean" },
+      { "name": "filter_active", "type": "Boolean" }
+    ],
+    "ClientSetTestBlockPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "mode", "type": "Any" },
+      { "name": "message", "type": "String" }
+    ],
+    "ClientSettingsPacket": [ { "name": "settings", "type": "Any" } ],
+    "ClientSignedCommandChatPacket": [
+      { "name": "message", "type": "String" },
+      { "name": "timestamp", "type": "Integer" },
+      { "name": "salt", "type": "Integer" },
+      { "name": "signatures", "type": "Any" },
+      { "name": "last_seen_messages", "type": "Any" },
+      { "name": "checksum", "type": "Integer" }
+    ],
+    "ClientSpectatorActionPacket": [
+      { "name": "target_id", "type": "Integer" }
+    ],
+    "ClientStatusPacket": [ { "name": "action", "type": "Any" } ],
+    "ClientSteerBoatPacket": [
+      { "name": "left_paddle_turning", "type": "Boolean" },
+      { "name": "right_paddle_turning", "type": "Boolean" }
+    ],
+    "ClientTabCompletePacket": [
+      { "name": "transaction_id", "type": "Integer" },
+      { "name": "text", "type": "String" }
+    ],
+    "ClientTeleportConfirmPacket": [
+      { "name": "teleport_id", "type": "Integer" }
+    ],
+    "ClientTeleportToEntityPacket": [ { "name": "target", "type": "Any" } ],
+    "ClientTestInstanceBlockActionPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "action", "type": "Any" },
+      { "name": "data", "type": "Any" }
+    ],
+    "ClientTickEndPacket": [],
+    "ClientUpdateCommandBlockMinecartPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "command", "type": "String" },
+      { "name": "track_output", "type": "Boolean" }
+    ],
+    "ClientUpdateCommandBlockPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "command", "type": "String" },
+      { "name": "mode", "type": "Any" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientUpdateJigsawBlockPacket": [
+      { "name": "location", "type": "Location" },
+      { "name": "name", "type": "String" },
+      { "name": "target", "type": "String" },
+      { "name": "pool", "type": "String" },
+      { "name": "final_state", "type": "String" },
+      { "name": "joint_type", "type": "String" },
+      { "name": "selection_priority", "type": "Integer" },
+      { "name": "placement_priority", "type": "Integer" }
+    ],
+    "ClientUpdateSignPacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "is_front_text", "type": "Boolean" },
+      { "name": "lines", "type": "Any" }
+    ],
+    "ClientUpdateStructureBlockPacket": [
+      { "name": "location", "type": "Location" },
+      { "name": "action", "type": "Any" },
+      { "name": "mode", "type": "Any" },
+      { "name": "name", "type": "String" },
+      { "name": "offset", "type": "Location" },
+      { "name": "size", "type": "Location" },
+      { "name": "mirror", "type": "Any" },
+      { "name": "rotation", "type": "Any" },
+      { "name": "metadata", "type": "String" },
+      { "name": "integrity", "type": "Double" },
+      { "name": "seed", "type": "Integer" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "ClientUseItemPacket": [
+      { "name": "hand", "type": "String" },
+      { "name": "sequence", "type": "Integer" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" }
+    ],
+    "ClientVehicleMovePacket": [
+      { "name": "position", "type": "Location" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "ClientWindowSlotStatePacket": [
+      { "name": "slot", "type": "Integer" },
+      { "name": "window_id", "type": "Integer" },
+      { "name": "new_state", "type": "Boolean" }
+    ],
+    "CloseWindowPacket": [ { "name": "window_id", "type": "Integer" } ],
+    "CodeOfConductPacket": [
+      { "name": "code_of_conduct", "type": "String" }
+    ],
+    "CollectItemPacket": [
+      { "name": "collected_entity_id", "type": "Integer" },
+      { "name": "collector_entity_id", "type": "Integer" },
+      { "name": "pickup_item_count", "type": "Integer" }
+    ],
+    "CookieRequestPacket": [ { "name": "key", "type": "String" } ],
+    "CookieStorePacket": [
+      { "name": "key", "type": "String" }, { "name": "value", "type": "Any" }
+    ],
+    "CustomChatCompletionPacket": [
+      { "name": "action", "type": "Any" },
+      { "name": "entries", "type": "Any" }
+    ],
+    "CustomReportDetailsPacket": [ { "name": "details", "type": "Any" } ],
+    "DamageEventPacket": [
+      { "name": "target_entity_id", "type": "Integer" },
+      { "name": "damage_type_id", "type": "Integer" },
+      { "name": "source_entity_id", "type": "Integer" },
+      { "name": "source_direct_id", "type": "Integer" },
+      { "name": "source_pos", "type": "Location" }
+    ],
+    "DeathCombatEventPacket": [
+      { "name": "player_id", "type": "Integer" },
+      { "name": "message", "type": "String" }
+    ],
+    "DebugBlockValuePacket": [
+      { "name": "block_position", "type": "Location" },
+      { "name": "update", "type": "Any" }
+    ],
+    "DebugChunkValuePacket": [
+      { "name": "chunk_pos", "type": "Integer" },
+      { "name": "update", "type": "Any" }
+    ],
+    "DebugEntityValuePacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "update", "type": "Any" }
+    ],
+    "DebugEventPacket": [ { "name": "event", "type": "Any" } ],
+    "DebugSamplePacket": [
+      { "name": "sample", "type": "Any" }, { "name": "type", "type": "Any" }
+    ],
+    "DeclareCommandsPacket": [
+      { "name": "nodes", "type": "Any" },
+      { "name": "root_index", "type": "Integer" }
+    ],
+    "DeclareRecipesPacket": [
+      { "name": "item_properties", "type": "Any" },
+      { "name": "stonecutter_recipes", "type": "Any" }
+    ],
+    "DeleteChatPacket": [ { "name": "signature", "type": "Any" } ],
+    "DestroyEntitiesPacket": [ { "name": "entity_ids", "type": "Any" } ],
+    "DisconnectPacket": [ { "name": "message", "type": "String" } ],
+    "DisguisedChatPacket": [
+      { "name": "message", "type": "String" },
+      { "name": "type", "type": "Integer" },
+      { "name": "sender_name", "type": "String" },
+      { "name": "target_name", "type": "String" }
+    ],
+    "DisplayScoreboardPacket": [
+      { "name": "position", "type": "Integer" },
+      { "name": "score_name", "type": "String" }
+    ],
+    "EncryptionRequestPacket": [
+      { "name": "server_id", "type": "String" },
+      { "name": "public_key", "type": "Any" },
+      { "name": "verify_token", "type": "Any" },
+      { "name": "should_authenticate", "type": "Boolean" }
+    ],
+    "EndCombatEventPacket": [ { "name": "duration", "type": "Integer" } ],
+    "EnterCombatEventPacket": [],
+    "EntityAnimationPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "animation", "type": "Any" }
+    ],
+    "EntityAttributesPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "properties", "type": "Any" }
+    ],
+    "EntityEffectPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "potion", "type": "Any" }
+    ],
+    "EntityEquipmentPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "equipments", "type": "Any" }
+    ],
+    "EntityHeadLookPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "yaw", "type": "Double" }
+    ],
+    "EntityMetaDataPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "entries", "type": "Any" }
+    ],
+    "EntityPositionAndRotationPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "delta_x", "type": "Integer" },
+      { "name": "delta_y", "type": "Integer" },
+      { "name": "delta_z", "type": "Integer" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "EntityPositionPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "delta_x", "type": "Integer" },
+      { "name": "delta_y", "type": "Integer" },
+      { "name": "delta_z", "type": "Integer" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "EntityPositionSyncPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "position", "type": "Location" },
+      { "name": "delta", "type": "Location" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "EntityRotationPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "EntitySoundEffectPacket": [
+      { "name": "sound_event", "type": "String" },
+      { "name": "source", "type": "Any" },
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "volume", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "seed", "type": "Integer" }
+    ],
+    "EntityStatusPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "status", "type": "Integer" }
+    ],
+    "EntityTeleportPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "position", "type": "Location" },
+      { "name": "delta", "type": "Location" },
+      { "name": "flags", "type": "Integer" },
+      { "name": "on_ground", "type": "Boolean" }
+    ],
+    "EntityVelocityPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "velocity", "type": "Vec" }
+    ],
+    "ExplosionPacket": [
+      { "name": "center", "type": "Location" },
+      { "name": "radius", "type": "Double" },
+      { "name": "block_count", "type": "Integer" },
+      { "name": "player_knockback", "type": "Location" },
+      { "name": "particle", "type": "Any" },
+      { "name": "sound", "type": "String" },
+      { "name": "block_particles", "type": "Any" }
+    ],
+    "FacePlayerPacket": [
+      { "name": "face_position", "type": "Any" },
+      { "name": "target", "type": "Location" },
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "entity_face_position", "type": "Any" }
+    ],
+    "FinishConfigurationPacket": [],
+    "GameRuleValuesPacket": [ { "name": "values", "type": "Any" } ],
+    "GameTestHighlightPosPacket": [
+      { "name": "absolute_block_position", "type": "Location" },
+      { "name": "relative_block_position", "type": "Location" }
+    ],
+    "HeldItemChangePacket": [ { "name": "slot", "type": "Integer" } ],
+    "HitAnimationPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "yaw", "type": "Double" }
+    ],
+    "InitializeWorldBorderPacket": [
+      { "name": "x", "type": "Double" },
+      { "name": "z", "type": "Double" },
+      { "name": "old_diameter", "type": "Double" },
+      { "name": "new_diameter", "type": "Double" },
+      { "name": "speed", "type": "Integer" },
+      { "name": "portal_teleport_boundary", "type": "Integer" },
+      { "name": "warning_time", "type": "Integer" },
+      { "name": "warning_blocks", "type": "Integer" }
+    ],
+    "JoinGamePacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "is_hardcore", "type": "Boolean" },
+      { "name": "worlds", "type": "Any" },
+      { "name": "max_players", "type": "Integer" },
+      { "name": "view_distance", "type": "Integer" },
+      { "name": "simulation_distance", "type": "Integer" },
+      { "name": "reduced_debug_info", "type": "Boolean" },
+      { "name": "enable_respawn_screen", "type": "Boolean" },
+      { "name": "do_limited_crafting", "type": "Boolean" },
+      { "name": "player_spawn_info", "type": "Any" },
+      { "name": "online_mode", "type": "Boolean" },
+      { "name": "enforces_secure_chat", "type": "Boolean" }
+    ],
+    "KeepAlivePacket": [ { "name": "id", "type": "Integer" } ],
+    "LegacyServerListPingPacket": [
+      { "name": "payload", "type": "Integer" }
+    ],
+    "LoginDisconnectPacket": [ { "name": "kick_message", "type": "String" } ],
+    "LoginPluginRequestPacket": [
+      { "name": "message_id", "type": "Integer" },
+      { "name": "channel", "type": "String" },
+      { "name": "data", "type": "Any" }
+    ],
+    "LoginSuccessPacket": [
+      { "name": "game_profile", "type": "Any" },
+      { "name": "session_id", "type": "Any" }
+    ],
+    "LowDiskSpaceWarningPacket": [],
+    "MapDataPacket": [
+      { "name": "map_id", "type": "Integer" },
+      { "name": "scale", "type": "Integer" },
+      { "name": "locked", "type": "Boolean" },
+      { "name": "tracking_position", "type": "Boolean" },
+      { "name": "icons", "type": "Any" },
+      { "name": "color_content", "type": "Any" }
+    ],
+    "MoveMinecartPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "lerp_steps", "type": "Any" }
+    ],
+    "MultiBlockChangePacket": [
+      { "name": "chunk_section_position", "type": "Integer" },
+      { "name": "blocks", "type": "Any" }
+    ],
+    "NbtQueryResponsePacket": [
+      { "name": "transaction_id", "type": "Integer" },
+      { "name": "data", "type": "Any" }
+    ],
+    "OpenBookPacket": [ { "name": "hand", "type": "String" } ],
+    "OpenHorseWindowPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "slot_count", "type": "Integer" },
+      { "name": "entity_id", "type": "Integer" }
+    ],
+    "OpenSignEditorPacket": [
+      { "name": "position", "type": "Location" },
+      { "name": "is_front_text", "type": "Boolean" }
+    ],
+    "OpenWindowPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "window_type", "type": "Integer" },
+      { "name": "title", "type": "String" }
+    ],
+    "ParticlePacket": [
+      { "name": "particle", "type": "Any" },
+      { "name": "override_limiter", "type": "Boolean" },
+      { "name": "long_distance", "type": "Boolean" },
+      { "name": "x", "type": "Double" },
+      { "name": "y", "type": "Double" },
+      { "name": "z", "type": "Double" },
+      { "name": "offset_x", "type": "Double" },
+      { "name": "offset_y", "type": "Double" },
+      { "name": "offset_z", "type": "Double" },
+      { "name": "max_speed", "type": "Double" },
+      { "name": "particle_count", "type": "Integer" }
+    ],
+    "PingPacket": [ { "name": "id", "type": "Integer" } ],
+    "PingResponsePacket": [ { "name": "number", "type": "Integer" } ],
+    "PlaceGhostRecipePacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "recipe", "type": "Any" }
+    ],
+    "PlayerAbilitiesPacket": [
+      { "name": "flags", "type": "Integer" },
+      { "name": "flying_speed", "type": "Double" },
+      { "name": "walking_speed", "type": "Double" }
+    ],
+    "PlayerChatMessagePacket": [
+      { "name": "global_index", "type": "Integer" },
+      { "name": "sender", "type": "Any" },
+      { "name": "index", "type": "Integer" },
+      { "name": "signature", "type": "Any" },
+      { "name": "message_body", "type": "Any" },
+      { "name": "unsigned_content", "type": "String" },
+      { "name": "filter_mask", "type": "Any" },
+      { "name": "msg_type_id", "type": "Integer" },
+      { "name": "msg_type_name", "type": "String" },
+      { "name": "msg_type_target", "type": "String" }
+    ],
+    "PlayerInfoRemovePacket": [ { "name": "uuids", "type": "Any" } ],
+    "PlayerInfoUpdatePacket": [
+      { "name": "actions", "type": "Any" },
+      { "name": "entries", "type": "Any" }
+    ],
+    "PlayerListHeaderAndFooterPacket": [
+      { "name": "header", "type": "String" },
+      { "name": "footer", "type": "String" }
+    ],
+    "PlayerPositionAndLookPacket": [
+      { "name": "teleport_id", "type": "Integer" },
+      { "name": "position", "type": "Location" },
+      { "name": "delta", "type": "Location" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "flags", "type": "Integer" }
+    ],
+    "PlayerRotationPacket": [
+      { "name": "yaw", "type": "Double" },
+      { "name": "relative_yaw", "type": "Boolean" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "relative_pitch", "type": "Boolean" }
+    ],
+    "PluginMessagePacket": [
+      { "name": "channel", "type": "String" },
+      { "name": "data", "type": "Any" }
+    ],
+    "ProjectilePowerPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "acceleration_power", "type": "Double" }
+    ],
+    "RecipeBookAddPacket": [
+      { "name": "entries", "type": "Any" },
+      { "name": "replace", "type": "Boolean" }
+    ],
+    "RecipeBookRemovePacket": [ { "name": "display_ids", "type": "Any" } ],
+    "RecipeBookSettingsPacket": [
+      { "name": "crafting_recipe_book_open", "type": "Boolean" },
+      { "name": "crafting_recipe_book_filter_active", "type": "Boolean" },
+      { "name": "smelting_recipe_book_open", "type": "Boolean" },
+      { "name": "smelting_recipe_book_filter_active", "type": "Boolean" },
+      { "name": "blast_furnace_recipe_book_open", "type": "Boolean" },
+      {
+        "name": "blast_furnace_recipe_book_filter_active",
+        "type": "Boolean"
+      },
+      { "name": "smoker_recipe_book_open", "type": "Boolean" },
+      { "name": "smoker_recipe_book_filter_active", "type": "Boolean" }
+    ],
+    "RegistryDataPacket": [
+      { "name": "registry_id", "type": "String" },
+      { "name": "entries", "type": "Any" }
+    ],
+    "RemoveEntityEffectPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "potion_effect", "type": "Any" }
+    ],
+    "ResetChatPacket": [],
+    "ResetScorePacket": [
+      { "name": "owner", "type": "String" },
+      { "name": "objective", "type": "String" }
+    ],
+    "ResourcePackPopPacket": [ { "name": "id", "type": "Any" } ],
+    "ResourcePackPushPacket": [
+      { "name": "id", "type": "Any" },
+      { "name": "url", "type": "String" },
+      { "name": "hash", "type": "String" },
+      { "name": "forced", "type": "Boolean" },
+      { "name": "prompt", "type": "String" }
+    ],
+    "RespawnPacket": [
+      { "name": "player_spawn_info", "type": "Any" },
+      { "name": "copy_data", "type": "Integer" }
+    ],
+    "ResponsePacket": [ { "name": "json_response", "type": "String" } ],
+    "ScoreboardObjectivePacket": [
+      { "name": "objective_name", "type": "String" },
+      { "name": "mode", "type": "Integer" },
+      { "name": "objective_value", "type": "String" },
+      { "name": "type", "type": "Any" },
+      { "name": "number_format", "type": "Any" }
+    ],
+    "SelectAdvancementTabPacket": [
+      { "name": "identifier", "type": "String" }
+    ],
+    "SelectKnownPacksPacket": [ { "name": "entries", "type": "Any" } ],
+    "ServerDataPacket": [
+      { "name": "motd", "type": "String" },
+      { "name": "icon_base64", "type": "Any" }
+    ],
+    "ServerDifficultyPacket": [
+      { "name": "difficulty", "type": "Any" },
+      { "name": "locked", "type": "Boolean" }
+    ],
+    "ServerLinksPacket": [ { "name": "entries", "type": "Any" } ],
+    "SetCompressionPacket": [ { "name": "threshold", "type": "Integer" } ],
+    "SetCooldownPacket": [
+      { "name": "cooldown_group", "type": "String" },
+      { "name": "cooldown_ticks", "type": "Integer" }
+    ],
+    "SetCursorItemPacket": [ { "name": "item_stack", "type": "Item" } ],
+    "SetExperiencePacket": [
+      { "name": "percentage", "type": "Double" },
+      { "name": "level", "type": "Integer" },
+      { "name": "total_experience", "type": "Integer" }
+    ],
+    "SetPassengersPacket": [
+      { "name": "vehicle_entity_id", "type": "Integer" },
+      { "name": "passengers_id", "type": "Any" }
+    ],
+    "SetPlayerInventorySlotPacket": [
+      { "name": "slot", "type": "Integer" },
+      { "name": "item_stack", "type": "Item" }
+    ],
+    "SetSlotPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "state_id", "type": "Integer" },
+      { "name": "slot", "type": "Integer" },
+      { "name": "item_stack", "type": "Item" }
+    ],
+    "SetTickStatePacket": [
+      { "name": "tick_rate", "type": "Double" },
+      { "name": "is_frozen", "type": "Boolean" }
+    ],
+    "SetTimePacket": [
+      { "name": "game_time", "type": "Integer" },
+      { "name": "clocks", "type": "Any" }
+    ],
+    "SetTitleSubTitlePacket": [ { "name": "subtitle", "type": "String" } ],
+    "SetTitleTextPacket": [ { "name": "title", "type": "String" } ],
+    "SetTitleTimePacket": [
+      { "name": "fade_in", "type": "Integer" },
+      { "name": "stay", "type": "Integer" },
+      { "name": "fade_out", "type": "Integer" }
+    ],
+    "ShowDialogPacket": [ { "name": "dialog", "type": "Any" } ],
+    "SoundEffectPacket": [
+      { "name": "sound_event", "type": "String" },
+      { "name": "source", "type": "Any" },
+      { "name": "origin", "type": "Location" },
+      { "name": "volume", "type": "Double" },
+      { "name": "pitch", "type": "Double" },
+      { "name": "seed", "type": "Integer" }
+    ],
+    "SpawnEntityPacket": [
+      { "name": "entity_id", "type": "Integer" },
+      { "name": "uuid", "type": "Any" },
+      { "name": "type", "type": "Any" },
+      { "name": "position", "type": "Location" },
+      { "name": "head_rot", "type": "Double" },
+      { "name": "data", "type": "Integer" },
+      { "name": "velocity", "type": "Vec" }
+    ],
+    "SpawnPositionPacket": [
+      { "name": "world_pos", "type": "Any" },
+      { "name": "yaw", "type": "Double" },
+      { "name": "pitch", "type": "Double" }
+    ],
+    "StartConfigurationPacket": [],
+    "StatisticsPacket": [ { "name": "statistics", "type": "Any" } ],
+    "StatusRequestPacket": [],
+    "StopSoundPacket": [
+      { "name": "flags", "type": "Integer" },
+      { "name": "source", "type": "Any" },
+      { "name": "sound", "type": "String" }
+    ],
+    "SystemChatPacket": [
+      { "name": "message", "type": "String" },
+      { "name": "overlay", "type": "Boolean" }
+    ],
+    "TabCompletePacket": [
+      { "name": "transaction_id", "type": "Integer" },
+      { "name": "start", "type": "Integer" },
+      { "name": "length", "type": "Integer" },
+      { "name": "matches", "type": "Any" }
+    ],
+    "TagsPacket": [ { "name": "registries", "type": "Any" } ],
+    "TeamsPacket": [
+      { "name": "team_name", "type": "String" },
+      { "name": "action", "type": "Any" }
+    ],
+    "TestInstanceBlockStatus": [
+      { "name": "status", "type": "String" },
+      { "name": "size", "type": "Location" }
+    ],
+    "TickStepPacket": [ { "name": "steps", "type": "Integer" } ],
+    "TrackedWaypointPacket": [
+      { "name": "operation", "type": "Any" },
+      { "name": "waypoint", "type": "Any" }
+    ],
+    "TradeListPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "trades", "type": "Any" },
+      { "name": "villager_level", "type": "Integer" },
+      { "name": "experience", "type": "Integer" },
+      { "name": "regular_villager", "type": "Boolean" },
+      { "name": "can_restock", "type": "Boolean" }
+    ],
+    "TransferPacket": [
+      { "name": "host", "type": "String" },
+      { "name": "port", "type": "Integer" }
+    ],
+    "UnloadChunkPacket": [
+      { "name": "chunk_x", "type": "Integer" },
+      { "name": "chunk_z", "type": "Integer" }
+    ],
+    "UpdateEnabledFeaturesPacket": [ { "name": "features", "type": "Any" } ],
+    "UpdateHealthPacket": [
+      { "name": "health", "type": "Double" },
+      { "name": "food", "type": "Integer" },
+      { "name": "food_saturation", "type": "Double" }
+    ],
+    "UpdateLightPacket": [
+      { "name": "chunk_x", "type": "Integer" },
+      { "name": "chunk_z", "type": "Integer" },
+      { "name": "light_data", "type": "Any" }
+    ],
+    "UpdateScorePacket": [
+      { "name": "entity_name", "type": "String" },
+      { "name": "objective_name", "type": "String" },
+      { "name": "score", "type": "Integer" },
+      { "name": "display_name", "type": "String" },
+      { "name": "number_format", "type": "Any" }
+    ],
+    "UpdateSimulationDistancePacket": [
+      { "name": "simulation_distance", "type": "Integer" }
+    ],
+    "UpdateViewDistancePacket": [
+      { "name": "view_distance", "type": "Integer" }
+    ],
+    "UpdateViewPositionPacket": [
+      { "name": "chunk_x", "type": "Integer" },
+      { "name": "chunk_z", "type": "Integer" }
+    ],
+    "VehicleMovePacket": [ { "name": "position", "type": "Location" } ],
+    "WindowItemsPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "state_id", "type": "Integer" },
+      { "name": "items", "type": "Any" },
+      { "name": "carried_item", "type": "Item" }
+    ],
+    "WindowPropertyPacket": [
+      { "name": "window_id", "type": "Integer" },
+      { "name": "property", "type": "Integer" },
+      { "name": "value", "type": "Integer" }
+    ],
+    "WorldBorderCenterPacket": [
+      { "name": "x", "type": "Double" }, { "name": "z", "type": "Double" }
+    ],
+    "WorldBorderLerpSizePacket": [
+      { "name": "old_diameter", "type": "Double" },
+      { "name": "new_diameter", "type": "Double" },
+      { "name": "speed", "type": "Integer" }
+    ],
+    "WorldBorderSizePacket": [ { "name": "diameter", "type": "Double" } ],
+    "WorldBorderWarningDelayPacket": [
+      { "name": "warning_time", "type": "Integer" }
+    ],
+    "WorldBorderWarningReachPacket": [
+      { "name": "warning_blocks", "type": "Integer" }
+    ],
+    "WorldEventPacket": [
+      { "name": "effect_id", "type": "Integer" },
+      { "name": "position", "type": "Location" },
+      { "name": "data", "type": "Integer" },
+      { "name": "disable_relative_volume", "type": "Boolean" }
     ]
   },
   "enums": {

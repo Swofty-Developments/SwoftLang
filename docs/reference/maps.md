@@ -1,8 +1,8 @@
 # Maps
 
-A `map<K, V>` is a dictionary from keys of type `K` to values of type `V`. The key type
-is `String`, `Integer`, or `Player`; `map<V>` with one type argument is shorthand for
-`map<String, V>`. The value type is inferred from a literal or written explicitly. Maps
+A `Map<K, V>` is a dictionary from keys of type `K` to values of type `V`. The key type
+is `String`, `Integer`, or `Player`; `Map<V>` with one type argument is shorthand for
+`Map<String, V>`. The value type is inferred from a literal or written explicitly. Maps
 are mutable reference values — passing one to a function and mutating it there is visible
 to the caller — and a `map` of a scalar value type can be `persistent`, so a whole
 dictionary survives a restart.
@@ -24,7 +24,7 @@ command "counts" {
         set counts to { "a": 1, "b": 2, "c": 3 }
 
         set counts at "d" to 4               // write
-        set a to counts["a"] otherwise 0     // index-read yields optional<V>
+        set a to counts["a"] otherwise 0     // index-read yields Optional<V>
         send "a is ${a}, size is ${size of counts}" to sender
 
         delete counts at "b"                 // remove one entry
@@ -45,7 +45,7 @@ command "counts" {
         set counts to { "a": 1, "b": 2, "c": 3 }
 
         counts.set("d", 4)                   // write
-        set a to counts.get("a") otherwise 0 // .get yields optional<V>
+        set a to counts.get("a") otherwise 0 // .get yields Optional<V>
         send "a is ${a}, size is ${counts.size}" to sender
 
         counts.delete("b")                   // remove one entry
@@ -63,9 +63,9 @@ command "counts" {
 
 | Form | Result | Notes |
 |---|---|---|
-| `{ "k": v, ... }` | `map<String, V>` | String keys; `V` is the join of the value types |
-| `{ 1: v, ... }` | `map<Integer, V>` | Integer-literal keys |
-| `new_map()` | `map<Any, Any>` | an empty map; key and value narrow from context |
+| `{ "k": v, ... }` | `Map<String, V>` | String keys; `V` is the join of the value types |
+| `{ 1: v, ... }` | `Map<Integer, V>` | Integer-literal keys |
+| `new_map()` | `Map<Any, Any>` | an empty map; key and value narrow from context |
 
 The empty `{}` literal is rejected — it collides with a block — so an empty map is
 always `new_map()`:
@@ -93,9 +93,9 @@ directly, so narrow or `otherwise` an optional before you put it in.
 
 Keys are `String`, `Integer`, or `Player`. Every map operation is key-type aware: the
 index sugar, the natural-language forms, the methods, and both loop forms take a key of
-the map's `K`, and `keys of m` (or `m.keys`) returns a `list<K>`.
+the map's `K`, and `keys of m` (or `m.keys`) returns a `List<K>`.
 
-An **Integer-keyed** map — `map<Integer, V>`, inferred from an integer-literal
+An **Integer-keyed** map — `Map<Integer, V>`, inferred from an integer-literal
 dictionary or written out:
 
 <DialectCode title="Integer keys" file="intkeys.sw">
@@ -139,7 +139,7 @@ command "intkeys" {
 </template>
 </DialectCode>
 
-A **Player-keyed** map — `map<Player, V>`. Players serialize by UUID on the Java side, so
+A **Player-keyed** map — `Map<Player, V>`. Players serialize by UUID on the Java side, so
 a Player-keyed map is `persistent`-safe; the compiler just types the key as `Player`:
 
 <DialectCode title="Player keys" file="pmap.sw">
@@ -199,16 +199,16 @@ runtime call:
 
 | Operation | Natural language | Method / property | Result |
 |---|---|---|---|
-| read | `m[k]` | `m.get(k)` | `optional<V>` |
+| read | `m[k]` | `m.get(k)` | `Optional<V>` |
 | write | `set m at k to v` | `m.set(k, v)` | — |
 | test | `m has k` | `m.has(k)` | `Boolean` |
 | remove | `delete m at k` | `m.delete(k)` | — |
-| keys | `keys of m` | `m.keys` | `list<K>` |
-| values | `values of m` | `m.values` | `list<V>` |
+| keys | `keys of m` | `m.keys` | `List<K>` |
+| values | `values of m` | `m.values` | `List<V>` |
 | size | `size of m` | `m.size` | `Integer` |
 | clear | `clear m` | `m.clear()` | — |
 
-Reads return an `optional<V>` because the key may be absent — the compiler makes you
+Reads return an `Optional<V>` because the key may be absent — the compiler makes you
 account for that with `exists` or `otherwise`:
 
 <DialectCode title="Look up a price" file="lookup.sw">
@@ -321,7 +321,7 @@ badval.sw:4:30: error: 'set m at k to v' expects a Integer value (got String)
 
 ## Iterating {#iterating}
 
-Looping the keys walks them as a plain `list<K>`; the dedicated `loop m as key -> value`
+Looping the keys walks them as a plain `List<K>`; the dedicated `loop m as key -> value`
 form binds the key and the `V` value per entry:
 
 <DialectCode title="Walk every entry" file="dump.sw">
@@ -382,7 +382,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent leaderboard: map<Integer> = new_map()
+persistent leaderboard: Map<Integer> = new_map()
 
 command "score" {
     arguments { amount: Integer }
@@ -402,7 +402,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent leaderboard: map<Integer> = new_map()
+persistent leaderboard: Map<Integer> = new_map()
 
 command "score" {
     arguments { amount: Integer }
@@ -420,8 +420,8 @@ command "score" {
 
 A scalar map can hold item stacks by serializing them: `to_nbt(item)` turns an `Item`
 into its NBT `String`, and `from_nbt(string)` parses one back — as an
-`optional<Item>`, because the text might be malformed. The round-trip lets a persistent
-`map<String>` act as a restart-safe item store:
+`Optional<Item>`, because the text might be malformed. The round-trip lets a persistent
+`Map<String>` act as a restart-safe item store:
 
 <DialectCode title="Stow and recall a held item" file="stash.sw">
 <template #natural>
@@ -432,7 +432,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent stash: map<String> = new_map()
+persistent stash: Map<String> = new_map()
 
 command "stow" {
     execute {
@@ -465,7 +465,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent stash: map<String> = new_map()
+persistent stash: Map<String> = new_map()
 
 command "stow" {
     execute {
@@ -493,7 +493,7 @@ command "recall" {
 </DialectCode>
 
 The [Player Vault example](/examples/player-vault) puts exactly this pattern to work:
-every edited vault slot is serialized into one persistent `map<String>`.
+every edited vault slot is serialized into one persistent `Map<String>`.
 
 ::: tip Where the semantics come from
 Maps are backed by `LinkedHashMap<String, Object>` on the Java side, so `keys of m` and

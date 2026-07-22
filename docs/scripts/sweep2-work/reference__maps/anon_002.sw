@@ -4,7 +4,7 @@ command "counts" {
         set counts to { "a": 1, "b": 2, "c": 3 }
 
         counts.set("d", 4)                   // write
-        set a to counts.get("a") otherwise 0 // .get yields optional<V>
+        set a to counts.get("a") otherwise 0 // .get yields Optional<V>
         send "a is ${a}, size is ${counts.size}" to sender
 
         counts.delete("b")                   // remove one entry

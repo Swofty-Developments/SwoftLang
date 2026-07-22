@@ -64,7 +64,7 @@ or fetch a real player's by username:
 | Form | Type | Notes |
 |---|---|---|
 | `skin(texture, signature)` | `Skin` | base64 property pair, as Mojang serves it |
-| `fetch_skin(username)` | `optional<Skin>` | **async-only** — live Mojang API lookup |
+| `fetch_skin(username)` | `Optional<Skin>` | **async-only** — live Mojang API lookup |
 | `<player>.skin` | `Skin` | read/write — writing respawns the player's skin for all viewers |
 | `<skin>.texture`, `<skin>.signature` | `String` | read-only |
 

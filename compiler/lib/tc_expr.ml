@@ -303,7 +303,7 @@ and prop_type ctx bctx env whole target name =
           TAny)
       | TEither ts ->
         err ctx whole.epos
-          "cannot access property '%s' on either<%s>; narrow it first with 'is a'" name
+          "cannot access property '%s' on Either<%s>; narrow it first with 'is a'" name
           (String.concat "|" (List.map ty_to_string ts));
         TAny
       (* W-viewers §2: a declared typed tag of the current mob resolves to its
@@ -675,7 +675,7 @@ and collection_builtin_type ctx bctx env pos name args =
       | TInteger -> TInteger
       | TDouble | TAny -> TDouble
       | _ ->
-        err ctx a.epos "'%s' expects a list of numbers (got list<%s>)" name (ty_to_string elem);
+        err ctx a.epos "'%s' expects a list of numbers (got List<%s>)" name (ty_to_string elem);
         TDouble)
     end
   | "sort_by" | "sort_by_desc" | "min_by" | "max_by" ->

@@ -89,7 +89,7 @@ export function clear_warden_anger(w: Mob, target: Player) {
 }
 
 // ── Warden - Prey ────────────────────────────────────────────────────────
-// 'the entity at which this warden is most angry', as optional<Player>.
+// 'the entity at which this warden is most angry', as Optional<Player>.
 
 export function warden_prey(w: Mob) {
     set prey_name to warden_data("prey:${w.name}")

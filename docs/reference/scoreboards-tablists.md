@@ -270,7 +270,7 @@ player; setting a new label replaces the old one for all viewers.
   execution) that refreshes every current viewer. `update: manual` means nothing
   happens until an explicit `update ... for <player>` statement (scoreboards) or a
   `set ... for <player>` override (tablists/bossbars).
-- Every `to`/`for`/`from` target accepts a `Player`, a `list<Player>`, or `all`:
+- Every `to`/`for`/`from` target accepts a `Player`, a `List<Player>`, or `all`:
 
 ```swoftlang
 scoreboard "main" { title: "<gold>Stats" lines { line "<gray>hi" } }

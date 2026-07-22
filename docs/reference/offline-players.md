@@ -22,13 +22,13 @@ if found exists {
 | `name` | `String` | ro | last known name |
 | `uuid` | `String` | ro | the account UUID |
 | `online` | `Boolean` | ro | live lookup — are they connected right now |
-| `player` | `optional<Player>` | ro | the live `Player` when online, `none` otherwise — **the bridge** |
+| `player` | `Optional<Player>` | ro | the live `Player` when online, `none` otherwise — **the bridge** |
 | `first_seen` | `String` | ro | ISO timestamp from the seen-store (`"unknown"` if pre-tracking) |
 | `last_seen` | `String` | ro | updated on quit, and read as "now" while online |
 | `has_played_before` | `Boolean` | ro | present in the seen-store |
 
 The `player` bridge is the crossing point between the offline and online worlds. It is an
-`optional<Player>`, so narrowing with `exists` is what turns an offline record into a
+`Optional<Player>`, so narrowing with `exists` is what turns an offline record into a
 live player you can message, teleport, or give items to — no null, no guessing.
 
 ## Player is an OfflinePlayer
@@ -49,10 +49,10 @@ function describe(subject: OfflinePlayer) {
 
 | Builtin | Returns | Notes |
 |---|---|---|
-| `offline_player(name)` | `optional<OfflinePlayer>` | seen-store lookup, case-insensitive; `none` if never seen. Instant, sync-safe |
+| `offline_player(name)` | `Optional<OfflinePlayer>` | seen-store lookup, case-insensitive; `none` if never seen. Instant, sync-safe |
 | `offline_player_uuid(uuid)` | `OfflinePlayer` | total — builds the identity; name from the store, else `"unknown"` |
-| `fetch_offline_player(name)` | `optional<OfflinePlayer>` | **async only** — Mojang username→UUID lookup; a hit also seeds the seen-store |
-| `all_seen_players()` | `list<OfflinePlayer>` | every player on record |
+| `fetch_offline_player(name)` | `Optional<OfflinePlayer>` | **async only** — Mojang username→UUID lookup; a hit also seeds the seen-store |
+| `all_seen_players()` | `List<OfflinePlayer>` | every player on record |
 
 `offline_player` answers instantly from the local seen-store and is safe on the tick
 thread. `fetch_offline_player` reaches out to Mojang over the network, so it is
@@ -159,7 +159,7 @@ command "reward" {
 Skript's `%uuid of arg-1%` becomes automatic — the persistent is keyed by UUID, and the
 same `balance` accepts the `OfflinePlayer` subject even though it's declared
 `for Player`. The dodgy `arg-1 is online` / message-arg-1 dance becomes
-`target.player exists`: a typed `optional<Player>` that the checker forces you to unwrap
+`target.player exists`: a typed `Optional<Player>` that the checker forces you to unwrap
 before you can send to it.
 
 </template>

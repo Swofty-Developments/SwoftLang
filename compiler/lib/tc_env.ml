@@ -276,7 +276,7 @@ let require_present ctx env e t ~use =
     match t with
     | TOptional inner ->
       err ctx e.epos
-        "%s is optional<%s> and may be missing; check it with 'if ... exists' or provide a \
+        "%s is Optional<%s> and may be missing; check it with 'if ... exists' or provide a \
          fallback with 'otherwise'"
         use (ty_to_string inner)
     | _ -> ())

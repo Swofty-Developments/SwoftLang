@@ -31,7 +31,7 @@
 //             this is the orientation-from-look source for stairs and doors.
 // on_place returns the oriented Block to set. on_update(location, block,
 // neighbours) recomputes connections when a neighbour changes: 'neighbours'
-// is a map<String,Block> keyed by the six face names.
+// is a Map<String,Block> keyed by the six face names.
 //
 // Fidelity note: block collision/solidity (Minestom's isSolid) is not exposed
 // to scripts, so "does this neighbour connect?" is approximated by block id
@@ -95,7 +95,7 @@ function bl_relative(loc: Location, dir: String) {
     return loc
 }
 
-// The six face-adjacent world blocks as a map<String,Block> — the same shape
+// The six face-adjacent world blocks as a Map<String,Block> — the same shape
 // on_update receives, so on_place can reuse the connection helpers by reading
 // the world itself (on_place is not handed a neighbour map).
 function bl_neighbours(loc: Location) {
@@ -138,7 +138,7 @@ function bl_is_stairs(b: Block) {
 // Vanilla stair shape from the stairs in front of / behind this one. A
 // perpendicular neighbour turns the corner: outer when it faces away, inner
 // when it faces in; left/right from whether that facing is our ccw side.
-function bl_stairs_shape(cur: Block, neighbours: map<String, Block>) {
+function bl_stairs_shape(cur: Block, neighbours: Map<String, Block>) {
     set f to cur.property("facing") otherwise "north"
     set h to cur.property("half") otherwise "bottom"
 
@@ -173,7 +173,7 @@ function bl_place_stairs(id: String, loc: Location, face: String, cursor: Vec, p
     return base.with("shape", bl_stairs_shape(base, bl_neighbours(loc)))
 }
 
-function bl_update_stairs(cur: Block, neighbours: map<String, Block>) {
+function bl_update_stairs(cur: Block, neighbours: Map<String, Block>) {
     return cur.with("shape", bl_stairs_shape(cur, neighbours))
 }
 
@@ -219,7 +219,7 @@ function bl_no_connect(id: String) {
 }
 
 // "true"/"false" for one side of a fence/pane/bar.
-function bl_fence_side(neighbours: map<String, Block>, dir: String) {
+function bl_fence_side(neighbours: Map<String, Block>, dir: String) {
     set n to neighbours.get(dir) otherwise block("air")
     if bl_no_connect(n.id) return "false"
     return "true"
@@ -227,7 +227,7 @@ function bl_fence_side(neighbours: map<String, Block>, dir: String) {
 
 // Set the four horizontal connection flags on a fence/pane/bar, preserving
 // everything else (including waterlogged) already on 'base'.
-function bl_apply_fence(neighbours: map<String, Block>, base: Block) {
+function bl_apply_fence(neighbours: Map<String, Block>, base: Block) {
     return base
         .with("north", bl_fence_side(neighbours, "north"))
         .with("south", bl_fence_side(neighbours, "south"))
@@ -244,13 +244,13 @@ function bl_place_fence(id: String, loc: Location) {
 
 // "low"/"none" for one wall side (walls use none/low/tall; tall is reserved
 // for cases needing real height data, so this rule produces none/low).
-function bl_wall_side(neighbours: map<String, Block>, dir: String) {
+function bl_wall_side(neighbours: Map<String, Block>, dir: String) {
     set n to neighbours.get(dir) otherwise block("air")
     if bl_no_connect(n.id) return "none"
     return "low"
 }
 
-function bl_apply_wall(neighbours: map<String, Block>, base: Block) {
+function bl_apply_wall(neighbours: Map<String, Block>, base: Block) {
     set nn to bl_wall_side(neighbours, "north")
     set ss to bl_wall_side(neighbours, "south")
     set ee to bl_wall_side(neighbours, "east")

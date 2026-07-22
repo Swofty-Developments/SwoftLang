@@ -1,8 +1,8 @@
 struct Guild {
     name: String
     level: Integer = 1
-    bank: map<String, Integer>
-    home: optional<Location>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
 command "guild-admin" {

@@ -68,9 +68,9 @@ And the lookup expressions:
 
 | Expression | Type |
 |---|---|
-| `world("name")` | `optional<World>` — the loaded instance |
+| `world("name")` | `Optional<World>` — the loaded instance |
 | `world_exists("name", <loader>)` | `Boolean` — exists in storage (loaded or not) |
-| `all_worlds(<loader>)` | `list<String>` — every world name in that loader |
+| `all_worlds(<loader>)` | `List<String>` — every world name in that loader |
 
 ```swoftlang
 command "minigame" {

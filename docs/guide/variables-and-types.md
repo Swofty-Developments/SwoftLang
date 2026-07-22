@@ -78,9 +78,9 @@ error, not silent `<none>` output in chat at runtime.
 | `Location` | `location(0.5, 42.0, 0.5)` | immutable position snapshot (x, y, z, yaw, pitch) |
 | `Item` | `item("diamond_sword")` | immutable item stack |
 | `World` | `world("lobby")`, `world` in a `World` method | a server world instance |
-| `list<T>` | `["a", "b", "c"]`, `all_players()` | |
-| `optional<T>` | `player("Notch")`, `none` | present-or-missing — [Step 07](/guide/options) |
-| `either<A\|B>` | argument unions | narrowed with `is a` |
+| `List<T>` | `["a", "b", "c"]`, `all_players()` | |
+| `Optional<T>` | `player("Notch")`, `none` | present-or-missing — [Step 07](/guide/options) |
+| `Either<A\|B>` | argument unions | narrowed with `is a` |
 
 In type *checks*, `Number` matches both `Integer` and `Double`. Later steps add a few
 domain types on top — `Mob`, `Display`, `Skin` — each introduced where it's used.
@@ -159,6 +159,6 @@ command "checks" {
 `sender` might be the console. `is an` is accepted wherever `is a` is, so you can write
 `is an Integer` and keep your grammar teacher happy.
 
-This narrowing is the same machinery that handles `either<A|B>` and `optional<T>` — it
+This narrowing is the same machinery that handles `Either<A|B>` and `Optional<T>` — it
 starts doing serious work in [Step 07](/guide/options). First, the control flow those
 branches hang off.

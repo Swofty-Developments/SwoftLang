@@ -9,7 +9,7 @@ A scripting language for building Minecraft servers on [Minestom](https://minest
 ```swoftlang
 command "heal" {
     arguments {
-        target: optional<Player>
+        target: Optional<Player>
     }
 
     execute {
@@ -25,7 +25,7 @@ Misspell `health`, drop the `otherwise`, or `wait 5 seconds` in a sync handler, 
 ## Features
 
 - **Compile-checked** - a real typechecker runs before the server does. Property typos, missing values, and threading mistakes are compile errors, not runtime crashes.
-- **No null** - `optional<T>` with `exists` and `otherwise`; the compiler refuses to let a maybe-missing value be used unchecked.
+- **No null** - `Optional<T>` with `exists` and `otherwise`; the compiler refuses to let a maybe-missing value be used unchecked.
 - **Async without callbacks** - `wait`, `spawn`, and virtual threads. The compiler colors sync vs async code so you can't freeze a tick by accident.
 - **First-class Minestom** - commands, events, GUIs, scoreboards, tablists, bossbars, custom items, mobs, entities, particles, sounds, worlds, and raw packets.
 - **Persistence built in** - `persistent kills for Player`, keyed and saved across restarts, on files, SQLite, MySQL, or MongoDB.

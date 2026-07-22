@@ -2,7 +2,7 @@ server { auth: mojang  lighting: true }
 mob Zombie {
     type: "ZOMBIE"
     viewable: false
-    tags: { hits: map<Player, Integer> }
+    tags: { hits: Map<Player, Integer> }
     on_hit {
         if attacker exists {
             set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1

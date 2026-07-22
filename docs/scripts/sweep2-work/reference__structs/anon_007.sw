@@ -2,13 +2,13 @@ struct Duel {
     @EventReceiver a: Player
     @EventReceiver b: Player
     arena: Location
-    score: map<Player, Integer>
+    score: Map<Player, Integer>
 
     a { on_death { set score at b to (score[b] otherwise 0) + 1  teleport a to arena } }
     b { on_death { set score at a to (score[a] otherwise 0) + 1  teleport b to arena } }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()
 
 command "duel" {
     execute {

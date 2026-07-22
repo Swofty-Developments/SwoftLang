@@ -1,9 +1,9 @@
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
-    bank: map<String, Integer>
-    home: optional<Location>
+    members: List<Player>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
 storage {
@@ -11,7 +11,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent guilds: map<String, Guild> = new_map()
+persistent guilds: Map<String, Guild> = new_map()
 
 command "found" {
     execute {

@@ -160,7 +160,8 @@ export interface DocVersion {
 
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
-  { text: '1.5.0 (latest)', link: '/', label: 'v1.5.0', prefix: '' },
+  { text: '1.6.0 (latest)', link: '/', label: 'v1.6.0', prefix: '' },
+  { text: '1.5.0', link: '/1.5.0/', label: 'v1.5.0', prefix: '/1.5.0' },
   { text: '1.4.0', link: '/1.4.0/', label: 'v1.4.0', prefix: '/1.4.0' },
   { text: '1.3.0', link: '/1.3.0/', label: 'v1.3.0', prefix: '/1.3.0' },
   { text: '1.2.0', link: '/1.2.0/', label: 'v1.2.0', prefix: '/1.2.0' },
@@ -176,20 +177,25 @@ export const versions: DocVersion[] = [
  * keeps its own hand-built tree below.)
  */
 /**
- * Root pages that postdate the frozen releases and therefore have no snapshot
- * in the derived version trees. Deriving a version sidebar from the root
+ * Root pages that postdate a frozen release and therefore have no snapshot in
+ * that version's derived tree. Deriving a version sidebar from the root
  * `navGroups` must drop these, or the frozen sidebar would link to a page that
  * doesn't exist under `/<version>/` (a dead nav link). `/reference/structs` is
- * new in 1.5.0, so 1.2.0–1.4.0 have no such page.
+ * new in 1.5.0, so 1.2.0–1.4.0 have no such page — but 1.5.0 and later DO, so
+ * this drop-set only applies to the pre-structs trees and is passed explicitly
+ * per version (see `makeVersionGroups`); 1.5.0 keeps structs.
  */
 const LATEST_ONLY_LINKS = new Set(['/reference/structs'])
 
-function makeVersionGroups(prefix: string): NavGroup[] {
+function makeVersionGroups(
+  prefix: string,
+  dropLinks: Set<string> = LATEST_ONLY_LINKS
+): NavGroup[] {
   const escaped = prefix.replace(/[.]/g, '\\$&')
   const prefixMatch = (m: RegExp) =>
     new RegExp('^' + escaped + m.source.replace(/^\^/, ''))
   const prefixLink = (l: NavLink): NavLink => ({ ...l, link: prefix + l.link })
-  const keep = (l: NavLink) => !LATEST_ONLY_LINKS.has(l.link)
+  const keep = (l: NavLink) => !dropLinks.has(l.link)
   return navGroups.map((g) => ({
     text: g.text,
     link: prefix + g.link,
@@ -206,6 +212,8 @@ function makeVersionGroups(prefix: string): NavGroup[] {
 export const navGroups120: NavGroup[] = makeVersionGroups('/1.2.0')
 export const navGroups130: NavGroup[] = makeVersionGroups('/1.3.0')
 export const navGroups140: NavGroup[] = makeVersionGroups('/1.4.0')
+/* 1.5.0 introduced structs, so its page set matches root — no drops. */
+export const navGroups150: NavGroup[] = makeVersionGroups('/1.5.0', new Set())
 
 /** The frozen 1.1.0 tree — its OWN pages under `/1.1.0/`, with 1.1.0 labels. */
 const guideItems110: NavLink[] = guideSteps.map((s) => ({
@@ -320,6 +328,7 @@ const V110 = /^\/1\.1\.0\//
 const V120 = /^\/1\.2\.0\//
 const V130 = /^\/1\.3\.0\//
 const V140 = /^\/1\.4\.0\//
+const V150 = /^\/1\.5\.0\//
 
 /** The sidebar tree for a given route (version-aware). */
 export function sidebarForPath(path: string): NavGroup[] {
@@ -327,6 +336,7 @@ export function sidebarForPath(path: string): NavGroup[] {
   if (V120.test(path)) return navGroups120
   if (V130.test(path)) return navGroups130
   if (V140.test(path)) return navGroups140
+  if (V150.test(path)) return navGroups150
   return navGroups
 }
 

@@ -116,7 +116,7 @@ The full statement set: `create world`, `load world`, `save world`,
 `unload world <name> [without saving] [teleporting players to <loc>]`,
 `clone world "a" to "b" with <loader>`, `delete world`, plus the `world_exists(name,
 loader)` and `all_worlds(loader)` builtins. A loaded world resolves via `world(name)`
-— an `optional<World>`, as always.
+— an `Optional<World>`, as always.
 
 ## Schedulers
 
@@ -199,7 +199,7 @@ api "/stats/:name" {
 checker only allows it inside `api` bodies. Handlers are async-colored (they run off
 the game thread), so the [Step 09](/guide/async) rules apply unchanged: property writes
 hop to the tick thread by themselves, and that `player(...)` lookup is the same
-`optional<Player>` it always was.
+`Optional<Player>` it always was.
 
 ## A dynamic MOTD
 

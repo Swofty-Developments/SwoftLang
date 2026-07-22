@@ -24,7 +24,7 @@ command "warp" {
     description: "Send someone to spawn"
 
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
 
     execute async {
@@ -45,7 +45,7 @@ command "warp" {
     description: "Send someone to spawn"
 
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
 
     execute async {
@@ -62,7 +62,7 @@ command "warp" {
 <template #error>
 
 ```txt
-warp.sw:10:14: error: this value is optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+warp.sw:10:14: error: this value is Optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
         send "<gray>Warping ${target.name} in 3 seconds..." to target
              ^
 ```
@@ -142,7 +142,7 @@ Mob {
 </template>
 <template #note>
 
-`Mob.on_death` binds `killer` as `optional<Entity>` — mobs die to lava too, and to
+`Mob.on_death` binds `killer` as `Optional<Entity>` — mobs die to lava too, and to
 non-players. Skript hands you an `attacker` that might silently be nothing; SwoftLang
 won't compile until the `exists` checks are there, and `player(killer.uuid)` resolves the
 online player who scores the kill. The `persistent … for Player` declaration replaces the

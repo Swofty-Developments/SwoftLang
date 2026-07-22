@@ -52,7 +52,7 @@ STATEMENT_KW = [
     "line", "entry", "blank", "belowname", "fade", "damage", "knock",
     "apply", "shoot",
 ]
-OPERATOR_WORD_KW = ["is", "not", "and", "or", "either", "contains"]
+OPERATOR_WORD_KW = ["is", "not", "and", "or", "Either", "contains"]
 CONNECTIVE_KW = ["to", "in", "of"]
 BOOLEAN_KW = ["true", "false"]
 TARGET_KW = ["all", "players"]
@@ -156,7 +156,7 @@ def main():
     annotations = sym.get("annotations", [])
 
     # type primitives = all declared types minus the generic containers
-    containers = ["either", "optional", "list", "map"]
+    containers = ["Either", "Optional", "List", "Map"]
     primitives = [t for t in sym["types"] if t not in containers] + EXTRA_TYPE_ALIASES
 
     # union of every entity property name across every type table

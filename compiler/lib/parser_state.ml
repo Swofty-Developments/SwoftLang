@@ -214,7 +214,7 @@ let member_word = function
   | Token.TO -> Some "to"
   | Token.IS -> Some "is"
   | Token.NOT -> Some "not"
-  | Token.EITHER -> Some "either"
+  | Token.EITHER -> Some "Either"
   | Token.CANCEL -> Some "cancel"
   | Token.SET -> Some "set"
   | Token.CONTAINS -> Some "contains"

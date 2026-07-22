@@ -9,7 +9,7 @@ let keyword_table =
     (fun (k, v) -> Hashtbl.add tbl k v)
     [ ("command", COMMAND); ("event", EVENT); ("if", IF); ("else", ELSE);
       ("halt", HALT); ("send", SEND); ("teleport", TELEPORT); ("to", TO);
-      ("is", IS); ("not", NOT); ("either", EITHER); ("cancel", CANCEL);
+      ("is", IS); ("not", NOT); ("Either", EITHER); ("cancel", CANCEL);
       ("set", SET); ("contains", CONTAINS); ("and", AND); ("or", OR);
       ("function", FUNCTION); ("return", RETURN); ("loop", LOOP);
       ("while", WHILE); ("times", TIMES); ("as", AS);

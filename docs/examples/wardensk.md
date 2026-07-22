@@ -227,7 +227,7 @@ expression:
 
 ```swoftlang
 // ── Warden - Prey ────────────────────────────────────────────────────────
-// 'the entity at which this warden is most angry', as optional<Player>.
+// 'the entity at which this warden is most angry', as Optional<Player>.
 
 export function warden_prey(w: Mob) {
     set prey_name to warden_data("prey:${w.name}")
@@ -239,7 +239,7 @@ export function warden_prey(w: Mob) {
 </template>
 <template #note>
 
-`getEntityAngryAt()` → the stored prey name resolved through `player(name)` — an `optional<Player>`, so a logged-off prey is provably `missing`, never null.
+`getEntityAngryAt()` → the stored prey name resolved through `player(name)` — an `Optional<Player>`, so a logged-off prey is provably `missing`, never null.
 
 </template>
 </MappedPair>

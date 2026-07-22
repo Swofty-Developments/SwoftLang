@@ -1,4 +1,4 @@
-// mob.tags.<path> reads are optional<Any>: using one where a present value is
+// mob.tags.<path> reads are Optional<Any>: using one where a present value is
 // required (arithmetic) is an error.
 Mob {
     on_spawn {

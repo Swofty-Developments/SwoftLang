@@ -24,8 +24,8 @@ command "sink", "s" {
 
     arguments {
         who: Player = sender
-        where: either<Player|Location>
-        depth: either<either<Integer|Double>|String> = 3
+        where: Either<Player|Location>
+        depth: Either<Either<Integer|Double>|String> = 3
         note: String = "none"
         flag: bool = true
         mystery: Wobble

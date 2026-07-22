@@ -1,6 +1,6 @@
 command "greet" {
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
     execute {
         set target to args.who otherwise sender

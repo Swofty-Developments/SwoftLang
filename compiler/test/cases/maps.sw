@@ -1,9 +1,9 @@
-// Phase 10: the map<V> type — String-keyed dictionaries.
+// Phase 10: the Map<V> type — String-keyed dictionaries.
 //
 // Literal { "k": expr, ... }, the natural-language map dialect ('set m at k to
 // v', 'm has k', 'size of m', 'keys of m', 'delete m at k'), the m[k] index-read
-// sugar (optional<V>), foreach over entries, and a restart-safe persistent
-// map<Scalar>.
+// sugar (Optional<V>), foreach over entries, and a restart-safe persistent
+// Map<Scalar>.
 
 storage {
     backend: files "data/swoftlang"
@@ -11,7 +11,7 @@ storage {
 }
 
 // a persistent map of scalars is serialized to the backend as JSON
-persistent leaderboard: map<Integer> = new_map()
+persistent leaderboard: Map<Integer> = new_map()
 
 command "maps" {
     execute {
@@ -26,7 +26,7 @@ command "maps" {
             send "counts has a" to sender
         }
 
-        // index read yields optional<V>: combine with 'otherwise'
+        // index read yields Optional<V>: combine with 'otherwise'
         set a_count to counts["a"] otherwise 0
         send "a is ${a_count}" to sender
 
@@ -37,7 +37,7 @@ command "maps" {
 
         send "size is ${size of counts}" to sender
 
-        // 'keys of m' yields list<String>, iterable with a normal foreach
+        // 'keys of m' yields List<String>, iterable with a normal foreach
         loop keys of counts as key {
             send "key ${key}" to sender
         }

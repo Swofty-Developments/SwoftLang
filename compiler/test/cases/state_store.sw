@@ -1,5 +1,5 @@
 // Per-entity freeform state via the unified `.tags` namespace. Player is an
-// Entity, so player.tags.<key> reads flow to optional<Any> (integrating with
+// Entity, so player.tags.<key> reads flow to Optional<Any> (integrating with
 // otherwise), `... exists` is a Boolean, and `set ... to none` deletes — the
 // same shape as entity/mob tags.
 

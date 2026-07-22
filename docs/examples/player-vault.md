@@ -6,7 +6,7 @@ title: Player Vault
 
 # Player Vault
 
-Ten permission-gated item vaults per player, captured slot by slot as they change and kept safe across restarts. 33 lines of Skript, 91 of SwoftLang; exercises GUIs, editable regions, a persistent `map<String>`, `to_nbt`/`from_nbt` item serialization, and permissions.
+Ten permission-gated item vaults per player, captured slot by slot as they change and kept safe across restarts. 33 lines of Skript, 91 of SwoftLang; exercises GUIs, editable regions, a persistent `Map<String>`, `to_nbt`/`from_nbt` item serialization, and permissions.
 
 <MappedCompare title="Player_Vault.sk → Player_Vault.sw — the whole file, both sides">
 <MappedPair label="the item store">
@@ -28,10 +28,10 @@ storage {
 
 // The authoritative copy of every occupied vault slot, keyed
 // "<uuid>:<vault>:<slot>". Skript's {vault::%player%::%n%::%slot%} list is a
-// runtime map; a persistent map<String> is the same idea — and because its
+// runtime map; a persistent Map<String> is the same idea — and because its
 // values are the item stacks serialized with to_nbt, the whole store is
 // scalar and persists to the backend, exactly like {vault::*} did.
-persistent vault: map<String> = new_map()
+persistent vault: Map<String> = new_map()
 
 function vault_key(owner: String, number: Integer, slot: Integer) {
     return "${owner}:${number}:${slot}"
@@ -41,7 +41,7 @@ function vault_key(owner: String, number: Integer, slot: Integer) {
 </template>
 <template #note>
 
-The store is a `map<String>` — a String-keyed dictionary — and `persistent`, so it serializes to the flat-file backend and comes back after a restart, exactly like Skript's `{vault::*}`. The trick that makes item stacks fit a *scalar* map: each value is the stack run through `to_nbt`, which turns an `Item` into its NBT string. See the [map reference](/reference/maps) for the type in full.
+The store is a `Map<String>` — a String-keyed dictionary — and `persistent`, so it serializes to the flat-file backend and comes back after a restart, exactly like Skript's `{vault::*}`. The trick that makes item stacks fit a *scalar* map: each value is the stack run through `to_nbt`, which turns an `Item` into its NBT string. See the [map reference](/reference/maps) for the type in full.
 
 </template>
 </MappedPair>
@@ -83,7 +83,7 @@ command "pv" {
 
     arguments {
         number: Integer
-        target: optional<Player>
+        target: Optional<Player>
     }
 
     execute {
@@ -199,7 +199,7 @@ command "pvpeek" {
 </template>
 <template #note>
 
-Two optionals, two `exists` gates — both enforced by the compiler, not by discipline. `vault[key]` is the index-read form (equivalently `vault.get(key)`); it yields `optional<String>` (the slot may be empty). `from_nbt` turns the stored NBT string back into an `Item`, and it is *also* optional — malformed data is provably `missing`, never a crash. The full round-trip, `to_nbt` on write and `from_nbt` on read, is what lets a scalar map hold real item stacks.
+Two optionals, two `exists` gates — both enforced by the compiler, not by discipline. `vault[key]` is the index-read form (equivalently `vault.get(key)`); it yields `Optional<String>` (the slot may be empty). `from_nbt` turns the stored NBT string back into an `Item`, and it is *also* optional — malformed data is provably `missing`, never a crash. The full round-trip, `to_nbt` on write and `from_nbt` on read, is what lets a scalar map hold real item stacks.
 
 </template>
 </MappedPair>

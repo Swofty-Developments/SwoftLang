@@ -1,4 +1,4 @@
-// Player-keyed maps: map<Player, V> alongside map<String|Integer, V>. Players
+// Player-keyed maps: Map<Player, V> alongside Map<String|Integer, V>. Players
 // serialize by uuid on the Java side; the compiler just types the key.
 
 storage {
@@ -7,7 +7,7 @@ storage {
 }
 
 // a persistent Player-keyed map of scalars survives restarts
-persistent wins: map<Player, Integer> = new_map()
+persistent wins: Map<Player, Integer> = new_map()
 
 command "pmap" {
     execute {
@@ -19,11 +19,11 @@ command "pmap" {
             send "tracked" to sender
         }
 
-        // index read yields optional<V>
+        // index read yields Optional<V>
         set mine to wins[sender] otherwise 0
         send "you have ${mine}" to sender
 
-        // 'keys of m' of a Player-keyed map is list<Player>
+        // 'keys of m' of a Player-keyed map is List<Player>
         loop keys of wins as p {
             send "player ${p.name}" to sender
         }

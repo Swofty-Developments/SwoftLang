@@ -1,6 +1,6 @@
 command "smite" {
     arguments {
-        victim: either<Player|Location>
+        victim: Either<Player|Location>
     }
     execute {
         if args.victim is not a Player {

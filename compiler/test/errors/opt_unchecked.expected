@@ -1,1 +1,1 @@
-opt_unchecked.sw:4:27: error: the send target is optional<Player> and may be missing
+opt_unchecked.sw:4:27: error: the send target is Optional<Player> and may be missing

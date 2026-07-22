@@ -236,7 +236,7 @@
   {
     "owner": "Player",
     "name": "active_effects",
-    "type": "list<String>",
+    "type": "List<String>",
     "writable": false
   },
   { "owner": "Location", "name": "x", "type": "Double", "writable": true },
@@ -273,7 +273,7 @@
   {
     "owner": "Item",
     "name": "lore",
-    "type": "list<String>",
+    "type": "List<String>",
     "writable": true
   },
   { "owner": "Item", "name": "tags", "type": "ItemTags", "writable": false },
@@ -327,19 +327,19 @@
   {
     "owner": "Mob",
     "name": "passengers",
-    "type": "list<Entity>",
+    "type": "List<Entity>",
     "writable": false
   },
   {
     "owner": "Mob",
     "name": "vehicle",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   {
     "owner": "Mob",
     "name": "shooter",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   { "owner": "Mob", "name": "alive", "type": "Boolean", "writable": false },
@@ -496,7 +496,7 @@
   {
     "owner": "Mob",
     "name": "active_effects",
-    "type": "list<String>",
+    "type": "List<String>",
     "writable": false
   },
   { "owner": "World", "name": "time", "type": "Integer", "writable": true },
@@ -691,19 +691,19 @@
   {
     "owner": "Entity",
     "name": "passengers",
-    "type": "list<Entity>",
+    "type": "List<Entity>",
     "writable": false
   },
   {
     "owner": "Entity",
     "name": "vehicle",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   {
     "owner": "Entity",
     "name": "shooter",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   {
@@ -881,7 +881,7 @@
   {
     "owner": "Entity",
     "name": "active_effects",
-    "type": "list<String>",
+    "type": "List<String>",
     "writable": false
   },
   { "owner": "Vec", "name": "x", "type": "Double", "writable": true },
@@ -910,7 +910,7 @@
   {
     "owner": "OfflinePlayer",
     "name": "player",
-    "type": "optional<Player>",
+    "type": "Optional<Player>",
     "writable": false
   },
   {
@@ -952,7 +952,7 @@
   {
     "owner": "event:PlayerChat",
     "name": "recipients",
-    "type": "list<Player>",
+    "type": "List<Player>",
     "writable": false
   },
   {
@@ -994,7 +994,7 @@
   {
     "owner": "event:PlayerUseItem",
     "name": "custom_id",
-    "type": "optional<String>",
+    "type": "Optional<String>",
     "writable": false
   },
   {
@@ -1018,7 +1018,7 @@
   {
     "owner": "event:MobDeath",
     "name": "killer",
-    "type": "optional<Player>",
+    "type": "Optional<Player>",
     "writable": false
   },
   {
@@ -1036,7 +1036,7 @@
   {
     "owner": "event:MobDamage",
     "name": "attacker",
-    "type": "optional<Player>",
+    "type": "Optional<Player>",
     "writable": false
   },
   {
@@ -1204,13 +1204,13 @@
   {
     "owner": "event:PlayerCatchFish",
     "name": "caught_item",
-    "type": "optional<Item>",
+    "type": "Optional<Item>",
     "writable": true
   },
   {
     "owner": "event:PlayerCatchFish",
     "name": "caught_mob",
-    "type": "optional<Mob>",
+    "type": "Optional<Mob>",
     "writable": false
   },
   {
@@ -1240,7 +1240,7 @@
   {
     "owner": "event:BlockDispense",
     "name": "item",
-    "type": "optional<Item>",
+    "type": "Optional<Item>",
     "writable": true
   },
   {
@@ -1270,13 +1270,13 @@
   {
     "owner": "event:EntityDamage",
     "name": "attacker",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   {
     "owner": "event:EntityDamage",
     "name": "source_entity",
-    "type": "optional<Entity>",
+    "type": "Optional<Entity>",
     "writable": false
   },
   {

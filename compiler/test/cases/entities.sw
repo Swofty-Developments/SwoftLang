@@ -56,7 +56,7 @@ function quiet_entity(e: Entity) {
     set e.velocity to velocity(0, 0, 0)
 }
 
-function describe(x: either<Mob|String>) {
+function describe(x: Either<Mob|String>) {
     if x is a Entity {
         // a Mob IS an Entity; narrowing keeps the Mob rows
         send "mob ${x.name} at ${x.location.x} hp ${x.health}" to all

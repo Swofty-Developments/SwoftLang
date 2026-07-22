@@ -651,7 +651,7 @@
     "types": {
       "patterns": [
         {
-          "begin": "\\b(optional|either|list|map)\\s*(<)",
+          "begin": "\\b(Optional|Either|List|Map)\\s*(<)",
           "beginCaptures": {
             "1": {
               "name": "support.type.constructor.swoftlang"
@@ -686,7 +686,7 @@
       "patterns": [
         {
           "name": "keyword.operator.word.swoftlang",
-          "match": "\\b(otherwise|contains|missing|either|exists|and|not|is|or)\\b"
+          "match": "\\b(otherwise|contains|missing|Either|exists|and|not|is|or)\\b"
         }
       ]
     },

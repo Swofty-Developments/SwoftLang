@@ -207,15 +207,15 @@ and the body is the same closure, with `run` and `stop` in scope.
 | `<obj>.tasks.<id> is not running` | `Boolean` — the negation |
 | `cancel <obj>.tasks.<id>` | stop it (safe if already finished) |
 | `stop <obj>.tasks.<id>` | same as `cancel` on a registry entry |
-| `<obj>.tasks.<id>` (as a value) | reads as `optional<Schedule>` |
+| `<obj>.tasks.<id>` (as a value) | reads as `Optional<Schedule>` |
 
-Reading an entry gives an **`optional<Schedule>`** — missing until something is bound —
+Reading an entry gives an **`Optional<Schedule>`** — missing until something is bound —
 so it composes with the [option operators](/guide/options):
 
 ```swoftlang
 Player {
     on_join {
-        set handle to player.tasks.welcome        // optional<Schedule>
+        set handle to player.tasks.welcome        // Optional<Schedule>
         if player.tasks.welcome exists broadcast "welcome is bound"
     }
 }

@@ -3,7 +3,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent stash: map<String> = new_map()
+persistent stash: Map<String> = new_map()
 
 command "stow" {
     execute {

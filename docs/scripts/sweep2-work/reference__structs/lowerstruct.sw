@@ -1,4 +1,4 @@
 struct guild {
     name: String
-    members: list<Player>
+    members: List<Player>
 }

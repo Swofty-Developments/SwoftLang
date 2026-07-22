@@ -35,7 +35,7 @@ is the victim and `attacker` is the source — the entry points for a combat sys
 | Binding | Type | Access | Meaning |
 |---|---|---|---|
 | `entity` | `Entity` | — | the victim taking the hit |
-| `attacker` | `optional<Entity>` | ro | the direct attacker, when there is one |
+| `attacker` | `Optional<Entity>` | ro | the direct attacker, when there is one |
 | `cancel event` | — | — | negate the hit outright |
 
 The hit surface reports *that* a hit happened and to whom, and lets you veto it or add
@@ -174,7 +174,7 @@ A combat system needs to remember things **between** hits and ticks — the last
 for the attack-cooldown curve, a knockback level, a cached enchant EPF, an exhaustion
 accumulator. All of it lives on the unified [`.tags`](./mobs#tags) namespace, the same one
 items and mobs use: `player.tags.<key>` and `mob.tags.<key>` read, write, and delete
-freeform per-entity values without declaring a field. A tag read is `optional<Any>`, so
+freeform per-entity values without declaring a field. A tag read is `Optional<Any>`, so
 narrow it with `if … exists` or give a fallback with `otherwise`:
 
 ```swoftlang
@@ -196,7 +196,7 @@ Entity {
 Reading a tag directly without a fallback is a compile error, exactly as elsewhere:
 
 ```
-w_tags.sw:3:30: error: the left operand of '+' is optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+w_tags.sw:3:30: error: the left operand of '+' is Optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
 
 ## Walkthrough: `vanilla-pvp.sw`

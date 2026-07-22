@@ -5,7 +5,7 @@
 command "leaderboard" {
     execute {
         // an Integer-keyed map: player id -> kill count. The literal infers
-        // map<Integer, Integer> from its integer keys.
+        // Map<Integer, Integer> from its integer keys.
         set kills to { 101: 12, 102: 30, 103: 7, 104: 21 }
 
         // record more kills with the 'set m at k to v' natural form. It takes
@@ -24,7 +24,7 @@ command "leaderboard" {
         }
 
         // top of the board without a full sort: max_by over the Integer keys,
-        // scoring each by its value. kills[id] is optional<Integer>.
+        // scoring each by its value. kills[id] is Optional<Integer>.
         set best to max_by(keys of kills, function(id) return kills[id] otherwise 0)
         send "leader is player ${best otherwise 0}" to sender
     }

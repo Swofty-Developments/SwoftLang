@@ -5,7 +5,7 @@ function find_target(name: String) {
     }
 }
 
-function describe(dest: either<Player|Location>) {
+function describe(dest: Either<Player|Location>) {
     if dest is a Player {
         return "a player"
     } else {
@@ -17,7 +17,7 @@ command "options" {
     description: "Showcase of option types, narrowing and otherwise chains"
 
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
 
     execute {
@@ -52,7 +52,7 @@ command "options" {
         set where to describe(location(0.5, 64.0, 0.5))
         send "spawn is ${where}"
 
-        // mixed-return function types as optional<Player>
+        // mixed-return function types as Optional<Player>
         set target to find_target("Herobrine")
         if target exists {
             send "target found"

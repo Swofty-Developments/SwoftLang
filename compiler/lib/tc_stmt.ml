@@ -1184,7 +1184,7 @@ and check_set_prop ctx bctx env pos target name value =
     match owner with
     | TAny -> ()
     | TEither ts ->
-      err ctx pos "cannot access property '%s' on either<%s>; narrow it first with 'is a'" name
+      err ctx pos "cannot access property '%s' on Either<%s>; narrow it first with 'is a'" name
         (String.concat "|" (List.map ty_to_string ts))
     | _ -> (
       match props_of_ty owner with

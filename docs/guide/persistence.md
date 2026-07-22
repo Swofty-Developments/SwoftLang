@@ -82,7 +82,7 @@ three things:
 Live handles never persist. A `Player` (or any `Entity`) is a runtime connection, not a
 value — declaring `persistent x: Player` is a compile error with the fix in the hint:
 persist the uuid `String` or a respawnable snapshot instead. The rule bites through
-collections too, so `list<Player>` and `map<String, Entity>` are rejected the same way.
+collections too, so `List<Player>` and `Map<String, Entity>` are rejected the same way.
 
 ## Keyed variables: `for Player`
 
@@ -141,15 +141,15 @@ scalars, the game values `Location`, `Vec`, and `Item`, and any `list`, `map`, o
 
 ```swoftlang
 persistent spawn: Location = location(0, 100, 0)
-persistent warps: map<String, Location> = new_map()
+persistent warps: Map<String, Location> = new_map()
 
 persistent home for Player: Location = location(0, 64, 0)
-persistent last_death for Player: optional<Location> = none
+persistent last_death for Player: Optional<Location> = none
 persistent knockback for Player: Vec = velocity(0, 0.4, 0)
 persistent starter for Player: Item = item("stick")
-persistent kit for Player: list<Item> = []
-persistent waypoints for Player: list<Location> = []
-persistent stash for Player: map<String, Item> = new_map()
+persistent kit for Player: List<Item> = []
+persistent waypoints for Player: List<Location> = []
+persistent stash for Player: Map<String, Item> = new_map()
 ```
 
 `Location`, `Vec`, and `Item` freeze to the backend as their NBT — coordinates, the
@@ -160,7 +160,7 @@ above starts empty and stays empty until someone dies).
 
 Map keys may be `String`, `Integer`, or `Player` (a `Player` key is stored by uuid), and
 map *values*, list elements, and the target of an `optional` must themselves be a
-persistable value type. So `map<String, Item>` is fine; `map<String, Player>` is the
+persistable value type. So `Map<String, Item>` is fine; `Map<String, Player>` is the
 live-handle error again.
 
 ### Save a home, save a kit
@@ -175,8 +175,8 @@ storage {
     flush: every 10 seconds
 }
 
-persistent home for Player: optional<Location> = none
-persistent kit for Player: list<Item> = []
+persistent home for Player: Optional<Location> = none
+persistent kit for Player: List<Item> = []
 
 command "sethome" {
     description: "Save your current spot as home"
@@ -239,11 +239,11 @@ against the declared default, and the same live-handle rule bites: a struct with
 struct Guild {
     name: String
     level: Integer = 1
-    bank: map<String, Integer>
-    home: optional<Location>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
-persistent guilds: map<String, Guild> = new_map()
+persistent guilds: Map<String, Guild> = new_map()
 ```
 
 Storing a struct persistently also makes any [`@EventReceiver`](/reference/structs#reactive)

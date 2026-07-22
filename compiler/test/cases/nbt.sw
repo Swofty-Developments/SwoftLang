@@ -1,4 +1,4 @@
-// Phase-9 NBT tag API: item.tags.<path...> get (optional<Any>, integrates with
+// Phase-9 NBT tag API: item.tags.<path...> get (Optional<Any>, integrates with
 // exists/otherwise), set (scalars, nested compounds, and 'to none' = delete).
 // Works on ANY Item value — registry items, custom_item(), held_item,
 // event.item — not just declared items.

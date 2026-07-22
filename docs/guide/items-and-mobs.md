@@ -98,7 +98,7 @@ it's been dropped, stored, or traded.
 ## Identity: `custom_id`
 
 Every declared item is tagged with its id, and the tag survives inventories, chests, and
-restarts. `custom_id(<item>)` reads it back as an `optional<String>` — `none` for vanilla
+restarts. `custom_id(<item>)` reads it back as an `Optional<String>` — `none` for vanilla
 items, so [Step 07](/guide/options) discipline applies:
 
 ```swoftlang
@@ -209,7 +209,7 @@ The pieces:
 - `ai` — `melee` (target, chase, attack), `passive` (wander), or `none` (statue).
 - `drops { }` — each roll is `item <id> chance <p> amount <n>`; ids can be your custom
   items or vanilla materials, checked at compile time.
-- Handlers bind `mob`, plus `killer` (an `optional<Player>` — narrowing required) in
+- Handlers bind `mob`, plus `killer` (an `Optional<Player>` — narrowing required) in
   `on_death` and `victim` in `on_attack`.
 
 A custom mob is an [entity](/reference/entities), so the shared entity properties and

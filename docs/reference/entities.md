@@ -28,9 +28,9 @@ set stand.glowing to true
 | `gravity` | `Boolean` | rw | whether gravity applies |
 | `on_fire` | `Boolean` | rw | burning visual + damage |
 | `silent` | `Boolean` | rw | mute the entity's sounds |
-| `passengers` | `list<Entity>` | ro | who is riding this entity |
-| `vehicle` | `optional<Entity>` | ro | what this entity is riding, if anything |
-| `shooter` | `optional<Entity>` | ro | the launcher, for projectiles; `none` otherwise |
+| `passengers` | `List<Entity>` | ro | who is riding this entity |
+| `vehicle` | `Optional<Entity>` | ro | what this entity is riding, if anything |
+| `shooter` | `Optional<Entity>` | ro | the launcher, for projectiles; `none` otherwise |
 | `alive` | `Boolean` | ro | still living |
 | `removed` | `Boolean` | ro | removed from its world |
 
@@ -122,7 +122,7 @@ impact surface as the [`EntityShoot`, `ProjectileCollideWithBlock`, and
 
 ## Querying the world
 
-`all_entities()` returns every entity in play as a `list<Entity>`; pass a type string to
+`all_entities()` returns every entity in play as a `List<Entity>`; pass a type string to
 filter to one kind:
 
 ```swoftlang
@@ -145,7 +145,7 @@ nameplate that reads differently to each viewer.
 | `viewable: false` (mob/npc/hologram decl key) | spawn **not** auto-viewable — nobody sees it until you `show` it |
 | `show <entity> to <player \| all>` | add the target(s) to the viewer set |
 | `hide <entity> from <player \| all>` | remove the target(s) from the viewer set |
-| `viewers of <entity>` | the current viewer set as a `list<Player>` |
+| `viewers of <entity>` | the current viewer set as a `List<Player>` |
 | `set name of <entity> to <string> for <player>` | that viewer's overhead name — per-viewer, `for` is required |
 
 `show` / `hide` and `set name of … for` work on **any** `Entity` value — a mob, a
@@ -166,7 +166,7 @@ mob Zombie {
     type: "ZOMBIE"
     viewable: false                          // spawns hidden — handed out per player
 
-    tags: { hits: map<Player, Integer> }      // typed per-entity state, keyed by player
+    tags: { hits: Map<Player, Integer> }      // typed per-entity state, keyed by player
 
     on_hit {
         if attacker exists {
@@ -200,19 +200,19 @@ keyed by `Player`, so `mob.tags.hits[attacker]` counts per attacker, and the
 `set name … for attacker` nameplate updates for that attacker alone.
 
 ::: tip Typed tags are per-viewer-friendly
-`tags { hits: map<Player, Integer> }` declares a **typed** tag store (unlike the freeform
+`tags { hits: Map<Player, Integer> }` declares a **typed** tag store (unlike the freeform
 `mob.tags.<name>` — see [Tags](./mobs#tags)). A key that has never been written reads as
-`optional<Integer>`, so `otherwise 0` (or an `if … exists` narrow) is required — using it
+`Optional<Integer>`, so `otherwise 0` (or an `if … exists` narrow) is required — using it
 bare is a compile error:
 
 ```
-e.sw:6:35: error: the left operand of '+' is optional<Integer> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+e.sw:6:35: error: the left operand of '+' is Optional<Integer> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
 :::
 
 ### Reading and revealing to many
 
-`viewers of` gives you the set back as a `list<Player>` — loop it, count it, or reveal an
+`viewers of` gives you the set back as a `List<Player>` — loop it, count it, or reveal an
 entity to an audience with `show … to all`:
 
 ```swoftlang
@@ -279,7 +279,7 @@ function becalm(e: Entity) {
 mob can be handled as an entity where it is one:
 
 ```swoftlang
-function inspect(x: either<Mob|String>) {
+function inspect(x: Either<Mob|String>) {
     if x is a Entity {
         // the typed Mob rows and the shared Entity rows both apply here
         send "mob ${x.name} (${x.type})" to all

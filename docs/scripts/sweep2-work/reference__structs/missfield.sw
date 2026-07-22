@@ -1,7 +1,7 @@
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
+    members: List<Player>
 }
 
 command "found" {

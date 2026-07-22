@@ -1,6 +1,6 @@
 struct Session {
     id: String
-    world: optional<World> = none
+    world: Optional<World> = none
 }
 
 persistent sess: Session = Session { id: "" }

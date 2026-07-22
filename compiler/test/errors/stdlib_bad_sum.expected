@@ -1,1 +1,1 @@
-'sum' expects a list of numbers (got list<String>)
+'sum' expects a list of numbers (got List<String>)

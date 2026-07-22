@@ -82,13 +82,13 @@ let rec ty_to_string = function
   | TCustomMob n -> n
   | TCustomItem n -> n
   | TStruct n -> n
-  | TList t -> "list<" ^ ty_to_string t ^ ">"
-  (* String-keyed maps print as map<V> (the back-compat spelling); an
+  | TList t -> "List<" ^ ty_to_string t ^ ">"
+  (* String-keyed maps print as Map<V> (the back-compat spelling); an
      Integer-keyed map prints its key type too (phase 11) *)
-  | TMap (TString, v) -> "map<" ^ ty_to_string v ^ ">"
-  | TMap (k, v) -> "map<" ^ ty_to_string k ^ ", " ^ ty_to_string v ^ ">"
-  | TOptional t -> "optional<" ^ ty_to_string t ^ ">"
-  | TEither ts -> "either<" ^ String.concat "|" (List.map ty_to_string ts) ^ ">"
+  | TMap (TString, v) -> "Map<" ^ ty_to_string v ^ ">"
+  | TMap (k, v) -> "Map<" ^ ty_to_string k ^ ", " ^ ty_to_string v ^ ">"
+  | TOptional t -> "Optional<" ^ ty_to_string t ^ ">"
+  | TEither ts -> "Either<" ^ String.concat "|" (List.map ty_to_string ts) ^ ">"
   | TFunction { fn_async; fn_params; _ } ->
     let n = List.length fn_params in
     Printf.sprintf "%sfunction(%d param%s)"
@@ -2543,7 +2543,7 @@ let control_keywords =
     (* W-pvp combat verbs *)
     "damage"; "knock"; "apply"; "shoot";
     (* boolean / logical / relational operators (word form) *)
-    "is"; "not"; "and"; "or"; "either"; "contains"; "as"; "to"; "in"; "of";
+    "is"; "not"; "and"; "or"; "Either"; "contains"; "as"; "to"; "in"; "of";
     "all"; "players"; "true"; "false";
   ]
 
@@ -2580,7 +2580,7 @@ let type_names =
       TItem; TWorld; TMob; TEntity; TDisplay; TVec; TBlock; TSchedule; TSong;
       TServer; TSkin; TCanvas;
     ]
-  @ [ "list"; "map"; "optional"; "either" ]
+  @ [ "List"; "Map"; "Optional"; "Either" ]
 
 (* every inline handler name across the four declaration kinds plus the
    block_handler / placement_rule callbacks, deduped — the on_* surface. *)

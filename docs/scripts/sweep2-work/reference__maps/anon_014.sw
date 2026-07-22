@@ -3,7 +3,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent leaderboard: map<Integer> = new_map()
+persistent leaderboard: Map<Integer> = new_map()
 
 command "score" {
     arguments { amount: Integer }

@@ -7,7 +7,7 @@ command "natural" {
         // --- maps ---
         set scores to { "alice": 10, "bob": 25 }
 
-        // write (existing sugar) + index read (existing sugar, optional<V>)
+        // write (existing sugar) + index read (existing sugar, Optional<V>)
         set scores at "carol" to 7
         set a to scores["alice"] otherwise 0
         send "alice ${a}" to sender
@@ -17,7 +17,7 @@ command "natural" {
             send "has bob" to sender
         }
 
-        // 'size of m', 'keys of m' (list<K>), 'values of m' (list<V>)
+        // 'size of m', 'keys of m' (List<K>), 'values of m' (List<V>)
         send "size ${size of scores}" to sender
         loop keys of scores as k {
             send "key ${k}" to sender
@@ -47,7 +47,7 @@ command "natural" {
         set rev to reversed nums
         send "sizes ${size of asc} ${size of ranked} ${size of rev}" to sender
 
-        // 'first of l' / 'last of l' -> optional<T>
+        // 'first of l' / 'last of l' -> Optional<T>
         set hd to first of nums otherwise 0
         set tl to last of nums otherwise 0
         send "hd ${hd} tl ${tl}" to sender

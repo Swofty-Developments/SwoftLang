@@ -76,7 +76,7 @@ function becalm(e: Entity) {
     set e.velocity to velocity(0.0, 0.0, 0.0)
 }
 
-function inspect(x: either<Mob|String>) {
+function inspect(x: Either<Mob|String>) {
     if x is a Entity {
         // narrowing keeps the typed Mob rows while Entity rows still apply
         send "mob ${x.name} (${x.type}) hp ${x.health}" to all

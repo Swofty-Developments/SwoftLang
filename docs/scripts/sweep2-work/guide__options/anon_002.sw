@@ -1,6 +1,6 @@
 command "greet" {
     arguments {
-        who: optional<Player>
+        who: Optional<Player>
     }
     execute {
         if args.who is missing {

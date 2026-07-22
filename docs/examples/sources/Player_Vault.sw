@@ -8,10 +8,10 @@ storage {
 
 // The authoritative copy of every occupied vault slot, keyed
 // "<uuid>:<vault>:<slot>". Skript's {vault::%player%::%n%::%slot%} list is a
-// runtime map; a persistent map<String> is the same idea — and because its
+// runtime map; a persistent Map<String> is the same idea — and because its
 // values are the item stacks serialized with to_nbt, the whole store is
 // scalar and persists to the backend, exactly like {vault::*} did.
-persistent vault: map<String> = new_map()
+persistent vault: Map<String> = new_map()
 
 function vault_key(owner: String, number: Integer, slot: Integer) {
     return "${owner}:${number}:${slot}"
@@ -22,7 +22,7 @@ command "pv" {
 
     arguments {
         number: Integer
-        target: optional<Player>
+        target: Optional<Player>
     }
 
     execute {

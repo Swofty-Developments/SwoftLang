@@ -196,12 +196,12 @@ item CryptKey {
 ### Reading and writing tags at runtime
 
 On **any** `Item` value, `item.tags.<path>` reaches into that tree. Paths nest
-(`item.tags.meta.tier`), reads return an `optional<Any>`, writes set the tag, and writing
+(`item.tags.meta.tier`), reads return an `Optional<Any>`, writes set the tag, and writing
 `none` deletes it.
 
 | Form | Meaning |
 |---|---|
-| `item.tags.uses` | read — `optional<Any>`, `none` when the tag is absent |
+| `item.tags.uses` | read — `Optional<Any>`, `none` when the tag is absent |
 | `item.tags.meta.tier` | read a nested path |
 | `set item.tags.uses to 5` | write a scalar |
 | `set item.tags.uses to none` | delete the tag |
@@ -225,7 +225,7 @@ item K { material: "STICK" tags: { uses: 3 } }
 ```
 
 ```txt
-tagopt.sw:4:26: error: the left operand of '+' is optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+tagopt.sw:4:26: error: the left operand of '+' is Optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
         set n to it.tags.uses + 1
                          ^
 ```
@@ -300,11 +300,11 @@ ocf.sw:3:20: error: Unknown on_click filter 'middle'; valid filters: left, right
 | `give item "id" to <player> [amount N]` | statement — puts N copies (default the item's `amount:`) in the inventory |
 | `custom_item("id")` | `Item` — a fresh stack of the declared item |
 | `item("MATERIAL")` / `item("MATERIAL", n)` | `Item` — a plain vanilla stack |
-| `custom_id(<item>)` | `optional<String>` — the declared id, or `none` for vanilla stacks |
+| `custom_id(<item>)` | `Optional<String>` — the declared id, or `none` for vanilla stacks |
 | `<item>.material` | `String` read/write — the material id |
 | `<item>.name` | `String` read/write |
 | `<item>.amount` | `Integer` read/write |
-| `<item>.lore` | `list<String>` read/write |
+| `<item>.lore` | `List<String>` read/write |
 | `<item>.tags.<path>` | the NBT namespace above |
 
 `give item` with a literal id is resolved at compile time — a typo can't reach the
@@ -350,7 +350,7 @@ Item {
 ```
 
 `item` is the used `Item`, `player` is the `Player` who used it, and `custom_id(item)`
-reads the declaration id as an `optional<String>`; the method is cancellable.
+reads the declaration id as an `Optional<String>`; the method is cancellable.
 
 ::: tip Build a gameplay system
 Stats, cooldowns, and named abilities are things you *build* on top of this — tags for

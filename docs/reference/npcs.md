@@ -86,7 +86,7 @@ By default an NPC is spawned for everyone (`viewable: true`). Set `viewable: fal
 declare it hidden — the fake player exists but no one sees it until a `show` statement
 targets a player or `all`. `show npc "name" to` and `hide npc "name" from` route through
 the same [Viewable](./entities#per-viewer) machinery as entities, taking a single `Player`,
-a `list<Player>`, or `all`:
+a `List<Player>`, or `all`:
 
 ```swoftlang
 npc "sentry" {
@@ -104,7 +104,7 @@ command "reveal" {
 }
 ```
 
-`viewers of npc "name"` reads the current audience as a `list<Player>` — the players the
+`viewers of npc "name"` reads the current audience as a `List<Player>` — the players the
 fake player is spawned for right now — so you can iterate it directly:
 
 ```swoftlang

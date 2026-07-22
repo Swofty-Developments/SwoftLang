@@ -9,7 +9,7 @@
     "title", "actionbar", "fill", "clone", "replace", "despawn", "destroy",
     "mount", "dismount", "dispense", "draw", "repeat", "skin", "name",
     "line", "entry", "blank", "belowname", "fade", "damage", "knock",
-    "apply", "shoot", "is", "not", "and", "or", "either", "contains", "as",
+    "apply", "shoot", "is", "not", "and", "or", "Either", "contains", "as",
     "to", "in", "of", "all", "players", "true", "false"
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
@@ -81,8 +81,8 @@
   "types": [
     "String", "Integer", "Double", "Boolean", "Player", "OfflinePlayer",
     "Location", "Item", "World", "Mob", "Entity", "Display", "Vec", "Block",
-    "Schedule", "Song", "Server", "Skin", "Canvas", "list", "map",
-    "optional", "either"
+    "Schedule", "Song", "Server", "Skin", "Canvas", "List", "Map",
+    "Optional", "Either"
   ],
   "namespaces": [ "tags", "tasks", "attributes" ],
   "annotations": [ "@EventReceiver" ],
@@ -113,7 +113,7 @@
       { "name": "alive_ticks", "type": "Integer", "writable": false },
       { "name": "tags", "type": "EntityTags", "writable": false },
       { "name": "tasks", "type": "Tasks", "writable": false },
-      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "player", "type": "Optional<Player>", "writable": false },
       { "name": "first_seen", "type": "String", "writable": false },
       { "name": "last_seen", "type": "String", "writable": false },
       { "name": "has_played_before", "type": "Boolean", "writable": false },
@@ -157,13 +157,13 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "OfflinePlayer": [
       { "name": "name", "type": "String", "writable": false },
       { "name": "uuid", "type": "String", "writable": false },
       { "name": "online", "type": "Boolean", "writable": false },
-      { "name": "player", "type": "optional<Player>", "writable": false },
+      { "name": "player", "type": "Optional<Player>", "writable": false },
       { "name": "first_seen", "type": "String", "writable": false },
       { "name": "last_seen", "type": "String", "writable": false },
       { "name": "has_played_before", "type": "Boolean", "writable": false }
@@ -186,9 +186,9 @@
       { "name": "silent", "type": "Boolean", "writable": true },
       { "name": "pose", "type": "String", "writable": true },
       { "name": "sneaking", "type": "Boolean", "writable": true },
-      { "name": "passengers", "type": "list<Entity>", "writable": false },
-      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
-      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "passengers", "type": "List<Entity>", "writable": false },
+      { "name": "vehicle", "type": "Optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "Optional<Entity>", "writable": false },
       { "name": "alive", "type": "Boolean", "writable": false },
       { "name": "removed", "type": "Boolean", "writable": false },
       { "name": "on_ground", "type": "Boolean", "writable": false },
@@ -236,7 +236,7 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "Entity": [
       { "name": "type", "type": "String", "writable": false },
@@ -252,9 +252,9 @@
       { "name": "silent", "type": "Boolean", "writable": true },
       { "name": "pose", "type": "String", "writable": true },
       { "name": "sneaking", "type": "Boolean", "writable": true },
-      { "name": "passengers", "type": "list<Entity>", "writable": false },
-      { "name": "vehicle", "type": "optional<Entity>", "writable": false },
-      { "name": "shooter", "type": "optional<Entity>", "writable": false },
+      { "name": "passengers", "type": "List<Entity>", "writable": false },
+      { "name": "vehicle", "type": "Optional<Entity>", "writable": false },
+      { "name": "shooter", "type": "Optional<Entity>", "writable": false },
       { "name": "alive", "type": "Boolean", "writable": false },
       { "name": "removed", "type": "Boolean", "writable": false },
       { "name": "on_ground", "type": "Boolean", "writable": false },
@@ -303,19 +303,19 @@
       { "name": "invulnerable_ticks", "type": "Integer", "writable": false },
       { "name": "fall_distance", "type": "Double", "writable": false },
       { "name": "is_climbing", "type": "Boolean", "writable": false },
-      { "name": "active_effects", "type": "list<String>", "writable": false }
+      { "name": "active_effects", "type": "List<String>", "writable": false }
     ],
     "Item": [
       { "name": "material", "type": "String", "writable": true },
       { "name": "amount", "type": "Integer", "writable": true },
       { "name": "name", "type": "String", "writable": true },
-      { "name": "lore", "type": "list<String>", "writable": true },
+      { "name": "lore", "type": "List<String>", "writable": true },
       { "name": "tags", "type": "ItemTags", "writable": false }
     ],
     "Block": [
       { "name": "id", "type": "String", "writable": false },
-      { "name": "properties", "type": "map<String>", "writable": false },
-      { "name": "nbt", "type": "optional<String>", "writable": false },
+      { "name": "properties", "type": "Map<String>", "writable": false },
+      { "name": "nbt", "type": "Optional<String>", "writable": false },
       { "name": "tasks", "type": "Tasks", "writable": false }
     ],
     "Location": [

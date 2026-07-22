@@ -5,7 +5,7 @@ command "teleport" {                          // aliases share one body
 
     arguments {
         player: Player = sender               // one-token default
-        target: either<Player|Location>       // union type, no default
+        target: Either<Player|Location>       // union type, no default
     }
 
     execute {

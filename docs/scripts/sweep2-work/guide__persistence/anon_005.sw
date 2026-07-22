@@ -3,8 +3,8 @@ storage {
     flush: every 10 seconds
 }
 
-persistent home for Player: optional<Location> = none
-persistent kit for Player: list<Item> = []
+persistent home for Player: Optional<Location> = none
+persistent kit for Player: List<Item> = []
 
 command "sethome" {
     description: "Save your current spot as home"

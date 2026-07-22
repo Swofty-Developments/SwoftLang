@@ -7,7 +7,7 @@ struct Duel {
     b { on_chat { cancel event  broadcast "<gray>[duel] ${b.name}: ${message}" } }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()
 
 Player {
     on_chat {

@@ -13,9 +13,9 @@ this page builds up to it with a guild and a duel.
 struct Guild {
     name: String
     level: Integer = 1                 // has a default → optional at construction
-    members: list<Player>
-    bank: map<String, Integer>
-    home: optional<Location>
+    members: List<Player>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 ```
 
@@ -33,7 +33,7 @@ A lowercase name is rejected the same way every type name is:
 ```swoftlang
 struct guild {      // [!code error]
     name: String
-    members: list<Player>
+    members: List<Player>
 }
 ```
 
@@ -53,9 +53,9 @@ check for later. Fields may appear in any order.
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
-    bank: map<String, Integer>
-    home: optional<Location>
+    members: List<Player>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
 command "found" {
@@ -82,7 +82,7 @@ required. Leave one out and the checker names exactly which are missing:
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
+    members: List<Player>
 }
 
 command "found" {
@@ -111,8 +111,8 @@ types, the natural collection and optional operations compose straight through t
 struct Guild {
     name: String
     level: Integer = 1
-    bank: map<String, Integer>
-    home: optional<Location>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
 command "guild-admin" {
@@ -182,9 +182,9 @@ of those, and nested structs that are themselves all-serializable.
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
-    bank: map<String, Integer>
-    home: optional<Location>
+    members: List<Player>
+    bank: Map<String, Integer>
+    home: Optional<Location>
 }
 
 storage {
@@ -192,7 +192,7 @@ storage {
     flush: every 10 seconds
 }
 
-persistent guilds: map<String, Guild> = new_map()
+persistent guilds: Map<String, Guild> = new_map()
 
 command "found" {
     execute {
@@ -225,12 +225,12 @@ struct Party {
     size: Integer = 1
 }
 
-persistent parties: map<String, Party> = new_map()
+persistent parties: Map<String, Party> = new_map()
 ```
 
 ```txt
 persbad.sw:6:1: error: persistent 'parties' cannot store struct 'Party': field 'boss' has non-serializable type Mob
-persistent parties: map<String, Party> = new_map()
+persistent parties: Map<String, Party> = new_map()
 ^
 ```
 
@@ -249,7 +249,7 @@ struct Duel {
     @EventReceiver a: Player
     @EventReceiver b: Player
     arena: Location
-    score: map<Player, Integer>
+    score: Map<Player, Integer>
 
     a {                          // the field name opens its handler block
         on_death {               // Player's vocabulary, because a : Player
@@ -312,13 +312,13 @@ struct Duel {
     @EventReceiver a: Player
     @EventReceiver b: Player
     arena: Location
-    score: map<Player, Integer>
+    score: Map<Player, Integer>
 
     a { on_death { set score at b to (score[b] otherwise 0) + 1  teleport a to arena } }
     b { on_death { set score at a to (score[a] otherwise 0) + 1  teleport b to arena } }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()
 
 command "duel" {
     execute {
@@ -369,7 +369,7 @@ struct Duel {
     b { on_chat { cancel event  broadcast "<gray>[duel] ${b.name}: ${message}" } }
 }
 
-persistent duels: map<String, Duel> = new_map()
+persistent duels: Map<String, Duel> = new_map()
 
 Player {
     on_chat {

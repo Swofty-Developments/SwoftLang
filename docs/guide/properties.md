@@ -190,7 +190,7 @@ actually move someone using a snapshot: `set player.location to spot` (or
 
 ## World properties
 
-`world(name)` looks a world up (it's an `optional<World>` —
+`world(name)` looks a world up (it's an `Optional<World>` —
 [Step 07](/guide/options) applies), and worlds expose time control:
 
 ```swoftlang

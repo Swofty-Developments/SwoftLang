@@ -2,7 +2,7 @@ mob Zombie {
     type: "ZOMBIE"
     viewable: false                          // spawns hidden — handed out per player
 
-    tags: { hits: map<Player, Integer> }      // typed per-entity state, keyed by player
+    tags: { hits: Map<Player, Integer> }      // typed per-entity state, keyed by player
 
     on_hit {
         if attacker exists {

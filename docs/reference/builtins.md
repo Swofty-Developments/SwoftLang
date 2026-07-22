@@ -34,13 +34,13 @@ arguments.
 | [`in_front_of(player, distance)`](#in-front-of) | `Location` | `distance` blocks ahead of the eye line |
 | [`item(material)`](#item) | `Item` | |
 | [`item(material, amount)`](#item) | `Item` | amount clamped 1..99 |
-| [`player(name)`](#player) | `optional<Player>` | **optional** — narrow before use |
-| [`all_players()`](#all-players) | `list<Player>` | |
-| [`world(name)`](#world) | `optional<World>` | **optional** — narrow before use |
+| [`player(name)`](#player) | `Optional<Player>` | **optional** — narrow before use |
+| [`all_players()`](#all-players) | `List<Player>` | |
+| [`world(name)`](#world) | `Optional<World>` | **optional** — narrow before use |
 | [`custom_item(id)`](#custom-item) | `Item` | declared [custom item](./items) |
-| [`custom_id(item)`](#custom-id) | `optional<String>` | `none` for vanilla stacks |
-| [`all_mobs()`](#all-mobs) | `list<Mob>` | every live [custom mob](./mobs) |
-| [`all_mobs(id)`](#all-mobs) | `list<Mob>` | one declaration's instances |
+| [`custom_id(item)`](#custom-id) | `Optional<String>` | `none` for vanilla stacks |
+| [`all_mobs()`](#all-mobs) | `List<Mob>` | every live [custom mob](./mobs) |
+| [`all_mobs(id)`](#all-mobs) | `List<Mob>` | one declaration's instances |
 | [`spawn_text_display(text, at)`](#spawn-displays) | `Display` | [displays](./displays) |
 | [`spawn_item_display(material, at)`](#spawn-displays) | `Display` | |
 | [`spawn_block_display(block, at)`](#spawn-displays) | `Display` | |
@@ -48,37 +48,37 @@ arguments.
 | [`polar_loader(dir)`](#world-loaders) | `WorldLoader` | |
 | [`polar_storage_loader(backend)`](#world-loaders) | `WorldLoader` | special form — backend config syntax |
 | [`world_exists(name, loader)`](#world-exists-all-worlds) | `Boolean` | |
-| [`all_worlds(loader)`](#world-exists-all-worlds) | `list<String>` | |
+| [`all_worlds(loader)`](#world-exists-all-worlds) | `List<String>` | |
 | [`block_at(at)`](#block-at) | `String` | block key at a location |
 | [`song(file)`](#song) | `Song` | [NBS metadata](./songs) |
 | [`tps_string()`](#tps) | `String` | pre-colored TPS |
 | [`average_tps_string()`](#tps) | `String` | 5-minute figure |
 | [`tps_at(seconds_ago)`](#tps) | `Double` | ring-buffer history |
 | [`skin(texture, signature)`](#skin) | `Skin` | |
-| [`fetch_skin(username)`](#fetch-skin) | `optional<Skin>` | **async-only** — Mojang API |
+| [`fetch_skin(username)`](#fetch-skin) | `Optional<Skin>` | **async-only** — Mojang API |
 | [`map_canvas()`](#map-canvas) | `Canvas` | 128×128 [drawing surface](./maps-toasts-skins-tps#maps) |
 | [`has_permission(player, perm)`](#has-permission) | `Boolean` | |
 | [`random_float(min, max)`](#random-draws) | `Double` | |
 | [`random_chance(p)`](#random-draws) | `Boolean` | `true` with probability `p` (0..1) |
 | [`random_bool()`](#random-draws) | `Boolean` | fair coin |
-| [`random_in(list)`](#random-draws) | `optional<T>` | random element; `none` when empty |
-| [`shuffle(list)`](#random-draws) | `list<T>` | a new shuffled list |
-| [`sort(list)`](#sorting) | `list<T>` | natural ascending (numbers or strings) |
-| [`reverse(list)`](#sorting) | `list<T>` | reversed copy |
-| [`sort_by(list, key)`](#sorting) | `list<T>` | by a key lambda, ascending |
-| [`sort_by_desc(list, key)`](#sorting) | `list<T>` | by a key lambda, descending |
-| [`min_by(list, key)`](#sorting) | `optional<T>` | element with the smallest key |
-| [`max_by(list, key)`](#sorting) | `optional<T>` | element with the largest key |
-| [`sort_by_key(map)`](#sorting-maps) | `map<K, V>` | new map, ordered by key ascending |
-| [`sort_by_key_desc(map)`](#sorting-maps) | `map<K, V>` | ordered by key descending |
-| [`sort_by_value(map)`](#sorting-maps) | `map<K, V>` | ordered by value ascending |
-| [`sort_by_value_desc(map)`](#sorting-maps) | `map<K, V>` | ordered by value descending |
-| [`sort_map_by(map, key)`](#sorting-maps) | `map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
-| [`sort_map_by_desc(map, key)`](#sorting-maps) | `map<K, V>` | same, descending |
+| [`random_in(list)`](#random-draws) | `Optional<T>` | random element; `none` when empty |
+| [`shuffle(list)`](#random-draws) | `List<T>` | a new shuffled list |
+| [`sort(list)`](#sorting) | `List<T>` | natural ascending (numbers or strings) |
+| [`reverse(list)`](#sorting) | `List<T>` | reversed copy |
+| [`sort_by(list, key)`](#sorting) | `List<T>` | by a key lambda, ascending |
+| [`sort_by_desc(list, key)`](#sorting) | `List<T>` | by a key lambda, descending |
+| [`min_by(list, key)`](#sorting) | `Optional<T>` | element with the smallest key |
+| [`max_by(list, key)`](#sorting) | `Optional<T>` | element with the largest key |
+| [`sort_by_key(map)`](#sorting-maps) | `Map<K, V>` | new map, ordered by key ascending |
+| [`sort_by_key_desc(map)`](#sorting-maps) | `Map<K, V>` | ordered by key descending |
+| [`sort_by_value(map)`](#sorting-maps) | `Map<K, V>` | ordered by value ascending |
+| [`sort_by_value_desc(map)`](#sorting-maps) | `Map<K, V>` | ordered by value descending |
+| [`sort_map_by(map, key)`](#sorting-maps) | `Map<K, V>` | ordered by a `key(k, v)` lambda, ascending |
+| [`sort_map_by_desc(map, key)`](#sorting-maps) | `Map<K, V>` | same, descending |
 | [`random_int(min, max)`](#random-aliases) | `Integer` | alias of `random` |
 | [`random_double(min, max)`](#random-aliases) | `Double` | alias of `random_float` |
 | [`chance(p)`](#random-aliases) | `Boolean` | alias of `random_chance` |
-| [`random_element(list)`](#random-aliases) | `optional<T>` | alias of `random_in` |
+| [`random_element(list)`](#random-aliases) | `Optional<T>` | alias of `random_in` |
 | [`random_uuid()`](#random-aliases) | `String` | fresh UUID string |
 | [`random_seed(n)`](#random-aliases) | — | seed the RNG (reproducible draws) |
 | [`mod(a, b)`](#extended-math) | **↑num** | remainder |
@@ -106,7 +106,7 @@ arguments.
 | [`legacy_to_mini(s)`](#color-codes) | `String` | `&`-codes → MiniMessage tags |
 | [`gradient(s, from, to)`](#color-codes) | `String` | hex gradient across `s` |
 | [`rainbow(s)`](#color-codes) | `String` | rainbow across `s` |
-| [`parse(s, Type)`](#string-helpers) | `optional<T>` | **optional** — `none` if unparseable |
+| [`parse(s, Type)`](#string-helpers) | `Optional<T>` | **optional** — `none` if unparseable |
 | [`matches(s, regex)`](#string-helpers) | `Boolean` | full-string regex match |
 | [`stripped(s)`](#string-helpers) | `String` | strip `&`-codes |
 | [`formatted(s)`](#string-helpers) | `String` | render `&`-codes to MiniMessage |
@@ -116,8 +116,8 @@ arguments.
 | [`above(loc, n)`](#above-below) | `Location` | shift +Y by `n` |
 | [`below(loc, n)`](#above-below) | `Location` | shift −Y by `n` |
 | [`is_within(loc, c1, c2)`](#is-within) | `Boolean` | inside the `c1`..`c2` box |
-| [`blocks_in_radius(center, r)`](#in-radius) | `list<Location>` | block cells in a sphere |
-| [`players_in_radius(center, r)`](#in-radius) | `list<Player>` | players in a sphere |
+| [`blocks_in_radius(center, r)`](#in-radius) | `List<Location>` | block cells in a sphere |
+| [`players_in_radius(center, r)`](#in-radius) | `List<Player>` | players in a sphere |
 | [`vec(x, y, z)`](#vec) | `Vec` | a velocity/direction vector |
 | [`location_of(entity)`](#location-of) | `Location` | any live entity's position |
 | [`is_running(schedule)`](#is-running) | `Boolean` | live check by handle or name |
@@ -268,7 +268,7 @@ command "shout" {
 
 ### length {#length}
 
-`length(x: String | list<T>) : Integer`
+`length(x: String | List<T>) : Integer`
 
 Character count for strings, element count for lists.
 
@@ -333,7 +333,7 @@ command "pct" {
 
 ### parse, matches, stripped, formatted, type_of {#string-helpers}
 
-`parse(s: String, Type) : optional<T>` · `matches(s: String, regex: String) : Boolean` ·
+`parse(s: String, Type) : Optional<T>` · `matches(s: String, regex: String) : Boolean` ·
 `stripped(s: String) : String` · `formatted(s: String) : String` ·
 `type_of(x) : String`
 
@@ -484,7 +484,7 @@ command "blank-map" {
 
 ### player {#player}
 
-`player(name: String) : optional<Player>`
+`player(name: String) : Optional<Player>`
 
 The online player with that exact username, or `none`. The typechecker will not let the
 result flow anywhere a `Player` is required until you narrow it:
@@ -509,12 +509,12 @@ command "poke" {
 Skipping the check is a compile error:
 
 ```
-e_optional.sw:4:22: error: the send target is optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+e_optional.sw:4:22: error: the send target is Optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
 
 ### all_players {#all-players}
 
-`all_players() : list<Player>`
+`all_players() : List<Player>`
 
 Every online player. `loop all players as p` is sugar for
 `loop all_players() as p`, and `send ... to all_players()` behaves like
@@ -533,7 +533,7 @@ command "who" {
 
 ### world {#world}
 
-`world(name: String) : optional<World>`
+`world(name: String) : Optional<World>`
 
 Looks the name up in the engine's instance registry — populated by the host server
 and by [`load world` / `create world`](./worlds). `none` if unknown.
@@ -576,7 +576,7 @@ command "cookie" {
 
 ### custom_id {#custom-id}
 
-`custom_id(item: Item) : optional<String>`
+`custom_id(item: Item) : Optional<String>`
 
 The declaration id riding the stack, or `none` for vanilla items — the standard way
 to recognize your items in events:
@@ -599,7 +599,7 @@ item CookieOfTruth {
 
 ### all_mobs {#all-mobs}
 
-`all_mobs() : list<Mob>` · `all_mobs(id: String) : list<Mob>`
+`all_mobs() : List<Mob>` · `all_mobs(id: String) : List<Mob>`
 
 Every live [custom mob](./mobs), or just one declaration's instances. Literal ids
 must name a declaration.
@@ -665,7 +665,7 @@ command "loaders" {
 ### world_exists, all_worlds {#world-exists-all-worlds}
 
 `world_exists(name: String, loader: WorldLoader) : Boolean`
-`all_worlds(loader: WorldLoader) : list<String>`
+`all_worlds(loader: WorldLoader) : List<String>`
 
 Storage-level queries — they see saved worlds whether or not they're loaded.
 
@@ -765,8 +765,8 @@ command "inzone" {
 
 ### blocks_in_radius, players_in_radius {#in-radius}
 
-`blocks_in_radius(center: Location, r: Number) : list<Location>` ·
-`players_in_radius(center: Location, r: Number) : list<Player>`
+`blocks_in_radius(center: Location, r: Number) : List<Location>` ·
+`players_in_radius(center: Location, r: Number) : List<Player>`
 
 Sample a sphere of radius `r` around `center`: every block cell's location, or every
 online player inside it. Pair them with `loop` for area effects.
@@ -881,10 +881,10 @@ command "modcheck" {
 
 `random(min, max)` (above) draws inclusive integers. These add the other draws — all
 backed by `ThreadLocalRandom` at runtime. `random_in` and `shuffle` take a list and
-follow its element type; `random_in` is `optional<T>` because the list may be empty.
+follow its element type; `random_in` is `Optional<T>` because the list may be empty.
 
 `random_float(min, max) : Double` · `random_chance(p) : Boolean` ·
-`random_bool() : Boolean` · `random_in(list) : optional<T>` · `shuffle(list) : list<T>`
+`random_bool() : Boolean` · `random_in(list) : Optional<T>` · `shuffle(list) : List<T>`
 
 ```swoftlang
 command "loot" {
@@ -919,7 +919,7 @@ Same draws under the names you may reach for first. `random_int` / `random_doubl
 `random_seed(n)` seeds the generator so a run's draws are reproducible.
 
 `random_int(min, max) : Integer` · `random_double(min, max) : Double` ·
-`chance(p) : Boolean` · `random_element(list) : optional<T>` · `random_uuid() : String` ·
+`chance(p) : Boolean` · `random_element(list) : Optional<T>` · `random_uuid() : String` ·
 `random_seed(n)`
 
 ```swoftlang
@@ -943,11 +943,11 @@ command "seeded" {
 Non-mutating sorts over lists: each returns a **new** list, leaving the argument
 untouched. `sort` and `reverse` take just the list; the `_by` forms take a key lambda
 that must return a `Number` or `String`. `min_by` / `max_by` return the *element* with
-the extreme key, as an `optional<T>` (`none` for an empty list).
+the extreme key, as an `Optional<T>` (`none` for an empty list).
 
-`sort(list) : list<T>` · `reverse(list) : list<T>` ·
-`sort_by(list, key) : list<T>` · `sort_by_desc(list, key) : list<T>` ·
-`min_by(list, key) : optional<T>` · `max_by(list, key) : optional<T>`
+`sort(list) : List<T>` · `reverse(list) : List<T>` ·
+`sort_by(list, key) : List<T>` · `sort_by_desc(list, key) : List<T>` ·
+`min_by(list, key) : Optional<T>` · `max_by(list, key) : Optional<T>`
 
 ```swoftlang
 command "leaderboard" {
@@ -981,7 +981,7 @@ different `loop` order. Sort by key, by value, or by a `key(k, v)` lambda:
 
 `sort_by_key(map)` · `sort_by_key_desc(map)` · `sort_by_value(map)` ·
 `sort_by_value_desc(map)` · `sort_map_by(map, key)` · `sort_map_by_desc(map, key)` —
-each returns `map<K, V>`
+each returns `Map<K, V>`
 
 ```swoftlang
 command "kills" {
@@ -1052,7 +1052,7 @@ Click handlers run on the tick thread. To prompt from a GUI, wrap the call in an
 
 ### fetch_skin {#fetch-skin}
 
-`fetch_skin(username: String) : optional<Skin>` — **async-only**
+`fetch_skin(username: String) : Optional<Skin>` — **async-only**
 
 A live Mojang API lookup on the calling virtual thread. `none` when the account
 doesn't exist (or the API is unreachable) — narrow before use, like any optional.

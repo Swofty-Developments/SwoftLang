@@ -1,4 +1,4 @@
-function describe(dest: either<Player|Location>) {
+function describe(dest: Either<Player|Location>) {
     if dest is a Player {
         return "the player ${dest.name}"
     } else {

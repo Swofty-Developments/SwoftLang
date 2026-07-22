@@ -6,9 +6,9 @@ struct Point {
 struct Guild {
     name: String
     level: Integer = 1
-    members: list<Player>
-    bank: map<String, Integer>
-    home: optional<Location>
+    members: List<Player>
+    bank: Map<String, Integer>
+    home: Optional<Location>
     hq: Point
 }
 

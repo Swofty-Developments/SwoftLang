@@ -13,7 +13,7 @@ mob Guardian {
     }
 
     on_hit {
-        // attacker is optional<Player>
+        // attacker is Optional<Player>
         if attacker exists {
             send "You struck the ${mob.custom_id}!" to attacker
         }
@@ -35,7 +35,7 @@ command "guard" {
             send "rider ${rider.type}" to sender
         }
 
-        // freeform entity/mob tags: get(optional<Any>) / set / delete
+        // freeform entity/mob tags: get(Optional<Any>) / set / delete
         set g.tags.level to 5
         set lvl to g.tags.level otherwise 0
         send "level ${lvl}" to sender

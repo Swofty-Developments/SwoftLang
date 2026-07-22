@@ -8,7 +8,7 @@
 
 command "map_ops" {
     execute {
-        // map<String,Integer>, insertion order b, a, c
+        // Map<String,Integer>, insertion order b, a, c
         set m to { "b": 2, "a": 1, "c": 3 }
 
         // --- pure expression methods + accessors ---
@@ -199,7 +199,7 @@ command "string_ops" {
 
 command "nested_and_stable" {
     execute {
-        // nested map<Integer, list<String>>: get() yields optional<list<..>>,
+        // nested Map<Integer, List<String>>: get() yields Optional<List<..>>,
         // unwrapped with 'otherwise', then list methods resolve on the element
         set nested to { 1: ["a", "b"], 2: ["c"] }
         set lst to nested.get(1) otherwise []

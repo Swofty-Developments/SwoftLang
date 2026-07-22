@@ -74,7 +74,7 @@ compiler won't let you pass a maybe-console value into a `Player` parameter.
 ## Parameters
 
 Parameters are typed with the same types as command arguments — `n: Integer`,
-`p: Player`, `dest: either<Player|Location>`. Untyped parameters are `Any` and checked
+`p: Player`, `dest: Either<Player|Location>`. Untyped parameters are `Any` and checked
 dynamically. The annotations aren't decoration: the checker verifies every call site
 against them, and verifies the *body* uses each parameter consistently with its type.
 
@@ -112,7 +112,7 @@ Unknown names get the same treatment — `unknown function 'trible'`, pointing a
 top level of a command or event body, `return` just ends the run (same as `halt`).
 
 Return types are inferred. If *some* paths return a value and others fall off the end,
-callers get an `optional<T>` and must handle the missing case — that's not a lint, it's
+callers get an `Optional<T>` and must handle the missing case — that's not a lint, it's
 the type system, and it's [Step 07](/guide/options#functions-that-might-not-return-a-value).
 
 ## Recursion

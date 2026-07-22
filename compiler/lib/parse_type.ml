@@ -43,21 +43,21 @@ let rec parse_type st =
     done;
     expect_type_close st;
     DEither (List.rev !subs)
-  | Token.IDENT "optional", _, _ when peek2_tok st = Token.LT ->
+  | Token.IDENT "Optional", _, _ when peek2_tok st = Token.LT ->
     ignore (advance st);
     ignore (advance st);
     let sub = parse_type st in
     expect_type_close st;
     DOptional sub
-  | Token.IDENT "list", _, _ when peek2_tok st = Token.LT ->
+  | Token.IDENT "List", _, _ when peek2_tok st = Token.LT ->
     ignore (advance st);
     ignore (advance st);
     let sub = parse_type st in
     expect_type_close st;
     DList sub
-  | Token.IDENT "map", _, _ when peek2_tok st = Token.LT ->
-    (* map<K, V>: K in {String, Integer} (phase 11). map<V> is sugar for
-       map<String, V> — the back-compat form with only a value type written. *)
+  | Token.IDENT "Map", _, _ when peek2_tok st = Token.LT ->
+    (* Map<K, V>: K in {String, Integer} (phase 11). Map<V> is sugar for
+       Map<String, V> — the back-compat form with only a value type written. *)
     ignore (advance st);
     ignore (advance st);
     let first = parse_type st in
@@ -68,8 +68,8 @@ let rec parse_type st =
       | DSimple "STRING" | DSimple "INTEGER" | DSimple "PLAYER" -> ()
       | _ ->
         error st
-          "map keys must be String, Integer, or Player (map<String, V>, map<Integer, V>, or \
-           map<Player, V>)");
+          "map keys must be String, Integer, or Player (Map<String, V>, Map<Integer, V>, or \
+           Map<Player, V>)");
       let value = parse_type st in
       expect_type_close st;
       DMap (first, value)
@@ -78,6 +78,13 @@ let rec parse_type st =
       expect_type_close st;
       DMap (DSimple "STRING", first)
     end
+  | Token.IDENT (("map" | "list" | "optional" | "either") as low), _, _
+    when peek2_tok st = Token.LT ->
+    (* v1.6.0: the generic type constructors are now PascalCase. Point the old
+       lowercase spelling at its capitalized replacement. *)
+    error st
+      (Printf.sprintf "the %s type is now written `%s<...>` (all types are PascalCase)" low
+         (String.capitalize_ascii low))
   | Token.IDENT name, line, col ->
     ignore (advance st);
     (match base_of_name name with

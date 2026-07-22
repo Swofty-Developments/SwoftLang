@@ -42,7 +42,7 @@ command "teleport" {                          // aliases share one body
 
     arguments {
         player: Player = sender               // one-token default
-        target: either<Player|Location>       // union type, no default
+        target: Either<Player|Location>       // union type, no default
     }
 
     execute {
@@ -123,11 +123,20 @@ e_cancel.sw:3:9: error: event 'on_join' is not cancellable
 | `Canvas` | — | from `map_canvas()` ([maps](./maps-toasts-skins-tps#maps)) |
 | `Schedule` | — | from a `schedule` expression ([schedulers](./schedulers)) |
 | `WorldLoader` | — | from `anvil_loader(...)` etc. ([worlds](./worlds#loaders)) |
-| `either<A\|B>` | — | union; narrow with `is a` |
-| `optional<T>` | — | maybe-missing; narrow with `exists` / `otherwise` |
-| `list<T>` | — | `[1, 2, 3]`, `all_players()` |
+| `Either<A\|B>` | — | union; narrow with `is a` |
+| `Optional<T>` | — | maybe-missing; narrow with `exists` / `otherwise` |
+| `List<T>` | — | `[1, 2, 3]`, `all_players()` |
+| `Map<K, V>` | `Map<V>` (= `Map<String, V>`) | dictionary ([maps](./maps)) |
 
-There is no null. `none` is the missing value of an `optional<T>`, and the typechecker
+**Every type is PascalCase.** As of 1.6.0 this is uniform: scalars (`String`,
+`Integer`), engine types (`Player`, `Mob`), your own structs and custom
+item/mob types, **and** the four generic containers — `Map`, `List`,
+`Optional`, `Either` — all start with a capital letter. The old lowercase
+spellings (`map<…>`, `list<…>`, `optional<…>`, `either<…>`) are no longer
+accepted. Function names stay lowercase (`new_map()`, `map_canvas()`) — only
+the *type* spelling is capitalized.
+
+There is no null. `none` is the missing value of an `Optional<T>`, and the typechecker
 forces you to prove presence before use — see [Options](#options-no-more-null).
 `Number` in `is a Number` checks accepts both `Integer` and `Double`. Unknown type names
 in argument lists are accepted with a compile *warning* (`unknown type 'Thing', treating
@@ -300,7 +309,7 @@ command "demo" {
 ```
 
 Parameter types are optional (untyped params are `Any`). A function whose paths
-*sometimes* return a value gets return type `optional<T>` — callers must narrow it.
+*sometimes* return a value gets return type `Optional<T>` — callers must narrow it.
 
 ### Inline functions (lambdas)
 
@@ -338,10 +347,10 @@ builtin. Calling a value the checker knows is not a function is a compile error
 ```swoftlang
 command "find" {
     arguments {
-        who: optional<Player>                 // optional command argument
+        who: Optional<Player>                 // optional command argument
     }
     execute {
-        set found to player("Notch")          // player() : optional<Player>
+        set found to player("Notch")          // player() : Optional<Player>
 
         if found exists {
             send "hi ${found.name}" to found  // narrowed to Player here
@@ -352,7 +361,7 @@ command "find" {
             send "still missing" to sender
         }
 
-        set target to args.who otherwise sender   // optional<T> otherwise T -> T
+        set target to args.who otherwise sender   // Optional<T> otherwise T -> T
         set label to none                         // the missing value
         set title to label otherwise "guest"
         send "${title}" to target
@@ -363,7 +372,7 @@ command "find" {
 Using a possibly-missing value where a concrete one is needed is a compile error:
 
 ```
-e_optional.sw:4:22: error: the send target is optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+e_optional.sw:4:22: error: the send target is Optional<Player> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
 
 ## Properties
@@ -429,7 +438,7 @@ copy-on-write: the runtime reads the deepest settable *anchor* (`location`,
 | belowname | `belowname <expr> for <p>`, `set belowname score to <expr> for <p>`, `clear belowname for <p>` |
 | [items](./items) | `give item "id" to <p> [amount <n>]` |
 | [mobs](./mobs) | `spawn mob <MobType> at <loc> [as <var>]`, `despawn <mob>` |
-| [viewers](./entities#per-viewer) | `show <entity> to <p\|all>`, `hide <entity> from <p\|all>`, `set name of <entity> to <expr> for <p>`; `viewers of <entity>` (expr → `list<Player>`) |
+| [viewers](./entities#per-viewer) | `show <entity> to <p\|all>`, `hide <entity> from <p\|all>`, `set name of <entity> to <expr> for <p>`; `viewers of <entity>` (expr → `List<Player>`) |
 | [nametags](./nametags) | `set nametag [prefix\|suffix\|color] of <p> to <expr> [for <viewer\|all>]`, `reset nametag of <p> [for ...]` |
 | [packets](./packets) | `send packet "Name" { field: expr, ... } to <target>`, `cancel packet` |
 | [displays](./displays) | `show\|hide display <d> to\|from <target>`, `mount display <d> on <entity>`, `teleport display <d> to <loc>`, `destroy display <d>` |
@@ -444,7 +453,7 @@ copy-on-write: the runtime reads the deepest settable *anchor* (`location`,
 | motd | `set server motd to <expr>` |
 | [schedulers](./schedulers) | `cancel schedule <handle>` (creation is the `schedule` *expression*) |
 
-Targets accept a `Player`, a `list<Player>`, or the keyword `all` (broadcast).
+Targets accept a `Player`, a `List<Player>`, or the keyword `all` (broadcast).
 
 ## Durations
 

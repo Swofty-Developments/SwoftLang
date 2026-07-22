@@ -1,13 +1,13 @@
 // rbtree.sw — a real red-black tree in pure SwoftLang.
 //
-// No Java, no engine internals: a node is a map<Any, Any> with the fields
+// No Java, no engine internals: a node is a Map<Any, Any> with the fields
 //   "id"     Integer  — a unique identity (maps have no reference-equality op)
 //   "value"  Integer  — the key
 //   "red"    Boolean  — colour (true = red, false = black)
 //   "left"/"right"/"parent"  — child/parent nodes, ABSENT when nil
 //
 // There is no null in the language, so a missing child is simply an absent
-// map key; we reach for it with the m[k] index-read (optional<Any>) and prove
+// map key; we reach for it with the m[k] index-read (Optional<Any>) and prove
 // presence with `exists` / `is missing` before use. The tree itself lives in a
 // holder map `t` with keys "root" (absent when empty) and "next_id".
 //

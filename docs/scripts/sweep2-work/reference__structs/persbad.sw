@@ -3,4 +3,4 @@ struct Party {
     size: Integer = 1
 }
 
-persistent parties: map<String, Party> = new_map()
+persistent parties: Map<String, Party> = new_map()

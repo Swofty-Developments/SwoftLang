@@ -378,7 +378,7 @@ command "freeze" {
     permission: "freeze.use"
     arguments {
         target: Player
-        reason: optional<String>
+        reason: Optional<String>
     }
     execute {
         if args.reason exists {

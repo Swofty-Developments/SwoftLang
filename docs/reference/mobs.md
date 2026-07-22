@@ -95,9 +95,9 @@ type name.
 | `tags { ... }` | block | no | **typed** per-entity state — see [Tags](#tags) |
 | `drops { ... }` | block | no | rolled on death; see [drops](#drops) |
 | `on_spawn { ... }` | statements | no | binds `mob` |
-| `on_death { ... }` | statements | no | binds `mob`, `killer` (`optional<Player>`) |
+| `on_death { ... }` | statements | no | binds `mob`, `killer` (`Optional<Player>`) |
 | `on_attack { ... }` | statements | no | binds `mob`, `victim` (`Player`) |
-| `on_hit { ... }` | statements | no | the mob is damaged; binds `mob` and `attacker` (`optional<Player>`) |
+| `on_hit { ... }` | statements | no | the mob is damaged; binds `mob` and `attacker` (`Optional<Player>`) |
 
 The `type:` is validated against the real EntityType registry of the pinned Minestom
 snapshot — all 149 constants, with a suggestion when you're close:
@@ -142,8 +142,8 @@ e_drop.sw:4:14: error: unknown item 'not_a_thing_xyz' in drops; declare it with 
 |---|---|
 | `spawn mob <MobType> at <location> [as <var>]` | spawns one instance; `as` binds it as that mob type |
 | `despawn <mob>` | removes the entity |
-| `all_mobs()` | `list<Mob>` — every live custom mob |
-| `all_mobs("id")` | `list<Mob>` — live instances of one declaration |
+| `all_mobs()` | `List<Mob>` — every live custom mob |
+| `all_mobs("id")` | `List<Mob>` — live instances of one declaration |
 
 Like `give item`, a literal id in `spawn mob` must name a declaration — unknown ids
 are compile errors, not silent no-ops at 2 a.m.
@@ -207,7 +207,7 @@ named repeating task that auto-cancels when the mob despawns.
 ## The `on_hit` handler {#on-hit}
 
 `on_hit { ... }` runs when the mob takes damage, inline in the declaration. It
-binds `mob` and `attacker` — an `optional<Player>`, `none` when the
+binds `mob` and `attacker` — an `Optional<Player>`, `none` when the
 damage has no player source (fall, fire, another mob):
 
 ```swoftlang
@@ -233,7 +233,7 @@ cross-mob systems.
 
 `mob.tags.<name>` is freeform per-entity state — read, set, and delete arbitrary values
 on a live mob (or any [`Entity`](./entities)) without declaring a field. A read is
-`optional<Any>` (the tag may be unset), a write stores, and `set ... to none` deletes:
+`Optional<Any>` (the tag may be unset), a write stores, and `set ... to none` deletes:
 
 ```swoftlang
 mob Elite {
@@ -252,17 +252,17 @@ command "promote" {
 }
 ```
 
-Because a tag read is `optional<Any>`, narrow or `otherwise` it before use — using one
+Because a tag read is `Optional<Any>`, narrow or `otherwise` it before use — using one
 directly is a compile error:
 
 ```
-mob_tags_optional.sw:5:33: error: the left operand of '+' is optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
+mob_tags_optional.sw:5:33: error: the left operand of '+' is Optional<Any> and may be missing; check it with 'if ... exists' or provide a fallback with 'otherwise'
 ```
 
 ### Typed tags {#typed-tags}
 
 Declaring a `tags { ... }` block on the mob gives a tag a **fixed type** instead of the
-freeform `optional<Any>`. Each entry is `name: <Type>` — a typed, indexable store that
+freeform `Optional<Any>`. Each entry is `name: <Type>` — a typed, indexable store that
 starts empty:
 
 ```swoftlang
@@ -270,7 +270,7 @@ mob Zombie {
     type: "ZOMBIE"
     viewable: false
 
-    tags: { hits: map<Player, Integer> }      // typed, keyed by Player
+    tags: { hits: Map<Player, Integer> }      // typed, keyed by Player
 
     on_hit {
         if attacker exists {
@@ -280,9 +280,9 @@ mob Zombie {
 }
 ```
 
-Now `mob.tags.hits[attacker]` is `optional<Integer>` — the value type is known, but a key
+Now `mob.tags.hits[attacker]` is `Optional<Integer>` — the value type is known, but a key
 that was never written is still missing, so the `otherwise 0` fallback stays required.
-This `map<Player, Integer>` keyed by player is the backbone of the
+This `Map<Player, Integer>` keyed by player is the backbone of the
 [per-viewer zombie](./entities#the-per-viewer-zombie): one counter per attacker on a
 single mob. A typed tag and a freeform `mob.tags.<other>` can coexist on the same mob.
 
@@ -294,7 +294,7 @@ per-declaration handlers — its methods fire for **every** mob, and `mob` is th
 | Method | Cancellable | Bound variables |
 |---|---|---|
 | `on_spawn` | no | — |
-| `on_death` | no | `killer` (`optional<Entity>`) |
+| `on_death` | no | `killer` (`Optional<Entity>`) |
 | `on_hit` | no | `attacker` (Entity) |
 
 ```swoftlang

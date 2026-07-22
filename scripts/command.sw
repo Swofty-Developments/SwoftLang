@@ -14,7 +14,7 @@ command "teleport" {
 
     arguments {
         player: Player = sender                   // Default to command sender if not specified
-        target: either<Player|Location>           // Can be either a Player or Location, has no default
+        target: Either<Player|Location>           // Can be either a Player or Location, has no default
     }
 
     execute {

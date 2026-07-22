@@ -52,7 +52,7 @@ a block up in one expression.
 |---|---|---|
 | `b.with("prop", "val")` | `Block` | a copy with one property set |
 | `b.property("prop")` | `String` | the current value of a property |
-| `b.properties` | `map<String, String>` | every property as a map |
+| `b.properties` | `Map<String, String>` | every property as a map |
 | `b.id` | `String` | the namespaced block key (`minecraft:oak_stairs`) |
 | `b.nbt` | `String` | the block-entity NBT as SNBT (`{}` when none) |
 | `b.with_nbt("{…}")` | `Block` | a copy carrying the given SNBT payload |
@@ -237,7 +237,7 @@ The `on_place` callback binds the placement context:
 
 Minestom's placement state exposes a position, not a `Player`, so `player` is a
 `Location` — read `player.yaw` to orient stairs and doors from the look direction.
-`on_update` binds `neighbors` as a `map<String, Block>`
+`on_update` binds `neighbors` as a `Map<String, Block>`
 keyed by the six face names, and returns the block's recomputed state (fence connections,
 stair shapes) whenever an adjacent block changes.
 

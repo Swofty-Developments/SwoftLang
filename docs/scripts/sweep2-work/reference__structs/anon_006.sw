@@ -2,7 +2,7 @@ struct Duel {
     @EventReceiver a: Player
     @EventReceiver b: Player
     arena: Location
-    score: map<Player, Integer>
+    score: Map<Player, Integer>
 
     a {                          // the field name opens its handler block
         on_death {               // Player's vocabulary, because a : Player

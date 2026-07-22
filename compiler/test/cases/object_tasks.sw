@@ -15,7 +15,7 @@ Player {
         send "<yellow>reminder" to player
     }
 
-    // reference by id: a Boolean 'is running', and the optional<Schedule> read
+    // reference by id: a Boolean 'is running', and the Optional<Schedule> read
     if player.tasks.welcome is running send "<green>welcome running" to player
     if player.tasks.reminder is not running send "<red>reminder stopped" to player
     set handle to player.tasks.welcome

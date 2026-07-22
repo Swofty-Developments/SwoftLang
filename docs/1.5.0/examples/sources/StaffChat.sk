@@ -1,0 +1,26 @@
+#by ItzMCcat16
+command /staffchat [<text>]:
+    permission: staffchat.send
+    trigger:
+        if arg-1 is not set:
+            if {staffchat::%player's uuid%} is not true:
+                set {staffchat::%player's uuid%} to true
+                send "&6&lStaff&e&lChat &8- &eEnabled &7staffchat"
+            else:
+                set {staffchat::%player's uuid%} to false
+                send "&6&lStaff&e&lChat &8- &eDisabled &7staffchat"
+        else:
+            sendStaff(player, arg-1)
+
+on chat:
+    if {staffchat::%player's uuid%} is true:
+        cancel event
+        sendStaff(player, message)
+    else:
+        broadcast "%player's displayname%&f: %message%"
+
+function sendStaff(player: player, msg: text):
+    if {_player} has permission "staffchat.send":
+        loop all players:
+            if loop-player has permission "staffchat.receive":
+                send "&6&lS&e&lC &8- &7%{_player}'s displayname%&f: %{_msg}%" to loop-player

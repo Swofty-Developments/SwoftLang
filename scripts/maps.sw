@@ -1,8 +1,8 @@
-// Phase-10 showcase: the map<V> type — String-keyed dictionaries with a
+// Phase-10 showcase: the Map<V> type — String-keyed dictionaries with a
 // restart-safe persistent variant. Covers map literals, the natural-language
 // dialect ('set m at k to v', 'm has k', 'size of m', 'keys of m', 'delete m at
-// k'), the m[k] index-read sugar (optional<V>, so it pairs with
-// otherwise/exists), both foreach forms, and a persistent map<Scalar> serialized
+// k'), the m[k] index-read sugar (Optional<V>, so it pairs with
+// otherwise/exists), both foreach forms, and a persistent Map<Scalar> serialized
 // as one JSON blob so it survives a restart — the player-vault pattern made
 // trivial.
 
@@ -12,7 +12,7 @@ storage {
 }
 
 // A persistent map of scalars round-trips through the backend as JSON.
-persistent scores: map<Integer> = new_map()
+persistent scores: Map<Integer> = new_map()
 
 command "inventory" {
     description: "Build an item->count map and report every entry"
@@ -27,7 +27,7 @@ command "inventory" {
 
         send "size is ${size of counts}" to sender
 
-        // Index read yields optional<V>: combine with 'otherwise' for a default.
+        // Index read yields Optional<V>: combine with 'otherwise' for a default.
         set gold to counts["gold"] otherwise 0
         send "gold count is ${gold}" to sender
 
@@ -42,7 +42,7 @@ command "inventory" {
             send "has iron" to sender
         }
 
-        // 'keys of m' returns a fresh insertion-ordered list<String>.
+        // 'keys of m' returns a fresh insertion-ordered List<String>.
         loop keys of counts as material {
             send "key ${material}" to sender
         }

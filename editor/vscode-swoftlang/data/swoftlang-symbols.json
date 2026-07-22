@@ -295,7 +295,7 @@
       "kind": "keyword"
     },
     {
-      "name": "either",
+      "name": "Either",
       "kind": "keyword"
     },
     {
@@ -556,12 +556,12 @@
     {
       "name": "first",
       "kind": "keyword",
-      "doc": "first element of a list: `first of l` -> optional<T> (same as `l.first`)."
+      "doc": "first element of a list: `first of l` -> Optional<T> (same as `l.first`)."
     },
     {
       "name": "last",
       "kind": "keyword",
-      "doc": "last element of a list: `last of l` -> optional<T> (same as `l.last`)."
+      "doc": "last element of a list: `last of l` -> Optional<T> (same as `l.last`)."
     },
     {
       "name": "Player",
@@ -685,7 +685,7 @@
       "kind": "operator"
     },
     {
-      "name": "either",
+      "name": "Either",
       "kind": "operator"
     },
     {
@@ -765,19 +765,19 @@
       "kind": "type"
     },
     {
-      "name": "list",
+      "name": "List",
       "kind": "type"
     },
     {
-      "name": "map",
+      "name": "Map",
       "kind": "type"
     },
     {
-      "name": "optional",
+      "name": "Optional",
       "kind": "type"
     },
     {
-      "name": "either",
+      "name": "Either",
       "kind": "type"
     },
     {
@@ -878,9 +878,9 @@
     {
       "name": "length",
       "kind": "builtin",
-      "signature": "length(x: String|list): Integer",
+      "signature": "length(x: String|List): Integer",
       "signatures": [
-        "length(x: String|list): Integer"
+        "length(x: String|List): Integer"
       ],
       "doc": "Length of a string or list."
     },
@@ -916,27 +916,27 @@
     {
       "name": "player",
       "kind": "builtin",
-      "signature": "player(name: String): optional<Player>",
+      "signature": "player(name: String): Optional<Player>",
       "signatures": [
-        "player(name: String): optional<Player>"
+        "player(name: String): Optional<Player>"
       ],
       "doc": "Look up an online player by name."
     },
     {
       "name": "all_players",
       "kind": "builtin",
-      "signature": "all_players(): list<Player>",
+      "signature": "all_players(): List<Player>",
       "signatures": [
-        "all_players(): list<Player>"
+        "all_players(): List<Player>"
       ],
       "doc": "Every online player."
     },
     {
       "name": "world",
       "kind": "builtin",
-      "signature": "world(name: String): optional<World>",
+      "signature": "world(name: String): Optional<World>",
       "signatures": [
-        "world(name: String): optional<World>"
+        "world(name: String): Optional<World>"
       ],
       "doc": "Look up a loaded world by name."
     },
@@ -1006,19 +1006,19 @@
     {
       "name": "custom_id",
       "kind": "builtin",
-      "signature": "custom_id(i: Item): optional<String>",
+      "signature": "custom_id(i: Item): Optional<String>",
       "signatures": [
-        "custom_id(i: Item): optional<String>"
+        "custom_id(i: Item): Optional<String>"
       ],
       "doc": "Custom-item id of a stack, if any."
     },
     {
       "name": "all_mobs",
       "kind": "builtin",
-      "signature": "all_mobs(): list<Mob>",
+      "signature": "all_mobs(): List<Mob>",
       "signatures": [
-        "all_mobs(): list<Mob>",
-        "all_mobs(type: String): list<Mob>"
+        "all_mobs(): List<Mob>",
+        "all_mobs(type: String): List<Mob>"
       ],
       "doc": "Every mob (optionally by type)."
     },
@@ -1034,10 +1034,10 @@
     {
       "name": "all_entities",
       "kind": "builtin",
-      "signature": "all_entities(): list<Entity>",
+      "signature": "all_entities(): List<Entity>",
       "signatures": [
-        "all_entities(): list<Entity>",
-        "all_entities(type: String): list<Entity>"
+        "all_entities(): List<Entity>",
+        "all_entities(type: String): List<Entity>"
       ],
       "doc": "Every live entity (optionally by type)."
     },
@@ -1134,9 +1134,9 @@
     {
       "name": "all_worlds",
       "kind": "builtin",
-      "signature": "all_worlds(loader): list<String>",
+      "signature": "all_worlds(loader): List<String>",
       "signatures": [
-        "all_worlds(loader): list<String>"
+        "all_worlds(loader): List<String>"
       ],
       "doc": "World names known to a loader."
     },
@@ -1170,9 +1170,9 @@
     {
       "name": "fetch_skin",
       "kind": "builtin",
-      "signature": "fetch_skin(name: String): optional<Skin>",
+      "signature": "fetch_skin(name: String): Optional<Skin>",
       "signatures": [
-        "fetch_skin(name: String): optional<Skin>"
+        "fetch_skin(name: String): Optional<Skin>"
       ],
       "doc": "async only: fetch a skin from Mojang."
     },
@@ -1197,9 +1197,9 @@
     {
       "name": "offline_player",
       "kind": "builtin",
-      "signature": "offline_player(name: String): optional<OfflinePlayer>",
+      "signature": "offline_player(name: String): Optional<OfflinePlayer>",
       "signatures": [
-        "offline_player(name: String): optional<OfflinePlayer>"
+        "offline_player(name: String): Optional<OfflinePlayer>"
       ],
       "doc": "Seen-store lookup by name."
     },
@@ -1215,27 +1215,27 @@
     {
       "name": "fetch_offline_player",
       "kind": "builtin",
-      "signature": "fetch_offline_player(name: String): optional<OfflinePlayer>",
+      "signature": "fetch_offline_player(name: String): Optional<OfflinePlayer>",
       "signatures": [
-        "fetch_offline_player(name: String): optional<OfflinePlayer>"
+        "fetch_offline_player(name: String): Optional<OfflinePlayer>"
       ],
       "doc": "async only: resolve name->uuid via Mojang."
     },
     {
       "name": "all_seen_players",
       "kind": "builtin",
-      "signature": "all_seen_players(): list<OfflinePlayer>",
+      "signature": "all_seen_players(): List<OfflinePlayer>",
       "signatures": [
-        "all_seen_players(): list<OfflinePlayer>"
+        "all_seen_players(): List<OfflinePlayer>"
       ],
       "doc": "Every seen-store player."
     },
     {
       "name": "new_map",
       "kind": "builtin",
-      "signature": "new_map(): map",
+      "signature": "new_map(): Map",
       "signatures": [
-        "new_map(): map"
+        "new_map(): Map"
       ],
       "doc": "Create an empty map (typed by context)."
     },
@@ -1269,126 +1269,126 @@
     {
       "name": "random_in",
       "kind": "builtin",
-      "signature": "random_in(coll): optional",
+      "signature": "random_in(coll): Optional",
       "signatures": [
-        "random_in(coll): optional"
+        "random_in(coll): Optional"
       ],
       "doc": "Random element of a list/string."
     },
     {
       "name": "shuffle",
       "kind": "builtin",
-      "signature": "shuffle(coll): list",
+      "signature": "shuffle(coll): List",
       "signatures": [
-        "shuffle(coll): list"
+        "shuffle(coll): List"
       ],
       "doc": "Shuffled copy of a collection."
     },
     {
       "name": "sort",
       "kind": "builtin",
-      "signature": "sort(coll): list",
+      "signature": "sort(coll): List",
       "signatures": [
-        "sort(coll): list"
+        "sort(coll): List"
       ],
       "doc": "Sorted copy (natural order)."
     },
     {
       "name": "sort_by",
       "kind": "builtin",
-      "signature": "sort_by(coll, keyLambda): list",
+      "signature": "sort_by(coll, keyLambda): List",
       "signatures": [
-        "sort_by(coll, keyLambda): list"
+        "sort_by(coll, keyLambda): List"
       ],
       "doc": "Sort ascending by a key."
     },
     {
       "name": "sort_by_desc",
       "kind": "builtin",
-      "signature": "sort_by_desc(coll, keyLambda): list",
+      "signature": "sort_by_desc(coll, keyLambda): List",
       "signatures": [
-        "sort_by_desc(coll, keyLambda): list"
+        "sort_by_desc(coll, keyLambda): List"
       ],
       "doc": "Sort descending by a key."
     },
     {
       "name": "reverse",
       "kind": "builtin",
-      "signature": "reverse(coll): list",
+      "signature": "reverse(coll): List",
       "signatures": [
-        "reverse(coll): list"
+        "reverse(coll): List"
       ],
       "doc": "Reversed copy."
     },
     {
       "name": "min_by",
       "kind": "builtin",
-      "signature": "min_by(coll, keyLambda): optional",
+      "signature": "min_by(coll, keyLambda): Optional",
       "signatures": [
-        "min_by(coll, keyLambda): optional"
+        "min_by(coll, keyLambda): Optional"
       ],
       "doc": "Element with the smallest key."
     },
     {
       "name": "max_by",
       "kind": "builtin",
-      "signature": "max_by(coll, keyLambda): optional",
+      "signature": "max_by(coll, keyLambda): Optional",
       "signatures": [
-        "max_by(coll, keyLambda): optional"
+        "max_by(coll, keyLambda): Optional"
       ],
       "doc": "Element with the largest key."
     },
     {
       "name": "sort_by_key",
       "kind": "builtin",
-      "signature": "sort_by_key(m): map",
+      "signature": "sort_by_key(m): Map",
       "signatures": [
-        "sort_by_key(m): map"
+        "sort_by_key(m): Map"
       ],
       "doc": "Sort a map ascending by key."
     },
     {
       "name": "sort_by_key_desc",
       "kind": "builtin",
-      "signature": "sort_by_key_desc(m): map",
+      "signature": "sort_by_key_desc(m): Map",
       "signatures": [
-        "sort_by_key_desc(m): map"
+        "sort_by_key_desc(m): Map"
       ],
       "doc": "Sort a map descending by key."
     },
     {
       "name": "sort_by_value",
       "kind": "builtin",
-      "signature": "sort_by_value(m): map",
+      "signature": "sort_by_value(m): Map",
       "signatures": [
-        "sort_by_value(m): map"
+        "sort_by_value(m): Map"
       ],
       "doc": "Sort a map ascending by value."
     },
     {
       "name": "sort_by_value_desc",
       "kind": "builtin",
-      "signature": "sort_by_value_desc(m): map",
+      "signature": "sort_by_value_desc(m): Map",
       "signatures": [
-        "sort_by_value_desc(m): map"
+        "sort_by_value_desc(m): Map"
       ],
       "doc": "Sort a map descending by value."
     },
     {
       "name": "sort_map_by",
       "kind": "builtin",
-      "signature": "sort_map_by(m, keyLambda): map",
+      "signature": "sort_map_by(m, keyLambda): Map",
       "signatures": [
-        "sort_map_by(m, keyLambda): map"
+        "sort_map_by(m, keyLambda): Map"
       ],
       "doc": "Sort a map by a derived key."
     },
     {
       "name": "sort_map_by_desc",
       "kind": "builtin",
-      "signature": "sort_map_by_desc(m, keyLambda): map",
+      "signature": "sort_map_by_desc(m, keyLambda): Map",
       "signatures": [
-        "sort_map_by_desc(m, keyLambda): map"
+        "sort_map_by_desc(m, keyLambda): Map"
       ],
       "doc": "Sort a map descending by a derived key."
     },
@@ -1602,9 +1602,9 @@
     {
       "name": "random_element",
       "kind": "builtin",
-      "signature": "random_element(coll): optional",
+      "signature": "random_element(coll): Optional",
       "signatures": [
-        "random_element(coll): optional"
+        "random_element(coll): Optional"
       ],
       "doc": "Random element of a collection."
     },
@@ -1629,9 +1629,9 @@
     {
       "name": "parse",
       "kind": "builtin",
-      "signature": "parse(s: String): optional<Number>",
+      "signature": "parse(s: String): Optional<Number>",
       "signatures": [
-        "parse(s: String): optional<Number>"
+        "parse(s: String): Optional<Number>"
       ],
       "doc": "Parse a number from a string."
     },
@@ -1755,18 +1755,18 @@
     {
       "name": "blocks_in_radius",
       "kind": "builtin",
-      "signature": "blocks_in_radius(center: Location, radius: Number): list<Location>",
+      "signature": "blocks_in_radius(center: Location, radius: Number): List<Location>",
       "signatures": [
-        "blocks_in_radius(center: Location, radius: Number): list<Location>"
+        "blocks_in_radius(center: Location, radius: Number): List<Location>"
       ],
       "doc": "Block locations within a radius."
     },
     {
       "name": "players_in_radius",
       "kind": "builtin",
-      "signature": "players_in_radius(center: Location, radius: Number): list<Player>",
+      "signature": "players_in_radius(center: Location, radius: Number): List<Player>",
       "signatures": [
-        "players_in_radius(center: Location, radius: Number): list<Player>"
+        "players_in_radius(center: Location, radius: Number): List<Player>"
       ],
       "doc": "Players within a radius."
     },
@@ -1809,9 +1809,9 @@
     {
       "name": "from_nbt",
       "kind": "builtin",
-      "signature": "from_nbt(s: String): optional<Item>",
+      "signature": "from_nbt(s: String): Optional<Item>",
       "signatures": [
-        "from_nbt(s: String): optional<Item>"
+        "from_nbt(s: String): Optional<Item>"
       ],
       "doc": "Parse an item stack from NBT."
     },
@@ -2896,9 +2896,9 @@
       "name": "active_effects",
       "kind": "property",
       "owner": "Player",
-      "type": "list<String>",
+      "type": "List<String>",
       "writable": false,
-      "doc": "Player.active_effects: list<String> (read-only)"
+      "doc": "Player.active_effects: List<String> (read-only)"
     },
     {
       "name": "x",
@@ -2992,9 +2992,9 @@
       "name": "lore",
       "kind": "property",
       "owner": "Item",
-      "type": "list<String>",
+      "type": "List<String>",
       "writable": true,
-      "doc": "Item.lore: list<String>"
+      "doc": "Item.lore: List<String>"
     },
     {
       "name": "tags",
@@ -3144,25 +3144,25 @@
       "name": "passengers",
       "kind": "property",
       "owner": "Mob",
-      "type": "list<Entity>",
+      "type": "List<Entity>",
       "writable": false,
-      "doc": "Mob.passengers: list<Entity> (read-only)"
+      "doc": "Mob.passengers: List<Entity> (read-only)"
     },
     {
       "name": "vehicle",
       "kind": "property",
       "owner": "Mob",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "Mob.vehicle: optional<Entity> (read-only)"
+      "doc": "Mob.vehicle: Optional<Entity> (read-only)"
     },
     {
       "name": "shooter",
       "kind": "property",
       "owner": "Mob",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "Mob.shooter: optional<Entity> (read-only)"
+      "doc": "Mob.shooter: Optional<Entity> (read-only)"
     },
     {
       "name": "alive",
@@ -3416,9 +3416,9 @@
       "name": "active_effects",
       "kind": "property",
       "owner": "Mob",
-      "type": "list<String>",
+      "type": "List<String>",
       "writable": false,
-      "doc": "Mob.active_effects: list<String> (read-only)"
+      "doc": "Mob.active_effects: List<String> (read-only)"
     },
     {
       "name": "time",
@@ -3816,25 +3816,25 @@
       "name": "passengers",
       "kind": "property",
       "owner": "Entity",
-      "type": "list<Entity>",
+      "type": "List<Entity>",
       "writable": false,
-      "doc": "Entity.passengers: list<Entity> (read-only)"
+      "doc": "Entity.passengers: List<Entity> (read-only)"
     },
     {
       "name": "vehicle",
       "kind": "property",
       "owner": "Entity",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "Entity.vehicle: optional<Entity> (read-only)"
+      "doc": "Entity.vehicle: Optional<Entity> (read-only)"
     },
     {
       "name": "shooter",
       "kind": "property",
       "owner": "Entity",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "Entity.shooter: optional<Entity> (read-only)"
+      "doc": "Entity.shooter: Optional<Entity> (read-only)"
     },
     {
       "name": "alive",
@@ -4096,9 +4096,9 @@
       "name": "active_effects",
       "kind": "property",
       "owner": "Entity",
-      "type": "list<String>",
+      "type": "List<String>",
       "writable": false,
-      "doc": "Entity.active_effects: list<String> (read-only)"
+      "doc": "Entity.active_effects: List<String> (read-only)"
     },
     {
       "name": "x",
@@ -4168,9 +4168,9 @@
       "name": "player",
       "kind": "property",
       "owner": "OfflinePlayer",
-      "type": "optional<Player>",
+      "type": "Optional<Player>",
       "writable": false,
-      "doc": "OfflinePlayer.player: optional<Player> (read-only)"
+      "doc": "OfflinePlayer.player: Optional<Player> (read-only)"
     },
     {
       "name": "first_seen",
@@ -4224,9 +4224,9 @@
       "name": "recipients",
       "kind": "property",
       "owner": "event:PlayerChat",
-      "type": "list<Player>",
+      "type": "List<Player>",
       "writable": false,
-      "doc": "event:PlayerChat.recipients: list<Player> (read-only)"
+      "doc": "event:PlayerChat.recipients: List<Player> (read-only)"
     },
     {
       "name": "cancelled",
@@ -4280,9 +4280,9 @@
       "name": "custom_id",
       "kind": "property",
       "owner": "event:PlayerUseItem",
-      "type": "optional<String>",
+      "type": "Optional<String>",
       "writable": false,
-      "doc": "event:PlayerUseItem.custom_id: optional<String> (read-only)"
+      "doc": "event:PlayerUseItem.custom_id: Optional<String> (read-only)"
     },
     {
       "name": "cancelled",
@@ -4312,9 +4312,9 @@
       "name": "killer",
       "kind": "property",
       "owner": "event:MobDeath",
-      "type": "optional<Player>",
+      "type": "Optional<Player>",
       "writable": false,
-      "doc": "event:MobDeath.killer: optional<Player> (read-only)"
+      "doc": "event:MobDeath.killer: Optional<Player> (read-only)"
     },
     {
       "name": "mob",
@@ -4336,9 +4336,9 @@
       "name": "attacker",
       "kind": "property",
       "owner": "event:MobDamage",
-      "type": "optional<Player>",
+      "type": "Optional<Player>",
       "writable": false,
-      "doc": "event:MobDamage.attacker: optional<Player> (read-only)"
+      "doc": "event:MobDamage.attacker: Optional<Player> (read-only)"
     },
     {
       "name": "cancelled",
@@ -4560,17 +4560,17 @@
       "name": "caught_item",
       "kind": "property",
       "owner": "event:PlayerCatchFish",
-      "type": "optional<Item>",
+      "type": "Optional<Item>",
       "writable": true,
-      "doc": "event:PlayerCatchFish.caught_item: optional<Item>"
+      "doc": "event:PlayerCatchFish.caught_item: Optional<Item>"
     },
     {
       "name": "caught_mob",
       "kind": "property",
       "owner": "event:PlayerCatchFish",
-      "type": "optional<Mob>",
+      "type": "Optional<Mob>",
       "writable": false,
-      "doc": "event:PlayerCatchFish.caught_mob: optional<Mob> (read-only)"
+      "doc": "event:PlayerCatchFish.caught_mob: Optional<Mob> (read-only)"
     },
     {
       "name": "cancelled",
@@ -4608,9 +4608,9 @@
       "name": "item",
       "kind": "property",
       "owner": "event:BlockDispense",
-      "type": "optional<Item>",
+      "type": "Optional<Item>",
       "writable": true,
-      "doc": "event:BlockDispense.item: optional<Item>"
+      "doc": "event:BlockDispense.item: Optional<Item>"
     },
     {
       "name": "direction",
@@ -4648,17 +4648,17 @@
       "name": "attacker",
       "kind": "property",
       "owner": "event:EntityDamage",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "event:EntityDamage.attacker: optional<Entity> (read-only)"
+      "doc": "event:EntityDamage.attacker: Optional<Entity> (read-only)"
     },
     {
       "name": "source_entity",
       "kind": "property",
       "owner": "event:EntityDamage",
-      "type": "optional<Entity>",
+      "type": "Optional<Entity>",
       "writable": false,
-      "doc": "event:EntityDamage.source_entity: optional<Entity> (read-only)"
+      "doc": "event:EntityDamage.source_entity: Optional<Entity> (read-only)"
     },
     {
       "name": "damage_type",
@@ -5584,9 +5584,9 @@
       "name": "player",
       "kind": "property",
       "owner": "Player",
-      "type": "optional<Player>",
+      "type": "Optional<Player>",
       "writable": false,
-      "doc": "Player.player: optional<Player> (read-only)"
+      "doc": "Player.player: Optional<Player> (read-only)"
     },
     {
       "name": "first_seen",
@@ -5624,17 +5624,17 @@
       "name": "properties",
       "kind": "property",
       "owner": "Block",
-      "type": "map<String>",
+      "type": "Map<String>",
       "writable": false,
-      "doc": "Block.properties: map<String> (read-only)"
+      "doc": "Block.properties: Map<String> (read-only)"
     },
     {
       "name": "nbt",
       "kind": "property",
       "owner": "Block",
-      "type": "optional<String>",
+      "type": "Optional<String>",
       "writable": false,
-      "doc": "Block.nbt: optional<String> (read-only)"
+      "doc": "Block.nbt: Optional<String> (read-only)"
     },
     {
       "name": "tasks",
