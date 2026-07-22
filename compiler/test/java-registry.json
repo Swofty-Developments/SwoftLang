@@ -1,0 +1,2597 @@
+[
+  {
+    "owner": "Canvas",
+    "name": "height",
+    "writable": false
+  },
+  {
+    "owner": "Canvas",
+    "name": "map_id",
+    "writable": false
+  },
+  {
+    "owner": "Canvas",
+    "name": "width",
+    "writable": false
+  },
+  {
+    "owner": "Display",
+    "name": "alignment",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "background",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "billboard",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "block",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "entity_id",
+    "writable": false
+  },
+  {
+    "owner": "Display",
+    "name": "glow_color",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "item",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "kind",
+    "writable": false
+  },
+  {
+    "owner": "Display",
+    "name": "line_width",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "location",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "rotation",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "scale",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "see_through",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "shadow_radius",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "tasks",
+    "writable": false
+  },
+  {
+    "owner": "Display",
+    "name": "text",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "translation",
+    "writable": true
+  },
+  {
+    "owner": "Display",
+    "name": "uuid",
+    "writable": false
+  },
+  {
+    "owner": "Display",
+    "name": "view_range",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "absorption",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "active_effects",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "alive",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "alive_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "armor",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "armor_toughness",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_damage",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_knockback",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "attack_speed",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "block_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "custom_name",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "entity_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "explosion_knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "fall_damage_multiplier",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "fall_distance",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "flying_speed",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "follow_range",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "glowing",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "gravity",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "invisible",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "invulnerable_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "is_climbing",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "is_sprinting",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "jump_strength",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "location",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "luck",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "max_absorption",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "max_health",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "movement_speed",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "name_visible",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "on_fire",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "on_ground",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "passengers",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "pose",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "removed",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "safe_fall_distance",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "scale",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "shooter",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "silent",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "sneaking",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "step_height",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "sweeping_damage_ratio",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "tags",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "tasks",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "type",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "uuid",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "vehicle",
+    "writable": false
+  },
+  {
+    "owner": "Entity",
+    "name": "velocity",
+    "writable": true
+  },
+  {
+    "owner": "Entity",
+    "name": "viewers",
+    "writable": false
+  },
+  {
+    "owner": "Item",
+    "name": "amount",
+    "writable": true
+  },
+  {
+    "owner": "Item",
+    "name": "custom_id",
+    "writable": false
+  },
+  {
+    "owner": "Item",
+    "name": "lore",
+    "writable": true
+  },
+  {
+    "owner": "Item",
+    "name": "material",
+    "writable": true
+  },
+  {
+    "owner": "Item",
+    "name": "name",
+    "writable": true
+  },
+  {
+    "owner": "Item",
+    "name": "tags",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "block_x",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "block_y",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "block_z",
+    "writable": false
+  },
+  {
+    "owner": "Location",
+    "name": "pitch",
+    "writable": true
+  },
+  {
+    "owner": "Location",
+    "name": "x",
+    "writable": true
+  },
+  {
+    "owner": "Location",
+    "name": "y",
+    "writable": true
+  },
+  {
+    "owner": "Location",
+    "name": "yaw",
+    "writable": true
+  },
+  {
+    "owner": "Location",
+    "name": "z",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "absorption",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "active_effects",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "alive",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "alive_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "armor",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "armor_toughness",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_damage",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_knockback",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "attack_speed",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "block_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "custom_id",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "custom_name",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "damage",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "entity_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "explosion_knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "fall_damage_multiplier",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "fall_distance",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "flying_speed",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "follow_range",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "glowing",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "gravity",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "health",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "id",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "invisible",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "invulnerable_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "is_climbing",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "is_sprinting",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "jump_strength",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "location",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "luck",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "max_absorption",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "max_health",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "movement_speed",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "name",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "name_visible",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "on_fire",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "on_ground",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "passengers",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "pose",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "removed",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "safe_fall_distance",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "scale",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "shooter",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "silent",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "sneaking",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "speed",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "step_height",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "sweeping_damage_ratio",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "tags",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "tasks",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "type",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "uuid",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "vehicle",
+    "writable": false
+  },
+  {
+    "owner": "Mob",
+    "name": "velocity",
+    "writable": true
+  },
+  {
+    "owner": "Mob",
+    "name": "viewers",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "first_seen",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "has_played_before",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "last_seen",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "name",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "online",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "tasks",
+    "writable": false
+  },
+  {
+    "owner": "OfflinePlayer",
+    "name": "uuid",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "absorption",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "active_effects",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "alive",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "alive_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "allow_flying",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "armor",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "armor_toughness",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_damage",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_knockback",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "attack_speed",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "block_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "custom_name",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "display_name",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "entity_interaction_range",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "exp",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "explosion_knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "fall_damage_multiplier",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "fall_distance",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "first_seen",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "flying",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "flying_speed",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "follow_range",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "food",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "food_saturation",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "gamemode",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "glowing",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "gravity",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "has_played_before",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "health",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "held_item",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "held_slot",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "invisible",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "invulnerable_ticks",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "is_climbing",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "is_sprinting",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "jump_strength",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "knockback_resistance",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "last_seen",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "latency",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "level",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "location",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "luck",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "max_absorption",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "max_health",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "movement_speed",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "name",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "name_visible",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "on_fire",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "on_ground",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "online",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "passengers",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "pose",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "removed",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "safe_fall_distance",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "scale",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "shooter",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "silent",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "skin",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "sneaking",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "song",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "song_tick",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "step_height",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "sweeping_damage_ratio",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "tags",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "tasks",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "type",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "uuid",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "vehicle",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "velocity",
+    "writable": true
+  },
+  {
+    "owner": "Player",
+    "name": "viewers",
+    "writable": false
+  },
+  {
+    "owner": "Player",
+    "name": "world",
+    "writable": true
+  },
+  {
+    "owner": "Request",
+    "name": "body",
+    "writable": false
+  },
+  {
+    "owner": "Request",
+    "name": "method",
+    "writable": false
+  },
+  {
+    "owner": "Request",
+    "name": "params",
+    "writable": false
+  },
+  {
+    "owner": "Request",
+    "name": "path",
+    "writable": false
+  },
+  {
+    "owner": "Request",
+    "name": "query",
+    "writable": false
+  },
+  {
+    "owner": "Server",
+    "name": "average_tps",
+    "writable": false
+  },
+  {
+    "owner": "Server",
+    "name": "motd",
+    "writable": true
+  },
+  {
+    "owner": "Server",
+    "name": "mspt",
+    "writable": false
+  },
+  {
+    "owner": "Server",
+    "name": "tps",
+    "writable": false
+  },
+  {
+    "owner": "Skin",
+    "name": "signature",
+    "writable": false
+  },
+  {
+    "owner": "Skin",
+    "name": "texture",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "author",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "description",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "duration_seconds",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "length",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "note_count",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "original_author",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "speed",
+    "writable": false
+  },
+  {
+    "owner": "Song",
+    "name": "title",
+    "writable": false
+  },
+  {
+    "owner": "Vec",
+    "name": "length",
+    "writable": false
+  },
+  {
+    "owner": "Vec",
+    "name": "normalized",
+    "writable": false
+  },
+  {
+    "owner": "Vec",
+    "name": "x",
+    "writable": true
+  },
+  {
+    "owner": "Vec",
+    "name": "y",
+    "writable": true
+  },
+  {
+    "owner": "Vec",
+    "name": "z",
+    "writable": true
+  },
+  {
+    "owner": "World",
+    "name": "raining",
+    "writable": false
+  },
+  {
+    "owner": "World",
+    "name": "thundering",
+    "writable": false
+  },
+  {
+    "owner": "World",
+    "name": "time",
+    "writable": true
+  },
+  {
+    "owner": "World",
+    "name": "time_rate",
+    "writable": true
+  },
+  {
+    "owner": "World",
+    "name": "weather",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "block",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "block_face",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockBreak",
+    "name": "result_block",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "block",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "direction",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "item",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockDispense",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "block",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "block_face",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "cursor_position",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:BlockPlace",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "target",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityAttack",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "attacker",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "damage",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "damage_type",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "sound",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "source_entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDamage",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDeath",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDeath",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityDeath",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "power",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "projectile",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "spread",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "to",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityShoot",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "spawn_instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntitySpawn",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "new_position",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "relative_flags",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityTeleport",
+    "name": "teleport_position",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "velocity",
+    "writable": true
+  },
+  {
+    "owner": "event:EntityVelocity",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:FishBite",
+    "name": "hook_location",
+    "writable": false
+  },
+  {
+    "owner": "event:FishBite",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "click_type",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "clicked_item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "cursor_item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "inventory",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "slot",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClick",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "from_client",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "inventory",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "new_inventory",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryClose",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "inventory",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryOpen",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "click",
+    "writable": true
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "clicked_item",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "inventory",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "slot",
+    "writable": false
+  },
+  {
+    "owner": "event:InventoryPreClick",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "item_stack",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:ItemDrop",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "attacker",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "damage",
+    "writable": true
+  },
+  {
+    "owner": "event:MobDamage",
+    "name": "mob",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDeath",
+    "name": "killer",
+    "writable": false
+  },
+  {
+    "owner": "event:MobDeath",
+    "name": "mob",
+    "writable": false
+  },
+  {
+    "owner": "event:MobSpawn",
+    "name": "mob",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "experience_count",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "experience_orb",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupExperience",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "item_entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "item_stack",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "living_entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PickupItem",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "animation",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "item_stack",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "item_use_duration",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBeginItemUse",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "block",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "block_face",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "block_position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "blocking_item_use",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "cursor_position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerBlockInteract",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCastRod",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCastRod",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "caught_item",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "caught_mob",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "hook_location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCatchFish",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "item_in_new_slot",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "item_in_old_slot",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "new_slot",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "old_slot",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChangeHeldSlot",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "message",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "raw_message",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerChat",
+    "name": "recipients",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "command",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerCommand",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "chat_message",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "death_text",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDeath",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerDisconnect",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "interact_position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "target",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerEntityInteract",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "new_game_mode",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerGameModeChange",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "first_spawn",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerJoin",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerLoaded",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "new_position",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "on_ground",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerMove",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerReelIn",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "respawn_position",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerRespawn",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "block",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "block_face",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "block_position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartDigging",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartFlying",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStartSprinting",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopFlying",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerStopSprinting",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "main_hand_item",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "off_hand_item",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerSwapItem",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "activation",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "custom_id",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "item",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItem",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "block_face",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "cursor_position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "item_stack",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "location",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "position",
+    "writable": false
+  },
+  {
+    "owner": "event:PlayerUseItemOnBlock",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "target",
+    "writable": false
+  },
+  {
+    "owner": "event:ProjectileCollideWithEntity",
+    "name": "world",
+    "writable": false
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "max",
+    "writable": true
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "motd",
+    "writable": true
+  },
+  {
+    "owner": "event:ServerPing",
+    "name": "online",
+    "writable": true
+  },
+  {
+    "owner": "event:TpsChange",
+    "name": "current",
+    "writable": false
+  },
+  {
+    "owner": "event:TpsChange",
+    "name": "past",
+    "writable": false
+  },
+  {
+    "owner": "event:TpsChange",
+    "name": "tps",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "cancelled",
+    "writable": true
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "entity",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "hand",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "instance",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "item_stack",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "item_use_time",
+    "writable": true
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "player",
+    "writable": false
+  },
+  {
+    "owner": "event:VanillaUseItem",
+    "name": "world",
+    "writable": false
+  }
+]

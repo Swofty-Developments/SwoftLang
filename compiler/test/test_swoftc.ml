@@ -115,6 +115,72 @@ let check_props_case () =
            ownership drifted from the catalogs (or regenerate the fixture)\n--- actual ---\n%s"
           (Yojson.Safe.pretty_to_string actual)
 
+(* #57 runtime-agreement gate: every --property-table row must be RESOLVABLE by
+   the Java runtime PropertyRegistry with matching writability. java-registry.json
+   is the snapshot of everything the runtime resolves for each table owner,
+   emitted by the Java cross-check harness:
+
+     ./gradlew :java:execHarness \
+        -PharnessArgs="--check-props compiler/test/property-table.json \
+                       --emit compiler/test/java-registry.json"
+
+   The harness knows every runtime resolution mechanism (the class-keyed DEFS
+   superclass walk for value owners, the SwoftXEvent wrapper rows for curated
+   events, and the EventPropertyResolver catalog+synthetic accessors for
+   generic-path events). This gate asserts, purely on the checked-in snapshot, a
+   ZERO-mismatch invariant: no compiler row is unresolvable (missing) and none
+   resolves with the wrong writability. If the property surface changes,
+   regenerate the snapshot and the harness itself re-verifies the runtime. *)
+let java_registry_case () =
+  incr total;
+  let table = Yojson.Safe.from_file "property-table.json" in
+  let snapshot = Yojson.Safe.from_file "java-registry.json" in
+  let key owner name = owner ^ "\x00" ^ String.lowercase_ascii name in
+  let runtime : (string, bool) Hashtbl.t = Hashtbl.create 1024 in
+  (match snapshot with
+   | `List rows ->
+     List.iter
+       (fun row ->
+         match row with
+         | `Assoc kv ->
+           let s k = match List.assoc_opt k kv with Some (`String v) -> v | _ -> "" in
+           let b k = match List.assoc_opt k kv with Some (`Bool v) -> v | _ -> false in
+           Hashtbl.replace runtime (key (s "owner") (s "name")) (b "writable")
+         | _ -> ())
+       rows
+   | _ -> fail "java-registry.json: expected a JSON array");
+  let missing = ref [] and wrong = ref [] in
+  (match table with
+   | `List rows ->
+     List.iter
+       (fun row ->
+         match row with
+         | `Assoc kv ->
+           let s k = match List.assoc_opt k kv with Some (`String v) -> v | _ -> "" in
+           let b k = match List.assoc_opt k kv with Some (`Bool v) -> v | _ -> false in
+           let owner = s "owner" and name = s "name" and writable = b "writable" in
+           (match Hashtbl.find_opt runtime (key owner name) with
+            | None -> missing := Printf.sprintf "%s.%s" owner name :: !missing
+            | Some rw when rw <> writable ->
+              wrong :=
+                Printf.sprintf "%s.%s (table=%s runtime=%s)" owner name
+                  (if writable then "rw" else "ro") (if rw then "rw" else "ro")
+                :: !wrong
+            | Some _ -> ())
+         | _ -> ())
+       rows
+   | _ -> fail "property-table.json: expected a JSON array");
+  if !missing <> [] || !wrong <> [] then
+    fail
+      "property-table disagrees with the Java runtime registry (java-registry.json): \
+       %d unresolvable, %d wrong-writable. Regenerate the snapshot with \
+       './gradlew :java:execHarness -PharnessArgs=\"--check-props \
+       compiler/test/property-table.json --emit compiler/test/java-registry.json\"' \
+       and update PropertyRegistry so the runtime resolves them.\n  missing: %s\n  wrong: %s"
+      (List.length !missing) (List.length !wrong)
+      (String.concat ", " (List.rev !missing))
+      (String.concat ", " (List.rev !wrong))
+
 let list_cases dir suffix =
   Sys.readdir dir |> Array.to_list
   |> List.filter (fun f -> Filename.check_suffix f suffix)
@@ -126,6 +192,7 @@ let () =
   List.iter error_case (list_cases "errors" ".sw");
   property_table_case ();
   check_props_case ();
+  java_registry_case ();
   if !failures > 0 then begin
     Printf.printf "%d of %d test(s) failed\n" !failures !total;
     exit 1

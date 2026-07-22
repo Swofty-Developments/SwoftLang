@@ -40,6 +40,18 @@ public final class PropertyRegistry {
         RESOLVED.clear();
     }
 
+    /**
+     * The fully flattened property set the runtime resolves for {@code type}
+     * (exact class, superclass chain, and transitive interfaces, most-specific
+     * winning). Read-only view used by the property cross-check harness
+     * ({@code ExecHarness --check-props}) to diff the runtime registry against
+     * the compiler's --property-table contract.
+     */
+    public static Map<String, PropertyDef> resolvedFor(Class<?> type) {
+        return java.util.Collections.unmodifiableMap(
+                RESOLVED.computeIfAbsent(type, PropertyRegistry::flatten));
+    }
+
     private static Map<String, PropertyDef> flatten(Class<?> type) {
         List<Class<?>> order = new ArrayList<>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {

@@ -54,6 +54,16 @@ public class ExecHarness {
         if ((args.length == 2 || args.length == 3) && args[0].equals("--persist-test")) {
             System.exit(persistTest(args[1], args.length == 3 ? args[2] : null));
         }
+        if (args.length >= 2 && args[0].equals("--check-props")) {
+            // --check-props <property-table.json> [--emit <snapshot.json>]
+            String emit = null;
+            for (int i = 2; i < args.length - 1; i++) {
+                if (args[i].equals("--emit")) {
+                    emit = args[i + 1];
+                }
+            }
+            System.exit(PropCrossCheck.run(args[1], emit));
+        }
         if (args.length == 2 && args[0].equals("--items-demo")) {
             System.exit(Phase5Harness.itemsDemo(args[1]));
         }

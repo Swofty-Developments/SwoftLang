@@ -517,14 +517,43 @@ public final class PropertyTables {
      * so the pre-existing boolean gravity / rw max_health rows keep priority.
      */
     private static void registerCombatSurface() {
+        // The compiler's --property-table attributes the combat ATTRIBUTE keys to
+        // the Entity owner (as well as Player/Mob), so the rows are registered on
+        // Entity.class — a plain non-living Entity that a script reaches an
+        // attribute on is rejected at execution time by CombatRuntime.asLiving
+        // (the property still RESOLVES, matching the contract that entity.armor is
+        // a valid access; only the value is wrong). Player/Mob are LivingEntity so
+        // they resolve the same rows through the superclass walk. gravity/max_health
+        // are handled by their own rows (boolean gravity on Entity; the clamping
+        // rw max_health on LivingEntity keeps precedence for Player/Mob).
         for (String attrName : net.swofty.combat.CombatRuntime.ATTRIBUTE_PROPERTY_NAMES) {
             Attribute attr = net.swofty.combat.CombatRuntime.attributeFromName(attrName);
-            PropertyRegistry.register(PropertyDef.of(attrName, LivingEntity.class,
-                    entity -> entity.getAttributeValue(attr),
-                    (entity, value) ->
-                            entity.getAttribute(attr).setBaseValue(((Number) value).doubleValue()),
+            PropertyRegistry.register(PropertyDef.of(attrName, Entity.class,
+                    entity -> net.swofty.combat.CombatRuntime.asLiving(entity, "attribute '"
+                            + attrName + "'").getAttributeValue(attr),
+                    (entity, value) -> net.swofty.combat.CombatRuntime.asLiving(entity, "attribute '"
+                            + attrName + "'").getAttribute(attr)
+                            .setBaseValue(((Number) value).doubleValue()),
                     null, Coercions::toDouble, TICK));
         }
+        // Entity-owner max_health fallback: the compiler lists max_health on Entity
+        // too, but the clamping rw row above (registerPlayer) is on LivingEntity, so
+        // Entity.class alone would not resolve it. Register a guarded base-value row
+        // on Entity.class; LivingEntity's specific row keeps precedence for
+        // Player/Mob through the superclass walk.
+        PropertyRegistry.register(PropertyDef.of("max_health", Entity.class,
+                entity -> net.swofty.combat.CombatRuntime.asLiving(entity, "attribute 'max_health'")
+                        .getAttributeValue(Attribute.MAX_HEALTH),
+                (entity, value) -> {
+                    LivingEntity living = net.swofty.combat.CombatRuntime.asLiving(entity,
+                            "attribute 'max_health'");
+                    double max = ((Number) value).doubleValue();
+                    living.getAttribute(Attribute.MAX_HEALTH).setBaseValue(max);
+                    if (living.getHealth() > max) {
+                        living.setHealth((float) max);
+                    }
+                },
+                null, Coercions.doubleAbove(0, "max_health"), TICK));
         // native trackers (Minestom exposes no first-class accessors): remaining
         // i-frame ticks, blocks fallen, positional climbing heuristic, and the
         // live potion-key list. All read-only, off the same runtime helpers the

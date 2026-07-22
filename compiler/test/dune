@@ -10,6 +10,7 @@
   (glob_files errors/*)
   (glob_files errors/mod/*)
   property-table.json
+  java-registry.json
   check-props.expected.json
   %{exe:../bin/main.exe}
   %{exe:test_swoftc.exe})
