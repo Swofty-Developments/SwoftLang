@@ -4,6 +4,17 @@ open Parse_expr
 
 let mks pos node = { s = node; spos = pos }
 
+(* v1.5.0 phase 3: a synthetic local used to thread a single evaluation of a
+   persistent-rooted place through an in-place nested mutation and its
+   re-store. The '__' prefix is reserved (the checker only bars it for
+   persistent decl names, so a local is free) and cannot collide with a
+   user-written variable. *)
+let place_counter = ref 0
+
+let fresh_place_var () =
+  incr place_counter;
+  Printf.sprintf "__place_%d" !place_counter
+
 (* W-tasks: destructure a parsed postfix expression into (owner, id) when it is a
    `<owner>.tasks.<id>` member access — the shape that keys the per-object task
    registry. Returns None for anything else. *)
@@ -922,13 +933,33 @@ let rec parse_statement st =
     ignore (advance st);
     mks p (SMethodCall (parse_postfix st, "clear", []))
   (* natural map delete: 'delete m at k' -> map_delete(m, k), reusing the
-     existing map_delete emit. 'delete world' is matched earlier. *)
+     existing map_delete emit. 'delete world' is matched earlier.
+
+     When the deleted-from place is rooted at a PERSISTENT name the mutation must
+     be re-stored (like the persist-aware 'set ... at'): map_delete alone mutates
+     the cached collection in place but never marks the row dirty (so the change
+     is lost on the next flush/restart) nor rebuilds the reactive liveness index
+     (so a removed reactive struct instance would keep reacting, §4.2). Thread it
+     through persist_set so the row is dirtied, re-serialized, and the index is
+     rebuilt. Non-persistent deletes keep the bare map_delete emit. *)
   | Token.IDENT "delete" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
     ignore (advance st);
-    let mapexpr = parse_postfix st in
-    expect_soft st "at";
-    let key = parse_expr st in
-    mks p (SCall ("map_delete", [ mapexpr; key ]))
+    (match persist_lookup st (peek_tok st) with
+    | Some (name, keyed) ->
+      ignore (advance st);
+      let subject =
+        if keyed && soft st "for" then begin
+          ignore (advance st);
+          Some (parse_postfix st)
+        end
+        else None
+      in
+      finish_persist_delete st p name subject
+    | None ->
+      let mapexpr = parse_postfix st in
+      expect_soft st "at";
+      let key = parse_expr st in
+      mks p (SCall ("map_delete", [ mapexpr; key ])))
   | Token.IDENT name when peek2_tok st = Token.LPAREN ->
     ignore (advance st);
     ignore (advance st);
@@ -1089,7 +1120,31 @@ and parse_set st p =
                          found %s"
            (Token.describe t))
   end
-  else if persist_lookup st (peek_tok st) <> None && peek2_tok st <> Token.DOT then begin
+  else if peek_tok st = Token.LPAREN && persist_lookup st (peek2_tok st) <> None then begin
+    (* v1.5.0 phase 3: a parenthesized persistent place root — '(g).field' or
+       the keyed '(g for subj).field' / '(g for subj) at k'. The parens bind the
+       trailing '.field' / '[k]' / 'at k' to the persistent place instead of
+       letting a keyed subject's own postfix expression greedily absorb it. *)
+    ignore (advance st);
+    let name, keyed =
+      match persist_lookup st (peek_tok st) with Some x -> x | None -> assert false
+    in
+    ignore (advance st);
+    let subject =
+      if keyed then begin
+        expect_soft st "for";
+        Some (parse_postfix st)
+      end
+      else None
+    in
+    expect st Token.RPAREN "')' to close the persistent place";
+    finish_persist_place st p name subject
+  end
+  else if persist_lookup st (peek_tok st) <> None then begin
+    (* a place rooted at a persistent name: 'set g ...', 'set g for subj ...',
+       'set g.field ...', 'set g at k ...'. A keyed subject is a postfix
+       expression, so a '.field' after a bare 'g for subj' would attach to the
+       subject — write '(g for subj).field' (handled above) to reach a field. *)
     let name, keyed =
       match persist_lookup st (peek_tok st) with Some x -> x | None -> assert false
     in
@@ -1101,23 +1156,7 @@ and parse_set st p =
       end
       else None
     in
-    if eat_soft st "at" then begin
-      (* persistent map index-set: 'set m [for subj] at k to v' desugars to a
-         get-mutate-writeback — persist_set(m, map_set(persist_get m, k, v)).
-         persist_get hands out the row's map (a fresh copy when absent), map_set
-         mutates it and returns it, and persist_set stores it back so the change
-         reaches the backend on the next flush (phase 10) *)
-      let key = parse_expr st in
-      expect st Token.TO "'to' after map key in 'set ... at'";
-      let value = parse_expr st in
-      let mapexpr = mke p (EPersistGet (name, subject)) in
-      let updated = mke p (ECall ("map_set", [ mapexpr; key; value ])) in
-      mks p (SPersistSet (name, subject, updated))
-    end
-    else begin
-      expect st Token.TO "'to' after variable name in 'set'";
-      mks p (SPersistSet (name, subject, parse_expr st))
-    end
+    finish_persist_place st p name subject
   end
   else begin
     let lvalue = parse_lvalue st in
@@ -1148,6 +1187,147 @@ and parse_set st p =
       | _ -> error st "Invalid assignment target"
     end
   end
+
+(* v1.5.0 phase 3: finish a 'set' whose LHS is a place rooted at a persistent
+   [name] with optional [subject]. Parses any '.field' / '[key]' segments, then
+   a terminal 'at k'? and 'to value'.
+
+   With no segments this reproduces the legacy persistent set: a whole-value
+   reassignment ('set g to v') or a top-level collection index-set threaded
+   through persist_set ('set g at k to v' desugars to
+   persist_set(g, map_set(persist_get g, k, v)) — persist_get hands out the
+   row's map/list, map_set mutates and returns it, persist_set stores it back so
+   the change reaches the backend on the next flush).
+
+   With segments this is a nested in-place mutation of a persistent struct /
+   collection. Because the store holds the value by reference, mutating it in
+   place is visible immediately; to make it DURABLE the row must be re-stored so
+   the flush marks it dirty and re-serializes the whole blob. A single
+   evaluation of the root is bound to a fresh temp, the mutation runs through
+   that temp, and the SAME object is stored back — correct for present rows (the
+   temp is the cached reference) and for absent rows (get() hands out a fresh
+   copy that only becomes durable once re-stored). *)
+and finish_persist_place st p name subject =
+  let segs = ref [] in
+  let go = ref true in
+  while !go do
+    match peek_tok st with
+    | Token.DOT ->
+      ignore (advance st);
+      let hp = pos_here st in
+      let field = expect_member_word st "field name after '.'" in
+      segs := `Field (hp, field) :: !segs
+    | Token.LBRACKET ->
+      let hp = pos_here st in
+      ignore (advance st);
+      let key = parse_expr st in
+      expect st Token.RBRACKET "']' to close index in 'set'";
+      segs := `Index (hp, key) :: !segs
+    | _ -> go := false
+  done;
+  let segs = List.rev !segs in
+  match segs with
+  | [] ->
+    if eat_soft st "at" then begin
+      let key = parse_expr st in
+      expect st Token.TO "'to' after map key in 'set ... at'";
+      let value = parse_expr st in
+      let mapexpr = mke p (EPersistGet (name, subject)) in
+      let updated = mke p (ECall ("map_set", [ mapexpr; key; value ])) in
+      mks p (SPersistSet (name, subject, updated))
+    end
+    else begin
+      expect st Token.TO "'to' after variable name in 'set'";
+      mks p (SPersistSet (name, subject, parse_expr st))
+    end
+  | _ ->
+    let read_fold base hs =
+      List.fold_left
+        (fun e h ->
+          match h with
+          | `Field (hp, f) -> mke hp (EProp (e, f))
+          | `Index (hp, k) -> mke hp (ECall ("map_get", [ e; k ])))
+        base hs
+    in
+    let tmp = fresh_place_var () in
+    let mutation =
+      if eat_soft st "at" then begin
+        let key = parse_expr st in
+        expect st Token.TO "'to' after map key in 'set ... at'";
+        let value = parse_expr st in
+        let parent = read_fold (mke p (EVar tmp)) segs in
+        mks p (SCall ("map_set", [ parent; key; value ]))
+      end
+      else begin
+        expect st Token.TO "'to' after the place in 'set'";
+        let value = parse_expr st in
+        let rec split = function
+          | [ last ] -> ([], last)
+          | x :: rest ->
+            let init, last = split rest in
+            (x :: init, last)
+          | [] -> assert false
+        in
+        let init, last = split segs in
+        let parent = read_fold (mke p (EVar tmp)) init in
+        match last with
+        | `Field (hp, f) -> mks hp (SSetProp (parent, f, value))
+        | `Index (hp, k) -> mks hp (SCall ("map_set", [ parent; k; value ]))
+      end
+    in
+    let bind = mks p (SAssign (tmp, mke p (EPersistGet (name, subject)))) in
+    let writeback = mks p (SPersistSet (name, subject, mke p (EVar tmp))) in
+    mks p (SBlock [ bind; mutation; writeback ])
+
+(* v1.5.0 phase 3: finish a 'delete <persistent place> at k'. Mirrors
+   {!finish_persist_place}: parses any '.field' / '[key]' segments to reach the
+   collection, then the terminal 'at k', and re-stores the mutated root through
+   persist_set so the delete is durable (row marked dirty) and the reactive
+   liveness index rebuilds (§4.2 teardown). map_delete returns the mutated
+   collection, so the no-segment case threads it straight through persist_set;
+   the nested case binds the root to a temp, deletes through it, and stores the
+   SAME object back. *)
+and finish_persist_delete st p name subject =
+  let segs = ref [] in
+  let go = ref true in
+  while !go do
+    match peek_tok st with
+    | Token.DOT ->
+      ignore (advance st);
+      let hp = pos_here st in
+      let field = expect_member_word st "field name after '.'" in
+      segs := `Field (hp, field) :: !segs
+    | Token.LBRACKET ->
+      let hp = pos_here st in
+      ignore (advance st);
+      let key = parse_expr st in
+      expect st Token.RBRACKET "']' to close index in 'delete'";
+      segs := `Index (hp, key) :: !segs
+    | _ -> go := false
+  done;
+  let segs = List.rev !segs in
+  expect_soft st "at";
+  let key = parse_expr st in
+  let read_fold base hs =
+    List.fold_left
+      (fun e h ->
+        match h with
+        | `Field (hp, f) -> mke hp (EProp (e, f))
+        | `Index (hp, k) -> mke hp (ECall ("map_get", [ e; k ])))
+      base hs
+  in
+  match segs with
+  | [] ->
+    let mapexpr = mke p (EPersistGet (name, subject)) in
+    let updated = mke p (ECall ("map_delete", [ mapexpr; key ])) in
+    mks p (SPersistSet (name, subject, updated))
+  | _ ->
+    let tmp = fresh_place_var () in
+    let parent = read_fold (mke p (EVar tmp)) segs in
+    let bind = mks p (SAssign (tmp, mke p (EPersistGet (name, subject)))) in
+    let mutation = mks p (SCall ("map_delete", [ parent; key ])) in
+    let writeback = mks p (SPersistSet (name, subject, mke p (EVar tmp))) in
+    mks p (SBlock [ bind; mutation; writeback ])
 
 (* send packet field maps: key: expr pairs; a '{ ... }' value is a nested field
    map (for TeamsPacket actions and other nested records), emitted as EMap; a

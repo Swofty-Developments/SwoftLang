@@ -1591,6 +1591,19 @@ let receiver_kind_of_name = function
   | "Hologram" -> Some RHologram
   | _ -> None
 
+(* §4 the receiver vocabulary a struct field type carries, for reactive
+   (@EventReceiver) fields. A base subject value type (Player/Entity/Mob/Item/
+   Block) maps to its receiver kind; every other type — scalars, structs, and
+   the nominal custom types (TCustomMob/TCustomItem, handled by §4.4) — has no
+   vocabulary and returns None. *)
+let receiver_kind_of_ty = function
+  | TPlayer -> Some RPlayer
+  | TEntity -> Some REntity
+  | TMob -> Some RMob
+  | TItem -> Some RItem
+  | TBlock -> Some RBlock
+  | _ -> None
+
 (* the capitalized receiver keywords (base types) + the special `Packet` block *)
 let receiver_type_names =
   [ "Player"; "Entity"; "Mob"; "Item"; "Block"; "Projectile"; "Inventory"; "World"; "Server";
@@ -2636,6 +2649,10 @@ let dump_symbols_json () : Yojson.Safe.t =
       ("builtins", jstrings (List.map (fun bl -> bl.b_name) builtins));
       ("types", jstrings type_names);
       ("namespaces", jstrings namespaces);
+      (* §4 struct-field annotations: the only field modifier is @EventReceiver,
+         which marks a struct field as an event subject driving a reactive block.
+         Surfaced so the editor grammar/LSP can color and complete it. *)
+      ("annotations", jstrings [ "@EventReceiver" ]);
       ( "properties",
         `Assoc (List.map (fun (name, ty) -> (name, props_json ty)) property_owner_types) );
       (* the Packet catalog for the LSP: keyed by simple class name (the `on

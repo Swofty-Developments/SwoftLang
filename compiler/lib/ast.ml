@@ -570,9 +570,9 @@ type storage_conf = {
 }
 
 (* §1 struct declaration: a nominal record type. A field is `name: Type
-   [= default]`. srf_reactive reserves room for the phase-3 @EventReceiver
-   annotation (reactive instance receivers); it is always false for now — the
-   annotation is not yet parsed and no dispatch is generated. *)
+   [= default]`. srf_reactive carries the §4 @EventReceiver annotation (the field
+   is an event subject; handlers on it are declared in a matching reactive block
+   in the struct body). *)
 type struct_field = {
   srf_name : string;
   srf_type : data_type;
@@ -581,10 +581,24 @@ type struct_field = {
   srf_pos : pos;
 }
 
+(* §4 reactive struct field block: `<fieldName> { <handler> { ... } ... }` inside
+   a struct body. sr_field names an @EventReceiver field of the struct; the
+   handler set is the FIELD TYPE's receiver vocabulary (a: Player -> Player
+   handlers). Handlers are param-less; the struct's other fields + the subject
+   field + the event's vars are all in scope as bare names (reusing the
+   inline-handler binding machinery). *)
+type struct_reactive = {
+  sr_field : string;
+  sr_field_pos : pos;
+  sr_handlers : inline_handler list;
+  sr_pos : pos;
+}
+
 type struct_decl = {
   su_tyname : string;
   su_exported : bool;
   su_fields : struct_field list;
+  su_reactive : struct_reactive list;
   su_pos : pos;
 }
 

@@ -152,6 +152,8 @@ def main():
     # Soft keywords in the compiler, advertised under their own dump key so they
     # get a distinct grammar scope without being globally reserved.
     collection_ops = sym.get("collection_ops", [])
+    # §4 struct-field annotations (@EventReceiver): the only field modifiers.
+    annotations = sym.get("annotations", [])
 
     # type primitives = all declared types minus the generic containers
     containers = ["either", "optional", "list", "map"]
@@ -390,6 +392,19 @@ def main():
         ]
     }
 
+    # §4 struct-field event-subject annotation: @EventReceiver marks a struct
+    # field as the subject its reactive block reacts on. Colored as a modifier.
+    if annotations:
+        repo["annotations"] = {
+            "patterns": [
+                {
+                    "comment": "reactive struct field modifier (§4): @EventReceiver",
+                    "name": "storage.modifier.annotation.swoftlang",
+                    "match": "(" + "|".join(re.escape(a) for a in annotations) + r")\b",
+                }
+            ]
+        }
+
     repo["enums"] = {"patterns": enum_patterns}
 
     repo["property-keys"] = {
@@ -564,6 +579,7 @@ def main():
             {"include": "#receivers"},
             {"include": "#import"},
             {"include": "#storage-modifiers"},
+            *([{"include": "#annotations"}] if annotations else []),
             {"include": "#property-accessor"},
             {"include": "#enums"},
             {"include": "#property-keys"},
@@ -599,6 +615,7 @@ def main():
     check(sym["builtins"])
     check(sym["types"])
     check(sym["namespaces"])
+    check(annotations)
     check(prop_names)
     for group, values in sym["enums"].items():
         check(values)

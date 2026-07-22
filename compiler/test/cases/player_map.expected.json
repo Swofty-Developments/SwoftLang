@@ -255,18 +255,25 @@
           {
             "line": 36,
             "col": 9,
-            "kind": "call",
-            "name": "map_delete",
-            "args": [
-              {
-                "line": 36,
-                "col": 16,
-                "kind": "persist_get",
-                "name": "wins",
-                "subject": null
-              },
-              { "line": 36, "col": 24, "kind": "var", "name": "sender" }
-            ]
+            "kind": "persist_set",
+            "name": "wins",
+            "subject": null,
+            "value": {
+              "line": 36,
+              "col": 9,
+              "kind": "call",
+              "name": "map_delete",
+              "args": [
+                {
+                  "line": 36,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "wins",
+                  "subject": null
+                },
+                { "line": 36, "col": 24, "kind": "var", "name": "sender" }
+              ]
+            }
           }
         ]
       }

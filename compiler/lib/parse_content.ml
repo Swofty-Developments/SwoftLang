@@ -39,19 +39,54 @@ let parse_struct_decl st =
   let su_tyname = parse_custom_type_name st ~kw:"struct" in
   expect st Token.LBRACE "'{' after struct type name";
   let fields = ref [] in
-  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
-    let srf_pos = pos_here st in
-    (* room for the phase-3 @EventReceiver field modifier: not parsed yet *)
-    let srf_reactive = false in
+  let reactive = ref [] in
+  (* one field member, possibly preceded by the `@EventReceiver` modifier *)
+  let parse_field srf_pos srf_reactive =
     let srf_name = expect_ident st "struct field name" in
     expect st Token.COLON "':' after struct field name";
     let srf_type = Parse_type.parse_type st in
     let srf_default = if matches st Token.EQUALS then Some (parse_expr st) else None in
-    fields := { srf_name; srf_type; srf_default; srf_reactive; srf_pos } :: !fields;
+    fields := { srf_name; srf_type; srf_default; srf_reactive; srf_pos } :: !fields
+  in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    let mpos = pos_here st in
+    (match peek_tok st with
+    (* §4 @EventReceiver field modifier: marks the field as an event subject. Only
+       precedes a field (name: Type), never a reactive block. *)
+    | Token.AT ->
+      ignore (advance st);
+      let modifier = expect_ident st "field modifier name after '@'" in
+      if modifier <> "EventReceiver" then
+        error st
+          (Printf.sprintf
+             "unknown struct field modifier '@%s'; the only field modifier is '@EventReceiver'"
+             modifier);
+      parse_field mpos true
+    (* §4 reactive block: `<fieldName> { <handler> { ... } }` — an identifier
+       followed by '{' declares instance handlers on a field. An identifier
+       followed by ':' is a plain field. *)
+    | Token.IDENT _ when peek2_tok st = Token.LBRACE ->
+      let sr_field = expect_ident st "reactive field name" in
+      expect st Token.LBRACE "'{' after reactive struct field name";
+      let handlers = ref [] in
+      while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+        let h = parse_inline_handler st in
+        if List.exists (fun (x : inline_handler) -> x.ih_event = h.ih_event) !handlers then
+          error st
+            (Printf.sprintf "duplicate handler '%s' on reactive field '%s'" h.ih_event sr_field);
+        handlers := h :: !handlers;
+        ignore (matches st Token.COMMA)
+      done;
+      expect st Token.RBRACE "'}' to close reactive struct field block";
+      reactive :=
+        { sr_field; sr_field_pos = mpos; sr_handlers = List.rev !handlers; sr_pos = mpos }
+        :: !reactive
+    | _ -> parse_field mpos false);
     ignore (matches st Token.COMMA)
   done;
   expect st Token.RBRACE "'}' to close struct body";
-  { su_tyname; su_exported = false; su_fields = List.rev !fields; su_pos }
+  { su_tyname; su_exported = false; su_fields = List.rev !fields;
+    su_reactive = List.rev !reactive; su_pos }
 
 (* key: expr pairs, comma-optional; used by the item attributes { } block *)
 let parse_kv_block st ~what =

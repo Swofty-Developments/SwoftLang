@@ -207,7 +207,10 @@ and struct_new_type ctx bctx env pos name fields =
           (match fty with
           | TOptional _ -> ()
           | _ -> require_present ctx env v vt ~use:(Printf.sprintf "field '%s'" fname));
-          if not (param_compat fty vt) then
+          (* §4.4: a statically-known custom value may not flow into a reactive field *)
+          if List.mem fname si.si_reactive && is_custom_value_ty vt then
+            reactive_custom_value_error ctx v.epos ~field:fname vt
+          else if not (param_compat fty vt) then
             err ctx v.epos "field '%s' of struct '%s' expects %s, got %s" fname name
               (ty_to_string fty) (ty_to_string vt))
       fields;

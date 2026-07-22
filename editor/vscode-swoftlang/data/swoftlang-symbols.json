@@ -624,6 +624,11 @@
       "doc": "`Packet { }` OOP receiver block."
     },
     {
+      "name": "@EventReceiver",
+      "kind": "annotation",
+      "doc": "`@EventReceiver` struct-field modifier: marks the field as an event subject for a reactive block (§4)."
+    },
+    {
       "name": "is",
       "kind": "operator"
     },

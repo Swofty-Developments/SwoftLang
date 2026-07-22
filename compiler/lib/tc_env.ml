@@ -54,6 +54,10 @@ type pinfo = {
 type sinfo = {
   si_fields : (string * ty) list;
   si_required : string list;
+  (* §4 the names of fields carrying the @EventReceiver modifier (reactive
+     subjects). Used to reject a statically-known custom value flowing into a
+     reactive field at construction / assignment (§4.4). *)
+  si_reactive : string list;
 }
 
 type ctx = {
@@ -300,6 +304,31 @@ let is_struct ctx name = Hashtbl.mem ctx.structs name
    order; [] for an unknown name. *)
 let struct_fields ctx name =
   match Hashtbl.find_opt ctx.structs name with Some si -> si.si_fields | None -> []
+
+(* §4 the reactive (@EventReceiver) field names of a declared struct; [] for an
+   unknown name or a struct with no reactive fields. *)
+let struct_reactive_fields ctx name =
+  match Hashtbl.find_opt ctx.structs name with Some si -> si.si_reactive | None -> []
+
+(* §4.4 a statically-known custom mob/item value may not flow into a reactive
+   struct field — the custom type already owns its behavior in its own block.
+   Emitted at construction (struct_new) and at field assignment (set p.f to). *)
+let reactive_custom_value_error ctx pos ~field vty =
+  match vty with
+  | TCustomMob n ->
+    err ctx pos
+      "'%s' is a custom mob — it owns its behavior in its `mob %s` block and can't also drive the \
+       reactive struct field '%s'. Put the logic in %s's handlers, or use a plain Mob."
+      n n field n
+  | TCustomItem n ->
+    err ctx pos
+      "'%s' is a custom item — it owns its behavior in its `item %s` block and can't also drive the \
+       reactive struct field '%s'. Put the logic in %s's handlers, or use a plain Item."
+      n n field n
+  | _ -> ()
+
+(* is this value type a statically-known nominal custom mob/item? *)
+let is_custom_value_ty = function TCustomMob _ | TCustomItem _ -> true | _ -> false
 
 (* ctx-aware type resolution: like Tc_types.ty_of_dt but a bare Capitalized name
    that is not a builtin resolves against the declared custom types (Ghoul ->

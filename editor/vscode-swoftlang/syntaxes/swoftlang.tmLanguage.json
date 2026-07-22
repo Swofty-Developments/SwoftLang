@@ -37,6 +37,9 @@
       "include": "#storage-modifiers"
     },
     {
+      "include": "#annotations"
+    },
+    {
       "include": "#property-accessor"
     },
     {
@@ -318,6 +321,15 @@
         {
           "name": "storage.modifier.swoftlang",
           "match": "\\b(persistent|set|var)\\b"
+        }
+      ]
+    },
+    "annotations": {
+      "patterns": [
+        {
+          "comment": "reactive struct field modifier (§4): @EventReceiver",
+          "name": "storage.modifier.annotation.swoftlang",
+          "match": "(@EventReceiver)\\b"
         }
       ]
     },

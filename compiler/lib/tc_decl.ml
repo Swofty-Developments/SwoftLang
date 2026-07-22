@@ -345,6 +345,32 @@ let first_nonserializable_field ctx n =
   | None -> None
   | Some si -> List.find_opt (fun (_, t) -> not (serializable_ty ctx ~seen:[ n ] t)) si.si_fields
 
+(* §3.2/§4 reactive serializability: for a reactive struct a live-entity handle
+   field (Entity/Mob and the nominal custom types) persists by uuid and is
+   resolve-or-cull on load, so it counts as serializable — this is exactly the
+   subject a struct reacts on (`boss: Mob` handlers) and the plain data handles
+   §4.4 permits (`leader: Mob`). Every other field falls back to the standard
+   persistence predicate (so World/Schedule/Canvas etc. are still rejected). *)
+let rec reactive_serializable_ty ctx ~seen ty =
+  match ty with
+  | TEntity | TMob | TCustomMob _ | TCustomItem _ -> true
+  | TOptional t | TList t -> reactive_serializable_ty ctx ~seen t
+  | TMap ((TString | TInteger | TPlayer), v) -> reactive_serializable_ty ctx ~seen v
+  | TStruct n ->
+    List.mem n seen
+    ||
+    (match Hashtbl.find_opt ctx.structs n with
+    | Some si ->
+      List.for_all (fun (_, t) -> reactive_serializable_ty ctx ~seen:(n :: seen) t) si.si_fields
+    | None -> true)
+  | other -> serializable_ty ctx ~seen other
+
+let first_reactive_nonserializable_field ctx n =
+  match Hashtbl.find_opt ctx.structs n with
+  | None -> None
+  | Some si ->
+    List.find_opt (fun (_, t) -> not (reactive_serializable_ty ctx ~seen:[ n ] t)) si.si_fields
+
 let check_persistent ctx (pd : persistent_decl) =
   let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let declared = resolve_ty ctx pd.pd_type in
@@ -470,7 +496,7 @@ let register_struct_names ctx (script : Ast.script) =
         Hashtbl.mem ctx.custom_mobs name || Hashtbl.mem ctx.custom_items name
         || Hashtbl.mem ctx.structs name
       then err ctx sd.su_pos "duplicate custom type '%s'" name
-      else Hashtbl.replace ctx.structs name { si_fields = []; si_required = [] })
+      else Hashtbl.replace ctx.structs name { si_fields = []; si_required = []; si_reactive = [] })
     script.structs
 
 (* §1 structs (pass 1b): resolve each struct's field types now that every type
@@ -501,21 +527,70 @@ let register_struct_fields ctx (script : Ast.script) =
             else None)
           sd.su_fields
       in
-      Hashtbl.replace ctx.structs sd.su_tyname { si_fields = fields; si_required = required })
+      let reactive =
+        List.filter_map
+          (fun (f : struct_field) ->
+            if f.srf_reactive && List.mem_assoc f.srf_name fields then Some f.srf_name else None)
+          sd.su_fields
+      in
+      Hashtbl.replace ctx.structs sd.su_tyname
+        { si_fields = fields; si_required = required; si_reactive = reactive })
     script.structs
+
+(* §4.4 the diagnostic when a custom mob/item type is used as a reactive
+   subject: it already owns its behavior in its own declaration block. *)
+let reactive_custom_error ctx pos ~field ~cty ~base =
+  err ctx pos
+    "'%s' is a custom %s — it owns its behavior in its `%s %s` block and can't also drive the \
+     reactive struct field '%s'. Put the logic in %s's handlers, or use a plain %s."
+    cty
+    (match base with RItem -> "item" | _ -> "mob")
+    (match base with RItem -> "item" | _ -> "mob")
+    cty field cty
+    (match base with RItem -> "Item" | _ -> "Mob")
+
+(* §4 validate the @EventReceiver modifier on a struct field: the field type must
+   carry a receiver vocabulary (a base subject: Player/Entity/Mob/Item/Block).
+   A scalar/struct type has no vocabulary (error); a nominal custom type is
+   rejected by the §4.4 constraint (a custom type owns its own behavior). Returns
+   the field's receiver kind when the field is a valid reactive subject. *)
+let check_reactive_field_ty ctx pos ~field fty : Registry.receiver_kind option =
+  match fty with
+  | TCustomMob n -> reactive_custom_error ctx pos ~field ~cty:n ~base:RMob; None
+  | TCustomItem n -> reactive_custom_error ctx pos ~field ~cty:n ~base:RItem; None
+  | _ -> (
+    match Registry.receiver_kind_of_ty fty with
+    | Some rk -> Some rk
+    | None ->
+      err ctx pos
+        "field '%s' is marked '@EventReceiver' but its type %s has no event vocabulary; only a base \
+         subject (Player, Entity, Mob, Item, Block) can be a reactive receiver"
+        field (ty_to_string fty);
+      None)
 
 (* §1 structs: check the declaration itself — each field default (if any) is
    present (unless the field is optional) and type-compatible with the field's
    declared type. Field types are resolved leniently (an unknown Capitalized
-   name degrades to Any, like the nominal-type surface elsewhere). *)
+   name degrades to Any, like the nominal-type surface elsewhere).
+
+   §4 additionally validates the reactive surface: each @EventReceiver field is a
+   valid subject (§4.4), a struct carrying any @EventReceiver field must be
+   serializable (reactive ⇒ persistent-capable), and each reactive block's
+   handlers are typechecked in the struct's full bare-name context. *)
 let check_struct_decl ctx (sd : struct_decl) =
   let bctx =
     { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
       in_schedule = false; override = None }
   in
+  (* the field's receiver kind, keyed by field name, for the reactive blocks *)
+  let subject_kinds = Hashtbl.create 8 in
   List.iter
     (fun (f : struct_field) ->
       let fty = resolve_ty ctx f.srf_type in
+      if f.srf_reactive then (
+        match check_reactive_field_ty ctx f.srf_pos ~field:f.srf_name fty with
+        | Some rk -> Hashtbl.replace subject_kinds f.srf_name rk
+        | None -> ());
       match f.srf_default with
       | None -> ()
       | Some e ->
@@ -528,7 +603,75 @@ let check_struct_decl ctx (sd : struct_decl) =
         if not (param_compat fty dt) then
           err ctx e.epos "the default value of field '%s' must be %s (got %s)" f.srf_name
             (ty_to_string fty) (ty_to_string dt))
-    sd.su_fields
+    sd.su_fields;
+  (* §4.2/§4 reactive ⇒ serializable: a struct with any @EventReceiver field must
+     be persistable (its liveness is persistence-rooted). Name the offending
+     field, reusing the persistence serializability predicate. *)
+  if List.exists (fun (f : struct_field) -> f.srf_reactive) sd.su_fields
+     && not (reactive_serializable_ty ctx ~seen:[] (TStruct sd.su_tyname))
+  then (
+    match first_reactive_nonserializable_field ctx sd.su_tyname with
+    | Some (fn, ft) ->
+      err ctx sd.su_pos
+        "reactive struct '%s' must be serializable (a reactive instance's liveness is \
+         persistence-rooted): field '%s' has non-serializable type %s"
+        sd.su_tyname fn (ty_to_string ft)
+    | None ->
+      err ctx sd.su_pos
+        "reactive struct '%s' must be serializable (a reactive instance's liveness is \
+         persistence-rooted)"
+        sd.su_tyname);
+  (* §4 typecheck each reactive block's handlers. The handler set is the FIELD
+     TYPE's receiver vocabulary; the handlers are param-less with the struct's
+     fields (including the subject field) and the event's vars bound as bare
+     names — no `this`, reusing the inline-handler binding machinery. *)
+  let field_tys = struct_fields ctx sd.su_tyname in
+  List.iter
+    (fun (r : struct_reactive) ->
+      match List.assoc_opt r.sr_field field_tys with
+      | None ->
+        err ctx r.sr_field_pos
+          "reactive block refers to unknown field '%s' in struct '%s'%s" r.sr_field sd.su_tyname
+          (suggestion r.sr_field (List.map fst field_tys))
+      | Some _ when not (List.mem r.sr_field (struct_reactive_fields ctx sd.su_tyname)) ->
+        err ctx r.sr_field_pos
+          "field '%s' has a reactive handler block but is not marked '@EventReceiver'; add the \
+           '@EventReceiver' modifier to make it an event subject"
+          r.sr_field
+      | Some _ -> (
+        match Hashtbl.find_opt subject_kinds r.sr_field with
+        | None -> () (* the field-level check already reported the bad subject *)
+        | Some rk ->
+          let bctx_for (sg : Registry.handler_sig) =
+            let event =
+              Some
+                { e_name = sg.h_event; e_cancellable = sg.h_cancellable; e_props = [];
+                  e_aliases = [] }
+            in
+            { color = Sync; event; args = None; ret_sink = None; packet = false; api = false;
+              in_schedule = false; override = None }
+          in
+          List.iter
+            (fun (h : inline_handler) ->
+              match Registry.find_receiver_method rk h.ih_event with
+              | None ->
+                err ctx h.ih_pos
+                  "unknown %s handler '%s' on reactive field '%s'; valid handlers: %s%s"
+                  (Registry.receiver_name rk) h.ih_event r.sr_field
+                  (String.concat ", " (Registry.receiver_method_names rk))
+                  (suggestion h.ih_event (Registry.receiver_method_names rk))
+              | Some sg ->
+                (* bind the struct's fields (subject included) as bare vars, then
+                   the event's canonical args (an arg sharing a field name wins) *)
+                let env =
+                  List.fold_left (fun env (fn, fty) -> bind env fn fty) empty_env field_tys
+                in
+                let env =
+                  List.fold_left (fun env (cn, pty) -> bind env cn pty) env sg.h_params
+                in
+                ignore (check_stmts ctx (bctx_for sg) env h.ih_body))
+            r.sr_handlers))
+    sd.su_reactive
 
 let register_items ctx items =
   List.iter

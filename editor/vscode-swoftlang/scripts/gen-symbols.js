@@ -243,6 +243,11 @@ function build() {
     symbols.push({ name: op, kind: 'keyword', doc: COLLECTION_OP_DOCS[op] || `Collection operator \`${op}\`.` });
   }
   for (const r of receivers) symbols.push({ name: r, kind: 'receiver', doc: `\`${r} { }\` OOP receiver block.` });
+  // §4 struct-field annotations: @EventReceiver marks a struct field as the
+  // event subject its reactive block reacts on.
+  for (const a of (dump.annotations || [])) {
+    symbols.push({ name: a, kind: 'annotation', doc: `\`${a}\` struct-field modifier: marks the field as an event subject for a reactive block (§4).` });
+  }
   for (const o of operators) symbols.push({ name: o, kind: 'operator' });
   for (const t of types) symbols.push({ name: t, kind: 'type' });
   for (const c of constants) symbols.push({ name: c, kind: 'constant' });

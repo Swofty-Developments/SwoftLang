@@ -85,6 +85,7 @@
     "optional", "either"
   ],
   "namespaces": [ "tags", "tasks", "attributes" ],
+  "annotations": [ "@EventReceiver" ],
   "properties": {
     "Player": [
       { "name": "name", "type": "String", "writable": false },

@@ -1169,7 +1169,10 @@ and check_set_prop ctx bctx env pos target name value =
         (match fty with
         | TOptional _ -> ()
         | _ -> require_present ctx env value vt ~use:"the assigned value");
-        if not (param_compat fty vt) then
+        (* §4.4: a statically-known custom value may not flow into a reactive field *)
+        if List.mem name (struct_reactive_fields ctx n) && is_custom_value_ty vt then
+          reactive_custom_value_error ctx value.epos ~field:name vt
+        else if not (param_compat fty vt) then
           err ctx value.epos "field '%s' of struct %s expects %s (got %s)" name n
             (ty_to_string fty) (ty_to_string vt))
     | _ -> ())

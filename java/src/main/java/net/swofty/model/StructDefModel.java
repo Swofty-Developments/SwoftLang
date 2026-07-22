@@ -11,6 +11,7 @@ import java.util.List;
 public record StructDefModel(
         String name,
         List<StructFieldModel> fields,
+        List<ReactiveFieldModel> reactive,
         int line,
         int col) {
 
@@ -22,5 +23,10 @@ public record StructDefModel(
             }
         }
         return null;
+    }
+
+    /** True when this struct declares at least one {@code @EventReceiver} field (§4). */
+    public boolean hasReactiveFields() {
+        return reactive != null && !reactive.isEmpty();
     }
 }

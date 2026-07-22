@@ -2196,9 +2196,34 @@ public class SwoftJsonLoader {
                     has(field, "line") ? field.get("line").getAsInt() : -1,
                     has(field, "col") ? field.get("col").getAsInt() : -1));
         }
+        // §4 reactive fields: each carries the field name, its receiver subject
+        // type (Player/Mob/…), and a handlers object keyed by method name. Absent
+        // -> empty list, so non-reactive structs stay unchanged.
+        List<net.swofty.model.ReactiveFieldModel> reactive = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "reactive")) {
+            reactive.add(buildReactiveField(element.getAsJsonObject()));
+        }
         return new net.swofty.model.StructDefModel(
                 obj.get("name").getAsString(),
                 fields,
+                reactive,
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
+    }
+
+    /**
+     * One reactive field (§4.1): {@code {field, subject, handlers}}. The
+     * {@code handlers} object maps each method (e.g. "on_death") to
+     * {@code {subject, params, body}} — the same inline-handler shape used by
+     * mob/item declarations, so it reuses {@link #buildInlineHandlers}. The
+     * handler's own {@code subject} is the field name bound as the bare receiver
+     * var; {@code params} bind positionally to that event's arguments.
+     */
+    private static net.swofty.model.ReactiveFieldModel buildReactiveField(JsonObject obj) {
+        return new net.swofty.model.ReactiveFieldModel(
+                obj.get("field").getAsString(),
+                optString(obj, "subject"),
+                buildInlineHandlers(obj),
                 has(obj, "line") ? obj.get("line").getAsInt() : -1,
                 has(obj, "col") ? obj.get("col").getAsInt() : -1);
     }

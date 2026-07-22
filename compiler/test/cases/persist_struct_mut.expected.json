@@ -1,0 +1,787 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 31,
+      "col": 1,
+      "names": [ "guildmut" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 34,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_1",
+                "value": {
+                  "line": 34,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "guild",
+                  "subject": {
+                    "line": 34,
+                    "col": 24,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              },
+              {
+                "line": 34,
+                "col": 32,
+                "kind": "set_prop",
+                "target": {
+                  "line": 34,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_1"
+                },
+                "name": "level",
+                "value": {
+                  "line": 34,
+                  "col": 41,
+                  "kind": "number",
+                  "value": 5,
+                  "integer": true
+                }
+              },
+              {
+                "line": 34,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "guild",
+                "subject": {
+                  "line": 34,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "value": {
+                  "line": 34,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_1"
+                }
+              }
+            ]
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 36,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_2",
+                "value": {
+                  "line": 36,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "guild",
+                  "subject": {
+                    "line": 36,
+                    "col": 24,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              },
+              {
+                "line": 36,
+                "col": 35,
+                "kind": "set_prop",
+                "target": {
+                  "line": 36,
+                  "col": 32,
+                  "kind": "prop",
+                  "target": {
+                    "line": 36,
+                    "col": 9,
+                    "kind": "var",
+                    "name": "__place_2"
+                  },
+                  "name": "hq"
+                },
+                "name": "x",
+                "value": {
+                  "line": 36,
+                  "col": 40,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                }
+              },
+              {
+                "line": 36,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "guild",
+                "subject": {
+                  "line": 36,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "value": {
+                  "line": 36,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_2"
+                }
+              }
+            ]
+          },
+          {
+            "line": 38,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 38,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_3",
+                "value": {
+                  "line": 38,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "guild",
+                  "subject": {
+                    "line": 38,
+                    "col": 24,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              },
+              {
+                "line": 38,
+                "col": 9,
+                "kind": "call",
+                "name": "map_set",
+                "args": [
+                  {
+                    "line": 38,
+                    "col": 32,
+                    "kind": "prop",
+                    "target": {
+                      "line": 38,
+                      "col": 9,
+                      "kind": "var",
+                      "name": "__place_3"
+                    },
+                    "name": "bank"
+                  },
+                  {
+                    "line": 38,
+                    "col": 40,
+                    "kind": "string",
+                    "value": "gold"
+                  },
+                  {
+                    "line": 38,
+                    "col": 50,
+                    "kind": "number",
+                    "value": 100,
+                    "integer": true
+                  }
+                ]
+              },
+              {
+                "line": 38,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "guild",
+                "subject": {
+                  "line": 38,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "value": {
+                  "line": 38,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_3"
+                }
+              }
+            ]
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 40,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_4",
+                "value": {
+                  "line": 40,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "guild",
+                  "subject": {
+                    "line": 40,
+                    "col": 24,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              },
+              {
+                "line": 40,
+                "col": 36,
+                "kind": "call",
+                "name": "map_set",
+                "args": [
+                  {
+                    "line": 40,
+                    "col": 32,
+                    "kind": "prop",
+                    "target": {
+                      "line": 40,
+                      "col": 9,
+                      "kind": "var",
+                      "name": "__place_4"
+                    },
+                    "name": "bank"
+                  },
+                  {
+                    "line": 40,
+                    "col": 37,
+                    "kind": "string",
+                    "value": "silver"
+                  },
+                  {
+                    "line": 40,
+                    "col": 50,
+                    "kind": "number",
+                    "value": 50,
+                    "integer": true
+                  }
+                ]
+              },
+              {
+                "line": 40,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "guild",
+                "subject": {
+                  "line": 40,
+                  "col": 24,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "value": {
+                  "line": 40,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_4"
+                }
+              }
+            ]
+          },
+          {
+            "line": 43,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 43,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_5",
+                "value": {
+                  "line": 43,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "gstate",
+                  "subject": null
+                }
+              },
+              {
+                "line": 43,
+                "col": 20,
+                "kind": "set_prop",
+                "target": {
+                  "line": 43,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_5"
+                },
+                "name": "level",
+                "value": {
+                  "line": 43,
+                  "col": 29,
+                  "kind": "number",
+                  "value": 7,
+                  "integer": true
+                }
+              },
+              {
+                "line": 43,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "gstate",
+                "subject": null,
+                "value": {
+                  "line": 43,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_5"
+                }
+              }
+            ]
+          },
+          {
+            "line": 44,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 44,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_6",
+                "value": {
+                  "line": 44,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "gstate",
+                  "subject": null
+                }
+              },
+              {
+                "line": 44,
+                "col": 9,
+                "kind": "call",
+                "name": "map_set",
+                "args": [
+                  {
+                    "line": 44,
+                    "col": 20,
+                    "kind": "prop",
+                    "target": {
+                      "line": 44,
+                      "col": 9,
+                      "kind": "var",
+                      "name": "__place_6"
+                    },
+                    "name": "bank"
+                  },
+                  {
+                    "line": 44,
+                    "col": 28,
+                    "kind": "string",
+                    "value": "gold"
+                  },
+                  {
+                    "line": 44,
+                    "col": 38,
+                    "kind": "number",
+                    "value": 1,
+                    "integer": true
+                  }
+                ]
+              },
+              {
+                "line": 44,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "gstate",
+                "subject": null,
+                "value": {
+                  "line": 44,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_6"
+                }
+              }
+            ]
+          },
+          {
+            "line": 47,
+            "col": 9,
+            "kind": "block",
+            "statements": [
+              {
+                "line": 47,
+                "col": 9,
+                "kind": "assign",
+                "target": "__place_7",
+                "value": {
+                  "line": 47,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "duel",
+                  "subject": {
+                    "line": 47,
+                    "col": 23,
+                    "kind": "var",
+                    "name": "sender"
+                  }
+                }
+              },
+              {
+                "line": 47,
+                "col": 9,
+                "kind": "call",
+                "name": "map_set",
+                "args": [
+                  {
+                    "line": 47,
+                    "col": 31,
+                    "kind": "prop",
+                    "target": {
+                      "line": 47,
+                      "col": 9,
+                      "kind": "var",
+                      "name": "__place_7"
+                    },
+                    "name": "score"
+                  },
+                  {
+                    "line": 47,
+                    "col": 40,
+                    "kind": "string",
+                    "value": "round1"
+                  },
+                  {
+                    "line": 47,
+                    "col": 52,
+                    "kind": "number",
+                    "value": 3,
+                    "integer": true
+                  }
+                ]
+              },
+              {
+                "line": 47,
+                "col": 9,
+                "kind": "persist_set",
+                "name": "duel",
+                "subject": {
+                  "line": 47,
+                  "col": 23,
+                  "kind": "var",
+                  "name": "sender"
+                },
+                "value": {
+                  "line": 47,
+                  "col": 9,
+                  "kind": "var",
+                  "name": "__place_7"
+                }
+              }
+            ]
+          },
+          {
+            "line": 50,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "guild",
+            "subject": {
+              "line": 50,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": {
+              "line": 50,
+              "col": 34,
+              "kind": "persist_get",
+              "name": "guild",
+              "subject": {
+                "line": 50,
+                "col": 44,
+                "kind": "var",
+                "name": "sender"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 5,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/swoftlang" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 27,
+      "col": 1,
+      "name": "gstate",
+      "subject": null,
+      "type": { "base": "Guild" },
+      "default": {
+        "line": 27,
+        "col": 28,
+        "kind": "struct_new",
+        "struct": "Guild",
+        "fields": [
+          {
+            "name": "name",
+            "value": {
+              "line": 27,
+              "col": 42,
+              "kind": "string",
+              "value": "server"
+            }
+          },
+          {
+            "name": "bank",
+            "value": {
+              "line": 27,
+              "col": 58,
+              "kind": "call",
+              "name": "new_map",
+              "args": []
+            }
+          },
+          {
+            "name": "hq",
+            "value": {
+              "line": 27,
+              "col": 73,
+              "kind": "struct_new",
+              "struct": "Point",
+              "fields": [
+                {
+                  "name": "x",
+                  "value": {
+                    "line": 27,
+                    "col": 84,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 28,
+      "col": 1,
+      "name": "guild",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "Guild" },
+      "default": {
+        "line": 28,
+        "col": 38,
+        "kind": "struct_new",
+        "struct": "Guild",
+        "fields": [
+          {
+            "name": "name",
+            "value": { "line": 28, "col": 52, "kind": "string", "value": "" }
+          },
+          {
+            "name": "bank",
+            "value": {
+              "line": 28,
+              "col": 62,
+              "kind": "call",
+              "name": "new_map",
+              "args": []
+            }
+          },
+          {
+            "name": "hq",
+            "value": {
+              "line": 28,
+              "col": 77,
+              "kind": "struct_new",
+              "struct": "Point",
+              "fields": [
+                {
+                  "name": "x",
+                  "value": {
+                    "line": 28,
+                    "col": 88,
+                    "kind": "number",
+                    "value": 0,
+                    "integer": true
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 29,
+      "col": 1,
+      "name": "duel",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "Duel" },
+      "default": {
+        "line": 29,
+        "col": 36,
+        "kind": "struct_new",
+        "struct": "Duel",
+        "fields": [
+          {
+            "name": "arena",
+            "value": {
+              "line": 29,
+              "col": 50,
+              "kind": "call",
+              "name": "location",
+              "args": [
+                {
+                  "line": 29,
+                  "col": 59,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                },
+                {
+                  "line": 29,
+                  "col": 62,
+                  "kind": "number",
+                  "value": 64,
+                  "integer": true
+                },
+                {
+                  "line": 29,
+                  "col": 66,
+                  "kind": "number",
+                  "value": 0,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "name": "score",
+            "value": {
+              "line": 29,
+              "col": 77,
+              "kind": "call",
+              "name": "new_map",
+              "args": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "structs": [
+    {
+      "line": 10,
+      "col": 1,
+      "name": "Point",
+      "fields": [
+        {
+          "line": 11,
+          "col": 5,
+          "name": "x",
+          "type": { "base": "INTEGER" },
+          "default": null
+        },
+        {
+          "line": 12,
+          "col": 5,
+          "name": "y",
+          "type": { "base": "INTEGER" },
+          "default": {
+            "line": 12,
+            "col": 18,
+            "kind": "number",
+            "value": 0,
+            "integer": true
+          }
+        }
+      ]
+    },
+    {
+      "line": 15,
+      "col": 1,
+      "name": "Guild",
+      "fields": [
+        {
+          "line": 16,
+          "col": 5,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        },
+        {
+          "line": 17,
+          "col": 5,
+          "name": "level",
+          "type": { "base": "INTEGER" },
+          "default": {
+            "line": 17,
+            "col": 22,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          }
+        },
+        {
+          "line": 18,
+          "col": 5,
+          "name": "bank",
+          "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+          "default": null
+        },
+        {
+          "line": 19,
+          "col": 5,
+          "name": "hq",
+          "type": { "base": "Point" },
+          "default": null
+        }
+      ]
+    },
+    {
+      "line": 22,
+      "col": 1,
+      "name": "Duel",
+      "fields": [
+        {
+          "line": 23,
+          "col": 5,
+          "name": "arena",
+          "type": { "base": "LOCATION" },
+          "default": null
+        },
+        {
+          "line": 24,
+          "col": 5,
+          "name": "score",
+          "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+          "default": null
+        }
+      ]
+    }
+  ]
+}

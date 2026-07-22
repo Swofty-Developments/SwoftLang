@@ -1,14 +1,19 @@
 package net.swofty.event;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.EventNode;
 import net.swofty.event.events.GenericSwoftEvent;
+import net.swofty.model.ReactiveFieldModel;
+import net.swofty.model.StructDefModel;
 import net.swofty.nativebridge.representation.Event;
+import net.swofty.structs.InstanceReceiverRuntime;
 
 /**
  * Registers script event handlers against the global event handler.
@@ -50,6 +55,78 @@ public class EventRegistrar {
         }
         eventNodes.clear();
         ReceiverDispatch.resetBases();
+        InstanceReceiverRuntime.reset();
+    }
+
+    /**
+     * Register the struct-instance receivers (§4): one listener per distinct
+     * {@code (subjectType, method)} that any reactive field declares. Each
+     * listener delegates to {@link InstanceReceiverRuntime#dispatch}, which runs
+     * the live instances whose reactive field equals the event subject.
+     *
+     * <p>MUST be called AFTER {@link #registerEvent} has registered the global
+     * receivers, so a struct-instance listener sharing an event node is appended
+     * after the global receiver's — giving the design's global -&gt; custom -&gt;
+     * struct-instance order for cumulative (non-short-circuiting) cancel.
+     */
+    public void registerStructReceivers(List<StructDefModel> structs) {
+        boolean anyReactive = false;
+        Set<String> seen = new HashSet<>();
+        for (StructDefModel def : structs) {
+            if (!def.hasReactiveFields()) {
+                continue;
+            }
+            anyReactive = true;
+            for (ReactiveFieldModel field : def.reactive()) {
+                String subjectType = field.subject();
+                if (subjectType == null) {
+                    continue;
+                }
+                for (String method : field.handlers().keySet()) {
+                    if (seen.add(subjectType + "#" + method)) {
+                        registerStructReceiverListener(subjectType, method);
+                    }
+                }
+            }
+        }
+        // arm the runtime + derive the initial liveness index from the loaded
+        // persistent roots (empty until instances are dropped into a persistent)
+        InstanceReceiverRuntime.arm(anyReactive);
+        InstanceReceiverRuntime.rebuild();
+    }
+
+    /**
+     * Attach one struct-instance listener for {@code (subjectType, method)}:
+     * resolve the native event it dispatches on (the same one a global receiver
+     * of that method would), then delegate delivery to the instance runtime.
+     */
+    private void registerStructReceiverListener(String subjectType, String method) {
+        String eventName = ReceiverEventMap.eventFor(subjectType, method);
+        if (eventName == null) {
+            System.out.println("Struct-instance receiver " + subjectType + "." + method
+                    + " has no native event (rides a content runtime) - skipping");
+            return;
+        }
+        ReceiverBinding.Spec spec = ReceiverBinding.lookup(eventName, subjectType);
+        String className = spec != null && spec.minestomClass() != null
+                ? spec.minestomClass() : null;
+        if (className == null && EventType.fromIdentifier(eventName) != null) {
+            className = EventType.getMinestomClassName(eventName);
+        }
+        if (className == null) {
+            EventCatalog.Entry entry = EventCatalog.resolve(eventName).orElse(null);
+            if (entry != null) {
+                className = entry.className();
+            }
+        }
+        if (className == null) {
+            System.err.println("Struct-instance receiver " + subjectType + "." + method
+                    + " -> unknown event '" + eventName + "' - skipping");
+            return;
+        }
+        registerListener(eventName, className,
+                (minestomEvent) -> InstanceReceiverRuntime.dispatch(
+                        subjectType, method, spec, minestomEvent));
     }
 
     public void registerEvent(Event event) {

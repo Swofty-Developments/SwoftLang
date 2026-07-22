@@ -226,6 +226,10 @@ public class SwoftLangEngine {
 
         // Register events
         eventProcessor.registerEvents();
+        // §4 struct-instance receivers: registered AFTER the global receivers so
+        // their listeners are appended after (global -> struct-instance order),
+        // then the liveness index is derived from the loaded persistent roots.
+        eventProcessor.getEventRegistrar().registerStructReceivers(structs);
 
         // Wire the gui/ui runtimes and hand them the declarations. On reload,
         // cancel the previous auto-refresh tasks first so scoreboards/tablists/

@@ -72,6 +72,7 @@ rule token = parse
   | '}' { ret lexbuf RBRACE }
   | '|' { ret lexbuf PIPE }
   | ',' { ret lexbuf COMMA }
+  | '@' { ret lexbuf AT }
   | ".." { ret lexbuf DOTDOT }
   | '.' { ret lexbuf DOT }
   | '[' { ret lexbuf LBRACKET }

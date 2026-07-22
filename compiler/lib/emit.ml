@@ -988,11 +988,52 @@ let struct_field (f : struct_field) =
           ("default", opt expr f.srf_default) ]
        @ (if f.srf_reactive then [ ("reactive", `Bool true) ] else [])))
 
+(* §4 a reactive field block: the subject field, its resolved base-subject type
+   (the vocabulary picker), and the instance handlers keyed by event name. Each
+   handler entry carries the bare subject-field name, the event's canonical arg
+   names (bound as bare vars alongside the struct's other fields), and the body.
+   The runtime dispatches these last (§4.3 precedence) for any instance reachable
+   from a persistent root (§4.2 liveness). *)
+let struct_reactive_block (sd : struct_decl) (r : struct_reactive) =
+  let field_dt =
+    match List.find_opt (fun (f : struct_field) -> f.srf_name = r.sr_field) sd.su_fields with
+    | Some f -> Some f.srf_type
+    | None -> None
+  in
+  let rk =
+    match field_dt with
+    | Some dt -> Registry.receiver_kind_of_ty (Tc_types.ty_of_dt dt)
+    | None -> None
+  in
+  let subject = match rk with Some k -> Registry.receiver_name k | None -> "" in
+  let handler (h : inline_handler) =
+    let params =
+      match rk with
+      | Some k -> (
+        match Registry.find_receiver_method k h.ih_event with
+        | Some sg -> List.map (fun (n, _) -> `String n) sg.h_params
+        | None -> [])
+      | None -> []
+    in
+    ( h.ih_event,
+      `Assoc
+        [ ("subject", `String r.sr_field); ("params", `List params);
+          ("body", statements h.ih_body) ] )
+  in
+  `Assoc
+    (with_pos r.sr_pos
+       [ ("field", `String r.sr_field); ("subject", `String subject);
+         ("handlers", `Assoc (List.map handler r.sr_handlers)) ])
+
 let struct_decl (sd : struct_decl) =
   `Assoc
     (with_pos sd.su_pos
-       [ ("name", `String sd.su_tyname);
-         ("fields", `List (List.map struct_field sd.su_fields)) ])
+       ([ ("name", `String sd.su_tyname);
+          ("fields", `List (List.map struct_field sd.su_fields)) ]
+       @
+       match sd.su_reactive with
+       | [] -> []
+       | rs -> [ ("reactive", `List (List.map (struct_reactive_block sd) rs)) ]))
 
 let persistent pd =
   `Assoc

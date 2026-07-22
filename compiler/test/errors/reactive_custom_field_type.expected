@@ -1,0 +1,1 @@
+custom mob — it owns its behavior in its `mob Ghoul` block and can't also drive the reactive struct field 'anchor'

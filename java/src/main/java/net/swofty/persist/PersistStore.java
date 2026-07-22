@@ -179,6 +179,54 @@ public final class PersistStore {
         Object coerced = coerceRuntime(decl, value);
         cache.computeIfAbsent(decl.name(), k -> new ConcurrentHashMap<>()).put(key, coerced);
         dirty.computeIfAbsent(decl.name(), k -> ConcurrentHashMap.newKeySet()).add(key);
+        // §4.2: a write to a persistent root can add or remove a reactive struct
+        // instance from the live set — re-derive the liveness index. No-op (a
+        // cheap flag check) when no struct declares a reactive field.
+        net.swofty.structs.InstanceReceiverRuntime.rebuild();
+    }
+
+    /** Visitor over one cached persistent row: its variable name, storage key, value. */
+    @FunctionalInterface
+    public interface RowVisitor {
+        void visit(String var, String key, Object value);
+    }
+
+    /**
+     * Visit every row currently cached across all persistent variables — the
+     * persistent roots the instance-receiver runtime walks to derive liveness
+     * (§4.2). The (var, key) pair is the row's provenance: a reactive struct
+     * instance found while walking a row belongs to that row, so a mutation to
+     * the instance inside a handler can re-dirty exactly that row (see
+     * {@link #markDirty}) to make it durable. Iterates a snapshot of the row
+     * references, so a concurrent write never breaks the walk.
+     */
+    public void forEachCachedRow(RowVisitor visitor) {
+        for (Map.Entry<String, ConcurrentHashMap<String, Object>> var : cache.entrySet()) {
+            for (Map.Entry<String, Object> row
+                    : new java.util.ArrayList<>(var.getValue().entrySet())) {
+                visitor.visit(var.getKey(), row.getKey(), row.getValue());
+            }
+        }
+    }
+
+    /**
+     * Mark an already-cached row dirty so the next flush re-serializes it, WITHOUT
+     * re-coercing or re-storing the value (it is mutated in place). Used by the
+     * instance-receiver runtime (§4.2): a reactive handler mutates a struct field
+     * of a persistent-rooted instance in place (e.g. {@code set score at b to N}),
+     * which is visible in memory but never dirties the owning row on its own — so
+     * the mutation would be lost on the next reload. Re-dirtying the row here makes
+     * the "durable stateful actor" durable. No-op for an unknown/undeclared var.
+     */
+    public void markDirty(String name, String key) {
+        if (name == null || key == null) {
+            return;
+        }
+        PersistentDeclModel decl = declarations.get(name);
+        if (decl == null) {
+            return;
+        }
+        dirty.computeIfAbsent(decl.name(), k -> ConcurrentHashMap.newKeySet()).add(key);
     }
 
     /**

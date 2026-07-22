@@ -56,6 +56,7 @@ type t =
   | LBRACKET
   | RBRACKET
   | ARROW
+  | AT
   | EOF
 
 let describe = function
@@ -116,4 +117,5 @@ let describe = function
   | LBRACKET -> "'['"
   | RBRACKET -> "']'"
   | ARROW -> "'->'"
+  | AT -> "'@'"
   | EOF -> "end of file"

@@ -1,5 +1,5 @@
 command "x" {
     execute {
-        send @"oops"
+        send #"oops"
     }
 }
