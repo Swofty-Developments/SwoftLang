@@ -37,6 +37,20 @@ import net.swofty.structs.StructValue;
 public final class PersistStore {
     private static volatile PersistStore active;
 
+    /**
+     * Serialized-struct field carrying the schema version the blob was written
+     * under (Tier-2 migration). Uses the reserved {@code __} prefix, which the
+     * checker forbids as a struct field name, so it can never collide with a
+     * real field.
+     */
+    private static final String SCHEMA_FIELD = "__schema";
+
+    /** De-duplicates schema-drift warnings per (struct, field, reason). */
+    private static final Set<String> driftWarned = ConcurrentHashMap.newKeySet();
+
+    /** Lazily-built bare executor for struct-field default expressions on load. */
+    private static volatile ASTExecutor healExecutor;
+
     private final Map<String, PersistentDeclModel> declarations = new LinkedHashMap<>();
     private final Map<String, Object> defaults = new HashMap<>();
     private final SwoftStorage storage;
@@ -809,26 +823,266 @@ public final class PersistStore {
         if (def == null) {
             return null;
         }
-        com.google.gson.JsonObject object = blob.getAsJsonObject();
+        return healStruct(def, blob.getAsJsonObject());
+    }
+
+    /**
+     * Load a stored struct blob into a live instance, tolerating schema drift —
+     * this NEVER returns null and NEVER throws on a shape mismatch (worst case a
+     * default-filled instance + a warning). Two tiers:
+     *
+     * <p>Tier 2 (versioned migration): read the stored {@code __schema} version
+     * (absent =&gt; 1); if it is below the struct's current schema, run the
+     * {@code migrate to k} blocks in ascending order with the raw prior fields
+     * bound, collecting the field values they assign.
+     *
+     * <p>Tier 1 (auto-heal, always): for every field of the CURRENT struct, use
+     * the migrate-produced value if any, else the stored value when present and
+     * type-compatible, else the field default (silent when the field has one; a
+     * once-only warning + the type zero/none when it does not). A type-
+     * incompatible kept value falls back to the field default + a warning. Any
+     * stored field not in the current struct is dropped silently.
+     */
+    private static StructValue healStruct(StructDefModel def, com.google.gson.JsonObject object) {
+        int storedVersion = readStoredSchema(object);
+        int current = def.schemaVersion();
+        if (storedVersion > current) {
+            // downgrade: the blob was written by a newer schema than this build
+            // knows. There are no migrate blocks running backwards, so just load
+            // best-effort through Tier-1 (kept fields used, unknown newer fields
+            // dropped) and warn once — never crash or corrupt.
+            warnDowngrade(def, storedVersion, current);
+        }
+        Map<String, Object> produced =
+                (current > 1 && storedVersion < current && !def.migrationsInOrder().isEmpty())
+                        ? runMigrations(def, object, storedVersion, current)
+                        : Map.of();
+
         LinkedHashMap<String, Object> values = new LinkedHashMap<>();
         for (StructFieldModel field : def.fields()) {
-            JsonElement element = object.get(field.name());
+            String name = field.name();
             Object value;
-            if (element == null || element.isJsonNull()) {
-                if (field.type().getBaseType() == BaseType.OPTIONAL) {
-                    value = NoneValue.INSTANCE;
+            if (produced.containsKey(name)) {
+                // a migrate block assigned this field; validate it against the
+                // field type by round-tripping through the typed decoder
+                Object coerced = coerceProduced(field.type(), produced.get(name));
+                if (coerced != null || field.type().getBaseType() == BaseType.OPTIONAL) {
+                    value = coerced;
                 } else {
-                    return null;
+                    warnDrift(def, field, "migration produced an incompatible value for");
+                    value = fieldDefaultOrZero(def, field, false);
                 }
             } else {
-                value = coerceStoredValue(field.type(), element);
-                if (value == null) {
-                    return null;
+                JsonElement element = object.get(name);
+                if (element != null && !element.isJsonNull()) {
+                    Object stored = coerceStoredValue(field.type(), element);
+                    if (stored != null) {
+                        value = stored;
+                    } else {
+                        warnDrift(def, field, "incompatible stored value for");
+                        value = fieldDefaultOrZero(def, field, false);
+                    }
+                } else if (field.type().getBaseType() == BaseType.OPTIONAL) {
+                    // an absent optional field is legitimately none (silent)
+                    value = NoneValue.INSTANCE;
+                } else {
+                    // absent required field: silent when it has a default,
+                    // otherwise warn once and use the type zero/none
+                    value = fieldDefaultOrZero(def, field, true);
                 }
             }
-            values.put(field.name(), value);
+            values.put(name, value == null ? NoneValue.INSTANCE : value);
         }
         return new StructValue(def.name(), values);
+    }
+
+    /** The stored schema version of a struct blob; absent/garbage =&gt; 1. */
+    private static int readStoredSchema(com.google.gson.JsonObject object) {
+        JsonElement element = object.get(SCHEMA_FIELD);
+        if (element != null && element.isJsonPrimitive()) {
+            try {
+                return Math.max(1, element.getAsInt());
+            } catch (Exception ignored) {
+                // fall through to the default
+            }
+        }
+        return 1;
+    }
+
+    /**
+     * Run the {@code migrate to k} blocks that upgrade a stored row from
+     * {@code storedVersion} up to {@code current}, in ascending order, through
+     * the normal statement runtime. The raw prior fields are bound both as bare
+     * variables and under a {@code raw} map so a block can read {@code title} or
+     * {@code raw["title"]}. A block assigns the new-shape fields with plain
+     * {@code set <field> to ...} statements. Returns the field values the blocks
+     * actually produced — a variable that a block newly bound or changed from
+     * its bound old value. A failing block is warned and skipped (never crashes
+     * the load); Tier-1 auto-heal then fills anything left untouched.
+     */
+    private static Map<String, Object> runMigrations(StructDefModel def,
+            com.google.gson.JsonObject object, int storedVersion, int current) {
+        Map<String, Object> vars = new HashMap<>();
+        net.swofty.runtime.MapValue raw = new net.swofty.runtime.MapValue();
+        for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+            if (SCHEMA_FIELD.equals(entry.getKey())) {
+                continue;
+            }
+            Object decoded = decodeRaw(entry.getValue());
+            raw.put(entry.getKey(), decoded);
+            vars.put(entry.getKey(), decoded);
+        }
+        vars.put("raw", raw);
+        Map<String, Object> before = new HashMap<>(vars);
+
+        ASTExecutor executor = new ASTExecutor(null, vars);
+        for (net.swofty.model.MigrateBlockModel migrate : def.migrationsInOrder()) {
+            if (migrate.toVersion() <= storedVersion || migrate.toVersion() > current) {
+                continue;
+            }
+            try {
+                executor.context().runBlock(migrate.body());
+            } catch (Exception e) {
+                System.err.println("Warning: migrate to " + migrate.toVersion() + " for struct '"
+                        + def.name() + "' failed: " + e.getMessage()
+                        + " - auto-heal will fill the rest from defaults");
+            }
+        }
+
+        // a field the migration touched: a bare var it newly bound, or whose
+        // value it changed from the bound old value. Untouched old fields carry
+        // through Tier-1's typed stored-value path instead (so a richly-typed
+        // unchanged field is not corrupted by the generic raw decode).
+        Map<String, Object> produced = new HashMap<>();
+        for (StructFieldModel field : def.fields()) {
+            String name = field.name();
+            if (!vars.containsKey(name)) {
+                continue;
+            }
+            Object now = vars.get(name);
+            if (!before.containsKey(name) || !java.util.Objects.equals(now, before.get(name))) {
+                produced.put(name, now);
+            }
+        }
+        return produced;
+    }
+
+    /**
+     * Decode a stored JSON element into a generic runtime value for a migrate
+     * block to read (no declared old-field types are available at load): objects
+     * become MapValues, arrays ArrayLists, integral numbers Integers, and other
+     * numbers Doubles. Symmetric enough with the script value model that a
+     * migrate expression sees the old fields as ordinary maps/lists/scalars.
+     */
+    private static Object decodeRaw(JsonElement element) {
+        if (element == null || element.isJsonNull()) {
+            return NoneValue.INSTANCE;
+        }
+        if (element.isJsonPrimitive()) {
+            JsonPrimitive primitive = element.getAsJsonPrimitive();
+            if (primitive.isBoolean()) {
+                return primitive.getAsBoolean();
+            }
+            if (primitive.isNumber()) {
+                double d = primitive.getAsDouble();
+                if (d == Math.rint(d) && !Double.isInfinite(d)
+                        && Math.abs(d) <= Integer.MAX_VALUE) {
+                    return (int) d;
+                }
+                return d;
+            }
+            return primitive.getAsString();
+        }
+        if (element.isJsonArray()) {
+            List<Object> out = new java.util.ArrayList<>();
+            for (JsonElement child : element.getAsJsonArray()) {
+                out.add(decodeRaw(child));
+            }
+            return out;
+        }
+        net.swofty.runtime.MapValue map = new net.swofty.runtime.MapValue();
+        for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
+            map.put(entry.getKey(), decodeRaw(entry.getValue()));
+        }
+        return map;
+    }
+
+    /**
+     * Validate a migrate-produced runtime value against a field's declared type
+     * by round-tripping it through the typed serializer + decoder (so a produced
+     * struct/list/map/scalar reloads exactly as a stored one would). Returns the
+     * coerced value, or null when the value cannot satisfy the field type (the
+     * caller then falls back to the field default + warn). none for an optional
+     * field decodes back to none.
+     */
+    private static Object coerceProduced(DataType type, Object value) {
+        try {
+            return coerceStoredValue(type, toJson(value));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * The value to use for a field the stored row could not supply: the field's
+     * evaluated default when it has one (silent), otherwise the type zero/none.
+     * When {@code silentWithoutDefault} is false the no-default case still warns
+     * once (a type-incompatible or migration-failed field always deserves a
+     * warning); when true it warns once only if the field also has no default
+     * (a plainly-missing required field).
+     */
+    private static Object fieldDefaultOrZero(StructDefModel def, StructFieldModel field,
+            boolean silentWithoutDefault) {
+        if (field.hasDefault()) {
+            try {
+                return sharedExecutor().evaluateExpression(field.defaultValue());
+            } catch (Exception e) {
+                // fall through to the type zero/none
+            }
+        } else if (silentWithoutDefault) {
+            warnDrift(def, field, "missing stored value (no default) for");
+        }
+        return zeroFieldValue(field.type());
+    }
+
+    /** The type zero/none for a struct field: nested structs default-fill. */
+    private static Object zeroFieldValue(DataType type) {
+        if (type.getBaseType() == BaseType.STRUCT) {
+            StructDefModel nested = StructRegistry.get(type.getTypeName());
+            return nested != null
+                    ? healStruct(nested, new com.google.gson.JsonObject())
+                    : NoneValue.INSTANCE;
+        }
+        return zeroValue(type.getBaseType());
+    }
+
+    /** A bare executor for evaluating struct-field default expressions on load. */
+    private static ASTExecutor sharedExecutor() {
+        ASTExecutor executor = healExecutor;
+        if (executor == null) {
+            executor = new ASTExecutor(null, new HashMap<>());
+            healExecutor = executor;
+        }
+        return executor;
+    }
+
+    /** Warn at most once per struct that a stored blob is from a newer schema. */
+    private static void warnDowngrade(StructDefModel def, int storedVersion, int current) {
+        String key = def.name() + "#__downgrade#" + storedVersion + ">" + current;
+        if (driftWarned.add(key)) {
+            System.err.println("Warning: struct '" + def.name() + "' stored schema version "
+                    + storedVersion + " is newer than this build's schema " + current
+                    + " - loading best-effort (fields unknown to this version are dropped)");
+        }
+    }
+
+    /** Warn at most once per (struct, field, reason) so a bad column never spams. */
+    private static void warnDrift(StructDefModel def, StructFieldModel field, String reason) {
+        String key = def.name() + "#" + field.name() + "#" + reason;
+        if (driftWarned.add(key)) {
+            System.err.println("Warning: struct '" + def.name() + "' field '" + field.name()
+                    + "': " + reason + " it - using the field default");
+        }
     }
 
     /**
@@ -848,6 +1102,11 @@ public final class PersistStore {
             }
             return object;
         }
+        // stamp the current schema version so a later load can detect drift and
+        // run the versioned migrate-to-k blocks (Tier-2). Written for every
+        // known struct blob (top-level and nested); an absent __schema on load
+        // means version 1 (rows written before schema versioning existed).
+        object.addProperty(SCHEMA_FIELD, def.schemaVersion());
         for (StructFieldModel field : def.fields()) {
             object.add(field.name(), toJson(struct.getField(field.name())));
         }

@@ -2203,10 +2203,37 @@ public class SwoftJsonLoader {
         for (JsonElement element : optArray(obj, "reactive")) {
             reactive.add(buildReactiveField(element.getAsJsonObject()));
         }
+        // schema migration (Tier 2): the current schema version (default 1) and
+        // any `migrate to N { ... }` blocks. Both are absent for an unversioned
+        // struct, so those keep schema 1 with no migrations.
+        Integer schema = optInt(obj, "schema");
+        List<net.swofty.model.MigrateBlockModel> migrations = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "migrations")) {
+            migrations.add(buildMigrateBlock(element.getAsJsonObject()));
+        }
         return new net.swofty.model.StructDefModel(
                 obj.get("name").getAsString(),
                 fields,
                 reactive,
+                schema != null ? schema : 1,
+                migrations,
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
+    }
+
+    /**
+     * One {@code migrate to N { ... }} block: {@code {to, body}}. {@code to} is
+     * the schema version this block upgrades to; {@code body} is a plain
+     * statement array run with the raw prior fields bound. A missing {@code to}
+     * defaults to 1 so a malformed block never crashes the load.
+     */
+    private static net.swofty.model.MigrateBlockModel buildMigrateBlock(JsonObject obj) {
+        Integer to = optInt(obj, "to");
+        JsonElement body = has(obj, "body") ? obj.get("body")
+                : (has(obj, "statements") ? obj.get("statements") : new JsonArray());
+        return new net.swofty.model.MigrateBlockModel(
+                to != null ? to : 1,
+                buildExecuteBlock(body),
                 has(obj, "line") ? obj.get("line").getAsInt() : -1,
                 has(obj, "col") ? obj.get("col").getAsInt() : -1);
     }

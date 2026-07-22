@@ -1025,15 +1025,28 @@ let struct_reactive_block (sd : struct_decl) (r : struct_reactive) =
        [ ("field", `String r.sr_field); ("subject", `String subject);
          ("handlers", `Assoc (List.map handler r.sr_handlers)) ])
 
+(* §5 a versioned migration block: the target schema version it upgrades to and
+   the statement body. The body reads the raw prior fields via the `raw` map and
+   assigns the current struct's fields as bare vars; the runtime runs these in
+   ascending version order for any stored row older than the current schema. *)
+let struct_migration (m : struct_migration) =
+  `Assoc (with_pos m.sm_pos [ ("to", `Int m.sm_version); ("body", statements m.sm_body) ])
+
 let struct_decl (sd : struct_decl) =
   `Assoc
     (with_pos sd.su_pos
-       ([ ("name", `String sd.su_tyname);
-          ("fields", `List (List.map struct_field sd.su_fields)) ]
+       ([ ("name", `String sd.su_tyname) ]
+       (* §5 schema version: emitted only when non-default so the runtime stamps
+          __schema and applies migrations; absence means version 1. *)
+       @ (if sd.su_schema <> 1 then [ ("schema", `Int sd.su_schema) ] else [])
+       @ [ ("fields", `List (List.map struct_field sd.su_fields)) ]
+       @ (match sd.su_reactive with
+          | [] -> []
+          | rs -> [ ("reactive", `List (List.map (struct_reactive_block sd) rs)) ])
        @
-       match sd.su_reactive with
+       match sd.su_migrations with
        | [] -> []
-       | rs -> [ ("reactive", `List (List.map (struct_reactive_block sd) rs)) ]))
+       | ms -> [ ("migrations", `List (List.map struct_migration ms)) ]))
 
 let persistent pd =
   `Assoc

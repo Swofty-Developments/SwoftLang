@@ -2529,6 +2529,10 @@ let control_keywords =
   [
     (* declaration/handler heads that read as control keywords *)
     "command"; "event"; "on"; "every"; "schedule";
+    (* §5 struct schema-migration soft keywords (struct-body only): `schema: N`
+       and `migrate to N { ... }`. Reserved by the parser only inside a struct
+       body; advertised here so the editor colors/completes them. *)
+    "schema"; "migrate";
     (* control flow *)
     "if"; "else"; "loop"; "while"; "times"; "function"; "return"; "call";
     (* module machinery *)

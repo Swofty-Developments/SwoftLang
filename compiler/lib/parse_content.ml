@@ -40,6 +40,8 @@ let parse_struct_decl st =
   expect st Token.LBRACE "'{' after struct type name";
   let fields = ref [] in
   let reactive = ref [] in
+  let schema = ref 1 in
+  let migrations = ref [] in
   (* one field member, possibly preceded by the `@EventReceiver` modifier *)
   let parse_field srf_pos srf_reactive =
     let srf_name = expect_ident st "struct field name" in
@@ -51,6 +53,22 @@ let parse_struct_decl st =
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     let mpos = pos_here st in
     (match peek_tok st with
+    (* §5 schema version declaration: `schema: N` — the struct's current schema
+       version. `schema` is reserved as this keyword inside a struct body (it is
+       not usable as a field name). *)
+    | Token.IDENT "schema" when peek2_tok st = Token.COLON ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'schema'";
+      schema := parse_int_number st "schema version number"
+    (* §5 versioned migration block: `migrate to N { <stmts> }` — upgrades a
+       stored row from an older schema version to N. `migrate` is reserved as
+       this keyword inside a struct body. *)
+    | Token.IDENT "migrate" when peek2_tok st = Token.TO ->
+      ignore (advance st);
+      expect st Token.TO "'to' after 'migrate'";
+      let sm_version = parse_int_number st "migrate target schema version" in
+      let sm_body = parse_braced_statements st in
+      migrations := { sm_version; sm_body; sm_pos = mpos } :: !migrations
     (* §4 @EventReceiver field modifier: marks the field as an event subject. Only
        precedes a field (name: Type), never a reactive block. *)
     | Token.AT ->
@@ -85,8 +103,8 @@ let parse_struct_decl st =
     ignore (matches st Token.COMMA)
   done;
   expect st Token.RBRACE "'}' to close struct body";
-  { su_tyname; su_exported = false; su_fields = List.rev !fields;
-    su_reactive = List.rev !reactive; su_pos }
+  { su_tyname; su_exported = false; su_schema = !schema; su_fields = List.rev !fields;
+    su_reactive = List.rev !reactive; su_migrations = List.rev !migrations; su_pos }
 
 (* key: expr pairs, comma-optional; used by the item attributes { } block *)
 let parse_kv_block st ~what =

@@ -1,0 +1,1 @@
+migrate block assigns 'nickname', which is not a field of struct 'Guild'

@@ -690,7 +690,82 @@ let check_struct_decl ctx (sd : struct_decl) =
                 in
                 ignore (check_stmts ctx (bctx_for sg) env h.ih_body))
             r.sr_handlers))
-    sd.su_reactive
+    sd.su_reactive;
+  (* §5 schema-migration validation + typecheck (v1.7.0 Batch B). The current
+     struct fields are registered by now (register_struct_fields ran in pass 1b),
+     so each field is bound as an assignable bare var and `raw` (the prior stored
+     fields) is exposed as a map<String, Any> inside every migrate body. *)
+  if sd.su_schema < 1 then
+    err ctx sd.su_pos "struct '%s' schema version must be >= 1 (got %d)" sd.su_tyname sd.su_schema;
+  (* schema/migrate only make sense on a persistent-capable (serializable) struct:
+     migration exists to protect on-disk data. *)
+  if
+    (sd.su_schema <> 1 || sd.su_migrations <> [])
+    && not (serializable_ty ctx ~seen:[] (TStruct sd.su_tyname))
+  then (
+    match first_nonserializable_field ctx sd.su_tyname with
+    | Some (fn, ft) ->
+      err ctx sd.su_pos
+        "struct '%s' declares a schema/migration but is not persistent-capable: field '%s' has \
+         non-serializable type %s"
+        sd.su_tyname fn (ty_to_string ft)
+    | None ->
+      err ctx sd.su_pos
+        "struct '%s' declares a schema/migration but is not persistent-capable" sd.su_tyname);
+  (* validate migrate targets: each is in 2..schema, with no duplicate target *)
+  let seen_targets = Hashtbl.create 8 in
+  List.iter
+    (fun (m : struct_migration) ->
+      if m.sm_version < 2 then
+        err ctx m.sm_pos
+          "'migrate to %d' is invalid — a migrate target must be >= 2 (version 1 is the initial \
+           schema, nothing migrates to it)"
+          m.sm_version
+      else if m.sm_version > sd.su_schema then
+        err ctx m.sm_pos
+          "struct '%s' has a 'migrate to %d' block but its schema is %d — the 'schema:' version \
+           must be >= every migrate target"
+          sd.su_tyname m.sm_version sd.su_schema;
+      if Hashtbl.mem seen_targets m.sm_version then
+        err ctx m.sm_pos "duplicate 'migrate to %d' block in struct '%s'" m.sm_version sd.su_tyname
+      else Hashtbl.replace seen_targets m.sm_version ())
+    sd.su_migrations;
+  (* typecheck each migrate body: `raw` + the current fields are in scope; every
+     assignment target must name a current field, and the assigned value must be
+     compatible with that field's declared type. *)
+  let raw_ty = TMap (TString, TAny) in
+  List.iter
+    (fun (m : struct_migration) ->
+      let menv = List.fold_left (fun env (fn, fty) -> bind env fn fty) empty_env field_tys in
+      let menv = bind menv "raw" raw_ty in
+      ignore (check_stmts ctx bctx menv m.sm_body);
+      (* assignment discipline: a migrate block ASSIGNS the current struct's
+         fields; assigning anything else (a would-be temp / an unknown field) is
+         a compile error, and the value must fit the field's type. *)
+      let rec walk (s : stmt) =
+        match s.s with
+        | SAssign (x, v) -> (
+          match List.assoc_opt x field_tys with
+          | None ->
+            err ctx s.spos "migrate block assigns '%s', which is not a field of struct '%s'%s" x
+              sd.su_tyname
+              (suggestion x (List.map fst field_tys))
+          | Some fty ->
+            let vt = type_of ctx bctx menv v in
+            if not (param_compat fty vt) then
+              err ctx v.epos "migrate assignment to field '%s' must be %s (got %s)" x
+                (ty_to_string fty) (ty_to_string vt))
+        | SBlock ss | SAsyncBlock ss -> List.iter walk ss
+        | SIf (_, a, b) ->
+          walk a;
+          (match b with Some s -> walk s | None -> ())
+        | SLoop (_, _, body) | SWhile (_, body) -> walk body
+        | SForeach { fe_body; _ } -> walk fe_body
+        | SForeachMap { fm_body; _ } -> walk fm_body
+        | _ -> ()
+      in
+      List.iter walk m.sm_body)
+    sd.su_migrations
 
 let register_items ctx items =
   List.iter

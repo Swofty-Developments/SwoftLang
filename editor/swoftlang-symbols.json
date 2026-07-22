@@ -1,14 +1,14 @@
 {
   "keywords": [
-    "command", "event", "on", "every", "schedule", "if", "else", "loop",
-    "while", "times", "function", "return", "call", "import", "export",
-    "var", "set", "send", "broadcast", "reply", "teleport", "spawn",
-    "launch", "give", "show", "hide", "wait", "cancel", "stop", "halt",
-    "place", "remove", "add", "clear", "delete", "create", "open", "close",
-    "play", "move", "go", "save", "load", "unload", "update", "reset",
-    "title", "actionbar", "fill", "clone", "replace", "despawn", "destroy",
-    "mount", "dismount", "dispense", "draw", "repeat", "skin", "name",
-    "line", "entry", "blank", "belowname", "fade", "damage", "knock",
+    "command", "event", "on", "every", "schedule", "schema", "migrate", "if",
+    "else", "loop", "while", "times", "function", "return", "call", "import",
+    "export", "var", "set", "send", "broadcast", "reply", "teleport",
+    "spawn", "launch", "give", "show", "hide", "wait", "cancel", "stop",
+    "halt", "place", "remove", "add", "clear", "delete", "create", "open",
+    "close", "play", "move", "go", "save", "load", "unload", "update",
+    "reset", "title", "actionbar", "fill", "clone", "replace", "despawn",
+    "destroy", "mount", "dismount", "dispense", "draw", "repeat", "skin",
+    "name", "line", "entry", "blank", "belowname", "fade", "damage", "knock",
     "apply", "shoot", "is", "not", "and", "or", "Either", "contains", "as",
     "to", "in", "of", "all", "players", "true", "false"
   ],

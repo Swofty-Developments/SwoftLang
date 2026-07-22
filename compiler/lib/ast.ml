@@ -594,11 +594,27 @@ type struct_reactive = {
   sr_pos : pos;
 }
 
+(* §5 explicit versioned schema migration (v1.7.0 Batch B): a persistent-capable
+   struct may declare a `migrate to N { <stmts> }` block. Inside the block the
+   raw prior stored fields are readable via the `raw` map (map<String, Any>) and
+   the current struct's fields are assignable as bare vars (`set name to ...`).
+   sm_version is the target schema version this block upgrades TO (it runs when
+   the stored version is < N, in ascending order). *)
+type struct_migration = {
+  sm_version : int;
+  sm_body : stmt list;
+  sm_pos : pos;
+}
+
 type struct_decl = {
   su_tyname : string;
   su_exported : bool;
+  (* §5 current schema version (default 1). A stored row tagged with an older
+     version is upgraded through the migrate blocks on load. *)
+  su_schema : int;
   su_fields : struct_field list;
   su_reactive : struct_reactive list;
+  su_migrations : struct_migration list;
   su_pos : pos;
 }
 

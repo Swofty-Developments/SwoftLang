@@ -1,0 +1,218 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": null,
+  "persistents": [
+    {
+      "line": 30,
+      "col": 1,
+      "name": "guild",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "Guild" },
+      "default": {
+        "line": 30,
+        "col": 38,
+        "kind": "struct_new",
+        "struct": "Guild",
+        "fields": [
+          {
+            "name": "name",
+            "value": { "line": 30, "col": 52, "kind": "string", "value": "" }
+          }
+        ]
+      }
+    },
+    {
+      "line": 31,
+      "col": 1,
+      "name": "profile",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "Profile" },
+      "default": {
+        "line": 31,
+        "col": 42,
+        "kind": "struct_new",
+        "struct": "Profile",
+        "fields": [
+          {
+            "name": "name",
+            "value": { "line": 31, "col": 58, "kind": "string", "value": "" }
+          }
+        ]
+      }
+    }
+  ],
+  "structs": [
+    {
+      "line": 5,
+      "col": 1,
+      "name": "Guild",
+      "schema": 3,
+      "fields": [
+        {
+          "line": 7,
+          "col": 5,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        },
+        {
+          "line": 8,
+          "col": 5,
+          "name": "tag",
+          "type": { "base": "STRING" },
+          "default": { "line": 8, "col": 19, "kind": "string", "value": "" }
+        },
+        {
+          "line": 9,
+          "col": 5,
+          "name": "level",
+          "type": { "base": "INTEGER" },
+          "default": {
+            "line": 9,
+            "col": 22,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          }
+        },
+        {
+          "line": 10,
+          "col": 5,
+          "name": "motd",
+          "type": { "base": "STRING" },
+          "default": { "line": 10, "col": 20, "kind": "string", "value": "" }
+        }
+      ],
+      "migrations": [
+        {
+          "line": 12,
+          "col": 5,
+          "to": 2,
+          "body": [
+            {
+              "line": 13,
+              "col": 9,
+              "kind": "assign",
+              "target": "name",
+              "value": {
+                "line": 13,
+                "col": 24,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 13,
+                  "col": 24,
+                  "kind": "call",
+                  "name": "map_get",
+                  "args": [
+                    { "line": 13, "col": 21, "kind": "var", "name": "raw" },
+                    {
+                      "line": 13,
+                      "col": 25,
+                      "kind": "string",
+                      "value": "title"
+                    }
+                  ]
+                },
+                "right": {
+                  "line": 13,
+                  "col": 44,
+                  "kind": "string",
+                  "value": ""
+                }
+              }
+            },
+            {
+              "line": 14,
+              "col": 9,
+              "kind": "assign",
+              "target": "tag",
+              "value": {
+                "line": 14,
+                "col": 20,
+                "kind": "string",
+                "value": ""
+              }
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "col": 5,
+          "to": 3,
+          "body": [
+            {
+              "line": 18,
+              "col": 9,
+              "kind": "assign",
+              "target": "motd",
+              "value": {
+                "line": 18,
+                "col": 24,
+                "kind": "binary",
+                "op": "OR_ELSE",
+                "left": {
+                  "line": 18,
+                  "col": 24,
+                  "kind": "call",
+                  "name": "map_get",
+                  "args": [
+                    { "line": 18, "col": 21, "kind": "var", "name": "raw" },
+                    {
+                      "line": 18,
+                      "col": 25,
+                      "kind": "string",
+                      "value": "tag"
+                    }
+                  ]
+                },
+                "right": {
+                  "line": 18,
+                  "col": 42,
+                  "kind": "string",
+                  "value": ""
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line": 24,
+      "col": 1,
+      "name": "Profile",
+      "schema": 2,
+      "fields": [
+        {
+          "line": 26,
+          "col": 5,
+          "name": "name",
+          "type": { "base": "STRING" },
+          "default": null
+        },
+        {
+          "line": 27,
+          "col": 5,
+          "name": "nickname",
+          "type": { "base": "STRING" },
+          "default": {
+            "line": 27,
+            "col": 24,
+            "kind": "string",
+            "value": "friend"
+          }
+        }
+      ]
+    }
+  ]
+}
