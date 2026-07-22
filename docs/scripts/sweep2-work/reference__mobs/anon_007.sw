@@ -1,12 +1,14 @@
-mob Zombie {
+mob Elite {
     type: "ZOMBIE"
-    viewable: false
+    health: 40
+}
 
-    tags: { hits: map<Player, Integer> }      // typed, keyed by Player
-
-    on_hit {
-        if attacker exists {
-            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
-        }
+command "promote" {
+    execute {
+        spawn mob Elite at location(0, 64, 0) as g
+        set g.tags.level to 5                    // store
+        set lvl to g.tags.level otherwise 0      // read with a fallback
+        send "level ${lvl}" to sender
+        set g.tags.level to none                 // delete
     }
 }

@@ -227,6 +227,30 @@ command "loadkit" {
 The whole `Item` — enchantments, custom name, [custom-item](/reference/items) identity —
 survives the round trip, so a saved kit comes back exactly as it went in.
 
+### Persistent structs
+
+A [struct](/reference/structs) whose fields are *all* persistable types is itself
+persistable — so a whole record travels as one value instead of a scatter of parallel
+maps. It serializes to a JSON object of its fields and thaws back on boot, reads stay total
+against the declared default, and the same live-handle rule bites: a struct with an
+`Entity`/`Mob` field can't be persistent, and the checker names the field.
+
+```swoftlang
+struct Guild {
+    name: String
+    level: Integer = 1
+    bank: map<String, Integer>
+    home: optional<Location>
+}
+
+persistent guilds: map<String, Guild> = new_map()
+```
+
+Storing a struct persistently also makes any [`@EventReceiver`](/reference/structs#reactive)
+field on it *live* — reachability from a persistent root is what activates a reactive
+struct's handlers. See [Structs → persistent state](/reference/structs#persistent) for the
+full treatment.
+
 ## The `storage` block
 
 One optional `storage` block (at most one across all scripts, like `server { }`) picks

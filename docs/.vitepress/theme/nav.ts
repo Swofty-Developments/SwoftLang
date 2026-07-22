@@ -54,6 +54,7 @@ export const navGroups: NavGroup[] = [
           { text: 'Syntax Cheatsheet', link: '/reference/syntax-cheatsheet' },
           { text: 'Maps', link: '/reference/maps' },
           { text: 'Collections & Strings', link: '/reference/collections' },
+          { text: 'Structs', link: '/reference/structs' },
           { text: 'Builtins', link: '/reference/builtins' },
           { text: 'Receivers & Events', link: '/reference/events' },
           { text: 'CLI (swoftc)', link: '/reference/cli' }
@@ -159,7 +160,8 @@ export interface DocVersion {
 
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
-  { text: '1.4.0 (latest)', link: '/', label: 'v1.4.0', prefix: '' },
+  { text: '1.5.0 (latest)', link: '/', label: 'v1.5.0', prefix: '' },
+  { text: '1.4.0', link: '/1.4.0/', label: 'v1.4.0', prefix: '/1.4.0' },
   { text: '1.3.0', link: '/1.3.0/', label: 'v1.3.0', prefix: '/1.3.0' },
   { text: '1.2.0', link: '/1.2.0/', label: 'v1.2.0', prefix: '/1.2.0' },
   { text: '1.1.0', link: '/1.1.0/', label: 'v1.1.0', prefix: '/1.1.0' }
@@ -173,19 +175,29 @@ export const versions: DocVersion[] = [
  * rather than hand-maintained. (1.1.0 predates the receiver/event redesign and
  * keeps its own hand-built tree below.)
  */
+/**
+ * Root pages that postdate the frozen releases and therefore have no snapshot
+ * in the derived version trees. Deriving a version sidebar from the root
+ * `navGroups` must drop these, or the frozen sidebar would link to a page that
+ * doesn't exist under `/<version>/` (a dead nav link). `/reference/structs` is
+ * new in 1.5.0, so 1.2.0–1.4.0 have no such page.
+ */
+const LATEST_ONLY_LINKS = new Set(['/reference/structs'])
+
 function makeVersionGroups(prefix: string): NavGroup[] {
   const escaped = prefix.replace(/[.]/g, '\\$&')
   const prefixMatch = (m: RegExp) =>
     new RegExp('^' + escaped + m.source.replace(/^\^/, ''))
   const prefixLink = (l: NavLink): NavLink => ({ ...l, link: prefix + l.link })
+  const keep = (l: NavLink) => !LATEST_ONLY_LINKS.has(l.link)
   return navGroups.map((g) => ({
     text: g.text,
     link: prefix + g.link,
     match: prefixMatch(g.match),
-    items: g.items?.map(prefixLink),
+    items: g.items?.filter(keep).map(prefixLink),
     subgroups: g.subgroups?.map((s) => ({
       text: s.text,
-      items: s.items.map(prefixLink)
+      items: s.items.filter(keep).map(prefixLink)
     }))
   }))
 }
@@ -193,6 +205,7 @@ function makeVersionGroups(prefix: string): NavGroup[] {
 /** Generated version sidebars (page set matches root). */
 export const navGroups120: NavGroup[] = makeVersionGroups('/1.2.0')
 export const navGroups130: NavGroup[] = makeVersionGroups('/1.3.0')
+export const navGroups140: NavGroup[] = makeVersionGroups('/1.4.0')
 
 /** The frozen 1.1.0 tree — its OWN pages under `/1.1.0/`, with 1.1.0 labels. */
 const guideItems110: NavLink[] = guideSteps.map((s) => ({
@@ -306,12 +319,14 @@ export const navGroups110: NavGroup[] = [
 const V110 = /^\/1\.1\.0\//
 const V120 = /^\/1\.2\.0\//
 const V130 = /^\/1\.3\.0\//
+const V140 = /^\/1\.4\.0\//
 
 /** The sidebar tree for a given route (version-aware). */
 export function sidebarForPath(path: string): NavGroup[] {
   if (V110.test(path)) return navGroups110
   if (V120.test(path)) return navGroups120
   if (V130.test(path)) return navGroups130
+  if (V140.test(path)) return navGroups140
   return navGroups
 }
 

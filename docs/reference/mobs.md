@@ -33,10 +33,58 @@ command "ghoul" {
 }
 ```
 
+## Type name vs id {#dual-identity}
+
+A `mob` declaration has **two identities**, and they do different jobs:
+
+- The **type name** (`CryptGhoul`) is the Capitalized *compile-time* handle. It is a real
+  [nominal type](/reference/events#overriding-a-base-receiver) — you write it in
+  `spawn mob CryptGhoul`, in `is a CryptGhoul`, and anywhere a type is expected. `CryptGhoul`
+  is a subtype of `Mob` (`CryptGhoul <: Mob`), so a spawned `CryptGhoul` is usable anywhere a
+  `Mob` is.
+- The **`id:` string** is the *runtime* key: persistence, the string-id APIs
+  (`all_mobs("crypt_ghoul")`, drop tables, saved tags), and any external reference. It is
+  **optional** and defaults to `snake_case` of the type name — `CryptGhoul` → `"crypt_ghoul"`.
+  Write `id:` only to pin a key that differs from the name.
+
+```swoftlang
+mob CryptGhoul {
+    // id: defaults to "crypt_ghoul"
+    type: "ZOMBIE"
+    health: 40
+}
+
+command "count-ghouls" {
+    execute {
+        set n to 0
+        loop all_mobs() as m {
+            if m is a CryptGhoul {       // narrows m to CryptGhoul in the block
+                set n to n + 1
+            }
+        }
+        send "<gray>${n} crypt ghouls abroad" to sender
+    }
+}
+```
+
+`spawn mob CryptGhoul as m` gives `m` the static type `CryptGhoul`; a
+`spawn mob by id <stringExpr>` still exists for data-driven spawns, and yields the base
+`Mob` because the id isn't known until runtime.
+
+::: warning Breaking change from the string form
+The old `mob "zombie" { }` string-keyed form is gone. A mob is now declared by a
+Capitalized type name, with the string moved into the optional `id:` field: `mob Zombie {
+id: "zombie" … }` (or drop `id:` when `snake_case` of the name already matches). Spawns
+change with it — `spawn mob "zombie"` becomes `spawn mob Zombie`. String-id call sites
+(`all_mobs("…")`, drops, persisted tags) keep their string: they reference `id:`, not the
+type name.
+:::
+
 ## Declaration keys
 
 | Key | Type | Required | Meaning |
 |---|---|---|---|
+| `id:` | string literal | no | the wire/persistence id; defaults to `snake_case` of the type name — see [Type name vs id](#dual-identity) |
 | `type:` | string literal | **yes** | base `EntityType` — `"ZOMBIE"`, `"zombie"`, and `"minecraft:zombie"` all work |
 | `name:` | String expression | no | nameplate, always visible; `${mob.health}` re-renders on damage |
 | `health:` | Number expression | no | max health |

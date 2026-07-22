@@ -45,7 +45,7 @@ CODE_ANNO = re.compile(r"\s*//\s*\[!code[^\]]*\]\s*$", re.M)
 
 TOP_LEVEL = re.compile(
     r"^(command|function|async\s+function|export\s+|import\s|bossbar\s|"
-    r"gui\s|item\s|mob\s|persistent\s|scoreboard\s|server\s*\{|"
+    r"gui\s|item\s|mob\s|struct\s|persistent\s|scoreboard\s|server\s*\{|"
     r"storage\s*\{|tablist\s|var\s|api\s|every\s|fishing_loot\s|hologram\s|npc\s|"
     r"block_handler\s|placement_rule\s|"
     # OOP receiver blocks (Player { }, Mob { }, ...) and the Packet block
@@ -167,7 +167,13 @@ def run_check(workdir, files, addons=True):
 def main():
     only = sys.argv[1:] or None
     pages = sorted(glob.glob(os.path.join(DOCS, "**", "*.md"), recursive=True))
-    pages = [p for p in pages if "/node_modules/" not in p and "/.vitepress/" not in p and "/dist/" not in p and "/1.1.0/" not in p]
+    # Frozen version snapshots (docs/<n.n.n>/) are pinned to the compiler that
+    # shipped with them and are validated at their own release, never against a
+    # newer compiler. A breaking change makes their now-legacy syntax an error
+    # here — e.g. 1.5.0's nominal mob/item types reject the old `mob "id"` form
+    # that 1.1.0–1.4.0 still use — so skip every frozen tree.
+    VERSION_DIR = re.compile(r"/\d+\.\d+\.\d+/")
+    pages = [p for p in pages if "/node_modules/" not in p and "/.vitepress/" not in p and "/dist/" not in p and not VERSION_DIR.search(p)]
     if only:
         pages = [p for p in pages if any(o in p for o in only)]
 

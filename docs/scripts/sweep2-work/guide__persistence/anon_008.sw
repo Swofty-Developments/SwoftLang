@@ -1,3 +1,3 @@
 storage {
-    backend: sqlite "data/swoftlang.db"
+    backend: files "data/swoftlang"
 }

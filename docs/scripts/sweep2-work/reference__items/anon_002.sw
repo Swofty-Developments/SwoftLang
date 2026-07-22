@@ -1,16 +1,11 @@
-item FarmerBoots {
-    material: "GOLDEN_BOOTS"
-    name: "<green>Farmer Boots"
-    rarity: uncommon
+item AspectOfTheEnd {
+    // id: defaults to "aspect_of_the_end"
+    material: "DIAMOND_SWORD"
+    name: "<blue>Aspect of the End"
+}
 
-    attributes: {
-        speed: 0.02
-        max_health: 4
-    }
-
-    lore {
-        loop 2 times {
-            line "<green>Tilled and true."
-        }
+command "sword" {
+    execute {
+        give item "aspect_of_the_end" to sender      // the id string, not the type name
     }
 }

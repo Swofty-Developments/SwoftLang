@@ -1,15 +1,14 @@
-mob LostSheep {
-    type: "SHEEP"
-    name: "<yellow>Lost Sheep"
-    health: 20
-    ai: passive
+item RottenScimitar {
+    material: "GOLDEN_SWORD"
+    name: "Rotten Scimitar"
+    rarity: uncommon
 }
 
-command "cleanse" {
-    execute {
-        loop all_mobs("lost_sheep") as s {
-            despawn s
-        }
-        send "<green>The pasture is quiet." to sender
+mob ArmedGhoul {
+    type: "ZOMBIE"
+
+    drops {
+        item "rotten_scimitar" chance 0.05 amount 1
+        item "ROTTEN_FLESH" chance 0.5 amount 2
     }
 }

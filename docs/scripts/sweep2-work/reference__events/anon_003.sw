@@ -1,13 +1,10 @@
-Player {
-    on_chat {
-        if message contains "spoiler" {
-            cancel event
-            spawn warn_later(player)
-        }
+struct Duel {
+    @EventReceiver a: Player
+    arena: Location
+
+    a {
+        on_death { teleport a to arena }      // only for this duel's player `a`
     }
 }
 
-async function warn_later(p: Player) {
-    wait 1 seconds
-    send "<red>No spoilers in chat!" to p
-}
+persistent duels: map<String, Duel> = new_map()

@@ -1,15 +1,16 @@
-item CryptKey {
-    skull: "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
-    name: "<gold>Crypt Key"
-    rarity: epic
+item FarmerBoots {
+    material: "GOLDEN_BOOTS"
+    name: "<green>Farmer Boots"
+    rarity: uncommon
 
-    tags: {
-        uses: 3,
-        meta: { engraving: "unclaimed" }
+    attributes: {
+        speed: 0.02
+        max_health: 4
     }
 
     lore {
-        line "<gray>Opens the sealed crypt beneath the graveyard."
-        line "<dark_gray>Consumed on use."
+        loop 2 times {
+            line "<green>Tilled and true."
+        }
     }
 }

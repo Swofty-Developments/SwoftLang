@@ -1,14 +1,15 @@
-mob Sentry {
-    type: "IRON_GOLEM"
-    health: 100
+mob LostSheep {
+    type: "SHEEP"
+    name: "<yellow>Lost Sheep"
+    health: 20
+    ai: passive
 }
 
-command "sentry" {
+command "cleanse" {
     execute {
-        // in_front_of(player, distance) is a Location: 'distance' blocks ahead of the eye line
-        spawn mob Sentry at in_front_of(sender, 3) as g
-        set g.glowing to true
-        set g.gravity to false
-        send "spawned ${g.uuid}" to sender
+        loop all_mobs("lost_sheep") as s {
+            despawn s
+        }
+        send "<green>The pasture is quiet." to sender
     }
 }

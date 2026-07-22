@@ -1,14 +1,12 @@
-mob Elite {
-    type: "ZOMBIE"
-    health: 40
-}
+mob Guardian {
+    type: "IRON_GOLEM"
+    name: "<gold>Guardian"
+    health: 100
 
-command "promote" {
-    execute {
-        spawn mob Elite at location(0, 64, 0) as g
-        set g.tags.level to 5                    // store
-        set lvl to g.tags.level otherwise 0      // read with a fallback
-        send "level ${lvl}" to sender
-        set g.tags.level to none                 // delete
+    on_hit {
+        if attacker exists {
+            send "<red>You struck the ${mob.custom_id}!" to attacker
+        }
+        set mob.velocity to velocity(0, 0.5, 0)
     }
 }

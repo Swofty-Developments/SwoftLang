@@ -353,6 +353,37 @@ mob Ghoul {
 `call original method` is only legal inside an overriding method — writing it in a base
 receiver or a method that overrides nothing is a compile error.
 
+## Struct-instance receivers {#struct-receivers}
+
+A third kind of receiver lives on a [struct](/reference/structs). Mark a struct field
+`@EventReceiver` and it becomes an event subject *for that one instance*; the struct then
+carries handlers, named after the field, using the same method table as the field's type.
+Where a base receiver fires for every instance and a custom declaration fires for one
+declared type, a struct-instance handler fires for the **one live struct instance** that
+holds the subject — a specific duel, a specific party.
+
+```swoftlang
+struct Duel {
+    @EventReceiver a: Player
+    arena: Location
+
+    a {
+        on_death { teleport a to arena }      // only for this duel's player `a`
+    }
+}
+
+persistent duels: map<String, Duel> = new_map()
+```
+
+An instance is live exactly while it is reachable from a `persistent` root, so its handlers
+are durable and self-cleaning — see [Reactive fields](/reference/structs#reactive) for the
+liveness model and the constraint that a custom type can't be a reactive subject.
+
+This adds a third link to the dispatch chain. For one native event the order is
+**global base receiver → custom override → live struct-instance handler(s)**, least
+specific first. Cancellation stays [cumulative](#cancelling): every layer runs in order,
+any layer may `cancel event`, and later layers still execute and can observe the cancel.
+
 ## Cancelling
 
 `cancel event` vetoes the underlying server event — a cancelled chat message is never

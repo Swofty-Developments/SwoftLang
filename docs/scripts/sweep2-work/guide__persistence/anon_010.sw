@@ -1,3 +1,9 @@
 storage {
-    backend: mongodb "mongodb://localhost:27017/swoftlang"
+    backend: mysql {
+        host: "localhost"
+        port: 3306
+        database: "mc"
+        user: "root"
+        password: "hunter2"
+    }
 }

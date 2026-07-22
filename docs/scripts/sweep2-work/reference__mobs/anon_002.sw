@@ -1,14 +1,17 @@
-item RottenScimitar {
-    material: "GOLDEN_SWORD"
-    name: "Rotten Scimitar"
-    rarity: uncommon
+mob CryptGhoul {
+    // id: defaults to "crypt_ghoul"
+    type: "ZOMBIE"
+    health: 40
 }
 
-mob ArmedGhoul {
-    type: "ZOMBIE"
-
-    drops {
-        item "rotten_scimitar" chance 0.05 amount 1
-        item "ROTTEN_FLESH" chance 0.5 amount 2
+command "count-ghouls" {
+    execute {
+        set n to 0
+        loop all_mobs() as m {
+            if m is a CryptGhoul {       // narrows m to CryptGhoul in the block
+                set n to n + 1
+            }
+        }
+        send "<gray>${n} crypt ghouls abroad" to sender
     }
 }

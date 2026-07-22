@@ -33,10 +33,42 @@ command "sword" {
 }
 ```
 
+## Type name vs id {#dual-identity}
+
+Like a [`mob`](./mobs#dual-identity), an `item` declaration carries **two identities**. The
+Capitalized **type name** (`AspectOfTheEnd`) is the compile-time handle — a nominal subtype
+of `Item` (`AspectOfTheEnd <: Item`) usable in `is a AspectOfTheEnd` and anywhere a type is
+expected. The **`id:` string** is the runtime/wire key used by `give item "…"`,
+`custom_item("…")`, drop tables, and persisted stacks; it is **optional** and defaults to
+`snake_case` of the type name — `AspectOfTheEnd` → `"aspect_of_the_end"`. Write `id:` only
+to pin a key that differs from the name.
+
+```swoftlang
+item AspectOfTheEnd {
+    // id: defaults to "aspect_of_the_end"
+    material: "DIAMOND_SWORD"
+    name: "<blue>Aspect of the End"
+}
+
+command "sword" {
+    execute {
+        give item "aspect_of_the_end" to sender      // the id string, not the type name
+    }
+}
+```
+
+::: warning Breaking change from the string form
+The old `item "aspect_of_the_end" { }` string-keyed form is gone: an item is declared by a
+Capitalized type name with the string moved into the optional `id:` field. String-id call
+sites (`give item "…"`, `custom_item("…")`, drops) keep their string — they reference `id:`,
+not the type name.
+:::
+
 ## Declaration keys
 
 | Key | Type | Required | Meaning |
 |---|---|---|---|
+| `id:` | string literal | no | the wire/persistence id; defaults to `snake_case` of the type name — see [Type name vs id](#dual-identity) |
 | `material:` | string literal | one of material/skull | Minecraft material, bare or `minecraft:`-prefixed |
 | `skull:` | string literal | one of material/skull | player-head texture (hash or full base64) — renders a custom skull |
 | `name:` | String expression | no | display name; MiniMessage, italics off. Colour it yourself — nothing is auto-applied |

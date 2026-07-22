@@ -1,12 +1,14 @@
-mob Guardian {
+mob Sentry {
     type: "IRON_GOLEM"
-    name: "<gold>Guardian"
     health: 100
+}
 
-    on_hit {
-        if attacker exists {
-            send "<red>You struck the ${mob.custom_id}!" to attacker
-        }
-        set mob.velocity to velocity(0, 0.5, 0)
+command "sentry" {
+    execute {
+        // in_front_of(player, distance) is a Location: 'distance' blocks ahead of the eye line
+        spawn mob Sentry at in_front_of(sender, 3) as g
+        set g.glowing to true
+        set g.gravity to false
+        send "spawned ${g.uuid}" to sender
     }
 }

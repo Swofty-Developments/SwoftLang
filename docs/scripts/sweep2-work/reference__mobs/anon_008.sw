@@ -1,13 +1,12 @@
-persistent kills for Player: Integer = 0
+mob Zombie {
+    type: "ZOMBIE"
+    viewable: false
 
-Mob {
-    on_death {
-        if killer exists {
-            set k to player(killer.uuid)
-            if k exists {
-                set kills for k to (kills for k) + 1
-                send "<gold>${mob.custom_id} down — ${kills for k} kills" to k
-            }
+    tags: { hits: map<Player, Integer> }      // typed, keyed by Player
+
+    on_hit {
+        if attacker exists {
+            set mob.tags.hits[attacker] to (mob.tags.hits[attacker] otherwise 0) + 1
         }
     }
 }

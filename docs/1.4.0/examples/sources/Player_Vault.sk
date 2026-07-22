@@ -1,0 +1,33 @@
+command pv <number> [<offline player>]:
+ trigger:
+  player's inventory contains "Vault":
+   send "&cYou already have a vault open!"
+   stop
+  set {_target} to player
+  arg-2 is set:
+   player is op:
+    set {_target} to arg-2
+   else:
+    send "&cYou don't have permission to view other players' vaults."
+    stop
+  arg-1 is between 1 and 10:
+   player has permission "pv.%arg-1%" or "pv.*":
+    open chest inventory with 6 rows named "Vault %arg-1%" to player
+    set {openvault::%player%} to arg-1
+    loop 54 times:
+     if {vault::%{_target}%::%arg-1%::%loop-number - 1%} is set:
+      set slot (loop-number - 1) of player's current inventory to {vault::%{_target}%::%arg-1%::%loop-number - 1%}
+   else:
+    send "&cYou don't have permission to open this vault."
+  else:
+   send "&cPlease choose a number between 1 and 10."
+
+on inventory close:
+ name of event-inventory contains "Vault":
+  set {_vaultnum} to {openvault::%player%}
+  delete {openvault::%player%}
+  loop 54 times:
+   slot (loop-number - 1) of event-inventory is not air:
+    set {vault::%player%::%{_vaultnum}%::%loop-number - 1%} to slot (loop-number - 1) of event-inventory
+   else:
+    delete {vault::%player%::%{_vaultnum}%::%loop-number - 1%}

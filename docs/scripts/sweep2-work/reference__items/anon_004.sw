@@ -1,15 +1,15 @@
-item CryptKey { material: "TRIPWIRE_HOOK" tags: { uses: 3 } }
+item CryptKey {
+    skull: "1ae3855f952cd4a03c148a946e3f812a5955ad35cbcb52627ea4acd47d3081"
+    name: "<gold>Crypt Key"
+    rarity: epic
 
-command "use-key" {
-    execute {
-        set it to custom_item("crypt_key")
+    tags: {
+        uses: 3,
+        meta: { engraving: "unclaimed" }
+    }
 
-        // fallback: absent 'uses' reads as 0
-        set left to (it.tags.uses otherwise 0) - 1
-
-        // narrow: only inside the guard is the value known present
-        if it.tags.uses exists {
-            send "uses left: ${it.tags.uses}" to sender
-        }
+    lore {
+        line "<gray>Opens the sealed crypt beneath the graveyard."
+        line "<dark_gray>Consumed on use."
     }
 }
