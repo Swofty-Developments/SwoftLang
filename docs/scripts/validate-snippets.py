@@ -45,7 +45,7 @@ CODE_ANNO = re.compile(r"\s*//\s*\[!code[^\]]*\]\s*$", re.M)
 
 TOP_LEVEL = re.compile(
     r"^(command|function|async\s+function|export\s+|import\s|bossbar\s|"
-    r"gui\s|item\s|mob\s|struct\s|persistent\s|scoreboard\s|server\s*\{|"
+    r"gui\s|item\s|mob\s|goal\s|struct\s|persistent\s|scoreboard\s|server\s*\{|"
     r"storage\s*\{|tablist\s|var\s|api\s|every\s|fishing_loot\s|hologram\s|npc\s|"
     r"block_handler\s|placement_rule\s|"
     # OOP receiver blocks (Player { }, Mob { }, ...) and the Packet block

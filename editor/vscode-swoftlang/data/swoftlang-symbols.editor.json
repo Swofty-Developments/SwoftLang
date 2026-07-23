@@ -13,10 +13,15 @@
     "contains", "as", "to", "in", "of", "all", "players", "true", "false"
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
+  "ai_keywords": [
+    "ai", "goals", "should_start", "on_start", "on_tick", "should_end",
+    "on_end", "path", "pathing", "look", "speed", "within", "priority",
+    "reached", "closest", "hostile", "attacker", "navigating"
+  ],
   "declarations": [
     "struct", "item", "mob", "npc", "hologram", "gui", "scoreboard",
     "tablist", "bossbar", "server", "storage", "persistent", "api",
-    "fishing_loot", "block_handler", "placement_rule"
+    "fishing_loot", "block_handler", "placement_rule", "goal"
   ],
   "receivers": [
     "Player", "Entity", "Mob", "Item", "Block", "Projectile", "Inventory",
@@ -58,12 +63,12 @@
     "random", "round", "floor", "ceil", "abs", "uppercase", "lowercase",
     "length", "location", "in_front_of", "item", "player", "all_players",
     "world", "centered", "prompt_input", "min", "max", "clamp",
-    "format_number", "custom_item", "custom_id", "all_mobs", "velocity",
-    "all_entities", "spawn_text_display", "spawn_item_display",
-    "spawn_block_display", "song", "tps_string", "average_tps_string",
-    "tps_at", "anvil_loader", "polar_loader", "world_exists", "all_worlds",
-    "block_at", "block", "skin", "fetch_skin", "map_canvas",
-    "has_permission", "offline_player", "offline_player_uuid",
+    "format_number", "custom_item", "custom_id", "all_mobs",
+    "random_point_near", "velocity", "all_entities", "spawn_text_display",
+    "spawn_item_display", "spawn_block_display", "song", "tps_string",
+    "average_tps_string", "tps_at", "anvil_loader", "polar_loader",
+    "world_exists", "all_worlds", "block_at", "block", "skin", "fetch_skin",
+    "map_canvas", "has_permission", "offline_player", "offline_player_uuid",
     "fetch_offline_player", "all_seen_players", "new_map", "random_float",
     "random_chance", "random_bool", "random_in", "shuffle", "sort",
     "sort_by", "sort_by_desc", "reverse", "min_by", "max_by", "sort_by_key",

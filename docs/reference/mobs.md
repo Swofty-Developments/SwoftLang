@@ -90,7 +90,7 @@ type name.
 | `health:` | Number expression | no | max health |
 | `damage:` | Number expression | no | melee hit damage |
 | `speed:` | Number expression | no | movement speed attribute |
-| `ai:` | enum | no | `melee` (chase + attack + stroll), `passive` (stroll), `none` (statue) |
+| `ai:` | enum | no | `melee` (chase + attack + stroll), `passive` (stroll), `none` (statue); for scripted behavior use an [`ai { }`](./mob-ai) block instead |
 | `viewable:` | boolean | no | auto-viewable at spawn; `false` spawns it hidden for per-viewer control — see [per-viewer entities](./entities#per-viewer) |
 | `tags { ... }` | block | no | **typed** per-entity state — see [Tags](#tags) |
 | `drops { ... }` | block | no | rolled on death; see [drops](#drops) |

@@ -68,6 +68,9 @@ export interface ScriptContext {
   varTypes?: Record<string, string>; // locals with an inferable type
   block?: string; // innermost enclosing block opener keyword, e.g. 'item', 'attributes', 'execute'
   packetClass?: string; // enclosing `Packet { on "Class" { } }` simple class name
+  inAiBlock?: boolean; // cursor is somewhere inside a custom-mob `ai { }` / goal / target block
+  goalTypes?: string[]; // reusable goal type names declared in the document (`goal Chase { }`)
+  mobTypes?: string[]; // custom mob type names declared in the document (`mob Guardian { }`)
 }
 
 export interface CompletionEngine {
@@ -197,6 +200,75 @@ const CONNECTIVE_KEYWORDS = new Set([
 ]);
 // Declaration-adjacent top-level keywords not tagged 'declaration' in the dump.
 const EXTRA_TOPLEVEL = ['import', 'export'];
+
+// --- v1.9.0 custom mob AI (context-aware completion inside ai/goal/target) ---
+// Goal lifecycle block heads (map 1:1 to Minestom GoalSelector callbacks).
+const AI_LIFECYCLE = ['should_start', 'on_start', 'on_tick', 'should_end', 'on_end'];
+const AI_LIFECYCLE_SET = new Set(AI_LIFECYCLE);
+// Every block opener that puts the cursor "inside AI": the `ai { }` block, a
+// `goal` block, a lifecycle block, or a custom `target { }` selection block.
+const AI_BLOCK_SET = new Set(['ai', 'goal', 'target', ...AI_LIFECYCLE]);
+// Snippet body for each lifecycle block (offered at a `goal` block's statement start).
+const AI_LIFECYCLE_SNIPPETS: Record<string, string> = {
+  should_start: 'should_start { $0 }',
+  on_start: 'on_start {\n\t$0\n}',
+  on_tick: 'on_tick {\n\t$0\n}',
+  should_end: 'should_end { $0 }',
+  on_end: 'on_end {\n\t$0\n}',
+};
+// Structural entries legal at an `ai { }` block's statement start: the target
+// selector forms, an inline goal, and the reusable-goal reference list.
+const AI_BLOCK_ENTRIES: { label: string; insertText: string; doc: string }[] = [
+  {
+    label: 'target closest',
+    insertText: 'target closest ${1|Player,hostile|} within ${2:16}',
+    doc: 'Natural target selector: nearest Player / hostile / mob type within N blocks.',
+  },
+  {
+    label: 'target last attacker',
+    insertText: 'target last attacker within ${1:24}',
+    doc: 'Natural target selector: the entity that last damaged this mob, within N blocks.',
+  },
+  {
+    label: 'target { }',
+    insertText: 'target {\n\treturn $0\n}',
+    doc: 'Custom target selector block: `return <Entity|Optional<Entity>|none>`.',
+  },
+  {
+    label: 'goal',
+    insertText: 'goal "${1:name}"${2: priority ${3:1}} {\n\t$0\n}',
+    doc: 'Inline goal: lifecycle blocks (should_start / on_start / on_tick / should_end / on_end).',
+  },
+  {
+    label: 'goals:',
+    insertText: 'goals: [ $0 ]',
+    doc: 'Attach reusable named goal types: `goals: [ Chase priority 1, Wander ]`.',
+  },
+];
+// Navigator statements legal inside a lifecycle / target body, offered ahead of
+// the general statement palette.
+const AI_NAV_ENTRIES: { label: string; insertText: string; doc: string }[] = [
+  {
+    label: 'path',
+    insertText: 'path ${1:mob} to ${2:target}',
+    doc: 'Start/continue an A* path to an Entity or Location (navigator.setPathTo).',
+  },
+  {
+    label: 'path … at speed',
+    insertText: 'path ${1:mob} to ${2:target} at speed ${3:0.35}',
+    doc: 'Path with a movement-speed modifier.',
+  },
+  {
+    label: 'stop pathing',
+    insertText: 'stop pathing ${1:mob}',
+    doc: 'Reset the navigator (clear the active path).',
+  },
+  {
+    label: 'look at',
+    insertText: 'look at ${1:target}',
+    doc: 'Face an Entity or Location without moving.',
+  },
+];
 
 // A small, curated MiniMessage palette offered inside strings after `<`.
 const MINIMESSAGE_TAGS = [
@@ -363,10 +435,10 @@ export function collectLocals(text: string): string[] {
 }
 
 // Walk the text before the cursor with a brace stack, tracking the opener
-// keyword of each block (the first identifier on the line that carries the `{`).
-// Returns the innermost still-open block keyword, e.g. 'attributes' / 'execute'
-// / 'item', or undefined at top level.
-export function enclosingBlock(textBefore: string): string | undefined {
+// keyword of each still-open block (the first identifier on the line that
+// carries the `{`; '' for an anonymous `{`). Returns the full stack, innermost
+// last. Shared by enclosingBlock and the AI-context detection so both agree.
+export function enclosingBlockStack(textBefore: string): string[] {
   const stack: string[] = [];
   let inStr = false;
   let lineStart = 0;
@@ -388,6 +460,13 @@ export function enclosingBlock(textBefore: string): string | undefined {
       stack.push(kw ? kw[1] : '');
     } else if (c === '}') stack.pop();
   }
+  return stack;
+}
+
+// The innermost still-open block keyword, e.g. 'attributes' / 'execute' /
+// 'item' / 'on_tick', or undefined at top level.
+export function enclosingBlock(textBefore: string): string | undefined {
+  const stack = enclosingBlockStack(textBefore);
   for (let k = stack.length - 1; k >= 0; k--) if (stack[k]) return stack[k];
   return undefined;
 }
@@ -726,6 +805,59 @@ export function createCompletionEngine(
     };
   };
 
+  // --- v1.9.0 AI completion item builders ---
+  const snippetItem = (
+    label: string,
+    insertText: string,
+    detail: string,
+    doc: string,
+    kind: CompletionItemKind = CompletionItemKind.Snippet,
+  ): CompletionItem => ({
+    label,
+    kind,
+    detail,
+    documentation: doc,
+    insertText,
+    insertTextFormat: InsertTextFormat.Snippet,
+    data: -1,
+  });
+  // The `mob` / `target` bare-context bound vars available in ai/goal/target bodies.
+  const aiBoundVarItems: CompletionItem[] = [
+    {
+      label: 'mob',
+      kind: CompletionItemKind.Variable,
+      detail: 'the creature this AI drives (bound var)',
+      documentation: 'The creature the goal is attached to, typed as its custom mob type.',
+      data: -1,
+    },
+    {
+      label: 'target',
+      kind: CompletionItemKind.Variable,
+      detail: "the group's selected target (bound var)",
+      documentation: 'The AI group\'s current target as `Optional<Entity>` — narrow with `exists` / `is none`.',
+      data: -1,
+    },
+  ];
+  const aiBlockEntryItems: CompletionItem[] = AI_BLOCK_ENTRIES.map((e) =>
+    snippetItem(e.label, e.insertText, 'ai block entry', e.doc),
+  );
+  const aiLifecycleItems: CompletionItem[] = AI_LIFECYCLE.map((n) =>
+    snippetItem(n, AI_LIFECYCLE_SNIPPETS[n], 'goal lifecycle', `\`${n}\` goal lifecycle block.`, CompletionItemKind.Event),
+  );
+  const aiNavItems: CompletionItem[] = AI_NAV_ENTRIES.map((e) =>
+    snippetItem(e.label, e.insertText, 'navigator statement', e.doc, CompletionItemKind.Keyword),
+  );
+  // Named types the user declared, offered as TypeParameter completions: goal
+  // types inside `goals: [ ]` / a type position, custom mob types after
+  // `target closest`. Harvested from `analyze`.
+  const namedTypeItems = (names: string[] | undefined, detail: string): CompletionItem[] =>
+    (names || []).map((n) => ({
+      label: n,
+      kind: CompletionItemKind.TypeParameter,
+      detail,
+      data: -1,
+    }));
+
   const analyze = (text: string): ScriptContext => {
     // enclosing `event <Name> { }` via a brace stack (skip strings/comments)
     const stack: (string | null)[] = [];
@@ -785,10 +917,28 @@ export function createCompletionEngine(
       if (rt) varTypes[vm[1]] = rt;
     }
 
-    const block = enclosingBlock(text);
+    const blockStack = enclosingBlockStack(text);
+    let block: string | undefined;
+    for (let k = blockStack.length - 1; k >= 0; k--) {
+      if (blockStack[k]) {
+        block = blockStack[k];
+        break;
+      }
+    }
+    const inAiBlock = blockStack.some((b) => AI_BLOCK_SET.has(b));
     const packetClass = findEnclosingPacketClass(text);
 
-    return { event, argTypes, varTypes, block, packetClass };
+    // Reusable goal types (`goal Chase { }`) and custom mob types (`mob Guardian
+    // { }`) declared anywhere in the document — for named-type completion.
+    const goalTypes: string[] = [];
+    const mobTypes: string[] = [];
+    let tm: RegExpExecArray | null;
+    const goalRe = /\bgoal\s+([A-Z]\w*)\s*\{/g;
+    while ((tm = goalRe.exec(text))) if (!goalTypes.includes(tm[1])) goalTypes.push(tm[1]);
+    const mobRe = /\bmob\s+([A-Z]\w*)\s*\{/g;
+    while ((tm = mobRe.exec(text))) if (!mobTypes.includes(tm[1])) mobTypes.push(tm[1]);
+
+    return { event, argTypes, varTypes, block, packetClass, inAiBlock, goalTypes, mobTypes };
   };
 
   const getCompletions = (
@@ -828,8 +978,32 @@ export function createCompletionEngine(
       const vs = valuesForKey(pv[1]);
       if (vs) return withGroup(enumItems(vs.group, vs.values), '0');
     }
+    // 3.5) v1.9.0 AI named-type positions.
+    //   `goals: [ … <cursor> ]` -> reusable goal types declared in the document.
+    if (/\bgoals\s*:\s*\[[^\]]*$/.test(prefix)) {
+      return withGroup(namedTypeItems(ctx.goalTypes, 'goal type'), '0');
+    }
+    //   `target closest <cursor>` -> Player | hostile | custom mob types.
+    if (/\btarget\s+closest\s+\w*$/.test(prefix)) {
+      const items: CompletionItem[] = [
+        { label: 'Player', kind: CompletionItemKind.TypeParameter, detail: 'nearest player', data: -1 },
+        { label: 'hostile', kind: CompletionItemKind.Keyword, detail: 'nearest hostile mob', data: -1 },
+        ...namedTypeItems(ctx.mobTypes, 'custom mob type'),
+      ];
+      return withGroup(items, '0');
+    }
     // 4) Type position (after `is [a]`, inside `<…>`, or after a `:` annotation).
-    if (isTypeContext(prefix)) return withGroup(typeItems, '0');
+    //    Named goal / mob types join the built-in type list.
+    if (isTypeContext(prefix)) {
+      return withGroup(
+        [
+          ...typeItems,
+          ...namedTypeItems(ctx.mobTypes, 'mob type'),
+          ...namedTypeItems(ctx.goalTypes, 'goal type'),
+        ],
+        '0',
+      );
+    }
     // 5) Statement start — only leading whitespace and a partial word.
     if (/^\s*\w*$/.test(prefix)) {
       if (depth <= 0) return dedupeByLabel(withGroup(declItems, '0'));
@@ -840,10 +1014,28 @@ export function createCompletionEngine(
         return dedupeByLabel(withGroup(enumItems('attribute', keys), '0'));
       }
 
+      // 5a-ai) Inside an `ai { }` block: only target selectors, inline goals and
+      //        the `goals:` reference list are legal — offer exactly those.
+      if (ctx.block === 'ai') {
+        return dedupeByLabel(withGroup([...aiBlockEntryItems, ...aiBoundVarItems], '0'));
+      }
+      // 5a-ai') Inside a `goal … { }` block: the five lifecycle blocks.
+      if (ctx.block === 'goal') {
+        return dedupeByLabel(withGroup(aiLifecycleItems, '0'));
+      }
+
+      // 5a-ai'') Inside a goal lifecycle block (should_start/on_tick/…) or a
+      //          custom `target { }` block: navigator statements + the bound
+      //          `mob`/`target` vars come first, then the full statement palette
+      //          (arbitrary statements are legal there).
+      const head: CompletionItem[] = [];
+      if (ctx.block && (AI_LIFECYCLE_SET.has(ctx.block) || ctx.block === 'target')) {
+        head.push(...withGroup([...aiNavItems, ...aiBoundVarItems], '0'));
+      }
+
       // 5b) Inside a declaration body (item/mob/npc/…): config keys + inline
       //     handlers + tags/attributes namespaces come first, then the usual
       //     statement palette so nothing is lost.
-      const head: CompletionItem[] = [];
       if (ctx.block && HANDLER_HOST.has(ctx.block)) {
         head.push(
           ...withGroup(configKeysFor(ctx.block), '0'),
@@ -881,8 +1073,10 @@ export function createCompletionEngine(
       ]);
     }
     // 6) General expression position — local variables first (what the user wants),
-    //    then builtins, constants, and word operators/connectives.
+    //    then builtins, constants, and word operators/connectives. Inside an AI
+    //    construct the bound `mob`/`target` vars lead (e.g. `path mob to <cursor>`).
     return dedupeByLabel([
+      ...(ctx.inAiBlock ? withGroup(aiBoundVarItems, '0') : []),
       ...withGroup(localItems(locals), '0'),
       ...withGroup(builtinItems, '1'),
       ...withGroup(constantItems, '2'),

@@ -64,6 +64,22 @@ BOOLEAN_KW = ["true", "false"]
 TARGET_KW = ["all", "players"]
 
 # ---------------------------------------------------------------------------
+# v1.9.0 custom mob AI (dump key 'ai_keywords'). Soft keywords the parser
+# matches on IDENT text; categorized here into their coloring buckets so the
+# whole AI surface reads consistently. These three buckets must partition the
+# dump's ai_keywords array exactly (asserted below), mirroring the keywords[]
+# partition, so nothing is silently dropped or miscolored.
+#   * lifecycle blocks -> handler scope (same family as on_click / on_tick)
+#   * navigator verbs  -> statement scope (path / stop pathing / look at)
+#   * selector/query   -> control scope (ai / goals / within / closest / ...)
+AI_HANDLER_KW = ["should_start", "on_start", "on_tick", "should_end", "on_end"]
+AI_STATEMENT_KW = ["path", "pathing", "look", "speed"]
+AI_CONTROL_KW = [
+    "ai", "goals", "within", "priority", "reached", "closest", "hostile",
+    "attacker", "navigating",
+]
+
+# ---------------------------------------------------------------------------
 # Static supplementary vocabulary (NOT in the dump, but real structural words
 # used across the .sw corpus). Kept here so regenerating never regresses the
 # coloring of block sections, prepositions, parameter words or time units.
@@ -146,6 +162,16 @@ def main():
         + str(sorted(set(buckets) - set(sym["keywords"])))
         + "\n  missing="
         + str(sorted(set(sym["keywords"]) - set(buckets)))
+    )
+
+    # v1.9.0 AI vocabulary: the three AI buckets must partition ai_keywords[].
+    ai_keywords = sym.get("ai_keywords", [])
+    ai_buckets = AI_HANDLER_KW + AI_STATEMENT_KW + AI_CONTROL_KW
+    assert sorted(ai_buckets) == sorted(ai_keywords), (
+        "ai_keyword partition mismatch:\n  extra="
+        + str(sorted(set(ai_buckets) - set(ai_keywords)))
+        + "\n  missing="
+        + str(sorted(set(ai_keywords) - set(ai_buckets)))
     )
 
     handlers = sym["handlers"]
@@ -271,6 +297,7 @@ def main():
             {"include": "#property-accessor"},
             {"include": "#operator-words"},
             {"include": "#types"},
+            {"include": "#user-types"},
             {"include": "#constants"},
             {"include": "#numbers"},
             {"include": "#operators"},
@@ -504,6 +531,37 @@ def main():
         ]
     }
 
+    # v1.9.0 custom mob AI vocabulary. Emitted only when the dump carries it.
+    # Lifecycle blocks color as handlers, navigator verbs as statements, and the
+    # selector/query words as control keywords — so `ai`/`goal`/`should_start`/
+    # `path … at speed`/`stop pathing`/`look at`/`within`/`priority`/`reached`/
+    # `.navigating`/`closest`/`hostile`/`last attacker` all read consistently.
+    if ai_keywords:
+        repo["ai-keywords"] = {
+            "patterns": [
+                kw_pattern("keyword.other.handler.ai.swoftlang", AI_HANDLER_KW),
+                kw_pattern("keyword.other.statement.ai.swoftlang", AI_STATEMENT_KW),
+                kw_pattern("keyword.control.ai.swoftlang", AI_CONTROL_KW),
+            ]
+        }
+
+    # PascalCase user type references (struct / reusable goal / custom-mob type
+    # names): a Capitalized identifier that carries at least one lowercase letter,
+    # so SCREAMING_CASE enum ids (ZOMBIE, IRON_GOLEM) are excluded and never
+    # miscolored. Not a function call. Placed after the known-type / declaration /
+    # receiver / enum rules so those keep their precise scopes; catches every
+    # other PascalCase type reference (`target closest Guardian`, `goals: [ Chase
+    # ]`, `mob Guardian { }`, a struct-typed field) that the fixed type list can't.
+    repo["user-types"] = {
+        "patterns": [
+            {
+                "comment": "PascalCase type reference (struct / goal type / custom mob type)",
+                "name": "entity.name.type.swoftlang",
+                "match": r"\b([A-Z][A-Za-z0-9_]*[a-z][A-Za-z0-9_]*)\b(?!\s*\()",
+            }
+        ]
+    }
+
     repo["constants"] = {
         "patterns": [
             {
@@ -548,7 +606,7 @@ def main():
         "patterns": [
             {
                 "name": "variable.language.swoftlang",
-                "match": r"\b(event|args|state|player|mob|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet)\b(?=\.|\b)",
+                "match": r"\b(event|args|state|player|mob|target|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet)\b(?=\.|\b)",
             },
             {
                 "name": "variable.other.swoftlang",
@@ -590,8 +648,10 @@ def main():
             {"include": "#enums"},
             {"include": "#property-keys"},
             {"include": "#types"},
+            {"include": "#user-types"},
             {"include": "#operator-words"},
             {"include": "#keywords"},
+            *([{"include": "#ai-keywords"}] if ai_keywords else []),
             *([{"include": "#collection-ops"}] if collection_ops else []),
             {"include": "#constants"},
             {"include": "#numbers"},
@@ -614,6 +674,7 @@ def main():
                 missing.append(it)
 
     check(sym["keywords"])
+    check(ai_keywords)
     check(collection_ops)
     check(sym["declarations"])
     check(receivers)

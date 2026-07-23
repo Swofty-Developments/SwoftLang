@@ -2583,13 +2583,42 @@ let control_keywords =
    is harmless (both surfaces color it a keyword). *)
 let collection_ops = [ "of"; "has"; "sorted"; "reversed"; "first"; "last" ]
 
+(* v1.9.0 custom mob AI: the natural-language vocabulary of the `ai { }` block,
+   `goal` lifecycle blocks, `target` selectors and the navigator statements. Like
+   collection_ops these are context-sensitive SOFT keywords the parser matches on
+   IDENT text (legal variable names outside their position), so they are NOT in
+   control_keywords; they are advertised under their own 'ai_keywords' dump key so
+   the editor grammar/LSP can color and complete them precisely without the parser
+   reserving them globally. Notes: `goal` is a first-class declaration head and so
+   lives in declaration_keywords below (not here); `mob`/`target` are the block's
+   bare-context bound vars, colored as language variables by the editor; `last`
+   (of `last attacker`) already ships as a collection_op; `to`/`at`/`stop` already
+   ship in control_keywords. `on_tick`/`on_start`/`on_end` also read as inline
+   handler heads, but the goal-lifecycle spelling is canonicalized here so the
+   whole lifecycle family colors identically. *)
+let ai_keywords =
+  [
+    (* the `ai { }` block head + the `goals: [ ... ]` reference list *)
+    "ai"; "goals";
+    (* goal lifecycle blocks (map 1:1 to Minestom GoalSelector callbacks) *)
+    "should_start"; "on_start"; "on_tick"; "should_end"; "on_end";
+    (* navigator statement verbs: `path <mob> to <pt> [at speed <n>]`,
+       `stop pathing <mob>`, `look at <pt>` *)
+    "path"; "pathing"; "look"; "speed";
+    (* target selector + navigator query vocabulary *)
+    "within"; "priority"; "reached"; "closest"; "hostile"; "attacker";
+    "navigating";
+  ]
+
 (* the top-level declaration keywords, mirroring the dispatch in parser.ml. Every
-   one opens a first-class declaration block. *)
+   one opens a first-class declaration block. `goal` (v1.9.0) opens a reusable
+   named goal-type declaration (`goal Chase { <lifecycle> }`, PascalCase like a
+   struct) and is dispatched at top level in parser.ml, so it belongs here. *)
 let declaration_keywords =
   [
     "struct"; "item"; "mob"; "npc"; "hologram"; "gui"; "scoreboard"; "tablist";
     "bossbar"; "server"; "storage"; "persistent"; "api"; "fishing_loot";
-    "block_handler"; "placement_rule";
+    "block_handler"; "placement_rule"; "goal";
   ]
 
 (* the freeform per-object namespaces reachable as <obj>.<ns>.<key>: .tags
@@ -2672,6 +2701,9 @@ let dump_symbols_json () : Yojson.Safe.t =
     [
       ("keywords", jstrings control_keywords);
       ("collection_ops", jstrings collection_ops);
+      (* v1.9.0 custom mob AI vocabulary (soft keywords, colored/completed by the
+         editor without being globally reserved). *)
+      ("ai_keywords", jstrings ai_keywords);
       ("declarations", jstrings declaration_keywords);
       ("receivers", jstrings receiver_keyword_names);
       ("handlers", jstrings all_handler_names);

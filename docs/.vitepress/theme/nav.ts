@@ -66,6 +66,7 @@ export const navGroups: NavGroup[] = [
         items: [
           { text: 'Custom Items', link: '/reference/items' },
           { text: 'Custom Mobs', link: '/reference/mobs' },
+          { text: 'Mob AI', link: '/reference/mob-ai' },
           { text: 'Entities', link: '/reference/entities' },
           { text: 'Combat & PvP', link: '/reference/combat' },
           { text: 'Fishing', link: '/reference/fishing' },
@@ -161,7 +162,8 @@ export interface DocVersion {
 
 /** Newest first. The first entry is the latest (root) docs. */
 export const versions: DocVersion[] = [
-  { text: '1.8.0 (latest)', link: '/', label: 'v1.8.0', prefix: '' },
+  { text: '1.9.0 (latest)', link: '/', label: 'v1.9.0', prefix: '' },
+  { text: '1.8.0', link: '/1.8.0/', label: 'v1.8.0', prefix: '/1.8.0' },
   { text: '1.7.0', link: '/1.7.0/', label: 'v1.7.0', prefix: '/1.7.0' },
   { text: '1.6.0', link: '/1.6.0/', label: 'v1.6.0', prefix: '/1.6.0' },
   { text: '1.5.0', link: '/1.5.0/', label: 'v1.5.0', prefix: '/1.5.0' },
@@ -188,7 +190,11 @@ export const versions: DocVersion[] = [
  * this drop-set only applies to the pre-structs trees and is passed explicitly
  * per version (see `makeVersionGroups`); 1.5.0 keeps structs.
  */
-const LATEST_ONLY_LINKS = new Set(['/reference/structs', '/reference/futures'])
+const LATEST_ONLY_LINKS = new Set([
+  '/reference/structs',
+  '/reference/futures',
+  '/reference/mob-ai'
+])
 
 /**
  * `/reference/futures` is new in 1.8.0, so every frozen tree (1.2.0–1.7.0) must
@@ -196,7 +202,7 @@ const LATEST_ONLY_LINKS = new Set(['/reference/structs', '/reference/futures'])
  * structs, it postdates 1.5.0–1.7.0 too, so those derived trees — which keep
  * structs — still have to drop futures.
  */
-const V18_ONLY_LINKS = new Set(['/reference/futures'])
+const V18_ONLY_LINKS = new Set(['/reference/futures', '/reference/mob-ai'])
 
 function makeVersionGroups(
   prefix: string,
@@ -229,6 +235,8 @@ export const navGroups150: NavGroup[] = makeVersionGroups('/1.5.0', V18_ONLY_LIN
 export const navGroups160: NavGroup[] = makeVersionGroups('/1.6.0', V18_ONLY_LINKS)
 /* 1.7.0 has structs too; drop only futures. */
 export const navGroups170: NavGroup[] = makeVersionGroups('/1.7.0', V18_ONLY_LINKS)
+/* 1.8.0 shipped futures alongside structs; Mob AI is new in 1.9.0, so drop only that. */
+export const navGroups180: NavGroup[] = makeVersionGroups('/1.8.0', new Set(['/reference/mob-ai']))
 
 /** The frozen 1.1.0 tree — its OWN pages under `/1.1.0/`, with 1.1.0 labels. */
 const guideItems110: NavLink[] = guideSteps.map((s) => ({
@@ -346,6 +354,7 @@ const V140 = /^\/1\.4\.0\//
 const V150 = /^\/1\.5\.0\//
 const V160 = /^\/1\.6\.0\//
 const V170 = /^\/1\.7\.0\//
+const V180 = /^\/1\.8\.0\//
 
 /** The sidebar tree for a given route (version-aware). */
 export function sidebarForPath(path: string): NavGroup[] {
@@ -356,6 +365,7 @@ export function sidebarForPath(path: string): NavGroup[] {
   if (V150.test(path)) return navGroups150
   if (V160.test(path)) return navGroups160
   if (V170.test(path)) return navGroups170
+  if (V180.test(path)) return navGroups180
   return navGroups
 }
 

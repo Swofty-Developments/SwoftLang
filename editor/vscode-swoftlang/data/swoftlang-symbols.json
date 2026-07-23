@@ -543,6 +543,10 @@
       "kind": "declaration"
     },
     {
+      "name": "goal",
+      "kind": "declaration"
+    },
+    {
       "name": "command",
       "kind": "declaration"
     },
@@ -582,6 +586,91 @@
       "name": "last",
       "kind": "keyword",
       "doc": "last element of a list: `last of l` -> Optional<T> (same as `l.last`)."
+    },
+    {
+      "name": "ai",
+      "kind": "keyword",
+      "doc": "`ai { }` block: one custom AI group of targets + goals on a mob."
+    },
+    {
+      "name": "goals",
+      "kind": "keyword",
+      "doc": "`goals: [ Chase priority 1, Wander ]` — attach reusable named goal types."
+    },
+    {
+      "name": "should_start",
+      "kind": "keyword",
+      "doc": "`should_start { <Boolean> }` — goal lifecycle: whether the goal may begin this tick (default true)."
+    },
+    {
+      "name": "on_start",
+      "kind": "keyword",
+      "doc": "`on_start { }` — goal lifecycle: runs once when the goal begins."
+    },
+    {
+      "name": "should_end",
+      "kind": "keyword",
+      "doc": "`should_end { <Boolean> }` — goal lifecycle: whether the goal is finished (default false)."
+    },
+    {
+      "name": "on_end",
+      "kind": "keyword",
+      "doc": "`on_end { }` — goal lifecycle: runs once when the goal ends."
+    },
+    {
+      "name": "path",
+      "kind": "keyword",
+      "doc": "`path <mob> to <Entity|Location> [at speed <n>]` — start/continue an A* path (navigator.setPathTo)."
+    },
+    {
+      "name": "pathing",
+      "kind": "keyword",
+      "doc": "`stop pathing <mob>` — reset the navigator (clear the active path)."
+    },
+    {
+      "name": "look",
+      "kind": "keyword",
+      "doc": "`look at <Entity|Location>` — face a target without moving."
+    },
+    {
+      "name": "speed",
+      "kind": "keyword",
+      "doc": "`path <mob> to <pt> at speed <n>` — path with a movement-speed modifier."
+    },
+    {
+      "name": "within",
+      "kind": "keyword",
+      "doc": "`target closest Player within <n>` — range (in blocks) of a natural target selector."
+    },
+    {
+      "name": "priority",
+      "kind": "keyword",
+      "doc": "`goal \"...\" priority N` / `goals: [ Chase priority 1 ]` — lower N = higher priority."
+    },
+    {
+      "name": "reached",
+      "kind": "keyword",
+      "doc": "`<mob> reached <Entity|Location>` -> Boolean — at/adjacent to the goal point."
+    },
+    {
+      "name": "closest",
+      "kind": "keyword",
+      "doc": "`target closest Player|hostile|<MobType> within <n>` — a natural target selector."
+    },
+    {
+      "name": "hostile",
+      "kind": "keyword",
+      "doc": "`target closest hostile within <n>` — the nearest hostile mob."
+    },
+    {
+      "name": "attacker",
+      "kind": "keyword",
+      "doc": "`target last attacker within <n>` — the entity that last damaged this mob."
+    },
+    {
+      "name": "navigating",
+      "kind": "keyword",
+      "doc": "`<mob>.navigating` -> Boolean — whether the mob has an active path."
     },
     {
       "name": "Player",
@@ -1045,6 +1134,10 @@
         "all_mobs(type: String): List<Mob>"
       ],
       "doc": "Every mob (optionally by type)."
+    },
+    {
+      "name": "random_point_near",
+      "kind": "builtin"
     },
     {
       "name": "velocity",

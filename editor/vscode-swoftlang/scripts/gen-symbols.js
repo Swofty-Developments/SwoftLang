@@ -242,6 +242,39 @@ function build() {
     if (kwSet.has(op)) continue;
     symbols.push({ name: op, kind: 'keyword', doc: COLLECTION_OP_DOCS[op] || `Collection operator \`${op}\`.` });
   }
+
+  // v1.9.0 custom mob AI vocabulary (dump key 'ai_keywords'): soft keywords of
+  // the `ai { }` block, goal lifecycle blocks, target selectors and the
+  // navigator statements. Offered as keyword completions with docs; the
+  // context-aware engine (completion.ts) surfaces them precisely inside
+  // ai/goal/target blocks. Deduped against the general keywords/handlers so a
+  // word that is also a handler (on_tick) isn't listed twice.
+  const AI_KW_DOCS = {
+    ai: '`ai { }` block: one custom AI group of targets + goals on a mob.',
+    goals: '`goals: [ Chase priority 1, Wander ]` — attach reusable named goal types.',
+    should_start: '`should_start { <Boolean> }` — goal lifecycle: whether the goal may begin this tick (default true).',
+    on_start: '`on_start { }` — goal lifecycle: runs once when the goal begins.',
+    on_tick: '`on_tick { }` — goal lifecycle: runs each tick while the goal is active.',
+    should_end: '`should_end { <Boolean> }` — goal lifecycle: whether the goal is finished (default false).',
+    on_end: '`on_end { }` — goal lifecycle: runs once when the goal ends.',
+    path: '`path <mob> to <Entity|Location> [at speed <n>]` — start/continue an A* path (navigator.setPathTo).',
+    pathing: '`stop pathing <mob>` — reset the navigator (clear the active path).',
+    look: '`look at <Entity|Location>` — face a target without moving.',
+    speed: '`path <mob> to <pt> at speed <n>` — path with a movement-speed modifier.',
+    within: '`target closest Player within <n>` — range (in blocks) of a natural target selector.',
+    priority: '`goal "..." priority N` / `goals: [ Chase priority 1 ]` — lower N = higher priority.',
+    reached: '`<mob> reached <Entity|Location>` -> Boolean — at/adjacent to the goal point.',
+    closest: '`target closest Player|hostile|<MobType> within <n>` — a natural target selector.',
+    hostile: '`target closest hostile within <n>` — the nearest hostile mob.',
+    attacker: '`target last attacker within <n>` — the entity that last damaged this mob.',
+    navigating: '`<mob>.navigating` -> Boolean — whether the mob has an active path.',
+  };
+  const handlerSet = new Set(handlers);
+  for (const k of (dump.ai_keywords || [])) {
+    if (kwSet.has(k) || handlerSet.has(k)) continue;
+    symbols.push({ name: k, kind: 'keyword', doc: AI_KW_DOCS[k] || `Custom mob AI keyword \`${k}\`.` });
+  }
+
   for (const r of receivers) symbols.push({ name: r, kind: 'receiver', doc: `\`${r} { }\` OOP receiver block.` });
   // §4 struct-field annotations: @EventReceiver marks a struct field as the
   // event subject its reactive block reacts on.
