@@ -29,3 +29,6 @@ Thumbs.db
 native/build/
 java/src/main/resources/Debug/
 /data/
+
+# snippet-validator working directory (regenerated each run)
+docs/scripts/sweep2-work/
