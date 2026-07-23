@@ -52,6 +52,7 @@ public class SwoftLangEngine {
     private final List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
     private final List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
     private final List<net.swofty.model.StructDefModel> structs = new ArrayList<>();
+    private final List<net.swofty.mobs.ai.GoalTypeModel> goalTypes = new ArrayList<>();
     private ServerConfigModel serverConfig;
     private StorageConfigModel storageConfig;
 
@@ -152,6 +153,7 @@ public class SwoftLangEngine {
         blockHandlers.clear();
         placementRules.clear();
         structs.clear();
+        goalTypes.clear();
         serverConfig = null;
         storageConfig = null;
 
@@ -174,6 +176,7 @@ public class SwoftLangEngine {
                 blockHandlers.addAll(parsed.blockHandlers());
                 placementRules.addAll(parsed.placementRules());
                 structs.addAll(parsed.structs());
+                goalTypes.addAll(parsed.goalTypes());
                 if (parsed.server() != null) {
                     if (serverConfig != null) {
                         System.err.println("Error: duplicate server block in "
@@ -269,6 +272,12 @@ public class SwoftLangEngine {
         ItemRegistry.clear();
         for (ItemDefModel item : items) {
             ItemRegistry.register(item);
+        }
+        // v1.9.0 reusable goal TYPES must be registered BEFORE the mobs so a
+        // mob's `goals: [Chase]` reference resolves its lifecycle at spawn/bind.
+        net.swofty.mobs.ai.GoalTypeRegistry.clear();
+        for (net.swofty.mobs.ai.GoalTypeModel goalType : goalTypes) {
+            net.swofty.mobs.ai.GoalTypeRegistry.register(goalType.name(), goalType.lifecycle());
         }
         MobRegistry.clear();
         for (MobDefModel mob : mobs) {
@@ -381,6 +390,11 @@ public class SwoftLangEngine {
                 net.swofty.items.ItemRegistry::clear);
         net.swofty.reload.ReloadRegistry.register("mob-registry",
                 net.swofty.mobs.MobRegistry::clear);
+        // v1.9.0 scripted goal TYPES: clear the reusable-lifecycle registry so no
+        // ghost goal survives a reload (live mobs' scripted GoalSelectors die with
+        // the entities MobRegistry.clear despawns above).
+        net.swofty.reload.ReloadRegistry.register("goal-types",
+                net.swofty.mobs.ai.GoalTypeRegistry::clear);
         // packet handlers
         net.swofty.reload.ReloadRegistry.register("packet-handlers",
                 net.swofty.packets.PacketListeners::clear);

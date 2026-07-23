@@ -23,6 +23,7 @@ let make_ctx file =
     mob_ids = Hashtbl.create 16;
     custom_mobs = Hashtbl.create 16;
     custom_items = Hashtbl.create 16;
+    goal_types = Hashtbl.create 8;
     structs = Hashtbl.create 16;
     scoreboards = Hashtbl.create 8;
     tablists = Hashtbl.create 8;
@@ -367,6 +368,13 @@ let collect_sched_names (script : Ast.script) : string list =
       we pb_block;
       we pb_at
     | SRemoveBlock loc -> we loc
+    (* --- v1.9.0 AI navigator statements --- *)
+    | SPath { pa_mob; pa_to; pa_speed } ->
+      we pa_mob;
+      we pa_to;
+      Option.iter we pa_speed
+    | SStopPathing e -> we e
+    | SLookAt e -> we e
     (* --- expression-free statements --- *)
     | SHalt | SCancelEvent | SBlank | SCancelPacket | SStop | SRemoveHologram _ | SRemoveNpc _ ->
       ()
@@ -399,12 +407,28 @@ let collect_sched_names (script : Ast.script) : string list =
       match g.g_paginate with Some pg -> body pg.gp_on_click | None -> ())
     script.guis;
   let scan_handlers hs = List.iter (fun (h : inline_handler) -> List.iter ws h.ih_body) hs in
+  (* v1.9.0 AI: goal lifecycle + target selection bodies can host named schedules *)
+  let scan_goal_life (gl : goal_lifecycle) =
+    Option.iter we gl.gl_should_start;
+    body gl.gl_on_start;
+    body gl.gl_on_tick;
+    Option.iter we gl.gl_should_end;
+    body gl.gl_on_end
+  in
+  let scan_ai_block (aib : ai_block) =
+    List.iter
+      (function ATBlock { at_body; _ } -> List.iter ws at_body | ATNatural { at_range; _ } -> we at_range)
+      aib.aib_targets;
+    List.iter (fun (g : ai_goal) -> scan_goal_life g.ag_life) aib.aib_goals
+  in
+  List.iter (fun (gt : goal_type_decl) -> scan_goal_life gt.gt_life) script.goal_types;
   List.iter
     (fun (mb : mob_decl) ->
       body mb.mb_on_spawn;
       body mb.mb_on_death;
       body mb.mb_on_attack;
       body mb.mb_on_hit;
+      Option.iter scan_ai_block mb.mb_ai_block;
       scan_handlers mb.mb_handlers)
     script.mobs;
   List.iter
@@ -447,6 +471,11 @@ let register_unit_names ctx (scripts : Ast.script list) =
       List.iter (fun (h : hologram) -> Hashtbl.replace ctx.holograms h.h_name ()) s.holograms;
       List.iter (fun (n : npc) -> Hashtbl.replace ctx.npcs n.n_name ()) s.npcs;
       List.iter (fun (g : gui) -> Hashtbl.replace ctx.guis g.g_name ()) s.guis;
+      (* v1.9.0: reusable named goal types are unit-global, referenced by
+         `goals: [ Name ]` on any mob in the unit *)
+      List.iter
+        (fun (gt : goal_type_decl) -> Hashtbl.replace ctx.goal_types gt.gt_name ())
+        s.goal_types;
       List.iter (fun n -> Hashtbl.replace ctx.schedules n ()) (collect_sched_names s))
     scripts
 
@@ -580,6 +609,7 @@ let check_module_body ctx (script : Ast.script) =
   check_npcs ctx script.npcs;
   List.iter (check_item_decl ctx) script.items;
   List.iter (check_mob_decl ctx) script.mobs;
+  check_goal_types ctx script.goal_types;
   List.iter (check_packet_listener ctx) script.packet_listeners;
   List.iter (check_api_decl ctx) script.apis;
   List.iter (check_sched_decl ctx) script.schedulers;

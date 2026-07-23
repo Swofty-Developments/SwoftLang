@@ -1,0 +1,563 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "mobs": [
+    {
+      "line": 4,
+      "col": 1,
+      "type_name": "Zombie",
+      "id": "zombie",
+      "type": "ZOMBIE",
+      "name": null,
+      "health": {
+        "line": 6,
+        "col": 13,
+        "kind": "number",
+        "value": 20,
+        "integer": true
+      },
+      "damage": null,
+      "speed": null,
+      "ai": "melee",
+      "drops": [],
+      "on_spawn": null,
+      "on_death": null,
+      "on_attack": null
+    },
+    {
+      "line": 27,
+      "col": 1,
+      "type_name": "Guardian",
+      "id": "guardian",
+      "type": "IRON_GOLEM",
+      "name": null,
+      "health": {
+        "line": 29,
+        "col": 13,
+        "kind": "number",
+        "value": 100,
+        "integer": true
+      },
+      "damage": null,
+      "speed": null,
+      "ai": null,
+      "drops": [],
+      "on_spawn": null,
+      "on_death": null,
+      "on_attack": null,
+      "ai_block": {
+        "targets": [
+          {
+            "kind": "natural",
+            "select": "player",
+            "range": {
+              "line": 31,
+              "col": 38,
+              "kind": "number",
+              "value": 16,
+              "integer": true
+            }
+          },
+          {
+            "kind": "natural",
+            "select": "last_attacker",
+            "range": {
+              "line": 32,
+              "col": 37,
+              "kind": "number",
+              "value": 24,
+              "integer": true
+            }
+          },
+          {
+            "kind": "block",
+            "body": [
+              {
+                "line": 33,
+                "col": 18,
+                "kind": "return",
+                "value": {
+                  "line": 33,
+                  "col": 25,
+                  "kind": "call",
+                  "name": "player",
+                  "args": [
+                    {
+                      "line": 33,
+                      "col": 32,
+                      "kind": "string",
+                      "value": "Herobrine"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "goals": [
+          {
+            "line": 34,
+            "col": 9,
+            "name": "chase",
+            "priority": null,
+            "lifecycle": {
+              "should_start": {
+                "line": 35,
+                "col": 28,
+                "kind": "unary",
+                "op": "EXISTS",
+                "operand": {
+                  "line": 35,
+                  "col": 28,
+                  "kind": "var",
+                  "name": "target"
+                }
+              },
+              "on_start": [
+                {
+                  "line": 37,
+                  "col": 17,
+                  "kind": "look_at",
+                  "target": {
+                    "line": 37,
+                    "col": 25,
+                    "kind": "var",
+                    "name": "target"
+                  }
+                }
+              ],
+              "on_tick": [
+                {
+                  "line": 40,
+                  "col": 17,
+                  "kind": "path",
+                  "mob": {
+                    "line": 40,
+                    "col": 22,
+                    "kind": "var",
+                    "name": "mob"
+                  },
+                  "to": {
+                    "line": 40,
+                    "col": 29,
+                    "kind": "var",
+                    "name": "target"
+                  },
+                  "speed": null
+                },
+                {
+                  "line": 41,
+                  "col": 17,
+                  "kind": "if",
+                  "condition": {
+                    "line": 41,
+                    "col": 20,
+                    "kind": "binary",
+                    "op": "LESS_THAN",
+                    "left": {
+                      "line": 41,
+                      "col": 20,
+                      "kind": "call",
+                      "name": "distance",
+                      "args": [
+                        {
+                          "line": 41,
+                          "col": 29,
+                          "kind": "var",
+                          "name": "mob"
+                        },
+                        {
+                          "line": 41,
+                          "col": 34,
+                          "kind": "var",
+                          "name": "target"
+                        }
+                      ]
+                    },
+                    "right": {
+                      "line": 41,
+                      "col": 44,
+                      "kind": "number",
+                      "value": 2,
+                      "integer": true
+                    }
+                  },
+                  "then": {
+                    "line": 41,
+                    "col": 46,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 42,
+                        "col": 21,
+                        "kind": "stop_pathing",
+                        "mob": {
+                          "line": 42,
+                          "col": 34,
+                          "kind": "var",
+                          "name": "mob"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                },
+                {
+                  "line": 44,
+                  "col": 17,
+                  "kind": "if",
+                  "condition": {
+                    "line": 44,
+                    "col": 20,
+                    "kind": "binary",
+                    "op": "REACHED",
+                    "left": {
+                      "line": 44,
+                      "col": 20,
+                      "kind": "var",
+                      "name": "mob"
+                    },
+                    "right": {
+                      "line": 44,
+                      "col": 32,
+                      "kind": "var",
+                      "name": "target"
+                    }
+                  },
+                  "then": {
+                    "line": 44,
+                    "col": 39,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 45,
+                        "col": 21,
+                        "kind": "look_at",
+                        "target": {
+                          "line": 45,
+                          "col": 29,
+                          "kind": "var",
+                          "name": "target"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ],
+              "should_end": {
+                "line": 48,
+                "col": 26,
+                "kind": "binary",
+                "op": "EQUALS",
+                "left": {
+                  "line": 48,
+                  "col": 26,
+                  "kind": "var",
+                  "name": "target"
+                },
+                "right": { "line": 48, "col": 36, "kind": "none" }
+              },
+              "on_end": [
+                {
+                  "line": 50,
+                  "col": 17,
+                  "kind": "stop_pathing",
+                  "mob": {
+                    "line": 50,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "mob"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "line": 53,
+            "col": 9,
+            "name": "wander",
+            "priority": 5,
+            "lifecycle": {
+              "should_start": null,
+              "on_start": null,
+              "on_tick": [
+                {
+                  "line": 55,
+                  "col": 17,
+                  "kind": "path",
+                  "mob": {
+                    "line": 55,
+                    "col": 22,
+                    "kind": "var",
+                    "name": "mob"
+                  },
+                  "to": {
+                    "line": 55,
+                    "col": 29,
+                    "kind": "call",
+                    "name": "random_point_near",
+                    "args": [
+                      {
+                        "line": 55,
+                        "col": 51,
+                        "kind": "prop",
+                        "target": {
+                          "line": 55,
+                          "col": 47,
+                          "kind": "var",
+                          "name": "mob"
+                        },
+                        "name": "location"
+                      },
+                      {
+                        "line": 55,
+                        "col": 61,
+                        "kind": "number",
+                        "value": 8,
+                        "integer": true
+                      }
+                    ]
+                  },
+                  "speed": null
+                },
+                {
+                  "line": 56,
+                  "col": 17,
+                  "kind": "if",
+                  "condition": {
+                    "line": 56,
+                    "col": 24,
+                    "kind": "prop",
+                    "target": {
+                      "line": 56,
+                      "col": 20,
+                      "kind": "var",
+                      "name": "mob"
+                    },
+                    "name": "navigating"
+                  },
+                  "then": {
+                    "line": 56,
+                    "col": 35,
+                    "kind": "block",
+                    "statements": [
+                      {
+                        "line": 57,
+                        "col": 21,
+                        "kind": "look_at",
+                        "target": {
+                          "line": 57,
+                          "col": 33,
+                          "kind": "prop",
+                          "target": {
+                            "line": 57,
+                            "col": 29,
+                            "kind": "var",
+                            "name": "mob"
+                          },
+                          "name": "location"
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ],
+              "should_end": null,
+              "on_end": null
+            }
+          }
+        ],
+        "goal_refs": []
+      }
+    },
+    {
+      "line": 65,
+      "col": 1,
+      "type_name": "Critter",
+      "id": "critter",
+      "type": "RABBIT",
+      "name": null,
+      "health": null,
+      "damage": null,
+      "speed": null,
+      "ai": null,
+      "drops": [],
+      "on_spawn": null,
+      "on_death": null,
+      "on_attack": null,
+      "ai_block": {
+        "targets": [
+          {
+            "kind": "natural",
+            "select": "player",
+            "range": {
+              "line": 68,
+              "col": 38,
+              "kind": "number",
+              "value": 6,
+              "integer": true
+            }
+          },
+          {
+            "kind": "natural",
+            "select": "mob_type",
+            "range": {
+              "line": 69,
+              "col": 40,
+              "kind": "number",
+              "value": 10,
+              "integer": true
+            },
+            "mob_type": "Guardian"
+          }
+        ],
+        "goals": [],
+        "goal_refs": [
+          { "name": "FleeFrom", "priority": null },
+          { "name": "Wander", "priority": 5 }
+        ]
+      }
+    }
+  ],
+  "goal_types": [
+    {
+      "line": 11,
+      "col": 1,
+      "name": "Wander",
+      "lifecycle": {
+        "should_start": null,
+        "on_start": null,
+        "on_tick": [
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "path",
+            "mob": { "line": 13, "col": 14, "kind": "var", "name": "mob" },
+            "to": {
+              "line": 13,
+              "col": 21,
+              "kind": "call",
+              "name": "random_point_near",
+              "args": [
+                {
+                  "line": 13,
+                  "col": 43,
+                  "kind": "prop",
+                  "target": {
+                    "line": 13,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "mob"
+                  },
+                  "name": "location"
+                },
+                {
+                  "line": 13,
+                  "col": 53,
+                  "kind": "number",
+                  "value": 8,
+                  "integer": true
+                }
+              ]
+            },
+            "speed": null
+          }
+        ],
+        "should_end": null,
+        "on_end": null
+      }
+    },
+    {
+      "line": 17,
+      "col": 1,
+      "name": "FleeFrom",
+      "lifecycle": {
+        "should_start": {
+          "line": 18,
+          "col": 20,
+          "kind": "unary",
+          "op": "EXISTS",
+          "operand": {
+            "line": 18,
+            "col": 20,
+            "kind": "var",
+            "name": "target"
+          }
+        },
+        "on_start": null,
+        "on_tick": [
+          {
+            "line": 20,
+            "col": 9,
+            "kind": "path",
+            "mob": { "line": 20, "col": 14, "kind": "var", "name": "mob" },
+            "to": {
+              "line": 20,
+              "col": 21,
+              "kind": "call",
+              "name": "random_point_near",
+              "args": [
+                {
+                  "line": 20,
+                  "col": 43,
+                  "kind": "prop",
+                  "target": {
+                    "line": 20,
+                    "col": 39,
+                    "kind": "var",
+                    "name": "mob"
+                  },
+                  "name": "location"
+                },
+                {
+                  "line": 20,
+                  "col": 53,
+                  "kind": "number",
+                  "value": 6,
+                  "integer": true
+                }
+              ]
+            },
+            "speed": {
+              "line": 20,
+              "col": 65,
+              "kind": "number",
+              "value": 0.35,
+              "integer": false
+            }
+          },
+          {
+            "line": 21,
+            "col": 9,
+            "kind": "look_at",
+            "target": {
+              "line": 21,
+              "col": 17,
+              "kind": "var",
+              "name": "target"
+            }
+          }
+        ],
+        "should_end": {
+          "line": 23,
+          "col": 18,
+          "kind": "binary",
+          "op": "EQUALS",
+          "left": { "line": 23, "col": 18, "kind": "var", "name": "target" },
+          "right": { "line": 23, "col": 28, "kind": "none" }
+        },
+        "on_end": null
+      }
+    }
+  ]
+}

@@ -368,6 +368,14 @@ and stmt_node =
   | SRemoveEffect of { re_effect : expr; re_entity : expr }
   (* shoot "<projectile>" from <location> [with velocity <vec>] [by <shooter>] *)
   | SShoot of { sh_type : expr; sh_from : expr; sh_velocity : expr option; sh_shooter : expr option }
+  (* --- v1.9.0 custom mob AI: navigator statements (§5) ---
+     path <mob> to <Entity|Location> [at speed <n>] -> navigator.setPathTo *)
+  | SPath of { pa_mob : expr; pa_to : expr; pa_speed : expr option }
+  (* stop pathing <mob> -> navigator reset *)
+  | SStopPathing of expr
+  (* look at <Entity|Location> -> face without moving; the subject is the
+     enclosing goal's bound `mob` (bound in the runtime callback) *)
+  | SLookAt of expr
 
 and gui_open = {
   go_name : string;
@@ -704,6 +712,62 @@ type mob_tag = {
   mt_spec : mob_tag_spec;
 }
 
+(* --- v1.9.0 custom mob AI (§2-4) ---
+
+   A goal's lifecycle: the five GoalSelector hooks. should_start / should_end are
+   Boolean expressions (default true / false); on_start / on_tick / on_end are
+   statement bodies. All optional. The bodies run on the TICK thread each tick, so
+   the checker sync-colors them (await/wait forbidden). Bare context binds `mob`
+   (the creature) and `target` (Optional<Entity>, the group's selected target). *)
+type goal_lifecycle = {
+  gl_should_start : expr option;
+  gl_on_start : stmt list option;
+  gl_on_tick : stmt list option;
+  gl_should_end : expr option;
+  gl_on_end : stmt list option;
+}
+
+(* the natural-language target selectors (§4). Each produces a Minestom
+   TargetSelector; `at_range` is the `within <n>` search radius. *)
+type ai_target_kind =
+  | ATPlayer (* closest Player *)
+  | ATHostile (* closest hostile *)
+  | ATLastAttacker (* last attacker (LastEntityDamagerTarget) *)
+  | ATMobType of string (* closest <MobType> (a declared custom mob type) *)
+
+type ai_target =
+  | ATNatural of { at_kind : ai_target_kind; at_range : expr; at_pos : pos }
+  (* custom selection block: `target { <stmts> return <Entity|Optional<Entity>|none> }`
+     -> a TargetSelector.findTarget(); `mob` bound *)
+  | ATBlock of { at_body : stmt list; at_pos : pos }
+
+(* inline goal inside an `ai { }` block: `goal "<name>" [priority N] { ... }`.
+   Priority: declaration order is the default (first = highest); `priority N`
+   overrides (lower N = higher priority). *)
+type ai_goal = {
+  ag_name : string;
+  ag_priority : int option;
+  ag_life : goal_lifecycle;
+  ag_pos : pos;
+}
+
+(* a reference to a reusable named goal type from `goals: [ Chase priority 1, Wander ]` *)
+type goal_ref = {
+  gr_name : string;
+  gr_priority : int option;
+  gr_pos : pos;
+}
+
+(* one `ai { }` block on a mob = one EntityAIGroup: target selector(s) + inline
+   goals + references to reusable named goal types. Coexists with the preset
+   `ai: "melee"/"passive"/none` string field (mb_ai). *)
+type ai_block = {
+  aib_targets : ai_target list;
+  aib_goals : ai_goal list;
+  aib_goal_refs : goal_ref list;
+  aib_pos : pos;
+}
+
 type mob_decl = {
   (* §2 nominal custom types: the Capitalized type name (e.g. Ghoul) is the
      compile-time handle; mb_id is the stable runtime/interop string key
@@ -718,6 +782,9 @@ type mob_decl = {
   mb_damage : expr option;
   mb_speed : expr option;
   mb_ai : (string * pos) option; (* melee | passive | none *)
+  (* v1.9.0 custom mob AI: the `ai { }` block (targets + goals), if present.
+     Coexists with the preset `mb_ai` string form. *)
+  mb_ai_block : ai_block option;
   (* viewable: <Bool> (W-viewers §1) — setAutoViewable at spawn. false =>
      the mob is hidden until explicitly shown with 'show <mob> to <player>' *)
   mb_viewable : bool option;
@@ -735,6 +802,15 @@ type mob_decl = {
      (W-inline-handlers) *)
   mb_handlers : inline_handler list;
   mb_pos : pos;
+}
+
+(* v1.9.0 reusable named goal TYPE (§3): a top-level `goal Chase { <lifecycle> }`
+   (PascalCase, like a struct). Attached to mobs via `goals: [ Chase, ... ]`; when
+   run, `mob` binds to whatever creature it is attached to. *)
+type goal_type_decl = {
+  gt_name : string;
+  gt_life : goal_lifecycle;
+  gt_pos : pos;
 }
 
 type packet_listener = {
@@ -884,6 +960,7 @@ type script = {
   structs : struct_decl list;
   items : item_decl list;
   mobs : mob_decl list;
+  goal_types : goal_type_decl list;
   packet_listeners : packet_listener list;
   apis : api_decl list;
   schedulers : sched_decl list;

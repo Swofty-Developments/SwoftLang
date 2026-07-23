@@ -75,6 +75,10 @@ type ctx = {
      any type annotation is resolved. *)
   custom_mobs : (string, string) Hashtbl.t;
   custom_items : (string, string) Hashtbl.t;
+  (* v1.9.0 custom mob AI: declared top-level `goal <Name> { }` reusable goal
+     type names, for `goals: [ Name, ... ]` reference validation on mobs.
+     Populated in pass 1 with the rest of the nominal type names. *)
+  goal_types : (string, unit) Hashtbl.t;
   (* §1 structs: struct type name -> its resolved fields. Populated in pass 1
      (names first, then field types) before any type annotation resolves, so a
      struct is usable as a nominal type in var/field/param/return/'is a'. *)

@@ -497,7 +497,15 @@ let register_custom_types ctx (script : Ast.script) =
     script.mobs;
   List.iter
     (fun (it : item_decl) -> claim ctx.custom_items "item" it.it_tyname it.it_id it.it_pos)
-    script.items
+    script.items;
+  (* v1.9.0: reusable named goal types (their own namespace, referenced only in
+     `goals: [ Name ]`). Duplicates within the unit are rejected. *)
+  List.iter
+    (fun (gt : goal_type_decl) ->
+      if Hashtbl.mem ctx.goal_types gt.gt_name then
+        err ctx gt.gt_pos "duplicate goal type '%s'" gt.gt_name
+      else Hashtbl.replace ctx.goal_types gt.gt_name ())
+    script.goal_types
 
 (* §1 structs: publish the Capitalized struct names (pass 1a), rejecting a name
    that collides with a built-in type or another custom/struct type. The name
@@ -998,6 +1006,109 @@ let check_item_decl ctx it =
       it.it_on_click);
   check_inline_handlers ctx KItem it.it_handlers
 
+(* --- v1.9.0 custom mob AI (§2-4) --- *)
+
+(* the sync-colored context for goal lifecycle + target bodies: they run on the
+   TICK thread each tick, so `await`/`wait` inside them hit the existing color
+   check (Sync) and error, pointing the user at `spawn { }` for slow data. *)
+let ai_bctx =
+  { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
+    in_schedule = false; override = None }
+
+(* a goal lifecycle (§3): binds `mob` (the creature, typed `mob_ty`) and `target`
+   (Optional<Entity>) as bare vars. should_start/should_end are Boolean; the
+   on_* blocks are void statement bodies. *)
+let check_goal_lifecycle ctx ~mob_ty (gl : goal_lifecycle) =
+  let env = bind (bind empty_env "mob" mob_ty) "target" (TOptional TEntity) in
+  let cond what = function
+    | None -> ()
+    | Some (e : expr) ->
+      let t = type_of ctx ai_bctx env e in
+      require_present ctx env e t ~use:what;
+      if not (boolish t) then err ctx e.epos "%s must be a Boolean (got %s)" what (ty_to_string t)
+  in
+  let body = function None -> () | Some ss -> ignore (check_stmts ctx ai_bctx env ss) in
+  cond "a goal 'should_start' condition" gl.gl_should_start;
+  body gl.gl_on_start;
+  body gl.gl_on_tick;
+  cond "a goal 'should_end' condition" gl.gl_should_end;
+  body gl.gl_on_end
+
+(* a target selector (§4): natural forms validate the `within` range (and the
+   mob type, for `closest <MobType>`); a custom block must return an
+   Entity/Optional<Entity>/none. Only `mob` is bound in a block. *)
+let check_ai_target ctx ~mob_ty (t : ai_target) =
+  match t with
+  | ATNatural { at_kind; at_range; at_pos } ->
+    let rt = type_of ctx ai_bctx empty_env at_range in
+    require_present ctx empty_env at_range rt ~use:"the target search range";
+    if not (num_ok rt) then
+      err ctx at_range.epos "the target 'within' range must be a number (got %s)"
+        (ty_to_string rt);
+    (match at_kind with
+    | ATMobType name when not (Hashtbl.mem ctx.custom_mobs name) ->
+      err ctx at_pos "unknown mob type '%s' in target selector; declare it with 'mob %s { }'%s"
+        name name
+        (suggestion name (Hashtbl.fold (fun k _ a -> k :: a) ctx.custom_mobs []))
+    | _ -> ())
+  | ATBlock { at_body; at_pos } ->
+    let vals = ref [] in
+    let bare = ref false in
+    let bctx = { ai_bctx with ret_sink = Some (vals, bare) } in
+    let env = bind empty_env "mob" mob_ty in
+    ignore (check_stmts ctx bctx env at_body);
+    List.iter
+      (fun t ->
+        match unwrap t with
+        | TEntity | TMob | TCustomMob _ | TPlayer | TDisplay | TAny -> ()
+        | _ ->
+          err ctx at_pos
+            "a custom target block must return an entity, Optional<Entity>, or none (got %s)"
+            (ty_to_string t))
+      !vals;
+    if !bare then
+      err ctx at_pos
+        "a custom target block must 'return' an entity, Optional<Entity>, or none, not a bare \
+         'return'"
+
+let check_priority ctx pos = function
+  | Some p when p < 0 -> err ctx pos "goal priority must be a non-negative number (got %d)" p
+  | _ -> ()
+
+let check_ai_block ctx ~mob_ty (aib : ai_block) =
+  let seen = Hashtbl.create 8 in
+  List.iter (check_ai_target ctx ~mob_ty) aib.aib_targets;
+  List.iter
+    (fun (g : ai_goal) ->
+      if Hashtbl.mem seen g.ag_name then err ctx g.ag_pos "duplicate goal \"%s\" in ai block" g.ag_name
+      else Hashtbl.replace seen g.ag_name ();
+      check_priority ctx g.ag_pos g.ag_priority;
+      check_goal_lifecycle ctx ~mob_ty g.ag_life)
+    aib.aib_goals;
+  List.iter
+    (fun (gr : goal_ref) ->
+      (if not (Hashtbl.mem ctx.goal_types gr.gr_name) then
+         if
+           Hashtbl.mem ctx.custom_mobs gr.gr_name
+           || Hashtbl.mem ctx.custom_items gr.gr_name
+           || Hashtbl.mem ctx.structs gr.gr_name
+         then
+           err ctx gr.gr_pos
+             "'%s' is a mob/item/struct type, not a reusable goal type; a goal must be declared \
+              with 'goal %s { <lifecycle> }'"
+             gr.gr_name gr.gr_name
+         else
+           err ctx gr.gr_pos "unknown goal type '%s'; declare it with 'goal %s { }'%s" gr.gr_name
+             gr.gr_name
+             (suggestion gr.gr_name (Hashtbl.fold (fun k _ a -> k :: a) ctx.goal_types [])));
+      check_priority ctx gr.gr_pos gr.gr_priority)
+    aib.aib_goal_refs
+
+(* top-level reusable named goal types (§3): `mob` binds to the base Mob (a
+   reusable goal may attach to any creature), no specific mob tags in scope. *)
+let check_goal_types ctx (gts : goal_type_decl list) =
+  List.iter (fun (gt : goal_type_decl) -> check_goal_lifecycle ctx ~mob_ty:TMob gt.gt_life) gts
+
 let check_mob_decl ctx mb =
   let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   (match mb.mb_type with
@@ -1117,6 +1228,12 @@ let check_mob_decl ctx mb =
      (optional<Player>) variables in scope *)
   handler "on_hit" [ ("mob", TMob); ("attacker", TOptional TPlayer) ] mb.mb_on_hit;
   check_inline_handlers ctx KMob mb.mb_handlers;
+  (* v1.9.0: the `ai { }` block. Checked while this mob's typed tags are still in
+     scope (cur_mob_tags), so mob.tags.<declared> resolves inside goal bodies.
+     `mob` binds to the enclosing custom mob type. *)
+  (match mb.mb_ai_block with
+  | Some aib -> check_ai_block ctx ~mob_ty:(TCustomMob mb.mb_tyname) aib
+  | None -> ());
   ctx.cur_mob_tags <- []
 
 (* --- first-class holograms + npcs (GROUP C/D) --- *)

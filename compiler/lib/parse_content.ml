@@ -304,6 +304,194 @@ let parse_mob_tags st =
   expect st Token.RBRACE "'}' to close tags block";
   List.rev !entries
 
+(* --- v1.9.0 custom mob AI: shared parsers for goal lifecycles, the ai { } block,
+   target selectors, and top-level named goal types --- *)
+
+(* a Capitalized name in type position (goal type / mob type reference) *)
+let expect_type_name st what =
+  match peek_tok st with
+  | Token.IDENT name when name.[0] >= 'A' && name.[0] <= 'Z' ->
+    ignore (advance st);
+    name
+  | t ->
+    error st (Printf.sprintf "Expected %s (a Capitalized name), found %s" what (Token.describe t))
+
+(* a bare non-negative integer literal for 'priority N' *)
+let parse_priority st =
+  match peek_tok st with
+  | Token.NUMBER n -> (
+    ignore (advance st);
+    match int_of_string_opt n with
+    | Some i -> i
+    | None -> error st (Printf.sprintf "priority must be a whole number, found '%s'" n))
+  | t -> error st (Printf.sprintf "Expected a priority number, found %s" (Token.describe t))
+
+(* '{ <Boolean> }' — the should_start / should_end condition body *)
+let parse_braced_cond st what =
+  expect st Token.LBRACE (Printf.sprintf "'{' after '%s'" what);
+  let e = parse_expr st in
+  expect st Token.RBRACE (Printf.sprintf "'}' to close the '%s' condition" what);
+  e
+
+(* the five GoalSelector lifecycle blocks (all optional), inside a shared '{ }' *)
+let parse_goal_lifecycle st =
+  expect st Token.LBRACE "'{' to open the goal body";
+  let should_start = ref None in
+  let on_start = ref None in
+  let on_tick = ref None in
+  let should_end = ref None in
+  let on_end = ref None in
+  let dup f = error st (Printf.sprintf "Duplicate goal block '%s'" f) in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    (match peek_tok st with
+    | Token.IDENT "should_start" ->
+      ignore (advance st);
+      if !should_start <> None then dup "should_start";
+      should_start := Some (parse_braced_cond st "should_start")
+    | Token.IDENT "should_end" ->
+      ignore (advance st);
+      if !should_end <> None then dup "should_end";
+      should_end := Some (parse_braced_cond st "should_end")
+    | Token.IDENT "on_start" ->
+      ignore (advance st);
+      if !on_start <> None then dup "on_start";
+      on_start := Some (parse_body st)
+    | Token.IDENT "on_tick" ->
+      ignore (advance st);
+      if !on_tick <> None then dup "on_tick";
+      on_tick := Some (parse_body st)
+    | Token.IDENT "on_end" ->
+      ignore (advance st);
+      if !on_end <> None then dup "on_end";
+      on_end := Some (parse_body st)
+    | t ->
+      error st
+        (Printf.sprintf
+           "Unknown goal lifecycle block: %s; expected should_start, on_start, on_tick, \
+            should_end, or on_end"
+           (Token.describe t)));
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close the goal body";
+  {
+    gl_should_start = !should_start;
+    gl_on_start = !on_start;
+    gl_on_tick = !on_tick;
+    gl_should_end = !should_end;
+    gl_on_end = !on_end;
+  }
+
+(* one target selector inside an ai { } block (peek is 'target') *)
+let parse_ai_target st =
+  let at_pos = pos_here st in
+  ignore (advance st);
+  (* 'target' *)
+  match peek_tok st with
+  | Token.LBRACE ->
+    (* custom selection block: target { <stmts> return <Entity|Optional<Entity>|none> } *)
+    ATBlock { at_body = parse_body st; at_pos }
+  | Token.IDENT "closest" ->
+    ignore (advance st);
+    let at_kind =
+      match peek_tok st with
+      | Token.IDENT "Player" ->
+        ignore (advance st);
+        ATPlayer
+      | Token.IDENT "hostile" ->
+        ignore (advance st);
+        ATHostile
+      | Token.IDENT name when name.[0] >= 'A' && name.[0] <= 'Z' ->
+        ignore (advance st);
+        ATMobType name
+      | t ->
+        error st
+          (Printf.sprintf
+             "Expected 'Player', 'hostile', or a mob type after 'closest', found %s"
+             (Token.describe t))
+    in
+    expect_soft st "within";
+    ATNatural { at_kind; at_range = parse_expr st; at_pos }
+  | Token.IDENT "last" ->
+    ignore (advance st);
+    expect_soft st "attacker";
+    expect_soft st "within";
+    ATNatural { at_kind = ATLastAttacker; at_range = parse_expr st; at_pos }
+  | t ->
+    error st
+      (Printf.sprintf
+         "Unknown target selector form: %s; expected 'closest Player|hostile|<MobType> within \
+          <n>', 'last attacker within <n>', or a 'target { ... }' block"
+         (Token.describe t))
+
+(* an inline goal inside an ai { } block: goal "<name>" [priority N] { <lifecycle> } *)
+let parse_inline_goal st =
+  let ag_pos = pos_here st in
+  ignore (advance st);
+  (* 'goal' *)
+  let ag_name = expect_string st "goal name" in
+  let ag_priority = if eat_soft st "priority" then Some (parse_priority st) else None in
+  let ag_life = parse_goal_lifecycle st in
+  { ag_name; ag_priority; ag_life; ag_pos }
+
+(* goals: [ Chase priority 1, Wander ] — references to reusable named goal types *)
+let parse_goal_refs st =
+  expect st Token.LBRACKET "'[' after 'goals:'";
+  let refs = ref [] in
+  while peek_tok st <> Token.RBRACKET && peek_tok st <> Token.EOF do
+    let gr_pos = pos_here st in
+    let gr_name = expect_type_name st "a goal type name" in
+    let gr_priority = if eat_soft st "priority" then Some (parse_priority st) else None in
+    refs := { gr_name; gr_priority; gr_pos } :: !refs;
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACKET "']' to close the goals list";
+  List.rev !refs
+
+(* the ai { } block on a mob (peek is 'ai', COLON not present) *)
+let parse_ai_block st =
+  let aib_pos = pos_here st in
+  ignore (advance st);
+  (* 'ai' *)
+  expect st Token.LBRACE "'{' after 'ai'";
+  let targets = ref [] in
+  let goals = ref [] in
+  let goal_refs = ref [] in
+  let seen_refs = ref false in
+  while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+    (match peek_tok st with
+    | Token.IDENT "target" -> targets := parse_ai_target st :: !targets
+    | Token.IDENT "goal" -> goals := parse_inline_goal st :: !goals
+    | Token.IDENT "goals" ->
+      ignore (advance st);
+      ignore (matches st Token.COLON);
+      if !seen_refs then error st "Duplicate 'goals:' list in ai block";
+      seen_refs := true;
+      goal_refs := parse_goal_refs st
+    | t ->
+      error st
+        (Printf.sprintf
+           "Unknown ai block entry: %s; expected a 'target ...' selector, an inline 'goal \"...\" \
+            { }', or a 'goals: [ ... ]' list"
+           (Token.describe t)));
+    ignore (matches st Token.COMMA)
+  done;
+  expect st Token.RBRACE "'}' to close ai block";
+  {
+    aib_targets = List.rev !targets;
+    aib_goals = List.rev !goals;
+    aib_goal_refs = !goal_refs;
+    aib_pos;
+  }
+
+(* top-level reusable named goal type: goal Chase { <lifecycle> } *)
+let parse_goal_type_decl st =
+  let gt_pos = pos_here st in
+  ignore (advance st);
+  (* 'goal' *)
+  let gt_name = parse_custom_type_name st ~kw:"goal" in
+  let gt_life = parse_goal_lifecycle st in
+  { gt_name; gt_life; gt_pos }
+
 let parse_mob_decl st =
   let mb_pos = pos_here st in
   ignore (advance st);
@@ -316,6 +504,7 @@ let parse_mob_decl st =
   let damage = ref None in
   let speed = ref None in
   let ai = ref None in
+  let ai_block = ref None in
   let viewable = ref None in
   let tags = ref [] in
   let drops = ref [] in
@@ -358,6 +547,11 @@ let parse_mob_decl st =
       expect st Token.COLON "':' after 'speed'";
       if !speed <> None then dup "speed";
       speed := Some (parse_expr st)
+    | Token.IDENT "ai" when peek2_tok st = Token.LBRACE ->
+      (* v1.9.0: the `ai { }` block form (targets + goals). Coexists with the
+         preset `ai: "melee"/"passive"/none` string field. *)
+      if !ai_block <> None then dup "ai";
+      ai_block := Some (parse_ai_block st)
     | Token.IDENT "ai" ->
       ignore (advance st);
       expect st Token.COLON "':' after 'ai'";
@@ -434,6 +628,7 @@ let parse_mob_decl st =
     mb_damage = !damage;
     mb_speed = !speed;
     mb_ai = !ai;
+    mb_ai_block = !ai_block;
     mb_viewable = !viewable;
     mb_tags = !tags;
     mb_drops = !drops;

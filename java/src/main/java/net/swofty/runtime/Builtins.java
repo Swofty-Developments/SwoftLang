@@ -855,6 +855,15 @@ public final class Builtins {
                 Pos b = requireLocationArg(context, name, args, 1);
                 return a.distance(b);
             }
+            case "random_point_near": {
+                // v1.9.0 AI vocabulary: a random location within `radius` blocks
+                // of `center` on the horizontal plane (keeps the center's y).
+                Pos center = requireLocationArg(context, name, args, 0);
+                double radius = requireNumberArg(context, name, args, 1).doubleValue();
+                double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2;
+                double dist = Math.sqrt(ThreadLocalRandom.current().nextDouble()) * radius;
+                return center.add(Math.cos(angle) * dist, 0, Math.sin(angle) * dist);
+            }
             case "direction_from": {
                 Pos a = requireLocationArg(context, name, args, 0);
                 Pos b = requireLocationArg(context, name, args, 1);
@@ -1561,6 +1570,11 @@ public final class Builtins {
         Object value = evaluateArg(context, args, index);
         if (value instanceof Pos pos) {
             return pos;
+        }
+        // v1.9.0: entities coerce to their position so AI vocabulary like
+        // distance(mob, target) works with an entity on either side.
+        if (value instanceof net.minestom.server.entity.Entity entity) {
+            return entity.getPosition();
         }
         throw new ScriptError(function + "() expects a location, got: "
                 + Values.displayString(value));

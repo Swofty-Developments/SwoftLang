@@ -30,7 +30,8 @@ public record MobDefModel(
         Map<String, InlineHandler> handlers,
         Map<String, MobTagDecl> tags,
         boolean viewable,
-        String typeName) {
+        String typeName,
+        net.swofty.mobs.ai.AiBlock aiBlock) {
 
     /** Pre-on_hit shape, kept for existing call sites and smoke tests. */
     public MobDefModel(String id, String type, Expression name, double health,
@@ -59,7 +60,7 @@ public record MobDefModel(
         // legacy/back-compat callers have no nominal type name; the id doubles
         // as the type name so 'is a <id>' still resolves
         this(id, type, name, health, damage, speed, ai, drops,
-                onSpawn, onDeath, onDamage, onAttack, onHit, handlers, Map.of(), true, id);
+                onSpawn, onDeath, onDamage, onAttack, onHit, handlers, Map.of(), true, id, null);
     }
 
     /** The generic first-class handler for {@code event}, or null. */

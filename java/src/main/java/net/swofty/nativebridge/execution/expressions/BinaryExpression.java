@@ -20,6 +20,7 @@ public class BinaryExpression extends AbstractAstNode implements Expression {
         IS_NOT_TYPE("is not"),
         CONTAINS("contains"),
         OR_ELSE("otherwise"),
+        REACHED("reached"),
         CONCATENATE("+"),
         ADD("+"),
         SUBTRACT("-"),
@@ -91,6 +92,10 @@ public class BinaryExpression extends AbstractAstNode implements Expression {
                 return Values.toBoolean(left) && Values.toBoolean(right);
             case OR:
                 return Values.toBoolean(left) || Values.toBoolean(right);
+            case REACHED:
+                // v1.9.0 AI navigator query: `<mob> reached <Entity|Location>` ->
+                // true when the mob is at/adjacent to the goal (<= 1.5 blocks).
+                return reached(left, right);
             case IS_TYPE:
                 return Values.isType(left, (String) right);
             case IS_NOT_TYPE:
@@ -146,6 +151,33 @@ public class BinaryExpression extends AbstractAstNode implements Expression {
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
+    }
+
+    /** Adjacency threshold (blocks) for the {@code reached} query. */
+    private static final double REACHED_THRESHOLD = 1.5;
+
+    /**
+     * {@code <mob> reached <Entity|Location>}: true when the mob is within
+     * {@link #REACHED_THRESHOLD} blocks of the goal position. A none goal (no
+     * current target) is never reached.
+     */
+    private static Object reached(Object left, Object right) {
+        net.minestom.server.coordinate.Pos from = positionOf(left);
+        net.minestom.server.coordinate.Pos to = positionOf(right);
+        if (from == null || to == null) {
+            return false;
+        }
+        return from.distance(to) <= REACHED_THRESHOLD;
+    }
+
+    private static net.minestom.server.coordinate.Pos positionOf(Object value) {
+        if (value instanceof net.minestom.server.coordinate.Pos pos) {
+            return pos;
+        }
+        if (value instanceof net.minestom.server.entity.Entity entity) {
+            return entity.getPosition();
+        }
+        return null;
     }
 
     /**

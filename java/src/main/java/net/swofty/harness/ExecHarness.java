@@ -268,6 +268,17 @@ public class ExecHarness {
             }
             System.exit(code);
         }
+        if (args.length == 2 && args[0].equals("--ai-smoke")) {
+            // MinecraftServer.init() starts non-daemon threads: always exit
+            int code;
+            try {
+                code = AiSmoke.run(args[1]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length == 1 && args[0].equals("--debug-smoke")) {
             int code;
             try {
@@ -296,7 +307,7 @@ public class ExecHarness {
                     + " | --module-test | --phase6-checks | --http-test | --sched-test"
                     + " | --worlds-test | --phase7-smoke | --phase8-checks"
                     + " | --phase9-checks | --map-test | --collections-test"
-                    + " | --phase10-smoke | --debug-smoke"
+                    + " | --phase10-smoke | --debug-smoke | --ai-smoke <script>"
                     + " | --http-serve <script> <seconds>>");
             System.exit(1);
         }

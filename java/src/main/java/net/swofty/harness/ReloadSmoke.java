@@ -92,9 +92,23 @@ public final class ReloadSmoke {
             persistent duels: Map<String, Duel> = new_map()
             persistent joins: Integer = 0
 
+            // v1.9.0 custom mob AI: a reusable goal TYPE + an ai { } block on the
+            // spawned mob. Proves the scripted-AI state (GoalTypeRegistry + the
+            // mob's EntityAIGroup) is torn down/rebuilt by the SAME reload path,
+            // leaving no ghost goal lifecycles.
+            goal GuardPost {
+                should_start { target exists }
+                on_tick { path mob to target }
+                should_end { target is none }
+            }
+
             mob Grunt {
                 type: "ZOMBIE"
                 health: 20
+                ai {
+                    target closest Player within 16
+                    goals: [ GuardPost ]
+                }
             }
 
             scoreboard "main" {
@@ -153,8 +167,10 @@ public final class ReloadSmoke {
 
         int schedBase = ScheduleRegistry.liveCount();
         int hudBase = SwoftSidebarRuntime.taskCount();
+        int goalTypeBase = net.swofty.mobs.ai.GoalTypeRegistry.size();
         check("baseline: one live every-schedule", schedBase == 1, schedBase);
         check("baseline: one scoreboard HUD task", hudBase == 1, hudBase);
+        check("baseline: one reusable goal type registered", goalTypeBase == 1, goalTypeBase);
 
         // ---- first join: global handler fires + Duel created into persistent ----
         long joins0 = joins();
@@ -186,8 +202,11 @@ public final class ReloadSmoke {
         check("after 3 reloads: HUD task NOT duplicated (still 1)",
                 hudAfter == hudBase, hudAfter);
         int mobsAfter = MobRegistry.all(null).size();
-        check("after 3 reloads: script mobs torn down (0, no orphans)",
+        check("after 3 reloads: script mobs torn down (0, no orphans; incl. the AI mob)",
                 mobsAfter == 0, mobsAfter);
+        int goalTypesAfter = net.swofty.mobs.ai.GoalTypeRegistry.size();
+        check("after 3 reloads: goal types NOT accumulated (still 1, no ghost lifecycles)",
+                goalTypesAfter == goalTypeBase, goalTypesAfter);
         int entAfter = ScriptEntityRegistry.count();
         check("after 3 reloads: script entities torn down (0)", entAfter == 0, entAfter);
         int bindAfter = InstanceReceiverRuntime.bindingCount();

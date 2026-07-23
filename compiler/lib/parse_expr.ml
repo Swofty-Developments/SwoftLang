@@ -162,6 +162,12 @@ and parse_comparison st =
     | Token.IDENT "exists" ->
       ignore (advance st);
       left := mke p (EUnary ("EXISTS", !left))
+    (* v1.9.0 AI navigator query: '<mob> reached <Entity|Location>' -> Boolean
+       (at/adjacent to the goal). 'reached' is a soft keyword so it stays a legal
+       variable name outside this infix position. *)
+    | Token.IDENT "reached" ->
+      ignore (advance st);
+      left := mke p (EBinary ("REACHED", !left, parse_additive st))
     | Token.IS ->
       ignore (advance st);
       let negated = matches st Token.NOT in

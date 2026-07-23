@@ -44,7 +44,30 @@ public record ParsedScript(
         List<NpcModel> npcs,
         List<BlockHandlerModel> blockHandlers,
         List<PlacementRuleModel> placementRules,
-        List<StructDefModel> structs) {
+        List<StructDefModel> structs,
+        List<net.swofty.mobs.ai.GoalTypeModel> goalTypes) {
+
+    /**
+     * Pre-goal-types shape (v1.9.0 reusable goal TYPES added last), kept for
+     * existing call sites and tests: no top-level {@code goal Name { }} decls.
+     */
+    public ParsedScript(List<Command> commands, List<Event> events,
+            List<SwoftFunction> functions, List<GuiModel> guis,
+            List<ScoreboardModel> scoreboards, List<TablistModel> tablists,
+            List<BossbarModel> bossbars, ServerConfigModel server,
+            StorageConfigModel storage, List<PersistentDeclModel> persistents,
+            List<ItemDefModel> items, List<MobDefModel> mobs,
+            List<PacketHandlerModel> packetHandlers, List<ApiHandlerModel> apis,
+            List<EveryDeclModel> everyDecls, List<FishingLootModel> fishingLoot,
+            List<HologramModel> holograms, List<NpcModel> npcs,
+            List<BlockHandlerModel> blockHandlers,
+            List<PlacementRuleModel> placementRules,
+            List<StructDefModel> structs) {
+        this(commands, events, functions, guis, scoreboards, tablists, bossbars,
+                server, storage, persistents, items, mobs, packetHandlers,
+                apis, everyDecls, fishingLoot, holograms, npcs, blockHandlers,
+                placementRules, structs, List.of());
+    }
 
     /**
      * Pre-structs shape (§1 structs added last), kept for existing call sites

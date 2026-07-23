@@ -252,6 +252,12 @@ let rec parse_statement st =
   | Token.HALT ->
     ignore (advance st);
     mks p SHalt
+  (* v1.9.0 AI navigator: 'stop pathing <mob>' -> navigator reset. Must win over
+     the task-stop and bare-stop branches below. *)
+  | Token.IDENT "stop" when soft2 st "pathing" ->
+    ignore (advance st);
+    ignore (advance st);
+    mks p (SStopPathing (parse_expr st))
   | Token.IDENT "stop"
     when (not (soft2 st "song")) && (not (soft2 st "sound"))
          && tasks_member_ahead st (st.pos + 1) ->
@@ -549,6 +555,24 @@ let rec parse_statement st =
     in
     let sh_shooter = if eat_soft st "by" then Some (parse_expr st) else None in
     mks p (SShoot { sh_type; sh_from; sh_velocity; sh_shooter })
+  (* --- v1.9.0 AI navigator statements (§5) --- *)
+  | Token.IDENT "path" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let pa_mob = parse_expr st in
+    expect st Token.TO "'to' in path statement";
+    let pa_to = parse_expr st in
+    let pa_speed =
+      if eat_soft st "at" then begin
+        expect_soft st "speed";
+        Some (parse_expr st)
+      end
+      else None
+    in
+    mks p (SPath { pa_mob; pa_to; pa_speed })
+  | Token.IDENT "look" when soft2 st "at" ->
+    ignore (advance st);
+    expect_soft st "at";
+    mks p (SLookAt (parse_expr st))
   | Token.IDENT "add" when soft2 st "modifier" ->
     ignore (advance st);
     ignore (advance st);

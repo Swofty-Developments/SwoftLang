@@ -291,6 +291,7 @@ public class SwoftJsonLoader {
         List<net.swofty.model.BlockHandlerModel> blockHandlers = new ArrayList<>();
         List<net.swofty.model.PlacementRuleModel> placementRules = new ArrayList<>();
         List<net.swofty.model.StructDefModel> structs = new ArrayList<>();
+        List<net.swofty.mobs.ai.GoalTypeModel> goalTypes = new ArrayList<>();
 
         List<ModuleRegistry.Module> loaded = new ArrayList<>();
         for (StagedModule stagedModule : staged) {
@@ -368,6 +369,7 @@ public class SwoftJsonLoader {
             blockHandlers.addAll(part.blockHandlers());
             placementRules.addAll(part.placementRules());
             structs.addAll(part.structs());
+            goalTypes.addAll(part.goalTypes());
         }
 
         // module vars initialize at load, in dependency order
@@ -378,7 +380,7 @@ public class SwoftJsonLoader {
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs, blockHandlers, placementRules, structs);
+                holograms, npcs, blockHandlers, placementRules, structs, goalTypes);
     }
 
     /**
@@ -538,10 +540,19 @@ public class SwoftJsonLoader {
             structs.add(buildStructDef(element.getAsJsonObject()));
         }
 
+        // v1.9.0 reusable top-level goal TYPES (goal Name { <lifecycle> })
+        List<net.swofty.mobs.ai.GoalTypeModel> goalTypes = new ArrayList<>();
+        for (JsonElement element : optArray(root, "goal_types")) {
+            JsonObject goal = element.getAsJsonObject();
+            goalTypes.add(new net.swofty.mobs.ai.GoalTypeModel(
+                    goal.get("name").getAsString(),
+                    buildGoalLifecycle(goal.getAsJsonObject("lifecycle"))));
+        }
+
         return new ParsedScript(commands, events, functions, guis, scoreboards,
                 tablists, bossbars, server, storage, persistents,
                 items, mobs, packetHandlers, apis, everyDecls, fishingLoot,
-                holograms, npcs, blockHandlers, placementRules, structs);
+                holograms, npcs, blockHandlers, placementRules, structs, goalTypes);
     }
 
     /**
@@ -789,7 +800,72 @@ public class SwoftJsonLoader {
                 // the type name for 'is a Ghoul' specialization checks. Older ASTs
                 // without the field fall back to the id.
                 has(obj, "type_name") ? obj.get("type_name").getAsString()
-                        : obj.get("id").getAsString());
+                        : obj.get("id").getAsString(),
+                // v1.9.0: the additive `ai { }` block (null for preset/none mobs)
+                has(obj, "ai_block")
+                        ? buildAiBlock(obj.getAsJsonObject("ai_block")) : null);
+    }
+
+    /**
+     * Parse a mob {@code ai { }} block (design v1.9.0 §2-4): ordered target
+     * selectors, inline goals, and reusable goal-type references.
+     */
+    private static net.swofty.mobs.ai.AiBlock buildAiBlock(JsonObject obj) {
+        List<net.swofty.mobs.ai.AiTarget> targets = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "targets")) {
+            targets.add(buildAiTarget(element.getAsJsonObject()));
+        }
+        List<net.swofty.mobs.ai.AiGoal> goals = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "goals")) {
+            JsonObject goal = element.getAsJsonObject();
+            goals.add(new net.swofty.mobs.ai.AiGoal(
+                    goal.get("name").getAsString(),
+                    optPriority(goal),
+                    buildGoalLifecycle(goal.getAsJsonObject("lifecycle"))));
+        }
+        List<net.swofty.mobs.ai.GoalRef> goalRefs = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "goal_refs")) {
+            JsonObject ref = element.getAsJsonObject();
+            goalRefs.add(new net.swofty.mobs.ai.GoalRef(
+                    ref.get("name").getAsString(), optPriority(ref)));
+        }
+        return new net.swofty.mobs.ai.AiBlock(targets, goals, goalRefs);
+    }
+
+    /** {@code priority} field: an integer or JSON null (=&gt; declaration order). */
+    private static Integer optPriority(JsonObject obj) {
+        return has(obj, "priority") ? obj.get("priority").getAsInt() : null;
+    }
+
+    /** One {@code target} selector: a natural-language form or a custom block. */
+    private static net.swofty.mobs.ai.AiTarget buildAiTarget(JsonObject obj) {
+        String kind = obj.get("kind").getAsString();
+        if ("block".equals(kind)) {
+            return net.swofty.mobs.ai.AiTarget.block(
+                    buildStatements(obj.getAsJsonArray("body"), false));
+        }
+        return net.swofty.mobs.ai.AiTarget.natural(
+                obj.get("select").getAsString(),
+                buildExpression(obj.getAsJsonObject("range")),
+                has(obj, "mob_type") ? obj.get("mob_type").getAsString() : null);
+    }
+
+    /** The five GoalSelector lifecycle hooks (any absent => null). */
+    private static net.swofty.mobs.ai.GoalLifecycle buildGoalLifecycle(JsonObject obj) {
+        return new net.swofty.mobs.ai.GoalLifecycle(
+                lifecycleCond(obj, "should_start"),
+                lifecycleBody(obj, "on_start"),
+                lifecycleBody(obj, "on_tick"),
+                lifecycleCond(obj, "should_end"),
+                lifecycleBody(obj, "on_end"));
+    }
+
+    private static Expression lifecycleCond(JsonObject obj, String key) {
+        return has(obj, key) ? buildExpression(obj.getAsJsonObject(key)) : null;
+    }
+
+    private static ExecuteBlock lifecycleBody(JsonObject obj, String key) {
+        return has(obj, key) ? buildStatements(obj.getAsJsonArray(key), false) : null;
     }
 
     /**
@@ -1281,6 +1357,18 @@ public class SwoftJsonLoader {
             case "despawn_mob":
                 return new DespawnMobStatement(buildExpression(has(obj, "target")
                         ? obj.getAsJsonObject("target") : obj.getAsJsonObject("mob")));
+            // ---------- v1.9.0 AI navigator statements (§5) ----------
+            case "path":
+                return new net.swofty.nativebridge.execution.commands.mobs.PathStatement(
+                        buildExpression(obj.getAsJsonObject("mob")),
+                        buildExpression(obj.getAsJsonObject("to")),
+                        has(obj, "speed") ? buildExpression(obj.getAsJsonObject("speed")) : null);
+            case "stop_pathing":
+                return new net.swofty.nativebridge.execution.commands.mobs.StopPathingStatement(
+                        buildExpression(obj.getAsJsonObject("mob")));
+            case "look_at":
+                return new net.swofty.nativebridge.execution.commands.mobs.LookAtStatement(
+                        buildExpression(obj.getAsJsonObject("target")));
             // ---------- phase-7 statements (entity system) ----------
             case "spawn_entity":
                 return new net.swofty.nativebridge.execution.commands.entities

@@ -69,6 +69,7 @@ let parse ~file source =
   let persistents = ref [] in
   let items = ref [] in
   let mobs = ref [] in
+  let goal_types = ref [] in
   let packet_listeners = ref [] in
   let apis = ref [] in
   let schedulers = ref [] in
@@ -119,6 +120,8 @@ let parse ~file source =
     | Token.IDENT "persistent" -> persistents := parse_persistent st :: !persistents
     | Token.IDENT "item" -> items := parse_item_decl st :: !items
     | Token.IDENT "mob" -> mobs := parse_mob_decl st :: !mobs
+    (* v1.9.0: reusable named goal type — goal Chase { <lifecycle> } *)
+    | Token.IDENT "goal" -> goal_types := parse_goal_type_decl st :: !goal_types
     | Token.IDENT "struct" -> structs := parse_struct_decl st :: !structs
     (* The flat 'on <Event> { }' shorthand and the top-level 'on packet "..." { }'
        statement were both removed. Events live on capitalized receiver blocks;
@@ -150,7 +153,7 @@ let parse ~file source =
         (Printf.sprintf
            "Expected 'import', 'export', 'var', 'command', 'function', 'gui', 'scoreboard', \
             'tablist', 'bossbar', 'hologram', 'npc', 'server', 'storage', 'persistent', 'struct', \
-            'item', 'mob', 'api', 'every', 'fishing_loot', 'block_handler', 'placement_rule', a receiver \
+            'item', 'mob', 'goal', 'api', 'every', 'fishing_loot', 'block_handler', 'placement_rule', a receiver \
             block (Player/Entity/Mob/Item/Block/Projectile/Inventory/World/Server/Npc/Hologram), \
             or 'Packet', found %s"
            (Token.describe t))
@@ -172,6 +175,7 @@ let parse ~file source =
     structs = List.rev !structs;
     items = List.rev !items;
     mobs = List.rev !mobs;
+    goal_types = List.rev !goal_types;
     packet_listeners = List.rev !packet_listeners;
     apis = List.rev !apis;
     schedulers = List.rev !schedulers;

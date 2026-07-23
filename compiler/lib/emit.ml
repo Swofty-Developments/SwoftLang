@@ -499,6 +499,13 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
     node
       [ ("kind", `String "shoot"); ("projectile", expr sh_type); ("from", expr sh_from);
         ("velocity", opt expr sh_velocity); ("shooter", opt expr sh_shooter) ]
+  (* --- v1.9.0 AI navigator statements (§5) --- *)
+  | SPath { pa_mob; pa_to; pa_speed } ->
+    node
+      [ ("kind", `String "path"); ("mob", expr pa_mob); ("to", expr pa_to);
+        ("speed", opt expr pa_speed) ]
+  | SStopPathing e -> node [ ("kind", `String "stop_pathing"); ("mob", expr e) ]
+  | SLookAt e -> node [ ("kind", `String "look_at"); ("target", expr e) ]
 
 and gui_open_fields go =
   [
@@ -930,6 +937,63 @@ let mob_tag_spec = function
 let mob_tags ts =
   `Assoc (List.map (fun (t : mob_tag) -> (t.mt_name, mob_tag_spec t.mt_spec)) ts)
 
+(* --- v1.9.0 custom mob AI (§2-4) --- *)
+
+let goal_lifecycle (gl : goal_lifecycle) =
+  `Assoc
+    [
+      ("should_start", opt expr gl.gl_should_start);
+      ("on_start", opt statements gl.gl_on_start);
+      ("on_tick", opt statements gl.gl_on_tick);
+      ("should_end", opt expr gl.gl_should_end);
+      ("on_end", opt statements gl.gl_on_end);
+    ]
+
+let ai_target (t : ai_target) =
+  match t with
+  | ATNatural { at_kind; at_range; _ } ->
+    let select, mob_type =
+      match at_kind with
+      | ATPlayer -> ("player", None)
+      | ATHostile -> ("hostile", None)
+      | ATLastAttacker -> ("last_attacker", None)
+      | ATMobType n -> ("mob_type", Some n)
+    in
+    `Assoc
+      ([ ("kind", `String "natural"); ("select", `String select); ("range", expr at_range) ]
+      @ (match mob_type with Some n -> [ ("mob_type", `String n) ] | None -> []))
+  | ATBlock { at_body; _ } ->
+    `Assoc [ ("kind", `String "block"); ("body", statements at_body) ]
+
+let ai_goal (g : ai_goal) =
+  `Assoc
+    (with_pos g.ag_pos
+       [
+         ("name", `String g.ag_name);
+         ("priority", match g.ag_priority with Some p -> `Int p | None -> `Null);
+         ("lifecycle", goal_lifecycle g.ag_life);
+       ])
+
+let goal_ref (gr : goal_ref) =
+  `Assoc
+    [
+      ("name", `String gr.gr_name);
+      ("priority", match gr.gr_priority with Some p -> `Int p | None -> `Null);
+    ]
+
+let ai_block (aib : ai_block) =
+  `Assoc
+    [
+      ("targets", `List (List.map ai_target aib.aib_targets));
+      ("goals", `List (List.map ai_goal aib.aib_goals));
+      ("goal_refs", `List (List.map goal_ref aib.aib_goal_refs));
+    ]
+
+let goal_type_decl (gt : goal_type_decl) =
+  `Assoc
+    (with_pos gt.gt_pos
+       [ ("name", `String gt.gt_name); ("lifecycle", goal_lifecycle gt.gt_life) ])
+
 let mob_decl mb =
   `Assoc
     (with_pos mb.mb_pos
@@ -957,6 +1021,10 @@ let mob_decl mb =
          | None -> []
          | Some ss ->
            [ ("on_hit", `Assoc [ ("attacker", `String "attacker"); ("body", statements ss) ]) ])
+       (* v1.9.0: the `ai { }` block is additive — only present when declared, so
+          pre-existing mob scripts (and the preset `ai:` string) stay
+          byte-identical *)
+       @ (match mb.mb_ai_block with None -> [] | Some aib -> [ ("ai_block", ai_block aib) ])
        @ handlers_field Registry.KMob mb.mb_handlers))
 
 let packet_listener pk =
@@ -1191,6 +1259,8 @@ let script_fields ~modular (s : Ast.script) =
     @ (if s.mobs = [] then []
        else
          [ ("mobs", `List (List.map (fun mb -> mark mb.mb_exported (mob_decl mb)) s.mobs)) ])
+    @ (if s.goal_types = [] then []
+       else [ ("goal_types", `List (List.map goal_type_decl s.goal_types)) ])
     @ (if s.packet_listeners = [] then []
        else [ ("packet_listeners", `List (List.map packet_listener s.packet_listeners)) ])
     @ (if s.apis = [] then [] else [ ("apis", `List (List.map api_decl s.apis)) ])

@@ -950,6 +950,18 @@ let rec check_stmt ctx bctx env st : env * bool =
     | Some s -> check_entity_arg ctx bctx env s "the projectile shooter"
     | None -> ());
     (env, false)
+  (* --- v1.9.0 AI navigator statements (§5) --- *)
+  | SPath { pa_mob; pa_to; pa_speed } ->
+    check_ai_mob ctx bctx env pa_mob "the mob to path";
+    check_nav_target ctx bctx env pa_to "the path destination";
+    check_num_opt ctx bctx env pa_speed "the path speed";
+    (env, false)
+  | SStopPathing e ->
+    check_ai_mob ctx bctx env e "the mob to stop pathing";
+    (env, false)
+  | SLookAt e ->
+    check_nav_target ctx bctx env e "the look-at target";
+    (env, false)
 
 (* loop bodies execute more than once: widen the entry env to a fixpoint of
    entry ⊔ post-body (quiet passes) so facts and types the body invalidates
@@ -1067,8 +1079,24 @@ and check_entity_arg ctx bctx env e what =
   let t = type_of ctx bctx env e in
   require_present ctx env e t ~use:what;
   match t with
-  | TEntity | TMob | TPlayer | TDisplay | TAny -> ()
+  | TEntity | TMob | TCustomMob _ | TPlayer | TDisplay | TAny -> ()
   | _ -> err ctx e.epos "%s must be an entity (got %s)" what (ty_to_string t)
+
+(* v1.9.0 AI navigator: the mob operand of a navigator statement *)
+and check_ai_mob ctx bctx env e what =
+  let t = type_of ctx bctx env e in
+  require_present ctx env e t ~use:what;
+  match t with
+  | TMob | TCustomMob _ | TEntity | TAny -> ()
+  | _ -> err ctx e.epos "%s must be a mob (got %s)" what (ty_to_string t)
+
+(* v1.9.0 AI navigator: a navigation destination is an Entity or a Location, or an
+   Optional of those (a goal's `target` is Optional<Entity>) — no presence check *)
+and check_nav_target ctx bctx env e what =
+  let t = type_of ctx bctx env e in
+  match unwrap t with
+  | TEntity | TMob | TCustomMob _ | TPlayer | TDisplay | TLocation | TAny -> ()
+  | _ -> err ctx e.epos "%s must be an entity or Location (got %s)" what (ty_to_string t)
 
 and check_display ctx bctx env e =
   let t = type_of ctx bctx env e in

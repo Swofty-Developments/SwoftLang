@@ -2069,6 +2069,10 @@ let builtins =
     b "custom_item" [ ([ PStr ], RTy TItem) ];
     b "custom_id" [ ([ PItem ], RTy (TOptional TString)) ];
     b "all_mobs" [ ([], RTy (TList TMob)); ([ PStr ], RTy (TList TMob)) ];
+    (* --- v1.9.0 custom mob AI vocabulary builtin (typed specially in
+       Tc_expr.builtin_call_type; `distance` already exists in W-stdlib and is
+       broadened there to accept entities + a goal's Optional<Entity> target) --- *)
+    b "random_point_near" [ ([ PLoc; PNum ], RTy TLocation) ];
     (* --- phase-7 entities --- *)
     b "velocity" [ ([ PNum; PNum; PNum ], RTy TVec) ];
     b "all_entities" [ ([], RTy (TList TEntity)); ([ PStr ], RTy (TList TEntity)) ];

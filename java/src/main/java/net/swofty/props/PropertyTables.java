@@ -414,6 +414,15 @@ public final class PropertyTables {
                 null, Coercions::toPos, TICK));
         PropertyRegistry.register(PropertyDef.readOnly("type", Entity.class,
                 entity -> entity.getEntityType().key().asString()));
+        // v1.9.0 AI navigator query: `<mob>.navigating` -> has an active path.
+        PropertyRegistry.register(PropertyDef.readOnly("navigating", Entity.class,
+                entity -> {
+                    if (!(entity instanceof net.minestom.server.entity.EntityCreature creature)) {
+                        return false;
+                    }
+                    net.minestom.server.entity.pathfinding.Navigator nav = creature.getNavigator();
+                    return nav.getGoalPosition() != null && !nav.isComplete();
+                }));
         PropertyRegistry.register(PropertyDef.of("velocity", Entity.class,
                 Entity::getVelocity,
                 (entity, value) -> entity.setVelocity(

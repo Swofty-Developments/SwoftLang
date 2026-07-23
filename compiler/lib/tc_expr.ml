@@ -334,6 +334,11 @@ and prop_type ctx bctx env whole target name =
          optional<Any> tag namespace below. *)
       | TEntityTags when List.mem_assoc name ctx.cur_mob_tags ->
         List.assoc name ctx.cur_mob_tags
+      (* v1.9.0 AI navigator query: `<mob>.navigating` -> Boolean (has an active
+         path). Typed directly here (not via the compiler's property table) so it
+         needs no compiler-side property entry; at runtime the read resolves
+         through the PropertyTables `navigating` registration on Entity. *)
+      | (TMob | TCustomMob _ | TEntity) when name = "navigating" -> TBoolean
       | _ -> (
         match props_of_ty owner with
         | None ->
@@ -450,6 +455,20 @@ and binary_type ctx bctx env pos op l r =
     let lt = type_of ctx bctx env l in
     let rt = type_of ctx bctx env r in
     join (unwrap lt) rt
+  (* v1.9.0 AI navigator query: '<mob> reached <Entity|Location>' -> Boolean *)
+  | "REACHED" ->
+    let lt = type_of ctx bctx env l in
+    require_present ctx env l lt ~use:"the mob before 'reached'";
+    (match lt with
+    | TMob | TCustomMob _ | TEntity | TAny -> ()
+    | _ -> err ctx l.epos "'reached' expects a mob on the left (got %s)" (ty_to_string lt));
+    (* the destination may be an Entity/Location or an Optional of those (a goal's
+       `target` is Optional<Entity>) — no presence check on the right *)
+    let rt = type_of ctx bctx env r in
+    (match unwrap rt with
+    | TEntity | TMob | TCustomMob _ | TPlayer | TLocation | TAny -> ()
+    | _ -> err ctx r.epos "'reached' expects an entity or Location (got %s)" (ty_to_string rt));
+    TBoolean
   | _ ->
     ignore (type_of ctx bctx env l);
     ignore (type_of ctx bctx env r);
@@ -824,6 +843,44 @@ and collection_builtin_type ctx bctx env pos name args =
 
 and builtin_call_type ctx bctx env pos name args looked =
   match name with
+  (* v1.9.0 AI vocabulary builtins. Special-cased (not the generic builtin path)
+     so a goal's `target` (Optional<Entity>) is accepted without a presence check —
+     these consumers treat a missing target/entity as a no-op at runtime. *)
+  | "distance" ->
+    (match args with
+    | [ a; b ] ->
+      let ok what e =
+        let t = type_of ctx bctx env e in
+        match unwrap t with
+        | TEntity | TMob | TCustomMob _ | TPlayer | TDisplay | TLocation | TAny -> ()
+        | _ ->
+          err ctx e.epos "'distance' expects an entity or Location for %s (got %s)" what
+            (ty_to_string t)
+      in
+      ok "the first argument" a;
+      ok "the second argument" b
+    | _ ->
+      err ctx pos "'distance' expects 2 argument(s), got %d" (List.length args);
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
+    TDouble
+  | "random_point_near" ->
+    (match args with
+    | [ p; r ] ->
+      let tp = type_of ctx bctx env p in
+      require_present ctx env p tp ~use:"the center of 'random_point_near'";
+      (match unwrap tp with
+      | TLocation | TAny -> ()
+      | _ ->
+        err ctx p.epos "'random_point_near' expects a Location center (got %s)" (ty_to_string tp));
+      let tr = type_of ctx bctx env r in
+      require_present ctx env r tr ~use:"the radius of 'random_point_near'";
+      if not (num_ok tr) then
+        err ctx r.epos "'random_point_near' expects a number radius (got %s)" (ty_to_string tr)
+    | _ ->
+      err ctx pos "'random_point_near' expects 2 arguments (a Location and a radius), got %d"
+        (List.length args);
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args);
+    TLocation
   (* W-viewers: 'viewers of <entity>' -> list<Player> (getViewers) *)
   | "viewers_of" ->
     (match args with

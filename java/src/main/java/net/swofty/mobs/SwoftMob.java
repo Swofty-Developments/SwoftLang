@@ -128,6 +128,13 @@ public class SwoftMob extends EntityCreature {
     }
 
     private void applyAi() {
+        // v1.9.0: a scripted `ai { }` block builds a custom EntityAIGroup
+        // (goals + targets) and replaces the preset bundle; the preset `ai:`
+        // strings still map to the built-in bundles below.
+        if (def.aiBlock() != null) {
+            net.swofty.mobs.ai.AiBinder.apply(this, def.aiBlock());
+            return;
+        }
         switch (def.ai()) {
             case "melee" -> addAIGroup(
                     List.<GoalSelector>of(
