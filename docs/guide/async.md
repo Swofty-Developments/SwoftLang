@@ -190,12 +190,274 @@ command "bonus" {
 }
 ```
 
-No callbacks, no futures, no `.then`. The task parks at each `wait` and the story reads
-top to bottom.
+No callbacks, no `.then`. The task parks at each `wait` and the story reads top to
+bottom.
 
-`spawn`, by contrast, never returns a value — it's for kicking off independent work.
-Argument expressions are evaluated in the *parent* before the task detaches, so
+`spawn`, by contrast, detaches the work onto its own task and hands you back a
+[**`Future<T>`**](#futures) — a handle to the result that isn't ready yet. Ignore the
+handle and it's fire-and-forget (`spawn farewell(sender.name)` as a bare statement just
+kicks off independent work); *hold* it and you can await the value or fan several out in
+parallel. Argument expressions are evaluated in the *parent* before the task detaches, so
 `spawn farewell(sender.name)` captures the name at spawn time.
+
+## Futures {#futures}
+
+Sequential `set b to fetch_bonus(50)` is perfect when you need the answer *right here*
+before the next line. But two things it can't do: hand a running task's result to code
+somewhere else, and start several waits at once so they overlap instead of stacking. Both
+need a **value that stands for a result you don't have yet**. That value is `Future<T>`.
+
+`spawn` produces one. Used as an expression, `spawn build_profile(player)` starts the task
+and evaluates to a `Future<Profile>` — a first-class value you can bind, pass to a
+function, or drop into a `List<Future<Profile>>`:
+
+<!-- swoftc name=welcome.sw -->
+
+```swoftlang
+struct Profile { rank: String }
+
+async function build_profile(p: Player) {
+    wait 100 millis
+    return Profile { rank: "gold" }
+}
+
+async function welcome(player: Player) {
+    set pending to spawn build_profile(player)   // Future<Profile> — task is running
+    send "<gray>Loading your profile..." to player
+    set profile to await pending                 // block *this* task until it lands
+    send "<lime>Welcome, ${profile.rank}" to player
+}
+```
+
+`await <future>` is an expression yielding the `T`. It parks the current virtual thread
+until the future resolves — cheap, the same parking `wait` does — and returns instantly if
+the result is already there. The `Profile` here is a [struct](/reference/structs); futures
+pair naturally with struct loads and [persistence](/guide/persistence) reads, which is
+where the "not ready yet" value actually comes from.
+
+An `async { }` block is also an expression: its value is the block's trailing expression,
+wrapped as a `Future<T>`.
+
+<!-- swoftc name=asyncblock.sw -->
+
+```swoftlang
+async function prepare(p: Player) {
+    set greeting to async {
+        wait 200 millis
+        "Welcome back"        // trailing expression → Future<String>
+    }
+    send "<gray>..." to p
+    send await greeting to p
+}
+```
+
+### `await` is async-only — same rule as `wait`
+
+`await` blocks a task, so it lives under the exact same color rule as `wait`: legal in an
+async context, a compile error on the tick thread (where blocking would freeze the world).
+No new machinery — if `wait` is allowed there, so is `await`. Reaching for it inside a
+sync `on_join`:
+
+<!-- swoftc name=welcome_tick.sw expect=error -->
+
+```swoftlang
+struct Profile { rank: String }
+
+async function build_profile(p: Player) {
+    wait 100 millis
+    return Profile { rank: "gold" }
+}
+
+Player {
+    on_join {
+        set profile to await spawn build_profile(player)   // [!code error]
+        send "welcome ${profile.rank}" to player
+    }
+}
+```
+
+```txt
+welcome_tick.sw:10:24: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread use 'when <future> is ready as <name> { ... }' instead
+        set profile to await spawn build_profile(player)
+                       ^
+```
+
+### `when … is ready` — collecting a result on the tick thread
+
+The error message names the fix. On the tick thread you don't block for a future — you
+register a **continuation**. `when <future> is ready as <name> { … }` is a statement: it
+returns immediately, and when the future resolves the body runs *back on the tick thread*
+with `<name>` bound to the result. That makes it safe to touch the world right there — no
+thread hop to reason about:
+
+<!-- swoftc name=welcome_ready.sw -->
+
+```swoftlang
+struct Profile { rank: String }
+
+async function build_profile(p: Player) {
+    wait 100 millis
+    return Profile { rank: "gold" }
+}
+
+Player {
+    on_join {
+        when spawn build_profile(player) is ready as profile {
+            send "<lime>Welcome, ${profile.rank}" to player
+        }
+    }
+}
+```
+
+So the two consumers split by color: **`await`** in async code (you're already off the
+tick, blocking is free), **`when … is ready`** in tick code (never block; hand the runtime
+a callback).
+
+### Fanning out — `all of` and `any of`
+
+Holding futures as values is what makes *parallel* waiting possible. Spawn several, then
+combine them:
+
+- **`all of <list-of-futures>`** resolves when every one resolves, to the list of results
+  in input order. `await all of [...]` gives you the results once the slowest finishes —
+  not the sum of every wait.
+- **`any of <list-of-futures>`** resolves to the **first** result — a race between
+  equivalent sources.
+
+For a fixed set of *different* types, destructure positionally: `set (a, b) to await all
+of [fa, fb]` binds `a` and `b` to each future's own type.
+
+<!-- swoftc name=fanout.sw -->
+
+```swoftlang
+struct Stats { kills: Integer }
+struct Friends { count: Integer }
+
+async function load_stats(p: Player) {
+    wait 300 millis
+    return Stats { kills: 12 }
+}
+
+async function load_friends(p: Player) {
+    wait 500 millis
+    return Friends { count: 7 }
+}
+
+async function open_menu(p: Player) {
+    // both loads run at once; total wait ≈ 500ms, not 800ms
+    set (stats, friends) to await all of [spawn load_stats(p), spawn load_friends(p)]
+    send "<yellow>${stats.kills} kills · ${friends.count} friends" to p
+}
+```
+
+When the futures are all the *same* type, skip the destructure and take the list:
+
+<!-- swoftc name=race.sw -->
+
+```swoftlang
+async function ping(mirror: String) {
+    wait 100 millis
+    return mirror
+}
+
+async function fastest(p: Player) {
+    set winner to await any of [spawn ping("eu"), spawn ping("us"), spawn ping("asia")]
+    send "<lime>fastest mirror: ${winner}" to p
+}
+```
+
+### Hold now, await later
+
+A future doesn't have to be awaited where it's made. Kick the slow work off *first*, do
+whatever doesn't depend on it, and await only at the moment you actually need the value —
+the wait overlaps with everything in between:
+
+<!-- swoftc name=holdhandle.sw -->
+
+```swoftlang
+async function slow_lookup(id: Integer) {
+    wait 500 millis
+    return id * 10
+}
+
+async function process(p: Player, id: Integer) {
+    set pending to spawn slow_lookup(id)   // starts the clock now
+    send "<gray>crunching..." to p         // this runs while the lookup is in flight
+    wait 100 millis                         // ...and so does this
+    set value to await pending             // by now it's very likely already done
+    send "<lime>result ${value}" to p
+}
+```
+
+### Putting it together
+
+A realistic pattern: load a player's arena data in the background while a countdown plays,
+then reveal it the instant both the data and the timer are done.
+
+<!-- swoftc name=arena.sw -->
+
+```swoftlang
+struct Loadout { name: String }
+struct MatchStats { wins: Integer }
+
+async function load_loadout(p: Player) {
+    wait 400 millis
+    return Loadout { name: "Vanguard" }
+}
+
+async function load_stats(p: Player) {
+    wait 700 millis
+    return MatchStats { wins: 12 }
+}
+
+async function enter_arena(p: Player) {
+    // fire both loads off in parallel — the vthreads work while we count down
+    set loadout_job to spawn load_loadout(p)
+    set stats_job to spawn load_stats(p)
+
+    loop 3 times as i {
+        send "<yellow>Entering the arena in ${3 - i}..." to p
+        wait 1 seconds
+    }
+
+    // the countdown outlasted both loads; await just collects what's ready
+    set (loadout, stats) to await all of [loadout_job, stats_job]
+    send "<lime>Welcome, ${loadout.name} — ${stats.wins} career wins" to p
+}
+
+command "arena" {
+    execute {
+        if sender is a Player {
+            spawn enter_arena(sender)
+        }
+    }
+}
+```
+
+### No error branch — yet
+
+You'll notice there's no `otherwise`, no timeout, no `if it failed` on a future. That's
+deliberate, and it follows from what can actually go wrong today. Nothing a future wraps
+right now does *outbound* IO — there's no HTTP call or database write whose failure is a
+normal, expected outcome you'd want to branch on. So the only real failure modes are:
+
+- **A bug in the async body** (a runtime error). The future completes exceptionally and
+  `await` re-raises it in the awaiting task — it propagates and gets logged like any script
+  error, exactly as it would if you'd called the function sequentially. A
+  `when … is ready` whose future errored simply doesn't run its body.
+- **Cancellation** on reload or shutdown. Every in-flight task is torn down; `await`
+  unwinds cleanly and pending continuations don't fire. The program is going away — not a
+  case you handle.
+- **Missing data is not a failure.** "No profile found" is an [`Optional`](/guide/options),
+  and the future succeeds *with* the `Optional` — don't route absence through the future.
+- **A player who logged off mid-load is not a failure** either. The value arrived; re-check
+  `p.online` in the continuation, the same [stale-player](#stale-players) guard you already
+  write.
+
+The `otherwise` / `with timeout` / `Result` branch is deferred until there's an operation
+whose failure is a genuine routine outcome — that arrives together with outbound IO, and
+its error model gets designed alongside it. See the [Futures
+reference](/reference/futures#error-model) for the full rationale.
 
 ## What runs where
 
