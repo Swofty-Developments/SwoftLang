@@ -1,0 +1,90 @@
+/* Deep-link affordances (see docLinks.ts) */
+
+/* Headings are click-to-copy; show the link cursor + a persistent # affordance. */
+.vp-doc .sw-heading-link {
+  cursor: pointer;
+}
+.vp-doc .sw-heading-link .header-anchor {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.vp-doc .sw-heading-link:hover .header-anchor,
+.vp-doc .sw-heading-link:focus-within .header-anchor {
+  opacity: 0.6;
+}
+.vp-doc .sw-heading-link .header-anchor:hover {
+  opacity: 1;
+}
+
+/* Keep anchored targets clear of the sticky topbar. */
+.vp-doc :where(h1, h2, h3, h4, h5, h6)[id],
+.vp-doc div[class*='language-'][id] {
+  scroll-margin-top: 84px;
+}
+
+/* Copy-link button on code blocks — sits just left of VitePress's copy button. */
+.vp-doc div[class*='language-'] > button.copy-link {
+  position: absolute;
+  top: 12px;
+  right: 52px; /* copy button is at right:12px, width ~40px */
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: block;
+  border: 1px solid var(--vp-code-copy-code-border-color, rgba(128, 128, 128, 0.25));
+  border-radius: 4px;
+  background-color: var(--vp-code-copy-code-bg, rgba(128, 128, 128, 0.12));
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s, border-color 0.2s, background-color 0.2s;
+  /* chain-link icon */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/%3E%3C/svg%3E");
+  background-position: 50%;
+  background-size: 20px;
+  background-repeat: no-repeat;
+}
+.vp-doc div[class*='language-']:hover > button.copy-link,
+.vp-doc div[class*='language-'] > button.copy-link:focus {
+  opacity: 1;
+}
+.vp-doc div[class*='language-'] > button.copy-link:hover {
+  border-color: var(--vp-code-copy-code-hover-border-color, rgba(128, 128, 128, 0.5));
+  background-color: var(--vp-code-copy-code-hover-bg, rgba(128, 128, 128, 0.2));
+}
+
+/* Flash a code block when it's the deep-link target. */
+.vp-doc div[class*='language-'].sw-code-flash {
+  animation: sw-code-flash 1.6s ease;
+}
+@keyframes sw-code-flash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  15% {
+    box-shadow: 0 0 0 3px var(--vp-c-brand-1, #10b981);
+  }
+}
+
+/* Copy toast */
+#sw-copy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 12px);
+  z-index: 200;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--vp-c-brand-1, #10b981);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+#sw-copy-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

@@ -42,6 +42,9 @@ export default defineConfig({
   description:
     'A scripting language for Minecraft servers — compiled by OCaml, executed on the JVM.',
 
+  // Drop the .html suffix from generated links (Vercel serves clean URLs too).
+  cleanUrls: true,
+
   // dark-first; light is supported via the topbar toggle
   appearance: 'dark',
 

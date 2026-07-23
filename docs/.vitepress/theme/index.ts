@@ -17,10 +17,14 @@ import '@fontsource-variable/red-hat-mono'
 import './custom.css'
 import './layout.css'
 import './components.css'
+import './anchors.css'
+
+import { setupDocLinks } from './docLinks'
 
 export default {
   Layout,
-  enhanceApp({ app }) {
+  enhanceApp({ app, router }) {
+    setupDocLinks(router)
     app.component('MappedCompare', MappedCompare)
     app.component('MappedPair', MappedPair)
     app.component('SingleCode', SingleCode)
