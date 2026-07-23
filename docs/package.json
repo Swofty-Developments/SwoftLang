@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress dev",
-    "docs:build": "NODE_OPTIONS=--max-old-space-size=8192 vitepress build",
+    "docs:build": "bash scripts/build-versions.sh",
+    "docs:build:full": "NODE_OPTIONS=--max-old-space-size=8192 vitepress build",
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
