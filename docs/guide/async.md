@@ -277,18 +277,18 @@ Player {
 ```
 
 ```txt
-welcome_tick.sw:10:24: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread use 'when <future> is ready as <name> { ... }' instead
+welcome_tick.sw:10:24: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread wrap the awaiting work in an 'async { }' block instead
         set profile to await spawn build_profile(player)
                        ^
 ```
 
-### `when … is ready` — collecting a result on the tick thread
+### Detaching to collect a result on the tick thread
 
 The error message names the fix. On the tick thread you don't block for a future — you
-register a **continuation**. `when <future> is ready as <name> { … }` is a statement: it
-returns immediately, and when the future resolves the body runs *back on the tick thread*
-with `<name>` bound to the result. That makes it safe to touch the world right there — no
-thread hop to reason about:
+**detach** the follow-up work into an `async { }` task (or `spawn` a whole async function).
+Inside that task blocking is free, so you `await` there; when you then touch the world the
+runtime **auto-hops** the access back onto the tick thread for you — no thread hop to
+reason about:
 
 <!-- swoftc name=welcome_ready.sw -->
 
@@ -302,16 +302,17 @@ async function build_profile(p: Player) {
 
 Player {
     on_join {
-        when spawn build_profile(player) is ready as profile {
+        async {
+            set profile to await spawn build_profile(player)
             send "<lime>Welcome, ${profile.rank}" to player
         }
     }
 }
 ```
 
-So the two consumers split by color: **`await`** in async code (you're already off the
-tick, blocking is free), **`when … is ready`** in tick code (never block; hand the runtime
-a callback).
+So futures have a single consumer, **`await`**. In async code you're already off the tick,
+so you await directly; in tick code you first detach into `async { }` (or `spawn` an async
+function) and await *there* — the world access afterward auto-hops back to the tick thread.
 
 ### Fanning out — `all of` and `any of`
 
@@ -443,15 +444,15 @@ normal, expected outcome you'd want to branch on. So the only real failure modes
 
 - **A bug in the async body** (a runtime error). The future completes exceptionally and
   `await` re-raises it in the awaiting task — it propagates and gets logged like any script
-  error, exactly as it would if you'd called the function sequentially. A
-  `when … is ready` whose future errored simply doesn't run its body.
+  error, exactly as it would if you'd called the function sequentially. A detached
+  `async { }` task that awaited it just stops at that `await`.
 - **Cancellation** on reload or shutdown. Every in-flight task is torn down; `await`
-  unwinds cleanly and pending continuations don't fire. The program is going away — not a
+  unwinds cleanly and the detached task stops. The program is going away — not a
   case you handle.
 - **Missing data is not a failure.** "No profile found" is an [`Optional`](/guide/options),
   and the future succeeds *with* the `Optional` — don't route absence through the future.
 - **A player who logged off mid-load is not a failure** either. The value arrived; re-check
-  `p.online` in the continuation, the same [stale-player](#stale-players) guard you already
+  `p.online` after the `await`, the same [stale-player](#stale-players) guard you already
   write.
 
 The `otherwise` / `with timeout` / `Result` branch is deferred until there's an operation

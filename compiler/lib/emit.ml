@@ -214,10 +214,6 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
           `Assoc [ ("name", `String name); ("args", `List (List.map expr args)) ] ) ]
   | SAsyncBlock body ->
     node [ ("kind", `String "async_block"); ("body", `List (List.map stmt body)) ]
-  | SWhenReady { wr_future; wr_name; wr_body } ->
-    node
-      [ ("kind", `String "when_ready"); ("future", expr wr_future);
-        ("name", `String wr_name); ("body", `List (List.map stmt wr_body)) ]
   | STupleBind { tb_names; tb_value } ->
     node
       [ ("kind", `String "tuple_bind");

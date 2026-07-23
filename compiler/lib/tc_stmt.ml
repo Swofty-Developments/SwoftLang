@@ -215,24 +215,6 @@ let rec check_stmt ctx bctx env st : env * bool =
     (* the spawned task gets a snapshot of the variables; its writes don't leak back *)
     ignore (check_stmts ctx { bctx with color = Async } env ss);
     (env, false)
-  | SWhenReady { wr_future; wr_name; wr_body } ->
-    (* v1.8.0 futures §3.2: a tick-context callback. Legal in any color (it does
-       not block); the future must be a Future<T>, the binding is T, and the body
-       runs back on the tick thread (Sync color) against a var snapshot. *)
-    check_persist_shadow ctx st.spos "binding" wr_name;
-    let ft = type_of ctx bctx env wr_future in
-    let payload =
-      match ft with
-      | TFuture inner -> inner
-      | TAny -> TAny
-      | _ ->
-        err ctx wr_future.epos "'when … is ready' expects a Future (got %s)" (ty_to_string ft);
-        TAny
-    in
-    let bctx' = { bctx with color = Sync; override = None } in
-    let benv = bind { env with facts = SM.empty } wr_name payload in
-    ignore (check_stmts ctx bctx' benv wr_body);
-    (env, false)
   | STupleBind { tb_names; tb_value } ->
     (* v1.8.0 futures §4: positional destructure, scoped to `await all of [...]`.
        When the operand is a list literal of futures, each name binds to the

@@ -703,7 +703,7 @@
       "patterns": [
         {
           "name": "keyword.control.swoftlang",
-          "match": "\\b(migrate|cancel|repeat|return|schema|await|ready|times|while|call|else|halt|loop|stop|wait|when|any|as|go|if)\\b"
+          "match": "\\b(migrate|cancel|repeat|return|schema|await|times|while|call|else|halt|loop|stop|wait|any|as|go|if)\\b"
         },
         {
           "name": "keyword.other.statement.swoftlang",

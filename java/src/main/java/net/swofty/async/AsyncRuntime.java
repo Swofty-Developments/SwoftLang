@@ -22,16 +22,15 @@ public final class AsyncRuntime {
      * Every pending script future (§1.8.0). {@code spawn}-as-value submits its
      * body here and {@code all of}/{@code any of} track their combined futures,
      * so a reload/shutdown {@link #cancelAll()} can cancel them all — which
-     * unwinds any awaiting vthread and skips any tick-side continuation.
+     * unwinds any awaiting vthread.
      */
     private static final Set<CompletableFuture<?>> FUTURES = ConcurrentHashMap.newKeySet();
 
     /**
      * Program generation, bumped on every {@link #cancelAll()} (reload /
-     * shutdown teardown). A {@code when ... is ready} continuation captures the
-     * generation it was registered under and refuses to fire on the tick thread
-     * once it has advanced, so a future that resolved just before a reload can
-     * never run its body against the torn-down program.
+     * shutdown teardown). Exposed via {@link #generation()} so a deferred
+     * tick-side action can detect that the program was torn down between when it
+     * was scheduled and when it runs, and decline to touch the new program.
      */
     private static final AtomicLong GENERATION = new AtomicLong();
 

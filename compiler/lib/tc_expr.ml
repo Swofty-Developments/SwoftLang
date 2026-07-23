@@ -591,17 +591,17 @@ and spawn_payload ctx bctx env pos name args =
       TAny)
 
 (* v1.8.0 futures §3.1: `await` is legal exactly where `wait` is — the async
-   color. On the tick thread it would freeze the tick; point the user at the
-   `when … is ready` callback instead. *)
+   color. On the tick thread it would freeze the tick; point the user at a
+   detached `async { ... await ... }` block instead (world access auto-hops back
+   to the tick thread from inside the task). *)
 and require_await_ctx ctx bctx pos =
   if bctx.packet && bctx.color = Sync then
     err ctx pos
-      "'await' is not allowed inside Packet handlers; wrap the work in an 'async { }' block, or \
-       use 'when <future> is ready as <name> { ... }'"
+      "'await' is not allowed inside Packet handlers; wrap the work in an 'async { }' block"
   else if bctx.color = Sync then
     err ctx pos
       "'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the \
-       tick thread use 'when <future> is ready as <name> { ... }' instead"
+       tick thread wrap the awaiting work in an 'async { }' block instead"
 
 and await_type ctx bctx env pos future =
   require_await_ctx ctx bctx pos;

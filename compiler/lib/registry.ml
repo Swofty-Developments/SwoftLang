@@ -2555,13 +2555,16 @@ let control_keywords =
     "repeat"; "skin"; "name"; "line"; "entry"; "blank"; "belowname"; "fade";
     (* W-pvp combat verbs *)
     "damage"; "knock"; "apply"; "shoot";
-    (* v1.8.0 futures §3/§4: the consuming surface. `await` (async-context value
-       expression), `when ... is ready as` (tick-context callback statement), and
-       `any` (the `any of` combinator). `all`, `of` and `spawn` already appear
-       above; `Future` is advertised as a generic type below. All are SOFT
-       keywords in the parser (legal variable names outside their position), but
-       advertised here so the editor colors/completes them. *)
-    "await"; "when"; "ready"; "any";
+    (* v1.8.0 futures §3/§4: the consuming surface. `await` (the single future
+       consumer — an async-context value expression) and `any` (the `any of`
+       combinator). `all`, `of` and `spawn` already appear above; `Future` is
+       advertised as a generic type below. v1.9.0 removed `when … is ready`, so
+       `when`/`ready` are no longer advertised here — the editor must not color
+       or complete a statement that no longer exists. The parser still recognizes
+       the bare `when …` position (matched on the IDENT text, independent of this
+       list) purely to emit the migration error. All entries here are SOFT
+       keywords in the parser (legal variable names outside their position). *)
+    "await"; "any";
     (* boolean / logical / relational operators (word form) *)
     "is"; "not"; "and"; "or"; "Either"; "contains"; "as"; "to"; "in"; "of";
     "all"; "players"; "true"; "false";

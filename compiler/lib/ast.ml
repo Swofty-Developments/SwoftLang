@@ -92,7 +92,7 @@ and expr_node =
      is the spawned async callable's inferred return type. The bare-statement
      form (SSpawn) stays fire-and-forget; this is the value-producing form used
      wherever an expression is expected (set x to spawn f(...), await spawn ...,
-     when spawn ... is ready, list literals of futures). *)
+     list literals of futures). *)
   | EFutureSpawn of string * expr list
   (* v1.8.0 futures §2: `async { <stmts> ; <trailing?> }` as an EXPRESSION yields
      Future<typeof trailing> (Future<Unit> with no trailing expression). The
@@ -154,10 +154,6 @@ and stmt_node =
   | SWait of expr * string
   | SSpawn of string * expr list
   | SAsyncBlock of stmt list
-  (* v1.8.0 futures §3.2: `when <Future<T>> is ready as <name> { body }` — a
-     tick-context callback STATEMENT. Registers a continuation; when the future
-     resolves, body runs back on the tick thread with name bound to the T. *)
-  | SWhenReady of { wr_future : expr; wr_name : string; wr_body : stmt list }
   (* v1.8.0 futures §4: positional tuple destructure `set (a, b) to <expr>`,
      scoped to await/all-of. Binds each name to the corresponding element type of
      a list-literal of futures under `await all of [...]`. *)

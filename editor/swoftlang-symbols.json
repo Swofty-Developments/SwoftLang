@@ -9,9 +9,8 @@
     "reset", "title", "actionbar", "fill", "clone", "replace", "despawn",
     "destroy", "mount", "dismount", "dispense", "draw", "repeat", "skin",
     "name", "line", "entry", "blank", "belowname", "fade", "damage", "knock",
-    "apply", "shoot", "await", "when", "ready", "any", "is", "not", "and",
-    "or", "Either", "contains", "as", "to", "in", "of", "all", "players",
-    "true", "false"
+    "apply", "shoot", "await", "any", "is", "not", "and", "or", "Either",
+    "contains", "as", "to", "in", "of", "all", "players", "true", "false"
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
   "declarations": [

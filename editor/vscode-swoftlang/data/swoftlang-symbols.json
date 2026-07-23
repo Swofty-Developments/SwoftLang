@@ -291,14 +291,6 @@
       "kind": "keyword"
     },
     {
-      "name": "when",
-      "kind": "keyword"
-    },
-    {
-      "name": "ready",
-      "kind": "keyword"
-    },
-    {
       "name": "any",
       "kind": "keyword"
     },

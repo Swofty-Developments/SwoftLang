@@ -103,9 +103,6 @@ let collect_sched_names (script : Ast.script) : string list =
       ws t;
       Option.iter ws e
     | SBlock ss | SAsyncBlock ss -> List.iter ws ss
-    | SWhenReady { wr_future; wr_body; _ } ->
-      we wr_future;
-      List.iter ws wr_body
     | STupleBind { tb_value; _ } -> we tb_value
     | SLoop (c, _, b) ->
       we c;

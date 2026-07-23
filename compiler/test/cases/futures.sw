@@ -51,11 +51,13 @@ async function welcome(p: Player) {
     send "doubled ${doubled}" to p
 }
 
-// Future<T> in a type position, `all of` over a typed list, when-ready in a
-// tick-colored (plain) function.
+// Future<T> in a type position, `all of` over a typed list. The tick-colored
+// (plain) function detaches into an `async { }` task to await the combined
+// future; the broadcast then auto-hops back to the tick thread.
 function combine_pending(pending: List<Future<Integer>>) {
     set combined to all of pending
-    when combined is ready as results {
+    async {
+        set results to await combined
         set n to size of results
         broadcast "got ${n} results"
     }
@@ -66,14 +68,21 @@ Player {
         // fire-and-forget spawn statement (unchanged form)
         spawn build_rank(player)
 
-        // when ... is ready over a spawn value, tick-thread callback
-        when spawn load_stats(player) is ready as count {
+        // spawn + await: detach a whole async function that awaits inside; its
+        // world access (send) auto-hops back to the tick thread
+        spawn welcome(player)
+
+        // inline detach: async { } task awaits a spawn value, then the send
+        // auto-hops back to the tick thread (replaces `when ... is ready`)
+        async {
+            set count to await spawn load_stats(player)
             send "loaded ${count}" to player
         }
 
-        // capture a Future in tick context, then register a callback on it
+        // capture a Future in tick context, then await it inside a detached task
         set fut to spawn build_rank(player)
-        when fut is ready as tier {
+        async {
+            set tier to await fut
             send "tier ${tier}" to player
         }
 

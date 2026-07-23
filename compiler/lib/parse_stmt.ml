@@ -322,17 +322,15 @@ let rec parse_statement st =
     when (match peek2_tok st with
           | Token.IDENT _ | Token.LPAREN | Token.LBRACKET | Token.ALL -> true
           | _ -> false) ->
-    (* v1.8.0 futures §3.2: `when <Future<T>> is ready as <name> { body }`. The
-       future operand is parsed with parse_additive so the trailing `is ready`
-       is not swallowed by the `is` infix in the full expression grammar. *)
-    ignore (advance st);
-    let wr_future = parse_additive st in
-    expect st Token.IS "'is' in 'when <future> is ready as <name>'";
-    expect_soft st "ready";
-    expect st Token.AS "'as' in 'when <future> is ready as <name>'";
-    let wr_name = expect_ident st "binding name after 'as'" in
-    let wr_body = parse_body st in
-    mks p (SWhenReady { wr_future; wr_name; wr_body })
+    (* v1.9.0: the `when <Future<T>> is ready as <name> { body }` statement was
+       removed — futures now have a single consumer, `await`. This syntactic
+       position stays reserved so the migration error fires with a pointer to the
+       `async { … await … }` form (world access auto-hops back to the tick
+       thread, so a detached task can touch the world exactly as the callback
+       body did). *)
+    error st
+      "`when ... is ready` was removed; detach into `async { set x to await <future>  ... }` \
+       (world access hops back to the tick thread)"
   | Token.IDENT "wait" when starts_expression (peek2_tok st) ->
     ignore (advance st);
     let amount = parse_additive st in

@@ -1140,13 +1140,6 @@ public class SwoftJsonLoader {
             }
             case "async_block":
                 return new AsyncBlockStatement(buildStatements(obj.getAsJsonArray("body"), true));
-            case "when_ready":
-                // when <future> is ready as <name> { body } — tick-side
-                // continuation (§1.8.0). The body runs back on the tick thread.
-                return new net.swofty.nativebridge.execution.commands.WhenReadyStatement(
-                        buildExpression(obj.getAsJsonObject("future")),
-                        obj.get("name").getAsString(),
-                        buildStatements(obj.getAsJsonArray("body"), false));
             case "tuple_bind": {
                 // set (a, b) to <expr> — positional destructure (§4)
                 java.util.List<String> names = new ArrayList<>();

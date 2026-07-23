@@ -1,1 +1,1 @@
-await_tick_thread.sw:8:18: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread use 'when <future> is ready as <name> { ... }' instead
+'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread wrap the awaiting work in an 'async { }' block instead

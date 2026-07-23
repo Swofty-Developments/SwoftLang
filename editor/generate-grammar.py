@@ -40,9 +40,10 @@ CONTROL_KW = [
     "stop", "halt", "wait", "cancel", "call", "go", "as",
     # §5 struct schema-migration soft keywords (schema: N / migrate to N { }).
     "schema", "migrate",
-    # v1.8.0 futures: await/when-is-ready/any (all/of/spawn live in other
-    # buckets); Future is a generic type container below.
-    "await", "when", "ready", "any",
+    # v1.8.0 futures: await/any (all/of/spawn live in other buckets); Future is
+    # a generic type container below. v1.9.0 removed `when … is ready`, so
+    # `when`/`ready` are no longer keywords.
+    "await", "any",
 ]
 # declaration / binding keywords that live in the flat keywords[] list
 DECL_KW = ["command", "event", "function", "schedule", "on", "every"]

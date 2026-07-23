@@ -9,29 +9,15 @@ import net.minestom.server.thread.TickSchedulerThread;
 import net.minestom.server.thread.TickThread;
 
 /**
- * The only bridge from a script task onto the tick thread. Tick-thread and
- * tick-scheduler-thread callers pass through (both run inside the tick;
- * parking the scheduler thread on its own scheduleNextTick task would
- * deadlock the server); other threads park at most one tick.
+ * The only bridge from a script task onto the tick thread. It is what the
+ * world-access auto-hop and {@code spawn}/{@code async} rely on to run world
+ * mutations on the tick: off-thread callers park at most one tick, while
+ * tick-thread and tick-scheduler-thread callers pass through (both run inside
+ * the tick; parking the scheduler thread on its own scheduleNextTick task would
+ * deadlock the server).
  */
 public final class TickDispatch {
     private TickDispatch() {
-    }
-
-    /**
-     * Schedule {@code action} to run on the tick thread on the next tick,
-     * fire-and-forget (the {@code when ... is ready} continuation lands its
-     * body back on the tick thread). Tick-thread callers run it inline; when
-     * the server is not running (headless harness) it runs inline too.
-     */
-    public static void runNextTick(Runnable action) {
-        Thread current = Thread.currentThread();
-        if (current instanceof TickThread || current instanceof TickSchedulerThread
-                || !serverRunning()) {
-            action.run();
-            return;
-        }
-        MinecraftServer.getSchedulerManager().scheduleNextTick(action);
     }
 
     public static <T> T call(Supplier<T> action) {

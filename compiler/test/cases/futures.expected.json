@@ -4,7 +4,7 @@
   "commands": [],
   "events": [
     {
-      "line": 65,
+      "line": 67,
       "col": 5,
       "name": "PlayerJoin",
       "receiver": "Player",
@@ -15,45 +15,71 @@
         "async": false,
         "statements": [
           {
-            "line": 67,
+            "line": 69,
             "col": 9,
             "kind": "spawn",
             "call": {
               "name": "build_rank",
               "args": [
-                { "line": 67, "col": 26, "kind": "var", "name": "player" }
+                { "line": 69, "col": 26, "kind": "var", "name": "player" }
               ]
             }
           },
           {
-            "line": 70,
+            "line": 73,
             "col": 9,
-            "kind": "when_ready",
-            "future": {
-              "line": 70,
-              "col": 14,
-              "kind": "future_spawn",
-              "call": {
-                "name": "load_stats",
-                "args": [
-                  { "line": 70, "col": 31, "kind": "var", "name": "player" }
-                ]
-              }
-            },
-            "name": "count",
+            "kind": "spawn",
+            "call": {
+              "name": "welcome",
+              "args": [
+                { "line": 73, "col": 23, "kind": "var", "name": "player" }
+              ]
+            }
+          },
+          {
+            "line": 77,
+            "col": 9,
+            "kind": "async_block",
             "body": [
               {
-                "line": 71,
+                "line": 78,
+                "col": 13,
+                "kind": "assign",
+                "target": "count",
+                "value": {
+                  "line": 78,
+                  "col": 26,
+                  "kind": "await",
+                  "future": {
+                    "line": 78,
+                    "col": 32,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        {
+                          "line": 78,
+                          "col": 49,
+                          "kind": "var",
+                          "name": "player"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "line": 79,
                 "col": 13,
                 "kind": "send",
                 "message": {
-                  "line": 71,
+                  "line": 79,
                   "col": 18,
                   "kind": "string",
                   "value": "loaded ${count}"
                 },
                 "target": {
-                  "line": 71,
+                  "line": 79,
                   "col": 39,
                   "kind": "var",
                   "name": "player"
@@ -62,41 +88,56 @@
             ]
           },
           {
-            "line": 75,
+            "line": 83,
             "col": 9,
             "kind": "assign",
             "target": "fut",
             "value": {
-              "line": 75,
+              "line": 83,
               "col": 20,
               "kind": "future_spawn",
               "call": {
                 "name": "build_rank",
                 "args": [
-                  { "line": 75, "col": 37, "kind": "var", "name": "player" }
+                  { "line": 83, "col": 37, "kind": "var", "name": "player" }
                 ]
               }
             }
           },
           {
-            "line": 76,
+            "line": 84,
             "col": 9,
-            "kind": "when_ready",
-            "future": { "line": 76, "col": 14, "kind": "var", "name": "fut" },
-            "name": "tier",
+            "kind": "async_block",
             "body": [
               {
-                "line": 77,
+                "line": 85,
+                "col": 13,
+                "kind": "assign",
+                "target": "tier",
+                "value": {
+                  "line": 85,
+                  "col": 25,
+                  "kind": "await",
+                  "future": {
+                    "line": 85,
+                    "col": 31,
+                    "kind": "var",
+                    "name": "fut"
+                  }
+                }
+              },
+              {
+                "line": 86,
                 "col": 13,
                 "kind": "send",
                 "message": {
-                  "line": 77,
+                  "line": 86,
                   "col": 18,
                   "kind": "string",
                   "value": "tier ${tier}"
                 },
                 "target": {
-                  "line": 77,
+                  "line": 86,
                   "col": 36,
                   "kind": "var",
                   "name": "player"
@@ -105,16 +146,16 @@
             ]
           },
           {
-            "line": 81,
+            "line": 90,
             "col": 9,
             "kind": "async_block",
             "body": [
               {
-                "line": 82,
+                "line": 91,
                 "col": 13,
                 "kind": "wait",
                 "amount": {
-                  "line": 82,
+                  "line": 91,
                   "col": 18,
                   "kind": "number",
                   "value": 20,
@@ -123,17 +164,17 @@
                 "unit": "ticks"
               },
               {
-                "line": 83,
+                "line": 92,
                 "col": 13,
                 "kind": "send",
                 "message": {
-                  "line": 83,
+                  "line": 92,
                   "col": 18,
                   "kind": "string",
                   "value": "async stmt done"
                 },
                 "target": {
-                  "line": 83,
+                  "line": 92,
                   "col": 39,
                   "kind": "var",
                   "name": "player"
@@ -625,13 +666,13 @@
       ]
     },
     {
-      "line": 56,
+      "line": 57,
       "col": 1,
       "name": "combine_pending",
       "async": false,
       "params": [
         {
-          "line": 56,
+          "line": 57,
           "col": 26,
           "name": "pending",
           "type": {
@@ -644,16 +685,16 @@
       ],
       "body": [
         {
-          "line": 57,
+          "line": 58,
           "col": 5,
           "kind": "assign",
           "target": "combined",
           "value": {
-            "line": 57,
+            "line": 58,
             "col": 21,
             "kind": "all_of",
             "futures": {
-              "line": 57,
+              "line": 58,
               "col": 28,
               "kind": "var",
               "name": "pending"
@@ -661,28 +702,38 @@
           }
         },
         {
-          "line": 58,
+          "line": 59,
           "col": 5,
-          "kind": "when_ready",
-          "future": {
-            "line": 58,
-            "col": 10,
-            "kind": "var",
-            "name": "combined"
-          },
-          "name": "results",
+          "kind": "async_block",
           "body": [
             {
-              "line": 59,
+              "line": 60,
+              "col": 9,
+              "kind": "assign",
+              "target": "results",
+              "value": {
+                "line": 60,
+                "col": 24,
+                "kind": "await",
+                "future": {
+                  "line": 60,
+                  "col": 30,
+                  "kind": "var",
+                  "name": "combined"
+                }
+              }
+            },
+            {
+              "line": 61,
               "col": 9,
               "kind": "assign",
               "target": "n",
               "value": {
-                "line": 59,
+                "line": 61,
                 "col": 18,
                 "kind": "prop",
                 "target": {
-                  "line": 59,
+                  "line": 61,
                   "col": 26,
                   "kind": "var",
                   "name": "results"
@@ -691,11 +742,11 @@
               }
             },
             {
-              "line": 60,
+              "line": 62,
               "col": 9,
               "kind": "broadcast",
               "message": {
-                "line": 60,
+                "line": 62,
                 "col": 19,
                 "kind": "string",
                 "value": "got ${n} results"

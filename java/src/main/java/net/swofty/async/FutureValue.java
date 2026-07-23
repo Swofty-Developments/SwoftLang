@@ -10,9 +10,8 @@ import java.util.concurrent.CompletableFuture;
  * (reload/shutdown teardown via {@link AsyncRuntime#cancelAll()}) marks the
  * future cancelled.
  *
- * <p>{@code await} reads it with {@code cf().get()}, {@code when ... is ready}
- * registers a {@code whenComplete} continuation, and {@code all of}/{@code any
- * of} combine several of them.
+ * <p>{@code await} — the single consumer — reads it with {@code cf().get()},
+ * and {@code all of}/{@code any of} combine several of them.
  */
 public final class FutureValue {
     private final CompletableFuture<Object> cf;

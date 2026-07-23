@@ -71,8 +71,9 @@ async function demo(p: Player) {
 
 ## Consuming a future {#consuming}
 
-Which consumer you use is decided by [color](/guide/async#the-coloring-rules): `await` in
-async code, `when … is ready` on the tick thread.
+A future has a single consumer, `await`. It is legal only in async
+[color](/guide/async#the-coloring-rules); on the tick thread you detach into an `async { }`
+task (or `spawn` an async function) and await there.
 
 ### `await <future>` — async context only {#await}
 
@@ -101,17 +102,17 @@ Player {
 ```
 
 ```txt
-await_tick.sw:8:18: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread use 'when <future> is ready as <name> { ... }' instead
+await_tick.sw:8:18: error: 'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the tick thread wrap the awaiting work in an 'async { }' block instead
         set s to await spawn score(player)
                  ^
 ```
 
-### `when <future> is ready as <name> { … }` — tick callback {#when-ready}
+### Detaching on the tick thread {#detaching}
 
-A **statement** that registers a continuation and returns immediately. When the future
-resolves, `<body>` runs **back on the tick thread** with `<name>` bound to the `T` — so it
-is safe to touch the world inside it. This is the callback consumer for tick-colored code,
-where `await` is forbidden.
+Tick-colored code cannot `await` directly, so it **detaches** the follow-up into an
+`async { }` task (or `spawn`s a whole async function). Inside that task `await` is legal;
+the world access afterward auto-hops back onto the tick thread, so it is safe to touch the
+world right after the `await`.
 
 ```swoftlang
 struct Profile { rank: String }
@@ -123,15 +124,16 @@ async function build_profile(p: Player) {
 
 Player {
     on_join {
-        when spawn build_profile(player) is ready as profile {
+        async {
+            set profile to await spawn build_profile(player)
             send "welcome ${profile.rank}" to player
         }
     }
 }
 ```
 
-If the future completes exceptionally or is cancelled, the body does **not** run (see
-[Error model](#error-model)).
+If the future completes exceptionally or is cancelled, the detached task stops at the
+`await` and the code after it does **not** run (see [Error model](#error-model)).
 
 ## Combinators {#combinators}
 
@@ -145,7 +147,7 @@ parallel instead of one after another.
 
 `all of` resolves once the **slowest** input does; `any of` resolves as soon as the
 **first** input does (a race). Both are ordinary future-valued expressions — `await` them
-in async code or hand them to `when … is ready` on the tick thread.
+in async code, or from tick code await them inside a detached `async { }` task.
 
 ```swoftlang
 async function ping(mirror: String) {
@@ -220,7 +222,6 @@ async function process(p: Player, id: Integer) {
 | `spawn call` | `call` is an async callable returning `R` | `Future<R>` | any color |
 | `async { … x }` | `x : T` (trailing expr) | `Future<T>` | any color |
 | `await e` | `e : Future<T>` | `T` | **async only** (same gate as `wait`) |
-| `when e is ready as n { }` | `e : Future<T>`, binds `n : T` | statement | tick or async |
 | `all of L` | `L : List<Future<T>>` | `Future<List<T>>` | any color |
 | `any of L` | `L : List<Future<T>>` | `Future<T>` | any color |
 
@@ -240,15 +241,15 @@ without one:
 
 - **A runtime error inside the async body** completes the future exceptionally. `await`
   **re-raises** it in the awaiting task, where it propagates and is logged like any script
-  error — exactly as a sequential call would. A `when … is ready` whose future errored does
-  not run its body; the error is logged.
+  error — exactly as a sequential call would. A detached `async { }` task that awaited it
+  stops at that `await`; the error is logged.
 - **Cancellation** on reload or shutdown (the runtime cancels every in-flight task): a
-  pending `await` unwinds the task cleanly and `when … is ready` continuations do not fire.
+  pending `await` unwinds the task cleanly and every detached task stops.
   The program is being torn down — not a handled outcome.
 - **Missing data is not a future failure** — model it as [`Optional<T>`](/guide/options).
   The future succeeds *with* the `Optional`; don't route absence through the future.
 - **A player or entity gone mid-load is not a future failure** — the value succeeded.
-  Re-check liveness (`p.online`) in the continuation, the usual
+  Re-check liveness (`p.online`) after the `await`, the usual
   [stale-player](/guide/async#stale-players) guard.
 
 An `await f otherwise <default>`, `await f with timeout <dur>`, and a `Result<T>` /
