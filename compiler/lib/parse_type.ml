@@ -55,6 +55,12 @@ let rec parse_type st =
     let sub = parse_type st in
     expect_type_close st;
     DList sub
+  | Token.IDENT "Future", _, _ when peek2_tok st = Token.LT ->
+    ignore (advance st);
+    ignore (advance st);
+    let sub = parse_type st in
+    expect_type_close st;
+    DFuture sub
   | Token.IDENT "Map", _, _ when peek2_tok st = Token.LT ->
     (* Map<K, V>: K in {String, Integer} (phase 11). Map<V> is sugar for
        Map<String, V> — the back-compat form with only a value type written. *)

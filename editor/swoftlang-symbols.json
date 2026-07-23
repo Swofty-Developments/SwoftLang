@@ -9,8 +9,9 @@
     "reset", "title", "actionbar", "fill", "clone", "replace", "despawn",
     "destroy", "mount", "dismount", "dispense", "draw", "repeat", "skin",
     "name", "line", "entry", "blank", "belowname", "fade", "damage", "knock",
-    "apply", "shoot", "is", "not", "and", "or", "Either", "contains", "as",
-    "to", "in", "of", "all", "players", "true", "false"
+    "apply", "shoot", "await", "when", "ready", "any", "is", "not", "and",
+    "or", "Either", "contains", "as", "to", "in", "of", "all", "players",
+    "true", "false"
   ],
   "collection_ops": [ "of", "has", "sorted", "reversed", "first", "last" ],
   "declarations": [
@@ -82,7 +83,7 @@
     "String", "Integer", "Double", "Boolean", "Player", "OfflinePlayer",
     "Location", "Item", "World", "Mob", "Entity", "Display", "Vec", "Block",
     "Schedule", "Song", "Server", "Skin", "Canvas", "List", "Map",
-    "Optional", "Either"
+    "Optional", "Either", "Future"
   ],
   "namespaces": [ "tags", "tasks", "attributes" ],
   "annotations": [ "@EventReceiver" ],

@@ -18,6 +18,8 @@ let rec data_type = function
     `Assoc [ ("base", `String "OPTIONAL"); ("subtypes", `List [ data_type sub ]) ]
   | DList sub ->
     `Assoc [ ("base", `String "LIST"); ("subtypes", `List [ data_type sub ]) ]
+  | DFuture sub ->
+    `Assoc [ ("base", `String "FUTURE"); ("subtypes", `List [ data_type sub ]) ]
   | DMap (DSimple "STRING", sub) ->
     (* String-keyed maps emit exactly as before (byte-identical sidecars) *)
     `Assoc [ ("base", `String "MAP"); ("subtypes", `List [ data_type sub ]) ]
@@ -132,6 +134,18 @@ let rec expr (e : Ast.expr) : Yojson.Safe.t =
          ("every_ticks", int_opt sc_every) ]
       @ (match sc_name with Some n -> [ ("name", `String n) ] | None -> [])
       @ [ ("body", `List (List.map stmt sc_body)) ])
+  | EFutureSpawn (name, args) ->
+    node
+      [ ("kind", `String "future_spawn");
+        ( "call",
+          `Assoc [ ("name", `String name); ("args", `List (List.map expr args)) ] ) ]
+  | EAsyncExpr { ae_body; ae_trailing } ->
+    node
+      [ ("kind", `String "async_expr"); ("body", `List (List.map stmt ae_body));
+        ("trailing", opt expr ae_trailing) ]
+  | EAwait future -> node [ ("kind", `String "await"); ("future", expr future) ]
+  | EAllOf futures -> node [ ("kind", `String "all_of"); ("futures", expr futures) ]
+  | EAnyOf futures -> node [ ("kind", `String "any_of"); ("futures", expr futures) ]
 
 and skin = function
   | SkBuiltin name -> `Assoc [ ("kind", `String "builtin"); ("name", `String name) ]
@@ -200,6 +214,15 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
           `Assoc [ ("name", `String name); ("args", `List (List.map expr args)) ] ) ]
   | SAsyncBlock body ->
     node [ ("kind", `String "async_block"); ("body", `List (List.map stmt body)) ]
+  | SWhenReady { wr_future; wr_name; wr_body } ->
+    node
+      [ ("kind", `String "when_ready"); ("future", expr wr_future);
+        ("name", `String wr_name); ("body", `List (List.map stmt wr_body)) ]
+  | STupleBind { tb_names; tb_value } ->
+    node
+      [ ("kind", `String "tuple_bind");
+        ("names", `List (List.map (fun n -> `String n) tb_names));
+        ("value", expr tb_value) ]
   | SOpenGui go -> node (("kind", `String "open_gui") :: gui_open_fields go)
   | SReplaceGui go -> node (("kind", `String "replace_gui") :: gui_open_fields go)
   | SCloseGui target -> node [ ("kind", `String "close_gui"); ("target", expr target) ]
@@ -675,6 +698,11 @@ let references_player_expr =
     | ELambda { lam_body; _ } -> List.exists s_p lam_body
     | ESchedule { sc_body; _ } -> List.exists s_p sc_body
     | ETaskRunning { tr_owner; _ } -> e_p tr_owner
+    | EFutureSpawn (_, args) -> List.exists e_p args
+    | EAsyncExpr { ae_body; ae_trailing } ->
+      List.exists s_p ae_body || Option.fold ~none:false ~some:e_p ae_trailing
+    | EAwait future -> e_p future
+    | EAllOf futures | EAnyOf futures -> e_p futures
     | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
       false

@@ -318,6 +318,21 @@ let rec parse_statement st =
     let name = expect_ident st "function name after 'call'" in
     expect st Token.LPAREN "'(' after function name";
     mks p (SCall (name, parse_call_args st))
+  | Token.IDENT "when"
+    when (match peek2_tok st with
+          | Token.IDENT _ | Token.LPAREN | Token.LBRACKET | Token.ALL -> true
+          | _ -> false) ->
+    (* v1.8.0 futures §3.2: `when <Future<T>> is ready as <name> { body }`. The
+       future operand is parsed with parse_additive so the trailing `is ready`
+       is not swallowed by the `is` infix in the full expression grammar. *)
+    ignore (advance st);
+    let wr_future = parse_additive st in
+    expect st Token.IS "'is' in 'when <future> is ready as <name>'";
+    expect_soft st "ready";
+    expect st Token.AS "'as' in 'when <future> is ready as <name>'";
+    let wr_name = expect_ident st "binding name after 'as'" in
+    let wr_body = parse_body st in
+    mks p (SWhenReady { wr_future; wr_name; wr_body })
   | Token.IDENT "wait" when starts_expression (peek2_tok st) ->
     ignore (advance st);
     let amount = parse_additive st in
@@ -1099,7 +1114,25 @@ let rec parse_statement st =
 
 and parse_set st p =
   ignore (advance st);
-  if tasks_member_ahead st st.pos then begin
+  if
+    peek_tok st = Token.LPAREN
+    && (match peek2_tok st with Token.IDENT _ -> true | _ -> false)
+    && peek3_tok st = Token.COMMA
+  then begin
+    (* v1.8.0 futures §4: positional tuple destructure `set (a, b) to <expr>`,
+       scoped to await/all-of. The '(a,' lookahead (a name followed by a comma)
+       distinguishes it from a parenthesized persistent place '(g).field'. *)
+    ignore (advance st);
+    let names = ref [ expect_ident st "name in tuple pattern" ] in
+    while matches st Token.COMMA do
+      names := expect_ident st "name in tuple pattern" :: !names
+    done;
+    expect st Token.RPAREN "')' to close the tuple pattern";
+    expect st Token.TO "'to' after the tuple pattern in 'set'";
+    let value = parse_expr st in
+    mks p (STupleBind { tb_names = List.rev !names; tb_value = value })
+  end
+  else if tasks_member_ahead st st.pos then begin
     (* W-tasks: 'set <obj>.tasks.<id> to <schedule-expr>' — associate a named
        task with the owner. The owner may be any postfix expression (a variable,
        a member chain, or block_at(loc)), so parse the whole lvalue with
@@ -1684,3 +1717,33 @@ and parse_opt_skin st =
   else SkBuiltin "gray"
 
 let () = Parse_expr.lambda_body_ref := parse_body
+
+(* v1.8.0 futures §2: body of an `async { ... }` EXPRESSION. Parses a braced
+   statement list plus an optional trailing value expression (the last item, when
+   it is a bare expression that runs up to the closing '}'). Trailing detection is
+   speculative: an expression parse that reaches '}' is the trailing value; any
+   other item is a statement. *)
+let () =
+  Parse_expr.async_expr_body_ref :=
+    fun st ->
+      expect st Token.LBRACE "'{' after 'async'";
+      let stmts = ref [] in
+      let trailing = ref None in
+      let continue = ref true in
+      while !continue && peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+        let save = st.pos in
+        let as_trailing =
+          match Parse_expr.parse_expr st with
+          | e -> if peek_tok st = Token.RBRACE then Some e else None
+          | exception Diagnostics.Error _ -> None
+        in
+        match as_trailing with
+        | Some e ->
+          trailing := Some e;
+          continue := false
+        | None ->
+          st.pos <- save;
+          stmts := parse_statement st :: !stmts
+      done;
+      expect st Token.RBRACE "'}' to close the async block";
+      (List.rev !stmts, !trailing)

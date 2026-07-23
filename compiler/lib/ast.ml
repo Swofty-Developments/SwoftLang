@@ -8,6 +8,9 @@ type data_type =
   | DEither of data_type list
   | DOptional of data_type
   | DList of data_type
+  (* v1.8.0 futures: Future<T> in a type position (a param/field/return holding a
+     handle to async work). PascalCase generic like List<T>. *)
+  | DFuture of data_type
   (* map<K, V>: K in {String, Integer} (phase 11). map<V> parses to
      DMap (DSimple "STRING", V) — String keys are the back-compat default. *)
   | DMap of data_type * data_type
@@ -85,6 +88,23 @@ and expr_node =
       sc_name : string option;
       sc_body : stmt list;
     }
+  (* v1.8.0 futures §2: `spawn <call>` as an EXPRESSION yields Future<T> where T
+     is the spawned async callable's inferred return type. The bare-statement
+     form (SSpawn) stays fire-and-forget; this is the value-producing form used
+     wherever an expression is expected (set x to spawn f(...), await spawn ...,
+     when spawn ... is ready, list literals of futures). *)
+  | EFutureSpawn of string * expr list
+  (* v1.8.0 futures §2: `async { <stmts> ; <trailing?> }` as an EXPRESSION yields
+     Future<typeof trailing> (Future<Unit> with no trailing expression). The
+     statement form (SAsyncBlock) stays fire-and-forget. *)
+  | EAsyncExpr of { ae_body : stmt list; ae_trailing : expr option }
+  (* v1.8.0 futures §3.1: `await <Future<T>>` EXPRESSION -> T. Legal only in async
+     context (same color gate as `wait`); suspends the vthread until resolved. *)
+  | EAwait of expr
+  (* v1.8.0 futures §4: `all of <List<Future<T>>>` -> Future<List<T>> and
+     `any of <List<Future<T>>>` -> Future<T>. *)
+  | EAllOf of expr
+  | EAnyOf of expr
 
 and skin =
   | SkBuiltin of string
@@ -134,6 +154,14 @@ and stmt_node =
   | SWait of expr * string
   | SSpawn of string * expr list
   | SAsyncBlock of stmt list
+  (* v1.8.0 futures §3.2: `when <Future<T>> is ready as <name> { body }` — a
+     tick-context callback STATEMENT. Registers a continuation; when the future
+     resolves, body runs back on the tick thread with name bound to the T. *)
+  | SWhenReady of { wr_future : expr; wr_name : string; wr_body : stmt list }
+  (* v1.8.0 futures §4: positional tuple destructure `set (a, b) to <expr>`,
+     scoped to await/all-of. Binds each name to the corresponding element type of
+     a list-literal of futures under `await all of [...]`. *)
+  | STupleBind of { tb_names : string list; tb_value : expr }
   | SOpenGui of gui_open
   | SReplaceGui of gui_open
   | SCloseGui of expr

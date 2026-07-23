@@ -67,6 +67,12 @@ let collect_sched_names (script : Ast.script) : string list =
     | EMap fields -> List.iter (fun (_, v) -> we v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> we v) entries
     | EStructNew (_, fields) -> List.iter (fun (_, v) -> we v) fields
+    | EFutureSpawn (_, args) -> List.iter we args
+    | EAsyncExpr { ae_body; ae_trailing } ->
+      List.iter ws ae_body;
+      Option.iter we ae_trailing
+    | EAwait future -> we future
+    | EAllOf futures | EAnyOf futures -> we futures
     | EString _ | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
       ()
@@ -97,6 +103,10 @@ let collect_sched_names (script : Ast.script) : string list =
       ws t;
       Option.iter ws e
     | SBlock ss | SAsyncBlock ss -> List.iter ws ss
+    | SWhenReady { wr_future; wr_body; _ } ->
+      we wr_future;
+      List.iter ws wr_body
+    | STupleBind { tb_value; _ } -> we tb_value
     | SLoop (c, _, b) ->
       we c;
       ws b
@@ -510,7 +520,18 @@ let check_initializer_calls ctx own_fns (mv : module_var) =
     | EMap fields -> List.iter (fun (_, v) -> walk v) fields
     | EMapLit entries -> List.iter (fun (_, v) -> walk v) entries
     | EStructNew (_, fields) -> List.iter (fun (_, v) -> walk v) fields
-    | ELambda _ | ESchedule _ -> () (* deferred bodies run after initialization *)
+    | EFutureSpawn (name, args) ->
+      if Hashtbl.mem own_fns name then
+        err ctx e.epos
+          "module variable '%s' spawns the function '%s' in its initializer — functions can read \
+           module variables that are not initialized yet at this point; inline the value or \
+           reorder the declarations"
+          mv.mv_name name;
+      List.iter walk args
+    | EAwait future -> walk future
+    | EAllOf futures | EAnyOf futures -> walk futures
+    | ELambda _ | ESchedule _ | EAsyncExpr _ ->
+      () (* deferred bodies run after initialization *)
     | EString _ | ENumber _ | EBool _ | ENone | EVar _ | EType _ | EAllPlayers
     | ELoaderStorage _ ->
       ()

@@ -36,6 +36,12 @@ let natural_operand_ident = function
 let lambda_body_ref : (Parser_state.state -> stmt list) ref =
   ref (fun _ -> failwith "lambda body parser not installed")
 
+(* v1.8.0 futures §2: `async { <stmts> ; <trailing?> }` in expression position.
+   Parse_stmt installs the body parser here (it returns the statement list plus
+   an optional trailing value expression) to close the expr/stmt module cycle. *)
+let async_expr_body_ref : (Parser_state.state -> stmt list * expr option) ref =
+  ref (fun _ -> failwith "async-expr body parser not installed")
+
 (* polar_storage_loader(...) takes the storage{} backend syntax; Parse_decl
    installs its backend parser here at load time to close the module cycle *)
 let backend_parser_ref : (Parser_state.state -> backend) ref =
@@ -329,6 +335,13 @@ and parse_primary st =
     done;
     expect st Token.RBRACE "'}' to close map literal";
     mke p (EMapLit (List.rev !entries))
+  (* v1.8.0 futures §4: `all of <List<Future<T>>>` -> Future<List<T>>. Must be
+     checked before the plain 'all' below (which is 'all players' / the broadcast
+     keyword). *)
+  | Token.ALL when soft2 st "of" ->
+    ignore (advance st);
+    ignore (advance st);
+    mke p (EAllOf (parse_postfix st))
   | Token.ALL ->
     if peek2_tok st = Token.PLAYERS then (
       ignore (advance st);
@@ -337,6 +350,35 @@ and parse_primary st =
     else (
       ignore (advance st);
       mke p (EVar "all"))
+  (* v1.8.0 futures §4: `any of <List<Future<T>>>` -> Future<T>. 'any' is a soft
+     keyword, so it stays a legal variable name outside the 'any of' position. *)
+  | Token.IDENT "any" when soft2 st "of" ->
+    ignore (advance st);
+    ignore (advance st);
+    mke p (EAnyOf (parse_postfix st))
+  (* v1.8.0 futures §2: `spawn <name>(<args>)` as a value -> Future<T>. Only the
+     call form is an expression; `spawn particle/mob/entity` are statements. *)
+  | Token.IDENT "spawn"
+    when (match peek2_tok st with Token.IDENT _ -> true | _ -> false)
+         && peek3_tok st = Token.LPAREN ->
+    ignore (advance st);
+    let name = expect_ident st "function name after 'spawn'" in
+    expect st Token.LPAREN "'(' after function name";
+    mke p (EFutureSpawn (name, parse_call_args st))
+  (* v1.8.0 futures §3.1: `await <Future<T>>` -> T. Guarded on an operand-starting
+     token so `await` stays a legal variable name elsewhere. *)
+  | Token.IDENT "await"
+    when (match peek2_tok st with
+          | Token.IDENT _ | Token.LPAREN | Token.LBRACKET | Token.ALL -> true
+          | _ -> false) ->
+    ignore (advance st);
+    mke p (EAwait (parse_postfix st))
+  (* v1.8.0 futures §2: `async { ... }` as a value -> Future<trailing>. The
+     statement form (no value used) is handled in parse_statement. *)
+  | Token.IDENT "async" when peek2_tok st = Token.LBRACE ->
+    ignore (advance st);
+    let ae_body, ae_trailing = !async_expr_body_ref st in
+    mke p (EAsyncExpr { ae_body; ae_trailing })
   | Token.IDENT "none" ->
     ignore (advance st);
     mke p ENone

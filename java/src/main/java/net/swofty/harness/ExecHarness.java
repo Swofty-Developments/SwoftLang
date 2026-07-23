@@ -54,6 +54,9 @@ public class ExecHarness {
         if ((args.length == 2 || args.length == 3) && args[0].equals("--persist-test")) {
             System.exit(persistTest(args[1], args.length == 3 ? args[2] : null));
         }
+        if (args.length == 2 && args[0].equals("--futures-cancel")) {
+            System.exit(futuresCancelTest(args[1]));
+        }
         if (args.length >= 2 && args[0].equals("--check-props")) {
             // --check-props <property-table.json> [--emit <snapshot.json>]
             String emit = null;
@@ -417,6 +420,63 @@ public class ExecHarness {
         System.out.println("[MODULE] PASS: cross-module calls, module-var privacy, and "
                 + "single registration across two entries verified by output");
         return 0;
+    }
+
+    /**
+     * §1.8.0 cancellation proof: a script command spawns a slow future and
+     * either awaits it or registers a {@code when ... is ready} continuation on
+     * it. We let the futures start (they {@code wait} ~10s, so they are still
+     * in flight), then call {@link AsyncRuntime#cancelAll()} — the reload /
+     * shutdown teardown path — and require BY OUTPUT that (1) there really were
+     * live in-flight tasks at cancel time, (2) the program generation advanced,
+     * and (3) NEITHER the awaiting body NOR the tick-side {@code when ... is
+     * ready} continuation fired (their bodies emit a "FIRED" marker), and that
+     * nothing crashed.
+     */
+    private static int futuresCancelTest(String scriptPath) throws Exception {
+        ParsedScript parsed = loadScript(scriptPath);
+        registerTestProperties();
+        FunctionRegistry.clear();
+        for (SwoftFunction function : parsed.functions()) {
+            FunctionRegistry.register(function);
+        }
+
+        CapturingSender sender = new CapturingSender();
+        long gen0 = AsyncRuntime.generation();
+        for (Command command : parsed.commands()) {
+            if (command != null && command.getExecuteBlock() != null) {
+                executeBlock(command.getName(), command.getExecuteBlock(), sender);
+            }
+        }
+
+        // Let the slow futures start but not finish (each waits ~10s headless).
+        Thread.sleep(500);
+        int liveAtCancel = AsyncRuntime.taskCount();
+
+        // The reload / shutdown teardown: cancel every pending future, unwind
+        // awaiting vthreads, and advance the generation so a tick-side
+        // continuation that resolves late refuses to fire.
+        AsyncRuntime.cancelAll();
+
+        // Give any (erroneous) continuation a generous window to fire.
+        Thread.sleep(1000);
+
+        long gen1 = AsyncRuntime.generation();
+        boolean fired = sender.getMessages().stream().anyMatch(m -> m.contains("FIRED"));
+        int liveAfter = AsyncRuntime.taskCount();
+
+        System.out.println("[FUT-CANCEL] in-flight tasks at cancel: " + liveAtCancel);
+        System.out.println("[FUT-CANCEL] generation advanced: " + (gen1 > gen0)
+                + " (" + gen0 + " -> " + gen1 + ")");
+        System.out.println("[FUT-CANCEL] live tasks after teardown: " + liveAfter);
+        System.out.println("[FUT-CANCEL] forbidden continuation fired: " + fired);
+        System.out.println("[FUT-CANCEL] messages: " + sender.getMessages());
+
+        boolean ok = liveAtCancel > 0 && gen1 > gen0 && !fired;
+        System.out.println("[FUT-CANCEL] " + (ok
+                ? "PASS: in-flight futures cancelled on teardown; no continuation fired"
+                : "FAIL"));
+        return ok ? 0 : 1;
     }
 
     private static ParsedScript loadScript(String path) throws Exception {

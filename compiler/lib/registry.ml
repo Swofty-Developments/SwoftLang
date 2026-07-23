@@ -47,6 +47,13 @@ type ty =
      Field lookup is against the per-unit struct table on the typechecker ctx. *)
   | TStruct of string
   | TList of ty
+  (* v1.8.0 futures: Future<T> — a first-class handle to async work yielding T.
+     PascalCase generic like List<T>; produced by spawn / async{} exprs / all-of
+     / any-of and consumed by await / when-ready. *)
+  | TFuture of ty
+  (* v1.8.0 futures: the payload of an async{} expression with no trailing value
+     (Future<Unit>). A distinct, information-free result type. *)
+  | TUnit
   | TMap of ty * ty (* map<K, V>: key type (String|Integer), value type (phase 11) *)
   | TOptional of ty
   | TEither of ty list
@@ -83,6 +90,8 @@ let rec ty_to_string = function
   | TCustomItem n -> n
   | TStruct n -> n
   | TList t -> "List<" ^ ty_to_string t ^ ">"
+  | TFuture t -> "Future<" ^ ty_to_string t ^ ">"
+  | TUnit -> "Unit"
   (* String-keyed maps print as Map<V> (the back-compat spelling); an
      Integer-keyed map prints its key type too (phase 11) *)
   | TMap (TString, v) -> "Map<" ^ ty_to_string v ^ ">"
@@ -2546,6 +2555,13 @@ let control_keywords =
     "repeat"; "skin"; "name"; "line"; "entry"; "blank"; "belowname"; "fade";
     (* W-pvp combat verbs *)
     "damage"; "knock"; "apply"; "shoot";
+    (* v1.8.0 futures §3/§4: the consuming surface. `await` (async-context value
+       expression), `when ... is ready as` (tick-context callback statement), and
+       `any` (the `any of` combinator). `all`, `of` and `spawn` already appear
+       above; `Future` is advertised as a generic type below. All are SOFT
+       keywords in the parser (legal variable names outside their position), but
+       advertised here so the editor colors/completes them. *)
+    "await"; "when"; "ready"; "any";
     (* boolean / logical / relational operators (word form) *)
     "is"; "not"; "and"; "or"; "Either"; "contains"; "as"; "to"; "in"; "of";
     "all"; "players"; "true"; "false";
@@ -2584,7 +2600,9 @@ let type_names =
       TItem; TWorld; TMob; TEntity; TDisplay; TVec; TBlock; TSchedule; TSong;
       TServer; TSkin; TCanvas;
     ]
-  @ [ "List"; "Map"; "Optional"; "Either" ]
+  (* v1.8.0 futures §1: Future<T> is a first-class generic type, colored like
+     the other generic containers. *)
+  @ [ "List"; "Map"; "Optional"; "Either"; "Future" ]
 
 (* every inline handler name across the four declaration kinds plus the
    block_handler / placement_rule callbacks, deduped — the on_* surface. *)

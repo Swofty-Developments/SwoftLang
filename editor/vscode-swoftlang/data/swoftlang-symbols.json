@@ -287,6 +287,22 @@
       "kind": "keyword"
     },
     {
+      "name": "await",
+      "kind": "keyword"
+    },
+    {
+      "name": "when",
+      "kind": "keyword"
+    },
+    {
+      "name": "ready",
+      "kind": "keyword"
+    },
+    {
+      "name": "any",
+      "kind": "keyword"
+    },
+    {
       "name": "is",
       "kind": "keyword"
     },
@@ -539,6 +555,10 @@
       "kind": "declaration"
     },
     {
+      "name": "event",
+      "kind": "declaration"
+    },
+    {
       "name": "function",
       "kind": "declaration"
     },
@@ -786,6 +806,10 @@
     },
     {
       "name": "Either",
+      "kind": "type"
+    },
+    {
+      "name": "Future",
       "kind": "type"
     },
     {

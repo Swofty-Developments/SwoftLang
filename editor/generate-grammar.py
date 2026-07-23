@@ -38,6 +38,11 @@ OUT_EXT = os.path.join(
 CONTROL_KW = [
     "if", "else", "loop", "while", "times", "return", "repeat",
     "stop", "halt", "wait", "cancel", "call", "go", "as",
+    # §5 struct schema-migration soft keywords (schema: N / migrate to N { }).
+    "schema", "migrate",
+    # v1.8.0 futures: await/when-is-ready/any (all/of/spawn live in other
+    # buckets); Future is a generic type container below.
+    "await", "when", "ready", "any",
 ]
 # declaration / binding keywords that live in the flat keywords[] list
 DECL_KW = ["command", "event", "function", "schedule", "on", "every"]
@@ -156,7 +161,7 @@ def main():
     annotations = sym.get("annotations", [])
 
     # type primitives = all declared types minus the generic containers
-    containers = ["Either", "Optional", "List", "Map"]
+    containers = ["Either", "Optional", "List", "Map", "Future"]
     primitives = [t for t in sym["types"] if t not in containers] + EXTRA_TYPE_ALIASES
 
     # union of every entity property name across every type table

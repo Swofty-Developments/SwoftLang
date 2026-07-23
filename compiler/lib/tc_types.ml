@@ -26,6 +26,7 @@ let rec join a b =
     | TOptional x, TOptional y -> TOptional (join x y)
     | TOptional x, y | y, TOptional x -> TOptional (join x y)
     | TList x, TList y -> TList (join x y)
+    | TFuture x, TFuture y -> TFuture (join x y)
     | TMap (kx, vx), TMap (ky, vy) -> TMap (join kx ky, join vx vy)
     | _ -> TAny
 
@@ -76,6 +77,7 @@ let rec ty_of_dt = function
   | DEither ts -> TEither (List.map ty_of_dt ts)
   | DOptional t -> TOptional (ty_of_dt t)
   | DList t -> TList (ty_of_dt t)
+  | DFuture t -> TFuture (ty_of_dt t)
   | DMap (k, v) -> TMap (ty_of_dt k, ty_of_dt v)
 
 let ty_of_type_name = function

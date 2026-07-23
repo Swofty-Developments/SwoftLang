@@ -161,6 +161,28 @@ let rec type_of ctx bctx env e : ty =
       err ctx tr_owner.epos "%s has no task registry; .tasks needs a Player, Mob, Entity, Display, or Block owner"
         (ty_to_string t));
     TBoolean
+  | EFutureSpawn (name, args) ->
+    (* v1.8.0 futures §2/§7: spawn <call> : Future<returnTypeOf(call)>. Only async
+       work is spawnable. Producing a future is legal in any color. *)
+    TFuture (spawn_payload ctx bctx env e.epos name args)
+  | EAsyncExpr { ae_body; ae_trailing } ->
+    (* v1.8.0 futures §2: async { stmts; trailing } : Future<typeof trailing>
+       (Future<Unit> with no trailing). The body is async-colored like a spawned
+       task (a snapshot of the vars; narrowing facts dropped). *)
+    let bctx' = { bctx with color = Async; ret_sink = None; in_schedule = false; override = None } in
+    let env' = { env with facts = SM.empty } in
+    let env'', _ = !check_stmts_ref ctx bctx' env' ae_body in
+    let payload =
+      match ae_trailing with Some t -> type_of ctx bctx' env'' t | None -> TUnit
+    in
+    TFuture payload
+  | EAwait future -> await_type ctx bctx env e.epos future
+  | EAllOf futures ->
+    (* all of <List<Future<T>>> -> Future<List<T>> *)
+    TFuture (TList (combinator_elem ctx bctx env e.epos "all of" futures))
+  | EAnyOf futures ->
+    (* any of <List<Future<T>>> -> Future<T> *)
+    TFuture (combinator_elem ctx bctx env e.epos "any of" futures)
   | EUnary ("NOT", x) ->
     let t = type_of ctx bctx env x in
     require_present ctx env x t ~use:"the operand of 'not'";
@@ -527,6 +549,86 @@ and call_type ctx bctx env pos name args =
           name name;
       f.f_ret
     | None -> builtin_call_type ctx bctx env pos name args looked)
+
+(* v1.8.0 futures §2/§7: resolve the payload type of `spawn <name>(<args>)` — the
+   spawned callable's return type. Same resolution order as a call (a local
+   callable var, then a declared function); only async work is spawnable, so a
+   non-async concrete callee is an error. A dynamic (Any) callee is unchecked.
+   Shared by the value form (EFutureSpawn) and the fire-and-forget statement
+   (SSpawn). *)
+and spawn_payload ctx bctx env pos name args =
+  if bctx.packet && bctx.color = Sync then
+    err ctx pos
+      "'spawn' is not allowed inside Packet handlers; wrap the work in an 'async { }' block";
+  match callee_var_type env name with
+  | Some (TFunction f) ->
+    check_call_args ctx bctx env pos name f.fn_params args;
+    if not f.fn_async then
+      err ctx pos "'%s' is not an async function; only async work can be spawned" name;
+    f.fn_ret
+  | Some TAny | Some (TOptional TAny) ->
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TAny
+  | Some (TOptional (TFunction _)) ->
+    err ctx pos "'%s' may be missing; check it with 'if %s exists' before spawning it" name name;
+    List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+    TAny
+  | looked -> (
+    match Hashtbl.find_opt ctx.funcs name with
+    | Some f ->
+      check_call_args ctx bctx env pos name (List.map snd f.f_params) args;
+      if not f.f_async then
+        err ctx pos "'%s' is not an async function; only async work can be spawned" name;
+      f.f_ret
+    | None ->
+      (match looked with
+      | Some t -> not_a_function ctx pos name t
+      | None ->
+        let candidates = Hashtbl.fold (fun k _ acc -> k :: acc) ctx.funcs [] in
+        err ctx pos "'spawn' requires a declared function; unknown function '%s'%s" name
+          (suggestion name candidates));
+      List.iter (fun a -> ignore (type_of ctx bctx env a)) args;
+      TAny)
+
+(* v1.8.0 futures §3.1: `await` is legal exactly where `wait` is — the async
+   color. On the tick thread it would freeze the tick; point the user at the
+   `when … is ready` callback instead. *)
+and require_await_ctx ctx bctx pos =
+  if bctx.packet && bctx.color = Sync then
+    err ctx pos
+      "'await' is not allowed inside Packet handlers; wrap the work in an 'async { }' block, or \
+       use 'when <future> is ready as <name> { ... }'"
+  else if bctx.color = Sync then
+    err ctx pos
+      "'await' is only allowed in async functions, 'execute async', or 'async { }' blocks; on the \
+       tick thread use 'when <future> is ready as <name> { ... }' instead"
+
+and await_type ctx bctx env pos future =
+  require_await_ctx ctx bctx pos;
+  let t = type_of ctx bctx env future in
+  match t with
+  | TFuture inner -> inner
+  | TAny -> TAny
+  | _ ->
+    err ctx future.epos "'await' expects a Future (got %s)" (ty_to_string t);
+    TAny
+
+(* v1.8.0 futures §4: element type T of the `List<Future<T>>` operand of an
+   `all of` / `any of` combinator. *)
+and combinator_elem ctx bctx env pos what futures =
+  ignore pos;
+  let t = type_of ctx bctx env futures in
+  match t with
+  | TList (TFuture inner) -> inner
+  | TList TAny | TAny -> TAny
+  | TList other ->
+    err ctx futures.epos
+      "'%s' expects a List of futures; the list elements are %s, not Future values" what
+      (ty_to_string other);
+    TAny
+  | _ ->
+    err ctx futures.epos "'%s' expects a List<Future<T>> (got %s)" what (ty_to_string t);
+    TAny
 
 (* map builtins whose result type depends on the map's value type V; the
    registry table lists them only so name-collision checks see them (phase 10) *)

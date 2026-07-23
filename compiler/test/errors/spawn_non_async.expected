@@ -1,0 +1,1 @@
+spawn_non_async.sw:7:18: error: 'plain' is not an async function; only async work can be spawned

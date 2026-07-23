@@ -295,7 +295,7 @@
         },
         {
           "name": "storage.type.declaration.swoftlang",
-          "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|migrate|storage|tablist|server|struct|schema|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
+          "match": "\\b(placement_rule|block_handler|fishing_loot|persistent|scoreboard|function|hologram|schedule|bossbar|command|storage|tablist|server|struct|event|every|item|api|gui|mob|npc|on)\\b(?!\\s*\\.)"
         }
       ]
     },
@@ -651,7 +651,7 @@
     "types": {
       "patterns": [
         {
-          "begin": "\\b(Optional|Either|List|Map)\\s*(<)",
+          "begin": "\\b(Optional|Either|Future|List|Map)\\s*(<)",
           "beginCaptures": {
             "1": {
               "name": "support.type.constructor.swoftlang"
@@ -703,7 +703,7 @@
       "patterns": [
         {
           "name": "keyword.control.swoftlang",
-          "match": "\\b(cancel|repeat|return|times|while|call|else|halt|loop|stop|wait|as|go|if)\\b"
+          "match": "\\b(migrate|cancel|repeat|return|schema|await|ready|times|while|call|else|halt|loop|stop|wait|when|any|as|go|if)\\b"
         },
         {
           "name": "keyword.other.statement.swoftlang",

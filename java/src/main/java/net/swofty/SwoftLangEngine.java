@@ -426,6 +426,11 @@ public class SwoftLangEngine {
         // schedulers (named + anonymous every/schedule/repeat) — torn down first
         net.swofty.reload.ReloadRegistry.register("schedulers",
                 net.swofty.sched.ScheduleRegistry::cancelAll);
+        // async tasks + in-flight futures (§1.8.0): cancel every spawn/async
+        // body and pending Future so a reload's tick-side continuations skip
+        // and awaiting vthreads unwind against the torn-down program
+        net.swofty.reload.ReloadRegistry.register("async-tasks",
+                net.swofty.async.AsyncRuntime::cancelAll);
         // fishing engine + loot tables
         net.swofty.reload.ReloadRegistry.register("fishing", () -> {
             net.swofty.fishing.FishingRuntime.reset();

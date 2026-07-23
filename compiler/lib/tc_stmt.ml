@@ -207,36 +207,83 @@ let rec check_stmt ctx bctx env st : env * bool =
       err ctx amount.epos "wait amount must be a number (got %s)" (ty_to_string at);
     (env, false)
   | SSpawn (name, args) ->
-    if bctx.packet && bctx.color = Sync then
-      err ctx st.spos
-        "'spawn' is not allowed inside Packet handlers; wrap the work in an 'async { }' \
-         block";
-    (* same resolution order as calls: callable variable, then declared
-       function; spawn detaches, so async callees are fine in sync color *)
-    (match callee_var_type env name with
-    | Some (TFunction f) -> check_call_args ctx bctx env st.spos name f.fn_params args
-    | Some TAny | Some (TOptional TAny) ->
-      List.iter (fun a -> ignore (type_of ctx bctx env a)) args
-    | Some (TOptional (TFunction _)) ->
-      err ctx st.spos "'%s' may be missing; check it with 'if %s exists' before spawning it"
-        name name;
-      List.iter (fun a -> ignore (type_of ctx bctx env a)) args
-    | looked -> (
-      match Hashtbl.find_opt ctx.funcs name with
-      | Some f -> check_call_args ctx bctx env st.spos name (List.map snd f.f_params) args
-      | None ->
-        (match looked with
-        | Some t -> not_a_function ctx st.spos name t
-        | None ->
-          let candidates = Hashtbl.fold (fun k _ acc -> k :: acc) ctx.funcs [] in
-          err ctx st.spos "'spawn' requires a declared function; unknown function '%s'%s" name
-            (suggestion name candidates));
-        List.iter (fun a -> ignore (type_of ctx bctx env a)) args));
+    (* fire-and-forget form: same resolution/typing as the value form, but the
+       resulting Future<T> is discarded (v1.8.0 futures §2) *)
+    ignore (spawn_payload ctx bctx env st.spos name args);
     (env, false)
   | SAsyncBlock ss ->
     (* the spawned task gets a snapshot of the variables; its writes don't leak back *)
     ignore (check_stmts ctx { bctx with color = Async } env ss);
     (env, false)
+  | SWhenReady { wr_future; wr_name; wr_body } ->
+    (* v1.8.0 futures §3.2: a tick-context callback. Legal in any color (it does
+       not block); the future must be a Future<T>, the binding is T, and the body
+       runs back on the tick thread (Sync color) against a var snapshot. *)
+    check_persist_shadow ctx st.spos "binding" wr_name;
+    let ft = type_of ctx bctx env wr_future in
+    let payload =
+      match ft with
+      | TFuture inner -> inner
+      | TAny -> TAny
+      | _ ->
+        err ctx wr_future.epos "'when … is ready' expects a Future (got %s)" (ty_to_string ft);
+        TAny
+    in
+    let bctx' = { bctx with color = Sync; override = None } in
+    let benv = bind { env with facts = SM.empty } wr_name payload in
+    ignore (check_stmts ctx bctx' benv wr_body);
+    (env, false)
+  | STupleBind { tb_names; tb_value } ->
+    (* v1.8.0 futures §4: positional destructure, scoped to `await all of [...]`.
+       When the operand is a list literal of futures, each name binds to the
+       corresponding element's payload type. *)
+    List.iter (fun n -> check_persist_shadow ctx st.spos "binding" n) tb_names;
+    let payloads =
+      match tb_value.e with
+      | EAwait { e = EAllOf { e = EList elems; _ }; _ } ->
+        (* this path bypasses await_type on the wrapper, so gate the async color
+           here (the fallback path gates via type_of on the await expression) *)
+        require_await_ctx ctx bctx st.spos;
+        Some
+          (List.map
+             (fun el ->
+               match type_of ctx bctx env el with
+               | TFuture inner -> inner
+               | TAny -> TAny
+               | other ->
+                 err ctx el.epos
+                   "each element of 'all of [...]' in a tuple destructure must be a Future (got %s)"
+                   (ty_to_string other);
+                 TAny)
+             elems)
+      | _ -> None
+    in
+    let env' =
+      match payloads with
+      | Some tys when List.length tys = List.length tb_names ->
+        List.fold_left2 (fun e n t -> bind e n t) env tb_names tys
+      | Some tys ->
+        err ctx st.spos
+          "tuple destructure binds %d name(s) but 'all of [...]' has %d future(s)"
+          (List.length tb_names) (List.length tys);
+        List.fold_left (fun e n -> bind e n TAny) env tb_names
+      | None ->
+        (* fall back: a homogeneous `await all of L` yields List<T>; bind each
+           name to T. Any other value is not a supported destructure source. *)
+        let t = type_of ctx bctx env tb_value in
+        let elem =
+          match t with
+          | TList inner -> inner
+          | TAny -> TAny
+          | _ ->
+            err ctx tb_value.epos
+              "tuple destructure 'set (%s) to ...' needs 'await all of [...]' (got %s)"
+              (String.concat ", " tb_names) (ty_to_string t);
+            TAny
+        in
+        List.fold_left (fun e n -> bind e n elem) env tb_names
+    in
+    (env', false)
   | SOpenGui go | SReplaceGui go ->
     check_decl_name ctx st.spos "gui" ctx.guis go.go_name;
     let tt = type_of ctx bctx env go.go_target in

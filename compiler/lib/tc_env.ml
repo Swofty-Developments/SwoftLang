@@ -345,4 +345,5 @@ let rec resolve_ty ctx (dt : data_type) : ty =
   | DEither ts -> TEither (List.map (resolve_ty ctx) ts)
   | DOptional t -> TOptional (resolve_ty ctx t)
   | DList t -> TList (resolve_ty ctx t)
+  | DFuture t -> TFuture (resolve_ty ctx t)
   | DMap (k, v) -> TMap (resolve_ty ctx k, resolve_ty ctx v)

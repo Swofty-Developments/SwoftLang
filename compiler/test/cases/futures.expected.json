@@ -1,0 +1,714 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 65,
+      "col": 5,
+      "name": "PlayerJoin",
+      "receiver": "Player",
+      "priority": 0,
+      "self": "player",
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "spawn",
+            "call": {
+              "name": "build_rank",
+              "args": [
+                { "line": 67, "col": 26, "kind": "var", "name": "player" }
+              ]
+            }
+          },
+          {
+            "line": 70,
+            "col": 9,
+            "kind": "when_ready",
+            "future": {
+              "line": 70,
+              "col": 14,
+              "kind": "future_spawn",
+              "call": {
+                "name": "load_stats",
+                "args": [
+                  { "line": 70, "col": 31, "kind": "var", "name": "player" }
+                ]
+              }
+            },
+            "name": "count",
+            "body": [
+              {
+                "line": 71,
+                "col": 13,
+                "kind": "send",
+                "message": {
+                  "line": 71,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "loaded ${count}"
+                },
+                "target": {
+                  "line": 71,
+                  "col": 39,
+                  "kind": "var",
+                  "name": "player"
+                }
+              }
+            ]
+          },
+          {
+            "line": 75,
+            "col": 9,
+            "kind": "assign",
+            "target": "fut",
+            "value": {
+              "line": 75,
+              "col": 20,
+              "kind": "future_spawn",
+              "call": {
+                "name": "build_rank",
+                "args": [
+                  { "line": 75, "col": 37, "kind": "var", "name": "player" }
+                ]
+              }
+            }
+          },
+          {
+            "line": 76,
+            "col": 9,
+            "kind": "when_ready",
+            "future": { "line": 76, "col": 14, "kind": "var", "name": "fut" },
+            "name": "tier",
+            "body": [
+              {
+                "line": 77,
+                "col": 13,
+                "kind": "send",
+                "message": {
+                  "line": 77,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "tier ${tier}"
+                },
+                "target": {
+                  "line": 77,
+                  "col": 36,
+                  "kind": "var",
+                  "name": "player"
+                }
+              }
+            ]
+          },
+          {
+            "line": 81,
+            "col": 9,
+            "kind": "async_block",
+            "body": [
+              {
+                "line": 82,
+                "col": 13,
+                "kind": "wait",
+                "amount": {
+                  "line": 82,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 20,
+                  "integer": true
+                },
+                "unit": "ticks"
+              },
+              {
+                "line": 83,
+                "col": 13,
+                "kind": "send",
+                "message": {
+                  "line": 83,
+                  "col": 18,
+                  "kind": "string",
+                  "value": "async stmt done"
+                },
+                "target": {
+                  "line": 83,
+                  "col": 39,
+                  "kind": "var",
+                  "name": "player"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "line": 3,
+      "col": 7,
+      "name": "build_rank",
+      "async": true,
+      "params": [
+        { "line": 3, "col": 27, "name": "p", "type": { "base": "PLAYER" } }
+      ],
+      "body": [
+        {
+          "line": 4,
+          "col": 5,
+          "kind": "wait",
+          "amount": {
+            "line": 4,
+            "col": 10,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          },
+          "unit": "ticks"
+        },
+        {
+          "line": 5,
+          "col": 5,
+          "kind": "return",
+          "value": { "line": 5, "col": 12, "kind": "string", "value": "MVP" }
+        }
+      ]
+    },
+    {
+      "line": 8,
+      "col": 7,
+      "name": "load_stats",
+      "async": true,
+      "params": [
+        { "line": 8, "col": 27, "name": "p", "type": { "base": "PLAYER" } }
+      ],
+      "body": [
+        {
+          "line": 9,
+          "col": 5,
+          "kind": "wait",
+          "amount": {
+            "line": 9,
+            "col": 10,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          },
+          "unit": "ticks"
+        },
+        {
+          "line": 10,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 10,
+            "col": 12,
+            "kind": "number",
+            "value": 100,
+            "integer": true
+          }
+        }
+      ]
+    },
+    {
+      "line": 13,
+      "col": 7,
+      "name": "load_friends",
+      "async": true,
+      "params": [
+        { "line": 13, "col": 29, "name": "p", "type": { "base": "PLAYER" } }
+      ],
+      "body": [
+        {
+          "line": 14,
+          "col": 5,
+          "kind": "wait",
+          "amount": {
+            "line": 14,
+            "col": 10,
+            "kind": "number",
+            "value": 1,
+            "integer": true
+          },
+          "unit": "ticks"
+        },
+        {
+          "line": 15,
+          "col": 5,
+          "kind": "return",
+          "value": {
+            "line": 15,
+            "col": 12,
+            "kind": "list",
+            "items": [
+              { "line": 15, "col": 13, "kind": "string", "value": "alpha" },
+              { "line": 15, "col": 22, "kind": "string", "value": "beta" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "line": 20,
+      "col": 7,
+      "name": "welcome",
+      "async": true,
+      "params": [
+        { "line": 20, "col": 24, "name": "p", "type": { "base": "PLAYER" } }
+      ],
+      "body": [
+        {
+          "line": 22,
+          "col": 5,
+          "kind": "assign",
+          "target": "rankf",
+          "value": {
+            "line": 22,
+            "col": 18,
+            "kind": "future_spawn",
+            "call": {
+              "name": "build_rank",
+              "args": [
+                { "line": 22, "col": 35, "kind": "var", "name": "p" }
+              ]
+            }
+          }
+        },
+        {
+          "line": 23,
+          "col": 5,
+          "kind": "assign",
+          "target": "rank",
+          "value": {
+            "line": 23,
+            "col": 17,
+            "kind": "await",
+            "future": {
+              "line": 23,
+              "col": 23,
+              "kind": "var",
+              "name": "rankf"
+            }
+          }
+        },
+        {
+          "line": 24,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 24,
+            "col": 10,
+            "kind": "string",
+            "value": "welcome ${rank}"
+          },
+          "target": { "line": 24, "col": 31, "kind": "var", "name": "p" }
+        },
+        {
+          "line": 27,
+          "col": 5,
+          "kind": "assign",
+          "target": "profile",
+          "value": {
+            "line": 27,
+            "col": 20,
+            "kind": "await",
+            "future": {
+              "line": 27,
+              "col": 26,
+              "kind": "future_spawn",
+              "call": {
+                "name": "build_rank",
+                "args": [
+                  { "line": 27, "col": 43, "kind": "var", "name": "p" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "line": 28,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 28,
+            "col": 10,
+            "kind": "string",
+            "value": "profile ${profile}"
+          },
+          "target": { "line": 28, "col": 34, "kind": "var", "name": "p" }
+        },
+        {
+          "line": 31,
+          "col": 5,
+          "kind": "tuple_bind",
+          "names": [ "stats", "friends" ],
+          "value": {
+            "line": 31,
+            "col": 29,
+            "kind": "await",
+            "future": {
+              "line": 31,
+              "col": 35,
+              "kind": "all_of",
+              "futures": {
+                "line": 31,
+                "col": 42,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 31,
+                    "col": 43,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        { "line": 31, "col": 60, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  },
+                  {
+                    "line": 31,
+                    "col": 64,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_friends",
+                      "args": [
+                        { "line": 31, "col": 83, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "line": 32,
+          "col": 5,
+          "kind": "assign",
+          "target": "fcount",
+          "value": {
+            "line": 32,
+            "col": 19,
+            "kind": "prop",
+            "target": {
+              "line": 32,
+              "col": 27,
+              "kind": "var",
+              "name": "friends"
+            },
+            "name": "size"
+          }
+        },
+        {
+          "line": 33,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 33,
+            "col": 10,
+            "kind": "string",
+            "value": "stats ${stats} friends ${fcount}"
+          },
+          "target": { "line": 33, "col": 48, "kind": "var", "name": "p" }
+        },
+        {
+          "line": 36,
+          "col": 5,
+          "kind": "assign",
+          "target": "best",
+          "value": {
+            "line": 36,
+            "col": 17,
+            "kind": "await",
+            "future": {
+              "line": 36,
+              "col": 23,
+              "kind": "any_of",
+              "futures": {
+                "line": 36,
+                "col": 30,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 36,
+                    "col": 31,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        { "line": 36, "col": 48, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  },
+                  {
+                    "line": 36,
+                    "col": 52,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        { "line": 36, "col": 69, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "line": 37,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 37,
+            "col": 10,
+            "kind": "string",
+            "value": "best ${best}"
+          },
+          "target": { "line": 37, "col": 28, "kind": "var", "name": "p" }
+        },
+        {
+          "line": 40,
+          "col": 5,
+          "kind": "assign",
+          "target": "allstats",
+          "value": {
+            "line": 40,
+            "col": 21,
+            "kind": "await",
+            "future": {
+              "line": 40,
+              "col": 27,
+              "kind": "all_of",
+              "futures": {
+                "line": 40,
+                "col": 34,
+                "kind": "list",
+                "items": [
+                  {
+                    "line": 40,
+                    "col": 35,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        { "line": 40, "col": 52, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  },
+                  {
+                    "line": 40,
+                    "col": 56,
+                    "kind": "future_spawn",
+                    "call": {
+                      "name": "load_stats",
+                      "args": [
+                        { "line": 40, "col": 73, "kind": "var", "name": "p" }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "line": 41,
+          "col": 5,
+          "kind": "assign",
+          "target": "total",
+          "value": {
+            "line": 41,
+            "col": 18,
+            "kind": "prop",
+            "target": {
+              "line": 41,
+              "col": 26,
+              "kind": "var",
+              "name": "allstats"
+            },
+            "name": "size"
+          }
+        },
+        {
+          "line": 42,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 42,
+            "col": 10,
+            "kind": "string",
+            "value": "count ${total}"
+          },
+          "target": { "line": 42, "col": 30, "kind": "var", "name": "p" }
+        },
+        {
+          "line": 45,
+          "col": 5,
+          "kind": "assign",
+          "target": "computed",
+          "value": {
+            "line": 45,
+            "col": 21,
+            "kind": "async_expr",
+            "body": [
+              {
+                "line": 46,
+                "col": 9,
+                "kind": "wait",
+                "amount": {
+                  "line": 46,
+                  "col": 14,
+                  "kind": "number",
+                  "value": 1,
+                  "integer": true
+                },
+                "unit": "ticks"
+              },
+              {
+                "line": 47,
+                "col": 9,
+                "kind": "assign",
+                "target": "x",
+                "value": {
+                  "line": 47,
+                  "col": 18,
+                  "kind": "number",
+                  "value": 21,
+                  "integer": true
+                }
+              }
+            ],
+            "trailing": {
+              "line": 48,
+              "col": 9,
+              "kind": "binary",
+              "op": "ADD",
+              "left": { "line": 48, "col": 9, "kind": "var", "name": "x" },
+              "right": { "line": 48, "col": 13, "kind": "var", "name": "x" }
+            }
+          }
+        },
+        {
+          "line": 50,
+          "col": 5,
+          "kind": "assign",
+          "target": "doubled",
+          "value": {
+            "line": 50,
+            "col": 20,
+            "kind": "await",
+            "future": {
+              "line": 50,
+              "col": 26,
+              "kind": "var",
+              "name": "computed"
+            }
+          }
+        },
+        {
+          "line": 51,
+          "col": 5,
+          "kind": "send",
+          "message": {
+            "line": 51,
+            "col": 10,
+            "kind": "string",
+            "value": "doubled ${doubled}"
+          },
+          "target": { "line": 51, "col": 34, "kind": "var", "name": "p" }
+        }
+      ]
+    },
+    {
+      "line": 56,
+      "col": 1,
+      "name": "combine_pending",
+      "async": false,
+      "params": [
+        {
+          "line": 56,
+          "col": 26,
+          "name": "pending",
+          "type": {
+            "base": "LIST",
+            "subtypes": [
+              { "base": "FUTURE", "subtypes": [ { "base": "INTEGER" } ] }
+            ]
+          }
+        }
+      ],
+      "body": [
+        {
+          "line": 57,
+          "col": 5,
+          "kind": "assign",
+          "target": "combined",
+          "value": {
+            "line": 57,
+            "col": 21,
+            "kind": "all_of",
+            "futures": {
+              "line": 57,
+              "col": 28,
+              "kind": "var",
+              "name": "pending"
+            }
+          }
+        },
+        {
+          "line": 58,
+          "col": 5,
+          "kind": "when_ready",
+          "future": {
+            "line": 58,
+            "col": 10,
+            "kind": "var",
+            "name": "combined"
+          },
+          "name": "results",
+          "body": [
+            {
+              "line": 59,
+              "col": 9,
+              "kind": "assign",
+              "target": "n",
+              "value": {
+                "line": 59,
+                "col": 18,
+                "kind": "prop",
+                "target": {
+                  "line": 59,
+                  "col": 26,
+                  "kind": "var",
+                  "name": "results"
+                },
+                "name": "size"
+              }
+            },
+            {
+              "line": 60,
+              "col": 9,
+              "kind": "broadcast",
+              "message": {
+                "line": 60,
+                "col": 19,
+                "kind": "string",
+                "value": "got ${n} results"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null
+}

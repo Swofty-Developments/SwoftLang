@@ -993,7 +993,7 @@ public class SwoftJsonLoader {
         DataType dataType = new DataType(baseType);
         BaseType base = dataType.getBaseType();
         if (base == BaseType.EITHER || base == BaseType.OPTIONAL || base == BaseType.LIST
-                || base == BaseType.MAP) {
+                || base == BaseType.MAP || base == BaseType.FUTURE) {
             // An Integer-keyed map<K, V> emits its key type as a sibling
             // "key_type" field (the value type stays in "subtypes"); load it
             // FIRST so the DataType has subTypes=[K, V] — the shape
@@ -1140,6 +1140,22 @@ public class SwoftJsonLoader {
             }
             case "async_block":
                 return new AsyncBlockStatement(buildStatements(obj.getAsJsonArray("body"), true));
+            case "when_ready":
+                // when <future> is ready as <name> { body } — tick-side
+                // continuation (§1.8.0). The body runs back on the tick thread.
+                return new net.swofty.nativebridge.execution.commands.WhenReadyStatement(
+                        buildExpression(obj.getAsJsonObject("future")),
+                        obj.get("name").getAsString(),
+                        buildStatements(obj.getAsJsonArray("body"), false));
+            case "tuple_bind": {
+                // set (a, b) to <expr> — positional destructure (§4)
+                java.util.List<String> names = new ArrayList<>();
+                for (JsonElement element : obj.getAsJsonArray("names")) {
+                    names.add(element.getAsString());
+                }
+                return new net.swofty.nativebridge.execution.commands.TupleBindStatement(
+                        names, buildExpression(obj.getAsJsonObject("value")));
+            }
             case "open_gui":
                 return new OpenGuiStatement(obj.get("name").getAsString(),
                         buildExpression(obj.getAsJsonObject("target")),
@@ -1835,6 +1851,31 @@ public class SwoftJsonLoader {
                 return new net.swofty.nativebridge.execution.expressions
                         .StructConstructionExpression(obj.get("struct").getAsString(), inits);
             }
+            case "future_spawn": {
+                // spawn f(args) as a value → Future<T> (§1.8.0 §2)
+                JsonObject call = obj.getAsJsonObject("call");
+                return new net.swofty.nativebridge.execution.expressions.FutureSpawnExpression(
+                        call.get("name").getAsString(),
+                        buildExpressionList(call.getAsJsonArray("args")));
+            }
+            case "await":
+                // await <Future<T>> → T (§1.8.0 §3.1)
+                return new net.swofty.nativebridge.execution.expressions.AwaitExpression(
+                        buildExpression(obj.getAsJsonObject("future")));
+            case "all_of":
+                // all of <List<Future<T>>> → Future<List<T>> (§1.8.0 §4)
+                return new net.swofty.nativebridge.execution.expressions.AllOfExpression(
+                        buildExpression(obj.getAsJsonObject("futures")));
+            case "any_of":
+                // any of <List<Future<T>>> → Future<T> (§1.8.0 §4)
+                return new net.swofty.nativebridge.execution.expressions.AnyOfExpression(
+                        buildExpression(obj.getAsJsonObject("futures")));
+            case "async_expr":
+                // async { stmts ; trailing } as a value → Future<T> (§1.8.0 §2)
+                return new net.swofty.nativebridge.execution.expressions.AsyncExprExpression(
+                        buildStatements(obj.getAsJsonArray("body"), true),
+                        has(obj, "trailing")
+                                ? buildExpression(obj.getAsJsonObject("trailing")) : null);
             case "map":
                 // { key: expr, ... } nested object (send packet payloads)
                 return new ObjectLiteralExpression(buildFieldMap(obj.get("entries")));

@@ -1,0 +1,1 @@
+when_ready_binding_type.sw:9:29: error: cannot send a message to a Integer; expected a Player, a list of players, or 'all'

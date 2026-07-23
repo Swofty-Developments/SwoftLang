@@ -18,6 +18,22 @@ public final class TickDispatch {
     private TickDispatch() {
     }
 
+    /**
+     * Schedule {@code action} to run on the tick thread on the next tick,
+     * fire-and-forget (the {@code when ... is ready} continuation lands its
+     * body back on the tick thread). Tick-thread callers run it inline; when
+     * the server is not running (headless harness) it runs inline too.
+     */
+    public static void runNextTick(Runnable action) {
+        Thread current = Thread.currentThread();
+        if (current instanceof TickThread || current instanceof TickSchedulerThread
+                || !serverRunning()) {
+            action.run();
+            return;
+        }
+        MinecraftServer.getSchedulerManager().scheduleNextTick(action);
+    }
+
     public static <T> T call(Supplier<T> action) {
         Thread current = Thread.currentThread();
         if (current instanceof TickThread || current instanceof TickSchedulerThread) {
