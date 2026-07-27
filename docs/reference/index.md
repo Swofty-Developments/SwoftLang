@@ -40,6 +40,7 @@ shown failing, that's real compiler output, byte for byte.</p>
 <div class="sw-hub-sec-head"><h2 class="sw-hub-sec-title">Platform</h2><span class="sw-hub-sec-note">the server around your scripts</span></div>
 <div class="sw-hub">
 <a class="sw-hub-card" href="/reference/server-config"><span class="sw-hub-body"><span class="sw-hub-title">Server Config</span><span class="sw-hub-desc">The <code>server</code> block — auth, http, permissions, MOTD, storage.</span></span></a>
+<a class="sw-hub-card" href="/reference/network-persistence"><span class="sw-hub-body"><span class="sw-hub-title">Network Persistence</span><span class="sw-hub-desc"><code>mode: network</code> — session ownership, replicated globals, atomic writes, change events.</span></span></a>
 <a class="sw-hub-card" href="/reference/worlds"><span class="sw-hub-body"><span class="sw-hub-title">Worlds</span><span class="sw-hub-desc">Anvil/polar/storage loaders, world lifecycle, weather and time.</span></span></a>
 <a class="sw-hub-card" href="/reference/blocks"><span class="sw-hub-body"><span class="sw-hub-title">Blocks</span><span class="sw-hub-desc">The <code>block(...)</code> state value, NBT tags, <code>block_handler</code> and <code>placement_rule</code> — plus the ready-made vanilla-placement addon.</span></span></a>
 <a class="sw-hub-card" href="/reference/http-api"><span class="sw-hub-body"><span class="sw-hub-title">HTTP API</span><span class="sw-hub-desc"><code>api</code> routes, <code>request</code>, <code>reply</code>.</span></span></a>

@@ -16,15 +16,15 @@ command "anthem" {
 <div class="sw-hub-sec">
 <div class="sw-hub-sec-head"><h2 class="sw-hub-sec-title">Shipped addons</h2><span class="sw-hub-sec-note">each ends with how it's built</span></div>
 <div class="sw-hub">
-<a class="sw-hub-card" href="/libraries/music"><span class="sw-hub-body"><span class="sw-hub-title">Music</span><span class="sw-hub-desc"><code>import "music"</code> — radius and broadcast song helpers over NBS playback.</span></span></a>
-<a class="sw-hub-card" href="/libraries/abilities"><span class="sw-hub-body"><span class="sw-hub-title">Abilities</span><span class="sw-hub-desc"><code>import "abilities"</code> — named item abilities on per-player cooldowns.</span></span></a>
+<a class="sw-hub-card" href="/1.5.0/libraries/music"><span class="sw-hub-body"><span class="sw-hub-title">Music</span><span class="sw-hub-desc"><code>import "music"</code> — radius and broadcast song helpers over NBS playback.</span></span></a>
+<a class="sw-hub-card" href="/1.5.0/libraries/abilities"><span class="sw-hub-body"><span class="sw-hub-title">Abilities</span><span class="sw-hub-desc"><code>import "abilities"</code> — named item abilities on per-player cooldowns.</span></span></a>
 </div>
 </div>
 
 <div class="sw-hub-sec">
 <div class="sw-hub-sec-head"><h2 class="sw-hub-sec-title">Authoring</h2><span class="sw-hub-sec-note">build your own</span></div>
 <div class="sw-hub">
-<a class="sw-hub-card" href="/libraries/writing-an-addon"><span class="sw-hub-body"><span class="sw-hub-title">Writing an Addon</span><span class="sw-hub-desc">Build a <code>titles.sw</code> addon from an empty file to first-class-function tricks, every step compiled.</span></span></a>
+<a class="sw-hub-card" href="/1.5.0/libraries/writing-an-addon"><span class="sw-hub-body"><span class="sw-hub-title">Writing an Addon</span><span class="sw-hub-desc">Build a <code>titles.sw</code> addon from an empty file to first-class-function tricks, every step compiled.</span></span></a>
 </div>
 </div>
 

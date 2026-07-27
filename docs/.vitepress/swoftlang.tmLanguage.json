@@ -43,6 +43,9 @@
       "include": "#property-accessor"
     },
     {
+      "include": "#persistence-keywords"
+    },
+    {
       "include": "#enums"
     },
     {
@@ -752,6 +755,203 @@
         }
       ]
     },
+    "persistence-keywords": {
+      "patterns": [
+        {
+          "comment": "storage block: backend: mysql { … } / mongodb { … }",
+          "begin": "^\\s*(backend)\\s*(:)\\s*(mongodb|mysql)\\s*(\\{)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.storage-backend.swoftlang"
+            },
+            "4": {
+              "name": "punctuation.section.block.swoftlang"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.block.swoftlang"
+            }
+          },
+          "patterns": [
+            {
+              "comment": "mysql/mongodb connection keys",
+              "match": "\\b(database|password|host|port|user)\\s*(:)(?!:)",
+              "captures": {
+                "1": {
+                  "name": "entity.other.attribute-name.storage.swoftlang"
+                },
+                "2": {
+                  "name": "punctuation.separator.key-value.swoftlang"
+                }
+              }
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#builtins"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#function-calls"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        },
+        {
+          "comment": "bare shared-backend block (e.g. inside polar_storage_loader(mysql { … }))",
+          "begin": "\\b(mongodb|mysql)\\s*(\\{)",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.other.enum.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.section.block.swoftlang"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.block.swoftlang"
+            }
+          },
+          "patterns": [
+            {
+              "comment": "mysql/mongodb connection keys",
+              "match": "\\b(database|password|host|port|user)\\s*(:)(?!:)",
+              "captures": {
+                "1": {
+                  "name": "entity.other.attribute-name.storage.swoftlang"
+                },
+                "2": {
+                  "name": "punctuation.separator.key-value.swoftlang"
+                }
+              }
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#builtins"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#function-calls"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        },
+        {
+          "comment": "storage block: mode: <value>",
+          "match": "^\\s*(mode)\\s*(:)\\s*(standalone|network)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.storage-mode.swoftlang"
+            }
+          }
+        },
+        {
+          "comment": "storage block: backend: <value>",
+          "match": "^\\s*(backend)\\s*(:)\\s*(mongodb|sqlite|files|mysql)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.storage-backend.swoftlang"
+            }
+          }
+        },
+        {
+          "comment": "storage block: on_handoff_failure: <value>",
+          "match": "^\\s*(on_handoff_failure)\\s*(:)\\s*(kick)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.storage-on-handoff-failure.swoftlang"
+            }
+          }
+        },
+        {
+          "comment": "storage block: coordinator: <value>",
+          "match": "^\\s*(coordinator)\\s*(:)\\s*(redis)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            },
+            "3": {
+              "name": "constant.other.enum.storage-coordinator.swoftlang"
+            }
+          }
+        },
+        {
+          "comment": "storage block config keys (backend/flush/mode/coordinator/host/…)",
+          "match": "^\\s*(on_handoff_failure|coordinator|database|password|backend|flush|host|mode|port|user)\\s*(:)(?!:)",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.storage.swoftlang"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.swoftlang"
+            }
+          }
+        },
+        {
+          "comment": "storage backend / coordinator / handoff heads before their argument",
+          "name": "constant.other.enum.storage.swoftlang",
+          "match": "\\b(mongodb|sqlite|files|mysql|redis|kick)\\b(?=\\s*[{\\\"])"
+        },
+        {
+          "comment": "declaration-attached change handlers (§4)",
+          "name": "keyword.other.handler.persist.swoftlang",
+          "match": "\\b(on_entry_change|on_change)\\b(?=\\s*\\{)"
+        },
+        {
+          "comment": "atomic persistent write ops (§3.2): subtract … from / append … to / grant … to",
+          "name": "keyword.other.statement.persist.swoftlang",
+          "match": "\\b(subtract|append|grant)\\b(?!\\s*[.(])"
+        }
+      ]
+    },
     "user-types": {
       "patterns": [
         {
@@ -817,7 +1017,7 @@
       "patterns": [
         {
           "name": "variable.language.swoftlang",
-          "match": "\\b(event|args|state|player|mob|target|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet)\\b(?=\\.|\\b)"
+          "match": "\\b(event|args|state|player|mob|target|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet|old|new|key|caused_here)\\b(?=\\.|\\b)"
         },
         {
           "name": "variable.other.swoftlang",

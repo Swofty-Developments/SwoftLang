@@ -57,12 +57,19 @@ git -C "$REPO_ROOT" archive --format=tar "$TAG:docs" \
     guide reference examples libraries index.md \
   | tar -x -C "$DEST"
 
-# 3. Rewrite root-absolute internal markdown links to the version prefix.
+# 3. Rewrite root-absolute internal links to the version prefix — both markdown
+#    `](/x)` links AND raw-HTML attribute links (`href="/x"`, `src='/x'`), which
+#    the pages use for hero buttons and card grids. Without the second rewrite a
+#    frozen page would silently bounce the reader out to the LATEST docs (they
+#    are not dead links, so no build check catches them).
 #    The alternation only matches the content dirs, so a link that already
 #    starts with `/<n.n.n>/` (e.g. `/1.2.0/guide`) begins with `](/1...` and
 #    is never matched — no double-prefixing.
+CONTENT='(guide|reference|examples|libraries|index)'
 find "$DEST" -type f -name '*.md' -print0 \
-  | xargs -0 sed -E -i "s#\]\(/(guide|reference|examples|libraries|index)#](/$VERSION/\1#g"
+  | xargs -0 sed -E -i \
+      -e "s#\]\(/$CONTENT#](/$VERSION/\1#g" \
+      -e "s#(href|src)=(\"|')/$CONTENT#\1=\2/$VERSION/\3#g"
 
 MD_COUNT="$(find "$DEST" -name '*.md' | wc -l | tr -d ' ')"
 echo "Done: $MD_COUNT markdown pages under docs/$VERSION/"

@@ -275,6 +275,51 @@ function build() {
     symbols.push({ name: k, kind: 'keyword', doc: AI_KW_DOCS[k] || `Custom mob AI keyword \`${k}\`.` });
   }
 
+  // v1.10.0 network persistence (dump key 'persistence_keywords'): the
+  // `storage { }` topology vocabulary, the declaration-attached change handlers
+  // + the names their bodies bind, and the atomic write ops. Offered as keyword
+  // completions with docs; the context-aware engine (completion.ts) surfaces the
+  // storage keys inside a `storage { }` body and the bound names inside an
+  // `on_change`/`on_entry_change` body. Deduped against the general
+  // keywords/handlers so a word already listed isn't offered twice.
+  const PERSIST_KW_DOCS = {
+    backend: '`backend: files "dir" | sqlite "file" | mysql { … } | mongodb { … }` — where persistent values are stored.',
+    flush: '`flush: every 30 seconds` — write-behind checkpoint interval. Under `mode: network` this is ONLY a crash checkpoint, never the handoff path.',
+    mode: '`mode: standalone | network` — storage topology. Declarations and game code are byte-identical in both modes.',
+    on_handoff_failure: '`on_handoff_failure: kick "<message>"` — what to do when a session lease can\'t be acquired (backend down / lease stuck). Default: kick. Never serves default or duplicated data.',
+    coordinator: '`coordinator: redis "redis://host"` — OPTIONAL lease store + pub-sub channel. Defaults to a lease table in `backend`.',
+    standalone: '`mode: standalone` (default) — single server; today\'s write-behind behavior, unchanged.',
+    network: '`mode: network` — multi-server behind a proxy: session ownership + leases for `for Player` values, replicated globals. REQUIRES a shared backend (mysql/mongodb).',
+    kick: '`on_handoff_failure: kick "<message>"` — disconnect the player rather than serve stale or default data.',
+    redis: '`coordinator: redis "redis://host:6379"` — Redis lease store and broadcast channel.',
+    files: '`backend: files "data/game"` — one file per value. Cannot coordinate servers (`mode: network` is a compile error).',
+    sqlite: '`backend: sqlite "data/game.db"` — local database. Cannot coordinate servers (`mode: network` is a compile error).',
+    mysql: '`backend: mysql { host: "…", port: 3306, database: "…", user: "…", password: env("…") }` — shared backend, usable with `mode: network`.',
+    mongodb: '`backend: mongodb { host: "…", port: 27017, database: "…", user: "…", password: env("…") }` — shared backend, usable with `mode: network`.',
+    host: '`host: "10.0.0.5"` — mysql/mongodb connection host.',
+    port: '`port: 3306` — mysql/mongodb connection port.',
+    database: '`database: "net"` — mysql/mongodb database name.',
+    user: '`user: "mc"` — mysql/mongodb user.',
+    password: '`password: env("DB_PASS")` — mysql/mongodb password.',
+    on_change: '`on_change { }` on a persistent declaration — fires on EVERY server (including the writer) when the value really changes. Bound: `old`, `new`, `caused_here`, plus `player`/`key` for a keyed decl. Not fired on load/restore.',
+    on_entry_change: '`on_entry_change { }` on a persistent Map/List — fires per ENTRY. Bound: `key`, `old: Optional<V>`, `new: Optional<V>`, `caused_here`. `old is none` = insert, `new is none` = remove.',
+    old: '`old` — the value before the change (in a collection handler: `Optional<V>`, `none` when the entry was inserted).',
+    new: '`new` — the value after the change (in a collection handler: `Optional<V>`, `none` when the entry was removed).',
+    caused_here: '`caused_here: Boolean` — true on the server that made the write. `if caused_here` = local-only, `if not caused_here` = remote-only, no guard = react everywhere.',
+    key: '`key` — the changed entry\'s key (`on_entry_change`), or the declaration key of a `for Integer`/`for String` decl.',
+    player: '`player` — the declaration key of a `for Player` / `for OfflinePlayer` persistent value inside its change handler.',
+    subtract: '`subtract <n> from <persistent>` — atomic decrement, safe across servers (unlike `set x to x - n`).',
+    append: '`append <value> to <persistent list>` — atomic list append, safe across servers.',
+    grant: '`grant <n> <persistent> to <player>` — atomic increment routed to the owning server; the only legal write to a player this server does not own.',
+  };
+  for (const k of (dump.persistence_keywords || [])) {
+    if (kwSet.has(k) || handlerSet.has(k)) continue;
+    symbols.push({
+      name: k, kind: 'keyword',
+      doc: PERSIST_KW_DOCS[k] || `Network-persistence keyword \`${k}\`.`,
+    });
+  }
+
   for (const r of receivers) symbols.push({ name: r, kind: 'receiver', doc: `\`${r} { }\` OOP receiver block.` });
   // §4 struct-field annotations: @EventReceiver marks a struct field as the
   // event subject its reactive block reacts on.

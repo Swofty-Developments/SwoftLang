@@ -18,6 +18,13 @@
     "on_end", "path", "pathing", "look", "speed", "within", "priority",
     "reached", "closest", "hostile", "attacker", "navigating"
   ],
+  "persistence_keywords": [
+    "backend", "flush", "mode", "on_handoff_failure", "coordinator",
+    "standalone", "network", "kick", "redis", "files", "sqlite", "mysql",
+    "mongodb", "host", "port", "database", "user", "password", "on_change",
+    "on_entry_change", "old", "new", "caused_here", "key", "player",
+    "subtract", "append", "grant"
+  ],
   "declarations": [
     "struct", "item", "mob", "npc", "hologram", "gui", "scoreboard",
     "tablist", "bossbar", "server", "storage", "persistent", "api",

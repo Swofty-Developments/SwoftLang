@@ -22,8 +22,16 @@ For a bump from `X` (current root) to `Y`:
 
    This creates `docs/<X>/` with only the content pages (guide, reference,
    examples, libraries, index.md — no `.vitepress`), and rewrites internal
-   root-absolute markdown links to the `/<X>/` prefix. It is idempotent
-   (`docs/<X>/` is wiped and rebuilt), so it is safe to re-run.
+   root-absolute links to the `/<X>/` prefix — both markdown `](/…)` links and
+   the raw-HTML `href="/…"` / `src="/…"` attributes the hero and card grids
+   use. (Raw HTML is invisible to the dead-link checker, so without that
+   rewrite a frozen page silently bounces the reader out to the latest docs.)
+   It is idempotent (`docs/<X>/` is wiped and rebuilt), so it is safe to
+   re-run — and re-running 1.2.0 and later is how you backfill a rewrite the
+   script learns later. **Do not re-run it for 1.1.0**: that tree was
+   hand-corrected after its freeze (a "you are viewing 1.1.0" banner, plus
+   link fixes and pages the v1.1.0 tag never had), so a re-freeze silently
+   reverts all of it. Check `git status` after any bulk re-freeze.
 
 2. Register `X` in the `versions` array in
    `docs/.vitepress/theme/nav.ts` (newest first). Add a generated sidebar with
@@ -35,10 +43,21 @@ For a bump from `X` (current root) to `Y`:
 3. Update the root pages for the new latest version `Y` and set its label as
    `(latest)` in `versions` (root entry, `prefix: ''`).
 
-4. Build to confirm no dead links across every frozen tree and root:
+4. Build to confirm every tree still renders:
 
    ```sh
    cd docs && npm run docs:build
+   ```
+
+   This is the shipping build: one vitepress process per version tree, so peak
+   memory stays at one ~60-page tree. Because a single-tree process cannot see
+   the other trees' pages, it only dead-link-checks root; the frozen trees are
+   built with `ignoreDeadLinks`. To dead-link-check **every** tree at once, run
+   the monolithic build (all ~600 pages in one process — needs the big heap,
+   which is why it is not what CI/Vercel runs):
+
+   ```sh
+   cd docs && npm run docs:build:full
    ```
 
 ## Backfilling a version that was never frozen

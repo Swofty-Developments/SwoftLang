@@ -475,6 +475,71 @@ every 5 seconds` if that window matters more than write volume. For transactiona
 guarantees you want an external database via its own tooling, not a game scripting
 runtime.
 
+## More than one server {#network}
+
+Everything above assumes one process owns the cache. Put the same script on several
+servers behind a proxy and write-behind turns into a desync: server A still holds a
+player's unflushed coins when the proxy moves them to B, B loads the stale value from the
+backend, and A's next flush writes its copy back on top. Shortening `flush:` narrows the
+window but cannot close it — and the flush-after-they-left clobber isn't a race at all, it
+happens every time.
+
+Add one field to the `storage` block and that whole class of bug goes away:
+
+::: code-group
+
+```swoftlang [standalone]
+storage {
+    backend: files "data/game"
+    flush: every 10 seconds
+}
+
+persistent pot: Integer = 0
+persistent coins for Player: Integer = 0
+
+Player {
+    on_join {
+        set coins for player to (coins for player) + 10
+        add 50 to pot
+        send "<gold>${coins for player} coins — pot ${pot}" to player
+    }
+}
+```
+
+```swoftlang [network]
+storage {
+    backend: mysql { host: "10.0.0.5", database: "net", user: "mc", password: "hunter2" }
+    mode: network
+    flush: every 30 seconds
+}
+
+persistent pot: Integer = 0
+persistent coins for Player: Integer = 0
+
+Player {
+    on_join {
+        set coins for player to (coins for player) + 10
+        add 50 to pot
+        send "<gold>${coins for player} coins — pot ${pot}" to player
+    }
+}
+```
+
+:::
+
+Below the `storage` block those two scripts are byte-for-byte identical. **Topology is
+configuration, not a keyword** — no declaration and no line of game logic changes, so you
+develop standalone and flip to network at deploy time. Under `mode: network` a `for Player`
+value becomes *session-owned* (exactly one server holds it, acquired on join and flushed,
+evicted and released on transfer), a global becomes *replicated* (a live local copy on every
+server, written through atomic ops), and `flush:` is demoted from a correctness mechanism to
+a crash checkpoint.
+
+There's more to it — remote reads become `Future`s, cross-server writes must be atomic,
+declarations can carry `on_change` handlers, and `mode: network` requires a shared
+`mysql`/`mongodb` backend. It all lives in
+[Network Persistence](/reference/network-persistence).
+
 ## The payoff
 
 ```swoftlang

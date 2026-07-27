@@ -10,6 +10,7 @@ const decorationCalls = []; // {editor, typeId, ranges}
 const statusMessages = [];
 const infoMessages = [];
 const errorMessages = [];
+const docChangeListeners = []; // workspace.onDidChangeTextDocument subscribers
 
 let typeCounter = 0;
 function fakeEditor(uriStr) {
@@ -50,6 +51,12 @@ const vscodeStub = {
   },
   workspace: {
     openTextDocument: async () => ({}),
+    // the tracer subscribes to document edits so it can drop pulses whose line
+    // numbers just shifted; the stub records the listener as a disposable.
+    onDidChangeTextDocument: (fn) => {
+      docChangeListeners.push(fn);
+      return { dispose() {} };
+    },
   },
 };
 
@@ -71,6 +78,8 @@ const host = {
   scriptsDir: () => '/ws/scripts',
   setScriptsDirFromHello() {},
   autoReveal: () => true,
+  // off by default in the extension, so the tracer never hijacks the scroll
+  followExecution: () => false,
 };
 const context = { subscriptions: [] };
 

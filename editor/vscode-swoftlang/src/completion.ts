@@ -71,6 +71,10 @@ export interface ScriptContext {
   inAiBlock?: boolean; // cursor is somewhere inside a custom-mob `ai { }` / goal / target block
   goalTypes?: string[]; // reusable goal type names declared in the document (`goal Chase { }`)
   mobTypes?: string[]; // custom mob type names declared in the document (`mob Guardian { }`)
+  // v1.10.0 network persistence
+  inStorageBlock?: boolean; // cursor is inside a `storage { }` topology block
+  changeHandler?: string; // enclosing change handler: 'on_change' | 'on_entry_change'
+  changeSubject?: string; // the key that handler's declaration binds: 'player' | 'key' | undefined
 }
 
 export interface CompletionEngine {
@@ -142,8 +146,14 @@ const SNIPPETS: Record<string, string> = {
   fishing_loot: 'fishing_loot "${1:id}" {\n\tmedium: ${2|water,lava|}\n\t$0\n}',
   api: 'api "${1:/path}" {\n\tmethod: ${2|GET,POST,PUT,DELETE,ANY|}\n\texecute {\n\t\t$0\n\t}\n}',
   server: 'server {\n\tauth: ${1|mojang,velocity,bungeecord,offline|}\n\tport: ${2:25565}\n\t$0\n}',
-  storage: 'storage {\n\tbackend: "${1|sqlite,mysql,mongodb,files|}"\n}',
+  storage:
+    'storage {\n\tbackend: ${1|files,sqlite,mysql,mongodb|} "${2:data/game}"\n\tmode: ${3|standalone,network|}\n\tflush: every ${4:30} seconds\n}',
   persistent: 'persistent ${1:name} for Player: ${2:Integer} = $3',
+  // §3.2 atomic persistent write ops (the only cross-server-safe writes)
+  add: 'add ${1:50} to ${2:pot}',
+  subtract: 'subtract ${1:50} from ${2:pot}',
+  append: 'append ${1:"value"} to ${2:history}',
+  grant: 'grant ${1:100} ${2:coins} to ${3:args.who}',
   import: 'import "$1"',
   export: 'export function ${1:name}(${2}) {\n\t$0\n}',
   // --- namespaces ---
@@ -194,6 +204,8 @@ const STATEMENT_KEYWORDS = new Set([
   'entry', 'fill', 'give', 'dispense', 'mount', 'dismount', 'launch', 'remove', 'reset',
   'belowname', 'go', 'back', 'damage', 'knock', 'apply', 'shoot', 'move', 'play', 'draw',
   'reply', 'save', 'load',
+  // v1.10.0 §3.2 atomic persistent write ops
+  'add', 'subtract', 'append', 'grant',
 ]);
 const CONNECTIVE_KEYWORDS = new Set([
   'to', 'at', 'with', 'for', 'every', 'manual', 'as', 'times', 'in', 'of', 'from', 'by',
@@ -270,6 +282,96 @@ const AI_NAV_ENTRIES: { label: string; insertText: string; doc: string }[] = [
   },
 ];
 
+// --- v1.10.0 network persistence (context-aware completion) ---
+// The `storage { }` topology keys, offered at that block's statement start.
+// `backend:`/`flush:` are the pre-1.10.0 half, `mode:`/`coordinator:`/
+// `on_handoff_failure:` the network half; all five are legal in both modes.
+const STORAGE_BLOCK_ENTRIES: { label: string; insertText: string; doc: string }[] = [
+  {
+    label: 'mode',
+    insertText: 'mode: ${1|standalone,network|}',
+    doc: '`mode: standalone | network` — storage topology. Declarations and game code are byte-identical in both modes; `network` requires a shared backend (mysql/mongodb).',
+  },
+  {
+    label: 'backend',
+    insertText: 'backend: ${1|files,sqlite,mysql,mongodb|}',
+    doc: '`backend: files "dir" | sqlite "file" | mysql { … } | mongodb { … }` — where persistent values live. `files`/`sqlite` cannot coordinate servers.',
+  },
+  {
+    label: 'flush',
+    insertText: 'flush: every ${1:30} ${2|seconds,ticks|}',
+    doc: '`flush: every 30 seconds` — write-behind checkpoint. Under `mode: network` this is ONLY a crash checkpoint, never the handoff path.',
+  },
+  {
+    label: 'coordinator',
+    insertText: 'coordinator: redis "${1:redis://127.0.0.1:6379}"',
+    doc: '`coordinator: redis "redis://host"` — OPTIONAL lease store + broadcast channel. Defaults to a lease table in `backend`.',
+  },
+  {
+    label: 'on_handoff_failure',
+    insertText: 'on_handoff_failure: kick "${1:Loading your data — reconnect in a moment}"',
+    doc: '`on_handoff_failure: kick "<message>"` — what to do when a session lease can\'t be acquired. Default: kick. Never serves default or duplicated data.',
+  },
+];
+// The two declaration-attached change-handler blocks, offered at the statement
+// start of a `persistent … { }` body.
+const PERSIST_CHANGE_BLOCKS: { label: string; insertText: string; doc: string }[] = [
+  {
+    label: 'on_change',
+    insertText: 'on_change {\n\t$0\n}',
+    doc: 'Fires on EVERY server (including the writer) when the value really changes. Bound: `old`, `new`, `caused_here` (+ `player`/`key` for a keyed decl). Not fired on load/restore.',
+  },
+  {
+    label: 'on_entry_change',
+    insertText: 'on_entry_change {\n\t$0\n}',
+    doc: 'Per-ENTRY handler for a persistent Map/List. Bound: `key`, `old: Optional<V>`, `new: Optional<V>`, `caused_here`. `old is none` = insert, `new is none` = remove.',
+  },
+];
+const PERSIST_CHANGE_SET = new Set(PERSIST_CHANGE_BLOCKS.map((b) => b.label));
+// Connection keys of the shared backends, offered inside `backend: mysql { }` /
+// `backend: mongodb { }` (the enclosing block opener on that line is `backend`).
+const BACKEND_CONN_ENTRIES: { label: string; insertText: string; doc: string }[] = [
+  { label: 'host', insertText: 'host: "${1:127.0.0.1}"', doc: 'Connection host.' },
+  { label: 'port', insertText: 'port: ${1:3306}', doc: 'Connection port.' },
+  { label: 'database', insertText: 'database: "${1:swoftlang}"', doc: 'Database name.' },
+  { label: 'user', insertText: 'user: "${1:root}"', doc: 'Connection user.' },
+  { label: 'password', insertText: 'password: env("${1:DB_PASS}")', doc: 'Connection password — read it from the environment rather than hardcoding it.' },
+];
+// The names a change-handler body binds, in binding order. `key`/`player` are
+// added by the analyzer only when the declaration actually binds them.
+const PERSIST_BIND_DOCS: Record<string, string> = {
+  old: 'The value before the change. In an `on_entry_change` body this is `Optional<V>` — `none` when the entry was inserted.',
+  new: 'The value after the change. In an `on_entry_change` body this is `Optional<V>` — `none` when the entry was removed.',
+  caused_here:
+    '`Boolean` — true on the server that made the write. `if caused_here` = local-only, `if not caused_here` = remote-only, no guard = react everywhere.',
+  key: 'The changed entry\'s key (`on_entry_change`), or the declaration key of a `for Integer` / `for String` value.',
+  player: 'The declaration key of a `for Player` / `for OfflinePlayer` value.',
+};
+// The §3.2 atomic write ops, offered ahead of the general statement palette
+// (they are the only legal writes to a global / a player this server doesn't own).
+const PERSIST_ATOMIC_ENTRIES: { label: string; insertText: string; doc: string }[] = [
+  {
+    label: 'add … to',
+    insertText: 'add ${1:50} to ${2:pot}',
+    doc: 'Atomic increment of a persistent number. Use instead of `set pot to pot + 50`, which is a lost-update race across servers (compile error under `mode: network`).',
+  },
+  {
+    label: 'subtract … from',
+    insertText: 'subtract ${1:50} from ${2:pot}',
+    doc: 'Atomic decrement of a persistent number.',
+  },
+  {
+    label: 'append … to',
+    insertText: 'append ${1:"value"} to ${2:history}',
+    doc: 'Atomic append to a persistent list.',
+  },
+  {
+    label: 'grant … to',
+    insertText: 'grant ${1:100} ${2:coins} to ${3:args.who}',
+    doc: 'Atomic increment routed to the owning server — the only legal write to a player this server does not own (`set coins for args.who to …` is a compile error under `mode: network`).',
+  },
+];
+
 // A small, curated MiniMessage palette offered inside strings after `<`.
 const MINIMESSAGE_TAGS = [
   'red', 'green', 'blue', 'yellow', 'aqua', 'gold', 'gray', 'white', 'black',
@@ -285,6 +387,10 @@ const LITERAL_PROPERTY_VALUES: Record<string, string[]> = {
   numbers: ['hidden', 'shown'],
   auth: ['mojang', 'velocity', 'bungeecord', 'offline'],
   backend: ['files', 'sqlite', 'mysql', 'mongodb'],
+  // v1.10.0 storage topology (`storage { }`)
+  mode: ['standalone', 'network'],
+  coordinator: ['redis'],
+  on_handoff_failure: ['kick'],
   activation: ['right_click', 'left_click'],
   filter: ['left', 'right', 'any'], // item on_click filters
   skin: ['green', 'gray', 'cyan', 'blue', 'purple', 'orange'], // tablist_skins
@@ -847,6 +953,43 @@ export function createCompletionEngine(
   const aiNavItems: CompletionItem[] = AI_NAV_ENTRIES.map((e) =>
     snippetItem(e.label, e.insertText, 'navigator statement', e.doc, CompletionItemKind.Keyword),
   );
+
+  // --- v1.10.0 network persistence ---
+  const storageKeyItems: CompletionItem[] = STORAGE_BLOCK_ENTRIES.map((e) =>
+    snippetItem(e.label, e.insertText, 'storage key', e.doc, CompletionItemKind.Property),
+  );
+  const backendConnItems: CompletionItem[] = BACKEND_CONN_ENTRIES.map((e) =>
+    snippetItem(e.label, e.insertText, 'backend connection key', e.doc, CompletionItemKind.Property),
+  );
+  const persistChangeItems: CompletionItem[] = PERSIST_CHANGE_BLOCKS.map((e) =>
+    snippetItem(e.label, e.insertText, 'change handler', e.doc, CompletionItemKind.Event),
+  );
+  const persistAtomicItems: CompletionItem[] = PERSIST_ATOMIC_ENTRIES.map((e) =>
+    snippetItem(e.label, e.insertText, 'atomic persistent write', e.doc, CompletionItemKind.Keyword),
+  );
+  // The names a change-handler body binds. `key`/`player` only when the enclosing
+  // declaration actually binds them (`on_entry_change` always binds `key`).
+  const persistBindItems = (ctx: ScriptContext): CompletionItem[] => {
+    if (!ctx.changeHandler) return [];
+    const names: string[] = [];
+    if (ctx.changeSubject === 'player') names.push('player');
+    if (ctx.changeHandler === 'on_entry_change') names.push('key');
+    else if (ctx.changeSubject === 'key') names.push('key');
+    names.push('old', 'new', 'caused_here');
+    const optional = ctx.changeHandler === 'on_entry_change';
+    return names.map((n) => ({
+      label: n,
+      kind: CompletionItemKind.Variable,
+      detail:
+        n === 'caused_here'
+          ? 'Boolean — this server made the write (bound var)'
+          : (n === 'old' || n === 'new') && optional
+            ? `Optional<V> — bound var of ${ctx.changeHandler}`
+            : `bound var of ${ctx.changeHandler}`,
+      documentation: PERSIST_BIND_DOCS[n],
+      data: -1,
+    }));
+  };
   // Named types the user declared, offered as TypeParameter completions: goal
   // types inside `goals: [ ]` / a type position, custom mob types after
   // `target closest`. Harvested from `analyze`.
@@ -938,7 +1081,35 @@ export function createCompletionEngine(
     const mobRe = /\bmob\s+([A-Z]\w*)\s*\{/g;
     while ((tm = mobRe.exec(text))) if (!mobTypes.includes(tm[1])) mobTypes.push(tm[1]);
 
-    return { event, argTypes, varTypes, block, packetClass, inAiBlock, goalTypes, mobTypes };
+    // v1.10.0: the `storage { }` topology block and the enclosing change
+    // handler. `changeSubject` is the bare name the handler's declaration binds
+    // for its key — `player` for `for Player`/`for OfflinePlayer`, `key` for any
+    // other `for <T>`, nothing for a global (mirrors persist_subject_bind in
+    // ast.ml). The handler body sits directly inside its own `persistent … { }`,
+    // so the last `persistent` declaration before the cursor is the owner.
+    const inStorageBlock = blockStack.includes('storage');
+    let changeHandler: string | undefined;
+    for (let k = blockStack.length - 1; k >= 0; k--) {
+      if (PERSIST_CHANGE_SET.has(blockStack[k])) {
+        changeHandler = blockStack[k];
+        break;
+      }
+    }
+    let changeSubject: string | undefined;
+    if (changeHandler) {
+      const persistRe = /\bpersistent\s+[A-Za-z_]\w*(?:\s+for\s+([A-Za-z_]\w*))?\s*:/g;
+      let dm: RegExpExecArray | null;
+      let subject: string | undefined;
+      while ((dm = persistRe.exec(text))) subject = dm[1];
+      if (subject) {
+        changeSubject = subject === 'Player' || subject === 'OfflinePlayer' ? 'player' : 'key';
+      }
+    }
+
+    return {
+      event, argTypes, varTypes, block, packetClass, inAiBlock, goalTypes, mobTypes,
+      inStorageBlock, changeHandler, changeSubject,
+    };
   };
 
   const getCompletions = (
@@ -1024,6 +1195,21 @@ export function createCompletionEngine(
         return dedupeByLabel(withGroup(aiLifecycleItems, '0'));
       }
 
+      // 5a-p) v1.10.0 §1: inside a `storage { }` block only the five topology
+      //       keys are legal — offer exactly those.
+      if (ctx.block === 'storage') {
+        return dedupeByLabel(withGroup(storageKeyItems, '0'));
+      }
+      // 5a-p') Inside `backend: mysql { } / mongodb { }`: the connection keys.
+      if (ctx.block === 'backend' && ctx.inStorageBlock) {
+        return dedupeByLabel(withGroup(backendConnItems, '0'));
+      }
+      // 5a-p'') §4: inside a `persistent … { }` declaration block the only legal
+      //        entries are its two change handlers.
+      if (ctx.block === 'persistent') {
+        return dedupeByLabel(withGroup(persistChangeItems, '0'));
+      }
+
       // 5a-ai'') Inside a goal lifecycle block (should_start/on_tick/…) or a
       //          custom `target { }` block: navigator statements + the bound
       //          `mob`/`target` vars come first, then the full statement palette
@@ -1031,6 +1217,13 @@ export function createCompletionEngine(
       const head: CompletionItem[] = [];
       if (ctx.block && (AI_LIFECYCLE_SET.has(ctx.block) || ctx.block === 'target')) {
         head.push(...withGroup([...aiNavItems, ...aiBoundVarItems], '0'));
+      }
+
+      // 5a-p''') §4: inside an `on_change` / `on_entry_change` body the bound
+      //         names lead, then the atomic write ops (the cross-server-safe
+      //         writes), then the usual statement palette.
+      if (ctx.changeHandler) {
+        head.push(...withGroup([...persistBindItems(ctx), ...persistAtomicItems], '0'));
       }
 
       // 5b) Inside a declaration body (item/mob/npc/…): config keys + inline
@@ -1077,6 +1270,7 @@ export function createCompletionEngine(
     //    construct the bound `mob`/`target` vars lead (e.g. `path mob to <cursor>`).
     return dedupeByLabel([
       ...(ctx.inAiBlock ? withGroup(aiBoundVarItems, '0') : []),
+      ...(ctx.changeHandler ? withGroup(persistBindItems(ctx), '0') : []),
       ...withGroup(localItems(locals), '0'),
       ...withGroup(builtinItems, '1'),
       ...withGroup(constantItems, '2'),

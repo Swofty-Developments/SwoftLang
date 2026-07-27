@@ -98,7 +98,7 @@ item SparkWand { material: "STICK" }
 `addons/abilities.sw` is about fifty lines of SwoftLang and uses three patterns from
 the guide:
 
-- **A module-level association chain** ([module vars](/guide/modules#module-vars)) stores
+- **A module-level association chain** ([module vars](/guide/modules#module-state-var)) stores
   handlers and cooldown deadlines by string key — the same closure-chain registry trick
   the retired NPC addon used before it became a runtime. `on_item_use` prepends a
   `"use:<id>:<filter>" -> handler` entry; `with_cooldown` reads and writes

@@ -80,6 +80,42 @@ AI_CONTROL_KW = [
 ]
 
 # ---------------------------------------------------------------------------
+# v1.10.0 network persistence (dump key 'persistence_keywords'). Soft keywords
+# the parser matches on IDENT text, categorized here into their coloring
+# buckets. These five buckets must partition the dump's persistence_keywords
+# array exactly (asserted below), mirroring the keywords[]/ai_keywords[]
+# partitions, so nothing is silently dropped or miscolored.
+#   * storage-block keys   -> attribute-name (the `key:` half of a config line)
+#   * storage-block values -> enum constants (standalone/network/kick/redis/...)
+#   * change-handler heads -> handler scope (same family as on_click / on_tick)
+#   * atomic write ops     -> statement scope (subtract/append/grant; `add`
+#                             already ships as a statement verb)
+#   * handler bound names  -> language variables (same family as player/event)
+PERSIST_KEY_KW = [
+    "backend", "flush", "mode", "on_handoff_failure", "coordinator",
+    "host", "port", "database", "user", "password",
+]
+# the subset of PERSIST_KEY_KW that lives inside a `mysql { } / mongodb { }`
+# connection block rather than directly in the `storage { }` body
+BACKEND_CONN_KW = ["host", "port", "database", "user", "password"]
+PERSIST_VALUE_KW = [
+    "standalone", "network", "kick", "redis",
+    "files", "sqlite", "mysql", "mongodb",
+]
+PERSIST_HANDLER_KW = ["on_change", "on_entry_change"]
+PERSIST_STATEMENT_KW = ["subtract", "append", "grant"]
+PERSIST_BIND_KW = ["old", "new", "caused_here", "key", "player"]
+# `key: value` pairs whose value set is fixed, so the value keeps a precise enum
+# scope even when more text follows it (`backend: mysql { … }`,
+# `coordinator: redis "…"`) and the generic property-key rule can't reach it.
+PERSIST_KEY_VALUES = {
+    "mode": ["standalone", "network"],
+    "backend": ["files", "sqlite", "mysql", "mongodb"],
+    "on_handoff_failure": ["kick"],
+    "coordinator": ["redis"],
+}
+
+# ---------------------------------------------------------------------------
 # Static supplementary vocabulary (NOT in the dump, but real structural words
 # used across the .sw corpus). Kept here so regenerating never regresses the
 # coloring of block sections, prepositions, parameter words or time units.
@@ -172,6 +208,20 @@ def main():
         + str(sorted(set(ai_buckets) - set(ai_keywords)))
         + "\n  missing="
         + str(sorted(set(ai_keywords) - set(ai_buckets)))
+    )
+
+    # v1.10.0 persistence vocabulary: the five buckets must partition
+    # persistence_keywords[].
+    persist_keywords = sym.get("persistence_keywords", [])
+    persist_buckets = (
+        PERSIST_KEY_KW + PERSIST_VALUE_KW + PERSIST_HANDLER_KW
+        + PERSIST_STATEMENT_KW + PERSIST_BIND_KW
+    )
+    assert sorted(persist_buckets) == sorted(persist_keywords), (
+        "persistence_keyword partition mismatch:\n  extra="
+        + str(sorted(set(persist_buckets) - set(persist_keywords)))
+        + "\n  missing="
+        + str(sorted(set(persist_keywords) - set(persist_buckets)))
     )
 
     handlers = sym["handlers"]
@@ -545,6 +595,103 @@ def main():
             ]
         }
 
+    # v1.10.0 network-persistence vocabulary. Emitted only when the dump carries
+    # it. Included ahead of #enums/#property-keys so a `storage { }` config line
+    # keeps its precise storage scope (`mode: network`, `backend: mysql { }`,
+    # `coordinator: redis "…"`, `on_handoff_failure: kick "…"`) instead of the
+    # generic property-key coloring, and so `on_change`/`on_entry_change` read as
+    # handlers and `subtract`/`append`/`grant` as statement verbs. The bound
+    # names (old/new/key/caused_here/player) are language variables, emitted in
+    # #variables alongside `event`/`args`/`mob`.
+    if persist_keywords:
+        persist_patterns = []
+        # The shared-backend connection block. A begin/end rule (not a line
+        # match) so `mysql { host: …, port: …, … }` colors its keys whether it is
+        # written on one line or spread over many — a line-anchored `key:` rule
+        # can only ever reach the first one.
+        conn_body = [
+            {
+                "comment": "mysql/mongodb connection keys",
+                "match": r"\b(" + alt(BACKEND_CONN_KW) + r")\s*(:)(?!:)",
+                "captures": {
+                    "1": {"name": "entity.other.attribute-name.storage.swoftlang"},
+                    "2": {"name": "punctuation.separator.key-value.swoftlang"},
+                },
+            },
+            {"include": "#comments"},
+            {"include": "#strings"},
+            {"include": "#builtins"},
+            {"include": "#numbers"},
+            {"include": "#function-calls"},
+            {"include": "#punctuation"},
+        ]
+        backend_alt = alt(["mysql", "mongodb"])
+        persist_patterns.append({
+            "comment": "storage block: backend: mysql { … } / mongodb { … }",
+            "begin": r"^\s*(backend)\s*(:)\s*(" + backend_alt + r")\s*(\{)",
+            "beginCaptures": {
+                "1": {"name": "entity.other.attribute-name.storage.swoftlang"},
+                "2": {"name": "punctuation.separator.key-value.swoftlang"},
+                "3": {"name": "constant.other.enum.storage-backend.swoftlang"},
+                "4": {"name": "punctuation.section.block.swoftlang"},
+            },
+            "end": r"\}",
+            "endCaptures": {"0": {"name": "punctuation.section.block.swoftlang"}},
+            "patterns": conn_body,
+        })
+        persist_patterns.append({
+            "comment": "bare shared-backend block (e.g. inside polar_storage_loader(mysql { … }))",
+            "begin": r"\b(" + backend_alt + r")\s*(\{)",
+            "beginCaptures": {
+                "1": {"name": "constant.other.enum.storage.swoftlang"},
+                "2": {"name": "punctuation.section.block.swoftlang"},
+            },
+            "end": r"\}",
+            "endCaptures": {"0": {"name": "punctuation.section.block.swoftlang"}},
+            "patterns": conn_body,
+        })
+        for key, values in PERSIST_KEY_VALUES.items():
+            persist_patterns.append({
+                "comment": f"storage block: {key}: <value>",
+                "match": r"^\s*(" + re.escape(key) + r")\s*(:)\s*(" + alt(values) + r")\b",
+                "captures": {
+                    "1": {"name": "entity.other.attribute-name.storage.swoftlang"},
+                    "2": {"name": "punctuation.separator.key-value.swoftlang"},
+                    "3": {"name": "constant.other.enum.storage-" + key.replace("_", "-")
+                          + ".swoftlang"},
+                },
+            })
+        persist_patterns.append({
+            "comment": "storage block config keys (backend/flush/mode/coordinator/host/…)",
+            "match": r"^\s*(" + alt(PERSIST_KEY_KW) + r")\s*(:)(?!:)",
+            "captures": {
+                "1": {"name": "entity.other.attribute-name.storage.swoftlang"},
+                "2": {"name": "punctuation.separator.key-value.swoftlang"},
+            },
+        })
+        # backend / coordinator / handoff heads that take an argument: `mysql { }`,
+        # `files "data/game"`, `redis "redis://…"`, `kick "…"`. Catches the same
+        # words where no `key:` precedes them on the line (e.g. inside
+        # `polar_storage_loader(mysql { … })`).
+        persist_patterns.append({
+            "comment": "storage backend / coordinator / handoff heads before their argument",
+            "name": "constant.other.enum.storage.swoftlang",
+            "match": r"\b(" + alt([w for w in PERSIST_VALUE_KW
+                                   if w not in ("standalone", "network")])
+                     + r")\b(?=\s*[{\"])",
+        })
+        persist_patterns.append({
+            "comment": "declaration-attached change handlers (§4)",
+            "name": "keyword.other.handler.persist.swoftlang",
+            "match": r"\b(" + alt(PERSIST_HANDLER_KW) + r")\b(?=\s*\{)",
+        })
+        persist_patterns.append({
+            "comment": "atomic persistent write ops (§3.2): subtract … from / append … to / grant … to",
+            "name": "keyword.other.statement.persist.swoftlang",
+            "match": r"\b(" + alt(PERSIST_STATEMENT_KW) + r")\b(?!\s*[.(])",
+        })
+        repo["persistence-keywords"] = {"patterns": persist_patterns}
+
     # PascalCase user type references (struct / reusable goal / custom-mob type
     # names): a Capitalized identifier that carries at least one lowercase letter,
     # so SCREAMING_CASE enum ids (ZOMBIE, IRON_GOLEM) are excluded and never
@@ -606,7 +753,7 @@ def main():
         "patterns": [
             {
                 "name": "variable.language.swoftlang",
-                "match": r"\b(event|args|state|player|mob|target|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet)\b(?=\.|\b)",
+                "match": r"\b(event|args|state|player|mob|target|killer|victim|run|item|index|old_item|new_item|reason|click_type|hook_location|caught_item|caught_mob|packet|old|new|key|caused_here)\b(?=\.|\b)",
             },
             {
                 "name": "variable.other.swoftlang",
@@ -645,6 +792,7 @@ def main():
             {"include": "#storage-modifiers"},
             *([{"include": "#annotations"}] if annotations else []),
             {"include": "#property-accessor"},
+            *([{"include": "#persistence-keywords"}] if persist_keywords else []),
             {"include": "#enums"},
             {"include": "#property-keys"},
             {"include": "#types"},
@@ -675,6 +823,7 @@ def main():
 
     check(sym["keywords"])
     check(ai_keywords)
+    check(persist_keywords)
     check(collection_ops)
     check(sym["declarations"])
     check(receivers)

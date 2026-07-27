@@ -329,5 +329,103 @@ const complete = (prefix, depth = 1, locals = [], ctx = {}) =>
     `scaffold binds all ${chatFields.length} ClientChatMessagePacket fields`);
 }
 
+// --- 17. v1.10.0 network persistence: storage topology keys/values, change
+//     handlers + their bound names, atomic write ops ---
+{
+  const { createCompletionEngine: mk } = require('../out/src/completion.js');
+  const pe = mk(data);
+  const an = (t) => pe.analyze(t);
+
+  // 17a. `storage { }` body -> exactly the five topology keys, nothing else.
+  const storage = pe.getCompletions('    ', 1, [], an('storage {\n    '));
+  const sL = labels(storage);
+  for (const k of ['mode', 'backend', 'flush', 'coordinator', 'on_handoff_failure']) {
+    ok(sL.has(k), `storage block offers \`${k}\``);
+  }
+  ok(sL.size === 5, 'storage block offers ONLY the five topology keys');
+  ok(!sL.has('send') && !sL.has('command'), 'storage block does NOT offer statements/declarations');
+
+  // 17b. the value positions.
+  const mode = labels(complete('    mode: '));
+  ok(mode.has('standalone') && mode.has('network') && mode.size === 2,
+    '`mode: ` -> standalone/network only');
+  const coord = labels(complete('    coordinator: '));
+  ok(coord.has('redis') && coord.size === 1, '`coordinator: ` -> redis only');
+  const hf = labels(complete('    on_handoff_failure: '));
+  ok(hf.has('kick') && hf.size === 1, '`on_handoff_failure: ` -> kick only');
+  const be = labels(complete('    backend: '));
+  ok(be.has('files') && be.has('sqlite') && be.has('mysql') && be.has('mongodb') && be.size === 4,
+    '`backend: ` -> the four backends only');
+
+  // 17c. `backend: mysql { }` -> the connection keys.
+  const conn = labels(pe.getCompletions('        ', 2, [], an('storage {\n    backend: mysql {\n        ')));
+  ok(['host', 'port', 'database', 'user', 'password'].every((k) => conn.has(k)),
+    '`backend: mysql { }` offers host/port/database/user/password');
+  ok(conn.size === 5, '`backend: mysql { }` offers ONLY the connection keys');
+
+  // 17d. `persistent … { }` -> the two change handlers only.
+  const pdecl = labels(pe.getCompletions('    ', 1, [],
+    an('persistent boss_active: Boolean = false {\n    ')));
+  ok(pdecl.has('on_change') && pdecl.has('on_entry_change') && pdecl.size === 2,
+    '`persistent … { }` offers exactly on_change/on_entry_change');
+
+  // 17e. `on_change` on a `for Player` decl -> player/old/new/caused_here.
+  const pCtx = an('persistent coins for Player: Integer = 0 {\n    on_change {\n        ');
+  ok(pCtx.changeHandler === 'on_change' && pCtx.changeSubject === 'player',
+    'analyze() sees on_change on a `for Player` decl');
+  const pBind = labels(pe.getCompletions('        ', 2, [], pCtx));
+  for (const b of ['player', 'old', 'new', 'caused_here']) {
+    ok(pBind.has(b), `on_change (for Player) offers bound var \`${b}\``);
+  }
+  ok(!pBind.has('key'), 'on_change on a `for Player` decl does NOT offer `key`');
+
+  // 17f. `on_change` on a `for String` decl binds `key`, not `player`.
+  const kCtx = an('persistent scores for String: Integer = 0 {\n    on_change {\n        ');
+  ok(kCtx.changeSubject === 'key', 'analyze() binds `key` for a `for String` decl');
+  const kItems = pe.getCompletions('        ', 2, [], kCtx);
+  const boundVar = (items, name) =>
+    items.some((i) => i.label === name && i.kind === 6 /* Variable */);
+  ok(boundVar(kItems, 'key') && !boundVar(kItems, 'player'),
+    'on_change (for String) binds `key`, not `player` (the `player(…)` builtin is unaffected)');
+
+  // 17g. `on_entry_change` on a Map always binds the entry `key`.
+  const eCtx = an('persistent leaderboard: Map<String, Integer> = new_map() {\n    on_entry_change {\n        ');
+  ok(eCtx.changeHandler === 'on_entry_change', 'analyze() sees on_entry_change');
+  const eBind = labels(pe.getCompletions('        ', 2, [], eCtx));
+  for (const b of ['key', 'old', 'new', 'caused_here']) {
+    ok(eBind.has(b), `on_entry_change offers bound var \`${b}\``);
+  }
+  const oldItem = pe.getCompletions('        ', 2, [], eCtx).find((i) => i.label === 'old');
+  ok(oldItem && /Optional<V>/.test(oldItem.detail || ''), 'on_entry_change `old` is described as Optional<V>');
+
+  // bound vars are also offered in expression position inside the handler.
+  const eExpr = labels(pe.getCompletions('        if ', 2, [], eCtx));
+  ok(eExpr.has('caused_here'), 'bound vars are offered in expression position too');
+  // ... and NOT outside a change handler.
+  const outside = labels(complete('        ', 2, [], {}));
+  ok(!outside.has('caused_here'), '`caused_here` is NOT offered outside a change handler');
+
+  // 17h. atomic write ops.
+  const atomic = pe.getCompletions('        ', 2, [], eCtx);
+  const aL = labels(atomic);
+  for (const l of ['add … to', 'subtract … from', 'append … to', 'grant … to']) {
+    ok(aL.has(l), `change handler offers atomic op \`${l}\``);
+  }
+  const grant = atomic.find((i) => i.label === 'grant … to');
+  ok(grant && grant.insertTextFormat === InsertTextFormat.Snippet, 'atomic `grant` is a Snippet');
+  // they are also plain statement keywords in the general palette.
+  const stmts = labels(complete('        ', 2));
+  ok(stmts.has('add') && stmts.has('subtract') && stmts.has('append') && stmts.has('grant'),
+    'atomic ops are offered as statement keywords in a normal body');
+
+  // 17i. every persistence keyword from the dump carries a doc in the LSP data.
+  const bySym = new Map(data.symbols.filter((s) => s.kind === 'keyword').map((s) => [s.name, s]));
+  for (const k of ['mode', 'standalone', 'network', 'on_handoff_failure', 'coordinator',
+                   'kick', 'redis', 'on_change', 'on_entry_change', 'old', 'new',
+                   'caused_here', 'key', 'player', 'subtract', 'append', 'grant']) {
+    ok(bySym.has(k) && !!bySym.get(k).doc, `LSP data carries \`${k}\` with a doc`);
+  }
+}
+
 console.log(fails === 0 ? '\nALL COMPLETION TESTS PASSED' : `\n${fails} FAILURE(S)`);
 process.exit(fails === 0 ? 0 : 1);

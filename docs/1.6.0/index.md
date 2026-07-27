@@ -8,9 +8,9 @@ title: SwoftLang
 <h1 class="sw-hero-title">The Minecraft scripting language that <em>catches your bugs</em> before the server boots.</h1>
 <p class="sw-hero-pitch">Write commands, events, GUIs and scoreboards in readable English-flavored syntax. A flow-sensitive typechecker proves every maybe-missing value is handled — at compile time, with the error pointing at your line.</p>
 <div class="sw-hero-links">
-<a class="sw-btn primary" href="/guide/">Start the guide</a>
-<a class="sw-btn" href="/guide/commands">Coming from Skript?</a>
-<a class="sw-btn" href="/reference/syntax-cheatsheet">Cheatsheet</a>
+<a class="sw-btn primary" href="/1.6.0/guide/">Start the guide</a>
+<a class="sw-btn" href="/1.6.0/guide/commands">Coming from Skript?</a>
+<a class="sw-btn" href="/1.6.0/reference/syntax-cheatsheet">Cheatsheet</a>
 </div>
 </div>
 
@@ -82,7 +82,7 @@ philosophy — [the Options guide](/1.6.0/guide/options) is Step 07.
 ## Skript, translated function by function
 
 <p>Everything you already know maps over — events, persistent variables, waits. Read your Skript on the left, its SwoftLang on the right, aligned pair by pair.</p>
-<p class="more"><a href="/guide/commands">Skript-to-SwoftLang mappings run through the whole guide →</a></p>
+<p class="more"><a href="/1.6.0/guide/commands">Skript-to-SwoftLang mappings run through the whole guide →</a></p>
 </div>
 <div class="pillar-code">
 
@@ -195,7 +195,7 @@ laggy server.
 ## The compiler knows your property table
 
 <p>Every <code>this.…</code> property access is checked against the real Minestom-backed property table — with typo suggestions and read-only enforcement, before the server ever boots.</p>
-<p class="more"><a href="/guide/properties">Properties guide →</a></p>
+<p class="more"><a href="/1.6.0/guide/properties">Properties guide →</a></p>
 </div>
 <div class="pillar-code">
 
@@ -230,7 +230,7 @@ welcome.sw:3:14: error: unknown property 'nmae' on Player; did you mean 'name'?
 ## Async that reads top to bottom
 
 <p>No callbacks, no schedulers, no <code>runTaskLater</code>. <code>wait</code> parks a virtual thread; <code>spawn</code> fires and forgets; async functions return values you can just add.</p>
-<p class="more"><a href="/guide/async">Async guide →</a></p>
+<p class="more"><a href="/1.6.0/guide/async">Async guide →</a></p>
 </div>
 <div class="pillar-code">
 
@@ -262,7 +262,7 @@ async function announce(name: String) {
 ## GUIs are declarations, not inventory-click plumbing
 
 <p>Describe the inventory — rows, slots, items, click handlers — and the runtime renders it, diffs it, and re-renders on state change.</p>
-<p class="more"><a href="/reference/gui">GUI reference →</a></p>
+<p class="more"><a href="/1.6.0/reference/gui">GUI reference →</a></p>
 </div>
 <div class="pillar-code">
 
@@ -297,7 +297,7 @@ command "menu" {
 ## State that survives restarts
 
 <p>One keyword. Typed, defaulted, keyed by UUID when you say <code>for Player</code>, flushed write-behind to files, SQLite, MySQL or MongoDB. Reads are never missing.</p>
-<p class="more"><a href="/guide/persistence">Persistence guide →</a></p>
+<p class="more"><a href="/1.6.0/guide/persistence">Persistence guide →</a></p>
 </div>
 <div class="pillar-code">
 
@@ -317,7 +317,7 @@ Player {
 
 <div class="sw-cta">
 <p>The guide is a numbered course — 16 steps, one concept each, ending in something runnable.</p>
-<a class="sw-btn primary" href="/guide/">Step 01 · Setup</a>
+<a class="sw-btn primary" href="/1.6.0/guide/">Step 01 · Setup</a>
 </div>
 
-<p style="margin-top: var(--sp-6)">Or go deeper: <a href="/examples/">full Skript plugins ported line by line</a> and the <a href="/libraries/">standard library addons</a>.</p>
+<p style="margin-top: var(--sp-6)">Or go deeper: <a href="/1.6.0/examples/">full Skript plugins ported line by line</a> and the <a href="/1.6.0/libraries/">standard library addons</a>.</p>
