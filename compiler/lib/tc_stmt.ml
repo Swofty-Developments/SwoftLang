@@ -19,6 +19,58 @@ let target_ok e t =
   | TString -> is_all_keyword e
   | _ -> false
 
+(* v1.10.0 §3.2: does [e] read the persistent [name]? A 'set X to <... X ...>' on
+   a REPLICATED global is a lost-update race across servers. *)
+let rec reads_persist name (e : Ast.expr) =
+  let any = List.exists (reads_persist name) in
+  match e.e with
+  | EPersistGet (n, s) ->
+    n = name || Option.fold ~none:false ~some:(reads_persist name) s
+  | EBinary (_, a, b) -> reads_persist name a || reads_persist name b
+  | EUnary (_, a) | EProp (a, _) | EAwait a | EAllOf a | EAnyOf a -> reads_persist name a
+  | ECall (_, args) | EList args | EFutureSpawn (_, args) -> any args
+  | EMethod (recv, _, args) -> reads_persist name recv || any args
+  | EMap fs | EStructNew (_, fs) -> any (List.map snd fs)
+  | EMapLit es -> any (List.map snd es)
+  | ETaskRunning { tr_owner; _ } -> reads_persist name tr_owner
+  | _ -> false
+
+(* the compiler's own per-key spellings — 'set X at K to V' and 'delete X at K'
+   both desugar to a whole-value re-store over a map_set/map_delete of the row.
+   They are per-KEY atomic ops, not read-modify-writes, so they are exempt. *)
+let is_per_key_rewrite name (v : Ast.expr) =
+  match v.e with
+  | ECall (("map_set" | "map_delete"), coll :: _) -> (
+    match coll.e with EPersistGet (n, _) -> n = name | _ -> false)
+  | _ -> false
+
+(* the atomic op to point a rejected write at, chosen from the declared value
+   type so the hint is always the spelling the user actually wants *)
+let atomic_hint name ty =
+  match ty with
+  | TInteger | TDouble ->
+    Printf.sprintf "'add <n> to %s' (or 'subtract <n> from %s')" name name
+  | TList _ -> Printf.sprintf "'append <value> to %s'" name
+  | TMap _ -> Printf.sprintf "'set %s at <key> to <value>'" name
+  | _ -> Printf.sprintf "an unconditional 'set %s to <value>' (last-writer-wins)" name
+
+(* §3.2 write rules, live ONLY under 'mode: network' *)
+let check_network_write ctx pos name pi sty (value : Ast.expr) =
+  if pi.pi_session then
+    match sty with
+    | Some TOfflinePlayer ->
+      err ctx pos
+        "can't 'set %s for <OfflinePlayer>' — under 'mode: network' this server may not own that \
+         player, so the write would clobber the owner; use an atomic op instead ('grant <n> %s to \
+         <player>' or 'append <value> to %s for <player>')"
+        name name name
+    | _ -> ()
+  else if reads_persist name value && not (is_per_key_rewrite name value) then
+    err ctx pos
+      "'set %s to ...' reads '%s' to compute its new value — that read-modify-write is racy across \
+       servers under 'mode: network' (two servers can both read the old value); use %s instead"
+      name name (atomic_hint name pi.pi_ty)
+
 let rec check_stmt ctx bctx env st : env * bool =
   match st.s with
   | SSend (msg, target) ->
@@ -385,12 +437,61 @@ let rec check_stmt ctx bctx env st : env * bool =
     require_present ctx env value vt ~use:"the assigned value";
     (match Hashtbl.find_opt ctx.persists name with
     | Some pi ->
-      check_persist_subject ctx bctx env st.spos name pi subject;
+      let sty = check_persist_subject ctx bctx env st.spos name pi subject in
       if not (param_compat pi.pi_ty vt) then
         err ctx value.epos "persistent '%s' has type %s; cannot assign %s" name
-          (ty_to_string pi.pi_ty) (ty_to_string vt)
+          (ty_to_string pi.pi_ty) (ty_to_string vt);
+      if ctx.net_mode && ctx.atomic_legacy_of <> Some name then
+        check_network_write ctx st.spos name pi sty value
     | None -> err ctx st.spos "unknown persistent '%s'" name);
     (env, false)
+  (* v1.10.0 §3.2: an atomic op typechecks exactly as its standalone desugaring
+     does — same diagnostics, same rules — with the network write rules switched
+     off, because an atomic op is precisely what those rules ask for. *)
+  | SPersistAtomic pa ->
+    (match Hashtbl.find_opt ctx.persists pa.pa_name with
+    | None -> err ctx pa.pa_pos "unknown persistent '%s'" pa.pa_name
+    | Some pi -> (
+      let arith op =
+        let get = { e = EPersistGet (pa.pa_name, pa.pa_subject); epos = pa.pa_pos } in
+        {
+          s =
+            SPersistSet
+              ( pa.pa_name,
+                pa.pa_subject,
+                { e = EBinary (op, get, pa.pa_value); epos = pa.pa_pos } );
+          spos = pa.pa_pos;
+        }
+      in
+      let numeric = match pi.pi_ty with TInteger | TDouble | TAny -> true | _ -> false in
+      match pa.pa_op with
+      | PAAdd ->
+        (* 'add N to X' / 'grant N X to P' is an increment on a number and an
+           append on a list; the declared value type picks which, and with it
+           the standalone desugaring *)
+        if numeric then begin
+          pa.pa_kind <- "increment";
+          pa.pa_legacy <- arith "ADD"
+        end
+        else pa.pa_kind <- "append"
+      | PASubtract ->
+        pa.pa_kind <- "decrement";
+        if not numeric then
+          err ctx pa.pa_pos "'subtract <n> from %s' needs a numeric persistent; '%s' is %s"
+            pa.pa_name pa.pa_name (ty_to_string pi.pi_ty)
+      | PAAppend ->
+        pa.pa_kind <- "append";
+        (match pi.pi_ty with
+        | TList _ | TAny -> ()
+        | _ ->
+          err ctx pa.pa_pos "'append <value> to %s' needs a List persistent; '%s' is %s"
+            pa.pa_name pa.pa_name (ty_to_string pi.pi_ty))
+      | PASetAt -> pa.pa_kind <- "put"));
+    let saved = ctx.atomic_legacy_of in
+    ctx.atomic_legacy_of <- Some pa.pa_name;
+    let result = check_stmt ctx bctx env pa.pa_legacy in
+    ctx.atomic_legacy_of <- saved;
+    result
   | SGiveItem { gi_id; gi_target; gi_amount } ->
     let idt = type_of ctx bctx env gi_id in
     require_present ctx env gi_id idt ~use:"the item id";

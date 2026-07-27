@@ -340,6 +340,9 @@ let parse_storage st =
   expect st Token.LBRACE "'{' after 'storage'";
   let backend = ref (BFiles "swoftlang-data") in
   let flush = ref 600 in
+  let mode = ref MStandalone in
+  let handoff = ref (HFKick default_handoff_message) in
+  let coordinator = ref None in
   while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
     match peek_tok st with
     | Token.IDENT "backend" ->
@@ -351,10 +354,54 @@ let parse_storage st =
       expect st Token.COLON "':' after 'flush'";
       expect_soft st "every";
       flush := parse_duration st
+    (* v1.10.0 §1 *)
+    | Token.IDENT "mode" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'mode'";
+      (match peek_tok st with
+      | Token.IDENT "standalone" ->
+        ignore (advance st);
+        mode := MStandalone
+      | Token.IDENT "network" ->
+        ignore (advance st);
+        mode := MNetwork
+      | t ->
+        error st
+          (Printf.sprintf "Expected storage mode ('standalone' or 'network'), found %s"
+             (Token.describe t)))
+    | Token.IDENT "on_handoff_failure" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'on_handoff_failure'";
+      (match peek_tok st with
+      | Token.IDENT "kick" ->
+        ignore (advance st);
+        handoff := HFKick (expect_string st "the kick message")
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'kick \"<message>\"' after 'on_handoff_failure:', found %s"
+             (Token.describe t)))
+    | Token.IDENT "coordinator" ->
+      ignore (advance st);
+      expect st Token.COLON "':' after 'coordinator'";
+      (match peek_tok st with
+      | Token.IDENT "redis" ->
+        ignore (advance st);
+        coordinator := Some (CoordRedis (expect_string st "the redis connection uri"))
+      | t ->
+        error st
+          (Printf.sprintf "Expected 'redis \"<uri>\"' after 'coordinator:', found %s"
+             (Token.describe t)))
     | t -> error st (Printf.sprintf "Unknown storage property: %s" (Token.describe t))
   done;
   expect st Token.RBRACE "'}' to close storage body";
-  { st_backend = !backend; st_flush_ticks = !flush; st_pos }
+  {
+    st_backend = !backend;
+    st_flush_ticks = !flush;
+    st_mode = !mode;
+    st_handoff = !handoff;
+    st_coordinator = !coordinator;
+    st_pos;
+  }
 
 let parse_persistent st =
   let pd_pos = pos_here st in

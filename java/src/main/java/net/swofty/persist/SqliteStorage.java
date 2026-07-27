@@ -59,6 +59,26 @@ public final class SqliteStorage implements SwoftStorage {
     }
 
     @Override
+    public synchronized JsonElement load(String var, String key) {
+        Map<String, JsonElement> rows = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT key, value FROM swoft_persist WHERE var = ? AND key = ?")) {
+            statement.setString(1, var);
+            statement.setString(2, key);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    PersistStore.putParsedRow(rows, var,
+                            result.getString(1), result.getString(2));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("sqlite load failed for '" + var
+                    + "[" + key + "]': " + e.getMessage(), e);
+        }
+        return rows.get(key);
+    }
+
+    @Override
     public synchronized void writeBatch(String var, Map<String, JsonElement> dirty) {
         try {
             connection.setAutoCommit(false);

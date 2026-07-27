@@ -70,6 +70,30 @@ let mk_method_mutation p receiver name args =
     | None -> mks p (SMethodCall (receiver, name, args))
   else mks p (SMethodCall (receiver, name, args))
 
+(* v1.10.0 §3.2: build an atomic persistent op. [legacy] is the plain local
+   mutation this surface has always desugared to; it is what 'mode: standalone'
+   emits, so unchanged programs stay byte-identical. *)
+let mk_persist_atomic p op name subject key value legacy =
+  mks p
+    (SPersistAtomic
+       {
+         pa_op = op;
+         pa_name = name;
+         pa_subject = subject;
+         pa_key = key;
+         pa_value = value;
+         pa_legacy = legacy;
+         pa_kind = "";
+         pa_pos = p;
+       })
+
+(* the standalone desugaring of a numeric atomic op: 'add N to X' is
+   'set X to X + N', which is exactly the JSON that spelling emits today *)
+let mk_persist_arith p name subject binop value =
+  mks p
+    (SPersistSet
+       (name, subject, mke p (EBinary (binop, mke p (EPersistGet (name, subject)), value))))
+
 (* W-tasks: destructure a parsed postfix expression into (owner, id) when it is a
    `<owner>.tasks.<id>` member access — the shape that keys the per-object task
    registry. Returns None for anything else. *)
@@ -1053,7 +1077,57 @@ let rec parse_statement st =
     let x = parse_expr st in
     expect st Token.TO "'to' in 'add <item> to <list>'";
     let recv = parse_postfix st in
-    mk_method_mutation p recv "add" [ x ]
+    (* v1.10.0 §3.2: a BARE persistent root ('add 50 to pot', 'add p to team')
+       is the atomic op. The value type decides whether it is a numeric
+       increment or a list append, so the typechecker refines the kind (and, for
+       numbers, swaps in the arithmetic standalone desugaring). Any deeper place
+       ('add x to team.members') stays the plain in-place mutation. *)
+    (match recv.e with
+    | EPersistGet (name, subject) ->
+      mk_persist_atomic p PAAdd name subject None x (mk_method_mutation p recv "add" [ x ])
+    | _ -> mk_method_mutation p recv "add" [ x ])
+  (* v1.10.0 §3.2 atomic numeric decrement: 'subtract N from X'. A plain local
+     variable is supported too, as the ordinary 'set v to v - N'. *)
+  | Token.IDENT "subtract"
+    when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let x = parse_expr st in
+    expect_soft st "from";
+    let recv = parse_postfix st in
+    (match recv.e with
+    | EPersistGet (name, subject) ->
+      mk_persist_atomic p PASubtract name subject None x
+        (mk_persist_arith p name subject "SUBTRACT" x)
+    | EVar v -> mks p (SAssign (v, mke p (EBinary ("SUBTRACT", recv, x))))
+    | _ ->
+      error st
+        "'subtract <n> from <target>' needs a variable or a persistent value as its target")
+  (* v1.10.0 §3.2 atomic list append: 'append V to X' / 'append V to X for P' *)
+  | Token.IDENT "append" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN
+    ->
+    ignore (advance st);
+    let x = parse_expr st in
+    expect st Token.TO "'to' in 'append <value> to <list>'";
+    let recv = parse_postfix st in
+    (match recv.e with
+    | EPersistGet (name, subject) ->
+      mk_persist_atomic p PAAppend name subject None x (mk_method_mutation p recv "add" [ x ])
+    | _ -> mk_method_mutation p recv "add" [ x ])
+  (* v1.10.0 §3.2 atomic remote-player increment: 'grant N X to <player>' *)
+  | Token.IDENT "grant" when starts_expression (peek2_tok st) && peek2_tok st <> Token.LPAREN ->
+    ignore (advance st);
+    let amount = parse_expr st in
+    (match persist_lookup st (peek_tok st) with
+    | Some (name, _) ->
+      ignore (advance st);
+      expect st Token.TO "'to' in 'grant <n> <persistent> to <player>'";
+      let target = parse_postfix st in
+      let subject = Some target in
+      mk_persist_atomic p PAAdd name subject None amount
+        (mk_persist_arith p name subject "ADD" amount)
+    | None ->
+      error st
+        "'grant <n> <persistent> to <player>' needs a declared persistent name after the amount")
   (* natural list mutation: 'remove x from l' -> l.remove(x). The specific
      remove-entity/block/modifier/effect/hologram/npc forms are matched earlier;
      the 'from <list>' tail confirms this collection form. *)
@@ -1409,7 +1483,12 @@ and finish_persist_place st p name subject =
       let value = parse_expr st in
       let mapexpr = mke p (EPersistGet (name, subject)) in
       let updated = mke p (ECall ("map_set", [ mapexpr; key; value ])) in
-      mks p (SPersistSet (name, subject, updated))
+      (* v1.10.0 §3.2: a per-key map write is an ATOMIC op — it is exempt from
+         the replicated-global read-modify-write ban, and under 'mode: network'
+         it applies at the backend per key instead of re-storing the whole map.
+         The standalone desugaring below is unchanged. *)
+      mk_persist_atomic p PASetAt name subject (Some key) value
+        (mks p (SPersistSet (name, subject, updated)))
     end
     else begin
       expect st Token.TO "'to' after variable name in 'set'";

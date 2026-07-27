@@ -326,7 +326,7 @@ public final class DebugSmoke {
                 }
             }
 
-            mob "zombie" {
+            mob Zombie {
                 type: "ZOMBIE"
                 health: 20
                 ai: none
@@ -336,9 +336,9 @@ public final class DebugSmoke {
                 broadcast "heartbeat"
             }
 
-            event PlayerJoin {
-                execute {
-                    send "joined" to event.player
+            Player {
+                on_join {
+                    send "joined" to player
                 }
             }
             """;

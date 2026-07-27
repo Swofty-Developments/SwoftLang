@@ -1163,6 +1163,17 @@ public class SwoftJsonLoader {
                 return new PersistSetStatement(obj.get("name").getAsString(),
                         has(obj, "subject") ? buildExpression(obj.getAsJsonObject("subject")) : null,
                         buildExpression(obj.getAsJsonObject("value")));
+            // 1.10.0 §3.2: an atomic persistent op. Only 'mode: network' emits
+            // this kind - standalone emits the plain local desugaring instead,
+            // so a pre-1.10.0 sidecar never carries it.
+            case "persist_atomic":
+                return new net.swofty.nativebridge.execution.commands.PersistAtomicStatement(
+                        obj.get("op").getAsString(),
+                        optString(obj, "mutation"),
+                        obj.get("name").getAsString(),
+                        has(obj, "subject") ? buildExpression(obj.getAsJsonObject("subject")) : null,
+                        has(obj, "key") ? buildExpression(obj.getAsJsonObject("key")) : null,
+                        buildExpression(obj.getAsJsonObject("value")));
             case "loop":
                 return new LoopStatement(buildExpression(obj.getAsJsonObject("count")),
                         optString(obj, "var"),
@@ -2282,14 +2293,33 @@ public class SwoftJsonLoader {
     }
 
     /**
-     * storage block: {"backend":{"kind":..., ...fields}, "flush_ticks":int};
-     * field names are accepted with a couple of aliases for robustness
+     * storage block: {"backend":{"kind":..., ...fields}, "flush_ticks":int,
+     * "mode":"standalone"|"network", "on_handoff_failure":{"action","message"},
+     * "coordinator":{"kind","uri"}}; field names are accepted with a couple of
+     * aliases for robustness. An absent "mode" is standalone — the historical
+     * emitted shape loads to the historical behaviour, unchanged.
      */
     private static StorageConfigModel buildStorage(JsonObject obj) {
         StorageBackendModel backend = buildStorageBackend(obj.getAsJsonObject("backend"));
         int flushTicks = has(obj, "flush_ticks")
                 ? obj.get("flush_ticks").getAsInt() : StorageConfigModel.DEFAULT_FLUSH_TICKS;
-        return new StorageConfigModel(backend, flushTicks);
+        String mode = has(obj, "mode")
+                ? obj.get("mode").getAsString() : StorageConfigModel.MODE_STANDALONE;
+        net.swofty.model.HandoffFailureModel handoff = null;
+        if (has(obj, "on_handoff_failure") && obj.get("on_handoff_failure").isJsonObject()) {
+            JsonObject failure = obj.getAsJsonObject("on_handoff_failure");
+            handoff = new net.swofty.model.HandoffFailureModel(
+                    has(failure, "action") ? failure.get("action").getAsString() : "kick",
+                    optString(failure, "message"));
+        }
+        net.swofty.model.CoordinatorModel coordinator = null;
+        if (has(obj, "coordinator") && obj.get("coordinator").isJsonObject()) {
+            JsonObject coord = obj.getAsJsonObject("coordinator");
+            coordinator = new net.swofty.model.CoordinatorModel(
+                    has(coord, "kind") ? coord.get("kind").getAsString() : "redis",
+                    firstString(coord, "uri", "url", "connection"));
+        }
+        return new StorageConfigModel(backend, flushTicks, mode, handoff, coordinator);
     }
 
     /** Shared by storage{} blocks and loader_storage expressions (6B). */

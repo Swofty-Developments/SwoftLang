@@ -46,6 +46,12 @@ type body_ctx = {
 type pinfo = {
   pi_subject : ty option;
   pi_ty : ty;
+  (* v1.10.0 §2: the decl SHAPE picks the network strategy. Player-keyed
+     ('for Player' / 'for OfflinePlayer') is SESSION-OWNED — exactly one server
+     owns it at a time. Everything else (no 'for', or 'for Integer' /
+     'for String') is REPLICATED-GLOBAL — every server holds a replica and
+     writes must be atomic. *)
+  pi_session : bool;
 }
 
 (* §1 structs: the resolved shape of a declared struct type — its fields in
@@ -66,6 +72,19 @@ type ctx = {
   mutable quiet : bool;
   funcs : (string, fsig) Hashtbl.t;
   persists : (string, pinfo) Hashtbl.t;
+  (* v1.10.0 §1: 'storage { mode: network }' anywhere in the compilation unit.
+     Every network typing rule (§3) is gated on this; standalone is byte-for-byte
+     today's behavior. *)
+  mutable net_mode : bool;
+  (* the persistent name whose standalone desugaring is currently being
+     typechecked inside an atomic op. The network read/write rules are skipped
+     for exactly that name, so they never fire on the compiler's own
+     read-modify-write spelling of an atomic op — and still fire on any OTHER
+     persistent the op's operands happen to touch. *)
+  mutable atomic_legacy_of : string option;
+  (* set while typing the DIRECT operand of an 'await', so a remote persistent
+     read knows it is being awaited *)
+  mutable awaiting_operand : bool;
   (* declared custom item / mob ids, for literal give/spawn/drops validation *)
   item_ids : (string, unit) Hashtbl.t;
   mob_ids : (string, unit) Hashtbl.t;

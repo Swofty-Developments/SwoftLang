@@ -57,6 +57,30 @@ public class ExecHarness {
         if (args.length == 2 && args[0].equals("--futures-cancel")) {
             System.exit(futuresCancelTest(args[1]));
         }
+        // 1.10.0 network persistence: TWO engines over one shared backend, with a
+        // player walked between them. The only harness mode that needs two stores.
+        if (args.length == 1 && args[0].equals("--net-smoke")) {
+            int code;
+            try {
+                code = NetSmoke.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
+        // the unhappy interleavings of the same design: a partitioned owner, a
+        // crashed one coming back, concurrent writers, reordered broadcasts.
+        if (args.length == 1 && args[0].equals("--net-adversarial")) {
+            int code;
+            try {
+                code = NetAdversarial.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         if (args.length >= 2 && args[0].equals("--check-props")) {
             // --check-props <property-table.json> [--emit <snapshot.json>]
             String emit = null;

@@ -19,6 +19,9 @@ let make_ctx file =
     quiet = false;
     funcs = Hashtbl.create 16;
     persists = Hashtbl.create 16;
+    net_mode = false;
+    atomic_legacy_of = None;
+    awaiting_operand = false;
     item_ids = Hashtbl.create 16;
     mob_ids = Hashtbl.create 16;
     custom_mobs = Hashtbl.create 16;
@@ -174,6 +177,12 @@ let collect_sched_names (script : Ast.script) : string list =
     | SPersistSet (_, subj, v) ->
       Option.iter we subj;
       we v
+    (* the atomic op's own operands; its standalone desugaring is built from the
+       SAME expressions, so walking the surface reaches everything exactly once *)
+    | SPersistAtomic pa ->
+      Option.iter we pa.pa_subject;
+      Option.iter we pa.pa_key;
+      we pa.pa_value
     | SGiveItem { gi_id; gi_target; gi_amount } ->
       we gi_id;
       we gi_target;
@@ -791,6 +800,19 @@ let run_all (modules : module_input list) : Diagnostics.error list =
               dep.ms_input.tm_script.structs)
         ms.ms_input.tm_imports)
     states;
+
+  (* v1.10.0 §1: the storage topology is unit-wide — one runtime PersistStore
+     serves every module — so a 'mode: network' block anywhere turns the network
+     typing rules on for the whole compilation unit. *)
+  let net =
+    List.exists
+      (fun ms ->
+        List.exists
+          (fun (sc : storage_conf) -> sc.st_mode = MNetwork)
+          ms.ms_input.tm_script.storages)
+      states
+  in
+  List.iter (fun ms -> ms.ms_ctx.net_mode <- net) states;
 
   (* --- pass 2: per-module checks in dependency order, so imported return
      types are refined before their callers are checked --- *)

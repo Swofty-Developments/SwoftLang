@@ -72,10 +72,25 @@ let rec type_of ctx bctx env e : ty =
   | EPersistGet (name, subject) -> (
     (* persistent reads are total: a missing row yields the declared default,
        so the type is the declared type, never optional *)
+    let awaited = ctx.awaiting_operand in
+    ctx.awaiting_operand <- false;
     match Hashtbl.find_opt ctx.persists name with
     | Some pi ->
-      check_persist_subject ctx bctx env e.epos name pi subject;
-      pi.pi_ty
+      let sty = check_persist_subject ctx bctx env e.epos name pi subject in
+      if remote_session_read ctx name pi sty then begin
+        (* §3.1: this server may not own that player, so the value has to come
+           over IO — it is a Future<T> and must be awaited *)
+        if awaited then TFuture pi.pi_ty
+        else begin
+          err ctx e.epos
+            "'%s for <OfflinePlayer>' may read a player this server does not own — under \
+             'mode: network' that read is a Future<%s>; write 'await %s for <player>' inside an \
+             'async { }' block"
+            name (ty_to_string pi.pi_ty) name;
+          pi.pi_ty
+        end
+      end
+      else pi.pi_ty
     | None ->
       (* parser only emits persist_get for declared names; defensive *)
       err ctx e.epos "unknown persistent '%s'" name;
@@ -624,10 +639,28 @@ and require_await_ctx ctx bctx pos =
 
 and await_type ctx bctx env pos future =
   require_await_ctx ctx bctx pos;
+  (* v1.10.0 §3.1: a session-owned persistent read is a Future only when the
+     subject may live on another server, so tell the read it is the DIRECT
+     operand of an 'await'. The flag is consumed by the read itself and cleared
+     before its subject expression is typed, so it can never leak into a
+     nested read. *)
+  let session_read =
+    match future.e with
+    | EPersistGet (name, _) -> (
+      match Hashtbl.find_opt ctx.persists name with
+      | Some pi -> pi.pi_session
+      | None -> false)
+    | _ -> false
+  in
+  if session_read then ctx.awaiting_operand <- true;
   let t = type_of ctx bctx env future in
+  ctx.awaiting_operand <- false;
   match t with
   | TFuture inner -> inner
   | TAny -> TAny
+  (* awaiting an owned (or standalone) session read is a no-op: the SAME source
+     compiles in both modes, which is the whole point of §1 *)
+  | _ when session_read -> t
   | _ ->
     err ctx future.epos "'await' expects a Future (got %s)" (ty_to_string t);
     TAny
@@ -1341,16 +1374,27 @@ and check_method ctx bctx env pos recv name args ~as_stmt : ty =
         let u = match arg_tys with [ TFunction f ] -> f.fn_ret | _ -> TAny in
         TList u)
 
+(* v1.10.0 §3: the static ownership signal. A `Player` value is by definition on
+   THIS server, so a player-keyed access through it is local and stays sync; an
+   `OfflinePlayer` may be anywhere, so under 'mode: network' it is remote. *)
+and remote_session_read ctx name pi sty =
+  ctx.net_mode && pi.pi_session
+  && ctx.atomic_legacy_of <> Some name
+  && match sty with Some TOfflinePlayer -> true | _ -> false
+
+(* returns the subject expression's type (None when there is no subject) *)
 and check_persist_subject ctx bctx env pos name pi subject =
   match (pi.pi_subject, subject) with
-  | None, None -> ()
+  | None, None -> None
   | None, Some se ->
     (* the parser only parses 'for' after keyed names; defensive *)
     ignore (type_of ctx bctx env se);
-    err ctx se.epos "persistent '%s' is not keyed; it cannot take 'for <subject>'" name
+    err ctx se.epos "persistent '%s' is not keyed; it cannot take 'for <subject>'" name;
+    None
   | Some sty, None ->
     err ctx pos "'%s' is keyed by %s — use '%s for <%s>'" name (ty_to_string sty) name
-      (String.lowercase_ascii (ty_to_string sty))
+      (String.lowercase_ascii (ty_to_string sty));
+    None
   | Some sty, Some se ->
     let st = type_of ctx bctx env se in
     require_present ctx env se st ~use:"the subject after 'for'";
@@ -1363,7 +1407,8 @@ and check_persist_subject ctx bctx env pos name pi subject =
     in
     if not (param_compat sty st || player_keyed_interchange) then
       err ctx se.epos "persistent '%s' is keyed by %s, but the subject after 'for' is %s" name
-        (ty_to_string sty) (ty_to_string st)
+        (ty_to_string sty) (ty_to_string st);
+    Some st
 
 and param_compat pty at =
   match (pty, at) with

@@ -10,6 +10,12 @@ let int_opt = function None -> `Null | Some i -> `Int i
 let with_pos (pos : pos) fields =
   ("line", `Int pos.line) :: ("col", `Int pos.col) :: fields
 
+(* v1.10.0 §1: the compilation unit's storage topology, set once at the emit
+   entry point (a unit has ONE runtime PersistStore, so the mode is unit-wide).
+   Everything the network mode adds to the JSON is gated on this, so a
+   standalone program emits exactly the sidecar it emitted before 1.10.0. *)
+let network_mode = ref false
+
 let rec data_type = function
   | DSimple base -> `Assoc [ ("base", `String base) ]
   | DEither subs ->
@@ -143,6 +149,12 @@ let rec expr (e : Ast.expr) : Yojson.Safe.t =
     node
       [ ("kind", `String "async_expr"); ("body", `List (List.map stmt ae_body));
         ("trailing", opt expr ae_trailing) ]
+  (* v1.10.0 §3.1: a persistent read is a Future ONLY under 'mode: network' with
+     a possibly-remote subject. Awaiting one in 'mode: standalone' is a no-op the
+     checker allows so the SAME source compiles in both modes — drop the wrapper
+     so a standalone sidecar never carries an await the standalone runtime has
+     not seen before. *)
+  | EAwait ({ e = EPersistGet _; _ } as inner) when not !network_mode -> expr inner
   | EAwait future -> node [ ("kind", `String "await"); ("future", expr future) ]
   | EAllOf futures -> node [ ("kind", `String "all_of"); ("futures", expr futures) ]
   | EAnyOf futures -> node [ ("kind", `String "any_of"); ("futures", expr futures) ]
@@ -268,6 +280,25 @@ and stmt (s : Ast.stmt) : Yojson.Safe.t =
     node
       [ ("kind", `String "persist_set"); ("name", `String name); ("subject", opt expr subject);
         ("value", expr value) ]
+  (* v1.10.0 §3.2: in 'mode: standalone' an atomic op IS its plain local
+     mutation — emit the desugaring verbatim, so every pre-1.10.0 spelling
+     ('set m at k to v', 'add x to list') keeps its exact JSON. Only under
+     'mode: network' does it become a routed atomic. *)
+  | SPersistAtomic pa ->
+    if not !network_mode then stmt pa.pa_legacy
+    else
+      node
+        [ ("kind", `String "persist_atomic");
+          ( "op",
+            `String
+              (match pa.pa_op with
+              | PAAdd -> "add"
+              | PASubtract -> "subtract"
+              | PAAppend -> "append"
+              | PASetAt -> "set_at") );
+          ("mutation", `String pa.pa_kind); ("name", `String pa.pa_name);
+          ("subject", opt expr pa.pa_subject); ("key", opt expr pa.pa_key);
+          ("value", expr pa.pa_value) ]
   | SGiveItem { gi_id; gi_target; gi_amount } ->
     node
       [ ("kind", `String "give_item"); ("id", expr gi_id); ("target", expr gi_target);
@@ -861,10 +892,27 @@ let server sv =
                ] );
          ]))
 
+(* v1.10.0 §1: the topology keys are ADDITIVE — a standalone storage block emits
+   exactly the pre-1.10.0 shape, so unchanged programs produce byte-identical
+   sidecars. *)
 let storage sc =
+  let network = sc.st_mode = MNetwork in
   `Assoc
     (with_pos sc.st_pos
-       [ ("backend", backend sc.st_backend); ("flush_ticks", `Int sc.st_flush_ticks) ])
+       ([ ("backend", backend sc.st_backend); ("flush_ticks", `Int sc.st_flush_ticks) ]
+       @ (if not network then []
+          else
+            [
+              ("mode", `String "network");
+              ( "on_handoff_failure",
+                match sc.st_handoff with
+                | HFKick msg -> `Assoc [ ("action", `String "kick"); ("message", `String msg) ] );
+            ]
+            @
+            match sc.st_coordinator with
+            | Some (CoordRedis uri) ->
+              [ ("coordinator", `Assoc [ ("kind", `String "redis"); ("uri", `String uri) ]) ]
+            | None -> [])))
 
 (* Numeric declaration scalars (mob health/damage/speed, drop chance/
    amount, item amount/attributes) load through SwoftJsonLoader.scalarNumber,
@@ -1140,15 +1188,26 @@ let struct_decl (sd : struct_decl) =
        | [] -> []
        | ms -> [ ("migrations", `List (List.map struct_migration ms)) ]))
 
+(* v1.10.0 §2: under 'mode: network' each declaration carries the strategy its
+   SHAPE selects, so the runtime knows without re-deriving it whether a value is
+   session-owned (leased to the server the player is on, loaded on join, evicted
+   on leave) or replicated-global (a per-server replica kept fresh by broadcast).
+   Additive: standalone emits the pre-1.10.0 shape. *)
+let persist_scope pd =
+  match pd.pd_subject with
+  | Some (DSimple ("PLAYER" | "OFFLINE_PLAYER" | "Player" | "OfflinePlayer")) -> "session"
+  | _ -> "replicated"
+
 let persistent pd =
   `Assoc
     (with_pos pd.pd_pos
-       [
-         ("name", `String pd.pd_name);
-         ("subject", opt data_type pd.pd_subject);
-         ("type", data_type pd.pd_type);
-         ("default", expr pd.pd_default);
-       ])
+       ([
+          ("name", `String pd.pd_name);
+          ("subject", opt data_type pd.pd_subject);
+          ("type", data_type pd.pd_type);
+          ("default", expr pd.pd_default);
+        ]
+       @ if !network_mode then [ ("scope", `String (persist_scope pd)) ] else []))
 
 (* Per-script content keys, shared between the flat shape and each entry of
    the bundle's "modules" array. In modular mode every symbol declaration
@@ -1285,7 +1344,14 @@ let script_fields ~modular (s : Ast.script) =
   ]
   @ persistence @ content
 
+let unit_network_mode (scripts : Ast.script list) =
+  List.exists
+    (fun (s : Ast.script) ->
+      List.exists (fun (sc : storage_conf) -> sc.st_mode = MNetwork) s.storages)
+    scripts
+
 let script (s : Ast.script) : Yojson.Safe.t =
+  network_mode := unit_network_mode [ s ];
   `Assoc
     ([ ("format", `String "swoftlang-ast"); ("version", `Int 2) ]
     @ script_fields ~modular:false s)
@@ -1305,6 +1371,7 @@ let module_json ~name ~path ~entry (s : Ast.script) : Yojson.Safe.t =
 (* Multi-module bundle (design 6A): single-file compilations without imports
    never reach this — they emit the flat shape above *)
 let bundle (modules : (string * string * bool * Ast.script) list) : Yojson.Safe.t =
+  network_mode := unit_network_mode (List.map (fun (_, _, _, s) -> s) modules);
   `Assoc
     [
       ("format", `String "swoftlang-ast");

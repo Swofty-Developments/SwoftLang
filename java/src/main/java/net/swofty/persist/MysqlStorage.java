@@ -108,6 +108,29 @@ public final class MysqlStorage implements SwoftStorage {
     }
 
     @Override
+    public synchronized JsonElement load(String var, String key) {
+        Map<String, JsonElement> rows = new LinkedHashMap<>();
+        try {
+            ensureConnection();
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT `key`, `value` FROM swoft_persist WHERE `var` = ? AND `key` = ?")) {
+                statement.setString(1, var);
+                statement.setString(2, key);
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        PersistStore.putParsedRow(rows, var,
+                                result.getString(1), result.getString(2));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("mysql load failed for '" + var
+                    + "[" + key + "]': " + e.getMessage(), e);
+        }
+        return rows.get(key);
+    }
+
+    @Override
     public synchronized void writeBatch(String var, Map<String, JsonElement> dirty) {
         try {
             ensureConnection();
@@ -139,6 +162,78 @@ public final class MysqlStorage implements SwoftStorage {
                     connection.setAutoCommit(true);
                 }
             } catch (SQLException ignored) {
+            }
+        }
+    }
+
+    /**
+     * The real conditional write (1.10.0 §2.1/§2.2). {@code (var, key)} is the
+     * primary key, so both statements below are single-row atomic operations —
+     * the UPDATE matches only if nobody changed the row since we read it, and the
+     * INSERT can only succeed for one racer when several try to create it.
+     *
+     * <p>The comparison is {@code BINARY} so it is byte-exact rather than subject
+     * to the column's collation: a lease owner differing only in case is a
+     * different server.
+     */
+    @Override
+    public synchronized CasOutcome compareAndSet(String var, String key, String expected,
+            String next) {
+        String stored = next == null ? "null" : next;
+        try {
+            ensureConnection();
+            if (expected != null) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE swoft_persist SET `value` = ? WHERE `var` = ? AND `key` = ?"
+                                + " AND `value` = BINARY ?")) {
+                    statement.setString(1, stored);
+                    statement.setString(2, var);
+                    statement.setString(3, key);
+                    statement.setString(4, expected);
+                    if (statement.executeUpdate() == 1) {
+                        return new CasOutcome(true, next);
+                    }
+                }
+                return new CasOutcome(false, readRaw(var, key));
+            }
+            // expected == null: the row must be absent, or hold the tombstone a
+            // deletion leaves behind. Claim it in one statement that only bites
+            // on those two states, so exactly one racer can win.
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO swoft_persist (`var`, `key`, `value`) VALUES (?, ?, ?)"
+                            + " ON DUPLICATE KEY UPDATE `value` ="
+                            + " IF(`value` = BINARY 'null', VALUES(`value`), `value`)")) {
+                statement.setString(1, var);
+                statement.setString(2, key);
+                statement.setString(3, stored);
+                statement.executeUpdate();
+            }
+            // ON DUPLICATE KEY UPDATE cannot report which branch it took, so the
+            // read-back decides - and unlike a read-check-write-read-back it is
+            // sound, because the write above is the conditional one.
+            String observed = readRaw(var, key);
+            if (stored.equals(observed)) {
+                return new CasOutcome(true, next);
+            }
+            return new CasOutcome(false, observed);
+        } catch (SQLException e) {
+            throw new RuntimeException("mysql compare-and-set failed for '" + var
+                    + "[" + key + "]': " + e.getMessage(), e);
+        }
+    }
+
+    /** The row exactly as stored, or null when absent / tombstoned. */
+    private String readRaw(String var, String key) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT `value` FROM swoft_persist WHERE `var` = ? AND `key` = ?")) {
+            statement.setString(1, var);
+            statement.setString(2, key);
+            try (ResultSet result = statement.executeQuery()) {
+                if (!result.next()) {
+                    return null;
+                }
+                String value = result.getString(1);
+                return "null".equals(value) ? null : value;
             }
         }
     }

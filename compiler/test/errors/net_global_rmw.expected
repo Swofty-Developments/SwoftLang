@@ -1,0 +1,1 @@
+net_global_rmw.sw:12:9: error: 'set pot to ...' reads 'pot' to compute its new value — that read-modify-write is racy across servers under 'mode: network' (two servers can both read the old value); use 'add <n> to pot' (or 'subtract <n> from pot') instead

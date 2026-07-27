@@ -1,0 +1,1 @@
+net_remote_assign.sw:11:5: error: can't 'set coins for <OfflinePlayer>' — under 'mode: network' this server may not own that player, so the write would clobber the owner; use an atomic op instead ('grant <n> coins to <player>' or 'append <value> to coins for <player>')

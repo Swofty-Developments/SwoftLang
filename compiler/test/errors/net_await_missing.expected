@@ -1,0 +1,1 @@
+net_await_missing.sw:11:20: error: 'coins for <OfflinePlayer>' may read a player this server does not own — under 'mode: network' that read is a Future<Integer>; write 'await coins for <player>' inside an 'async { }' block

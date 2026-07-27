@@ -22,6 +22,11 @@ import net.swofty.model.StructDefModel;
 import net.swofty.model.StructFieldModel;
 import net.swofty.nativebridge.representation.BaseType;
 import net.swofty.nativebridge.representation.DataType;
+import net.swofty.persist.network.AtomicOp;
+import net.swofty.persist.network.LeaseManager;
+import net.swofty.persist.network.NetMessage;
+import net.swofty.persist.network.NetworkRuntime;
+import net.swofty.persist.network.PersistMode;
 import net.swofty.props.NoneValue;
 import net.swofty.structs.StructRegistry;
 import net.swofty.structs.StructValue;
@@ -33,9 +38,31 @@ import net.swofty.structs.StructValue;
  * IO. Writes mark rows dirty; a virtual-thread flush loop pushes dirty
  * rows to the backend every flush_ticks, and a JVM shutdown hook (plus
  * the engine/server shutdown path) does a final flush.
+ *
+ * <p><b>Topology (design 1.10.0 §1/§2).</b> The storage block's {@code mode:}
+ * selects between two behaviours, and declarations plus script code are
+ * byte-identical in both:
+ * <ul>
+ *   <li>{@link PersistMode#STANDALONE} — the default, and everything described
+ *       above, unchanged in every respect from before 1.10.0. Every network
+ *       branch in this class is guarded by the mode flag, no network object is
+ *       allocated, and the stored sidecars for an unchanged program are
+ *       identical.</li>
+ *   <li>{@link PersistMode#NETWORK} — per-player values become <em>session
+ *       owned</em>: acquired + loaded before join handlers run, flushed
+ *       synchronously and evicted on quit, with the lease released afterwards
+ *       (§2.1). Global values become <em>replicated</em>: loaded eagerly at
+ *       boot, read synchronously off the local replica, written by atomic ops
+ *       applied at the backend and broadcast to the other servers (§2.2). The
+ *       {@code flush:} timer is demoted to a crash checkpoint and is explicitly
+ *       NOT the handoff mechanism (§2.1.4).</li>
+ * </ul>
  */
 public final class PersistStore {
     private static volatile PersistStore active;
+
+    /** De-duplicates the network-mode "read of a row this server does not own" warning. */
+    private static final Set<String> unownedWarned = ConcurrentHashMap.newKeySet();
 
     /**
      * Serialized-struct field carrying the schema version the blob was written
@@ -55,6 +82,8 @@ public final class PersistStore {
     private final Map<String, Object> defaults = new HashMap<>();
     private final SwoftStorage storage;
     private final long flushMillis;
+    private final PersistMode mode;
+    private final StorageConfigModel config;
     private final ConcurrentHashMap<String, ConcurrentHashMap<String, Object>> cache =
             new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Set<String>> dirty = new ConcurrentHashMap<>();
@@ -63,9 +92,15 @@ public final class PersistStore {
     private Thread flushThread;
     private Thread shutdownHook;
 
-    private PersistStore(List<PersistentDeclModel> decls, SwoftStorage storage, long flushMillis) {
+    /** Non-null only in {@link PersistMode#NETWORK}. */
+    private volatile NetworkRuntime network;
+
+    private PersistStore(List<PersistentDeclModel> decls, SwoftStorage storage, long flushMillis,
+            StorageConfigModel config) {
         this.storage = storage;
         this.flushMillis = flushMillis;
+        this.config = config;
+        this.mode = PersistMode.of(config);
         for (PersistentDeclModel decl : decls) {
             if (!isPersistable(decl.type())) {
                 System.err.println("Warning: persistent '" + decl.name()
@@ -99,7 +134,7 @@ public final class PersistStore {
         SwoftStorage storage = createStorage(effective.backend());
         long flushMillis = Math.max(1, effective.flushTicks()) * 50L;
 
-        PersistStore store = new PersistStore(decls, storage, flushMillis);
+        PersistStore store = new PersistStore(decls, storage, flushMillis, effective);
         store.evaluateDefaults();
         store.loadAll();
         store.startFlushLoop();
@@ -108,8 +143,85 @@ public final class PersistStore {
         active = store;
         System.out.println("PersistStore: " + store.declarations.size()
                 + " persistent variable(s) on backend '" + effective.backend().kind()
-                + "', flush every " + effective.flushTicks() + " tick(s)");
+                + "', flush every " + effective.flushTicks() + " tick(s)"
+                + (store.mode.isNetwork() ? " (crash checkpoint only)" : ""));
+        // network topology is wired AFTER the eager global load so the replica is
+        // already coherent before the first broadcast can arrive (§2.2/§2.3)
+        if (store.mode.isNetwork()) {
+            store.network = NetworkRuntime.start(store, effective, storage);
+            registerReloadHook();
+        }
         return store;
+    }
+
+    /**
+     * Build a store that is NOT the process-wide {@link #active} one, on a
+     * caller-supplied backend and with a caller-supplied server identity.
+     *
+     * <p>This exists for the two-server harness, which has to run two complete
+     * engines against one shared backend inside a single JVM — impossible
+     * through {@link #initialize}, whose singleton and JVM-wide
+     * {@link net.swofty.persist.network.ServerIdentity} both assume one server
+     * per process. Everything else is the same code path: the same defaults
+     * evaluation, the same eager global load, the same flush loop, the same
+     * {@link NetworkRuntime}. No shutdown hook is registered (the caller owns
+     * the lifetime) and {@link #active} is left alone.
+     */
+    public static PersistStore createIsolated(List<PersistentDeclModel> decls,
+            StorageConfigModel config, SwoftStorage storage, String serverId) {
+        StorageConfigModel effective = config != null ? config : StorageConfigModel.defaults();
+        long flushMillis = Math.max(1, effective.flushTicks()) * 50L;
+        PersistStore store = new PersistStore(decls, storage, flushMillis, effective);
+        store.evaluateDefaults();
+        store.loadAll();
+        store.startFlushLoop();
+        if (store.mode.isNetwork()) {
+            store.network = NetworkRuntime.start(store, effective, storage, serverId);
+        }
+        return store;
+    }
+
+    /** The network runtime, or null outside {@code mode: network}. */
+    public NetworkRuntime network() {
+        return network;
+    }
+
+    /**
+     * Point the process-wide {@link #active} store at {@code store} and return
+     * whatever it was pointing at. Companion to {@link #createIsolated}: script
+     * execution resolves its store through {@link #active}, so running a block
+     * "on server A" in the two-server harness means making A active for the
+     * duration. Never used outside a harness — production has one store, set
+     * once by {@link #initialize}.
+     */
+    public static PersistStore swapActive(PersistStore store) {
+        PersistStore previous = active;
+        active = store;
+        return previous;
+    }
+
+    /**
+     * Re-arm the hot-reload hook (§6). {@link net.swofty.reload.ReloadRegistry}
+     * clears every hook after a teardown, and persistence is deliberately NOT
+     * re-initialized by a reload, so the engine's re-registration pass calls this
+     * to put the hook back. A no-op outside network mode.
+     *
+     * <p>The hook renews the leases of still-connected players — it must never
+     * release them, and it must not tear the replica subscription down, because
+     * nothing would rebuild either afterwards.
+     */
+    public static void registerReloadHook() {
+        PersistStore store = active;
+        if (store == null || store.network == null) {
+            return;
+        }
+        if (net.swofty.reload.ReloadRegistry.names().contains("persist-network")) {
+            // startup registers persistence and then runs register(); both call
+            // this, and a duplicated hook would renew every lease twice
+            return;
+        }
+        NetworkRuntime runtime = store.network;
+        net.swofty.reload.ReloadRegistry.register("persist-network", runtime::onReload);
     }
 
     /** The active store, or null when persistence is not initialized. */
@@ -161,6 +273,9 @@ public final class PersistStore {
     public Object get(String name, String key) {
         warnIfClosed("persist_get", name, key);
         PersistentDeclModel decl = requireDeclared(name);
+        if (mode.isNetwork()) {
+            warnUnownedRead(decl, key);
+        }
         ConcurrentHashMap<String, Object> rows = cache.get(decl.name());
         Object value = rows != null ? rows.get(key) : null;
         if (value != null) {
@@ -191,6 +306,26 @@ public final class PersistStore {
         warnIfClosed("persist_set", name, key);
         PersistentDeclModel decl = requireDeclared(name);
         Object coerced = coerceRuntime(decl, value);
+        if (mode.isNetwork() && network != null) {
+            if (isSessionScoped(decl)) {
+                // §2.1: exactly one owner at a time. A write against a player
+                // this server does not own is the clobber the whole design
+                // exists to prevent - refuse it rather than let it reach the
+                // backend behind the real owner's back.
+                if (!network.leases().holds(key)) {
+                    System.err.println("[persist] refusing to write '" + decl.name()
+                            + rowLabel(key) + "': this server does not own that"
+                            + " session (use an atomic op to reach a remote player)");
+                    return;
+                }
+            } else {
+                // §2.2/§3.2: a global write is an unconditional atomic set -
+                // applied at the backend, then broadcast (last-writer-wins).
+                network.replica().applyLocal(decl.name(), key, AtomicOp.SET, coerced, null);
+                net.swofty.structs.InstanceReceiverRuntime.rebuild();
+                return;
+            }
+        }
         cache.computeIfAbsent(decl.name(), k -> new ConcurrentHashMap<>()).put(key, coerced);
         dirty.computeIfAbsent(decl.name(), k -> ConcurrentHashMap.newKeySet()).add(key);
         // §4.2: a write to a persistent root can add or remove a reactive struct
@@ -243,6 +378,394 @@ public final class PersistStore {
         dirty.computeIfAbsent(decl.name(), k -> ConcurrentHashMap.newKeySet()).add(key);
     }
 
+    // ---------------------------------------------------------------------
+    // Network topology (design 1.10.0 §2/§6). Everything below is inert in
+    // mode: standalone - the methods are either mode-gated no-ops or are only
+    // ever called from the network runtime.
+    // ---------------------------------------------------------------------
+
+    /** The configured topology. */
+    public PersistMode mode() {
+        return mode;
+    }
+
+    /** Whether this store runs the multi-server topology. */
+    public boolean isNetwork() {
+        return mode.isNetwork();
+    }
+
+    /** The storage block this store was built from. */
+    public StorageConfigModel config() {
+        return config;
+    }
+
+    /** The backend, for the network runtime's direct row IO. */
+    public SwoftStorage backend() {
+        return storage;
+    }
+
+    /** Whether {@code name} is a persistent variable of this program. */
+    public boolean isDeclared(String name) {
+        return declarations.containsKey(name);
+    }
+
+    /**
+     * §2: strategy is chosen by DECL SHAPE. {@code X for Player} /
+     * {@code for OfflinePlayer} is session-owned (one server at a time); every
+     * other shape — a bare global, or one keyed by Integer/String — is a
+     * replicated global owned by nobody.
+     */
+    public boolean isSessionScoped(String name) {
+        return isSessionScoped(declarations.get(name));
+    }
+
+    private static boolean isSessionScoped(PersistentDeclModel decl) {
+        if (decl == null || decl.subject() == null) {
+            return false;
+        }
+        BaseType subject = decl.subject().getBaseType();
+        return subject == BaseType.PLAYER || subject == BaseType.OFFLINE_PLAYER;
+    }
+
+    /**
+     * §2.1.1: acquire-then-load. Reads this subject's row of every
+     * session-owned variable straight off the backend (no cache, no staleness)
+     * and stamps each row with the lease generation, so a flush from the
+     * previous owner is rejected as stale.
+     *
+     * <p>Throws on backend failure: the caller must then refuse the join rather
+     * than let the player in on defaults.
+     */
+    public void loadSession(String key, long generation) {
+        if (!mode.isNetwork()) {
+            return;
+        }
+        NetworkRuntime runtime = network;
+        for (PersistentDeclModel decl : declarations.values()) {
+            if (!isSessionScoped(decl)) {
+                continue;
+            }
+            JsonElement stored = storage.load(decl.name(), key);
+            ConcurrentHashMap<String, Object> rows =
+                    cache.computeIfAbsent(decl.name(), k -> new ConcurrentHashMap<>());
+            Object value = stored == null ? null : coerceStoredValue(decl.type(), stored);
+            if (stored != null && value == null) {
+                System.err.println("Warning: bad stored value for " + decl.name()
+                        + rowLabel(key) + ": " + stored + " (expected " + decl.type()
+                        + ") - using default");
+            }
+            if (value == null) {
+                // absent row: get() resolves to the declared default, which is
+                // the correct answer for a subject who has never been stored
+                rows.remove(key);
+            } else {
+                rows.put(key, value);
+            }
+            // a marker left over from a previous session of this subject would
+            // re-write a row we have just re-read
+            Set<String> markers = dirty.get(decl.name());
+            if (markers != null) {
+                markers.remove(key);
+            }
+            if (runtime != null) {
+                runtime.versions().stamp(decl.name(), key, generation);
+            }
+        }
+    }
+
+    /**
+     * §2.1.2: the SYNCHRONOUS save half of save-and-evict. Writes this subject's
+     * dirty session rows immediately — not on the next timer tick, because the
+     * next server may load them a millisecond from now.
+     *
+     * <p>Refuses the whole flush when the lease is no longer ours at the
+     * generation we took it at (§2.1.3, stale version = late writer loses).
+     */
+    public synchronized void flushSession(String key) {
+        if (!mode.isNetwork()) {
+            return;
+        }
+        NetworkRuntime runtime = network;
+        long generation = runtime != null
+                ? runtime.leases().generation(key) : LeaseManager.NO_LEASE;
+        if (runtime != null && !stillOwnsSession(key)) {
+            System.err.println("[persist] REJECTED the session flush for " + key
+                    + ": this server no longer holds the lease at generation "
+                    + generation + " - another server owns this session now and"
+                    + " writing would clobber it");
+            return;
+        }
+        for (PersistentDeclModel decl : declarations.values()) {
+            if (!isSessionScoped(decl)) {
+                continue;
+            }
+            Set<String> markers = dirty.get(decl.name());
+            if (markers == null || !markers.remove(key)) {
+                continue;
+            }
+            if (runtime != null && !runtime.versions().accept(decl.name(), key, generation)) {
+                System.err.println("[persist] REJECTED a stale write to '" + decl.name()
+                        + rowLabel(key) + "' (version " + generation + " < "
+                        + runtime.versions().current(decl.name(), key) + ")");
+                continue;
+            }
+            ConcurrentHashMap<String, Object> rows = cache.get(decl.name());
+            Object value = rows != null ? rows.get(key) : null;
+            if (value == null) {
+                continue;
+            }
+            try {
+                storage.writeBatch(decl.name(), Map.of(key, toJson(value)));
+            } catch (Exception e) {
+                // keep the marker so the crash checkpoint retries; the caller
+                // holds the lease open until its TTL so nobody loads a stale copy
+                markers.add(key);
+                throw new ScriptError("flushing '" + decl.name() + rowLabel(key)
+                        + "' failed: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * §2.1.2: the EVICT half — "eviction is the half that prevents post-handoff
+     * clobber". Once the rows are gone from memory nothing here can write them
+     * again, whatever a stray task or the crash checkpoint does later.
+     */
+    public void evictSession(String key) {
+        if (!mode.isNetwork()) {
+            return;
+        }
+        NetworkRuntime runtime = network;
+        for (PersistentDeclModel decl : declarations.values()) {
+            if (!isSessionScoped(decl)) {
+                continue;
+            }
+            ConcurrentHashMap<String, Object> rows = cache.get(decl.name());
+            if (rows != null) {
+                rows.remove(key);
+            }
+            Set<String> markers = dirty.get(decl.name());
+            if (markers != null) {
+                markers.remove(key);
+            }
+            if (runtime != null) {
+                runtime.versions().clear(decl.name(), key);
+            }
+        }
+    }
+
+    /**
+     * The write barrier for session rows: does the LEASE STORE still confirm we
+     * own {@code key}?
+     *
+     * <p>{@code leases().holds()} answers from memory, and memory is exactly what
+     * a partitioned or GC-paused server gets wrong — it goes on believing it owns
+     * a session whose lease lapsed and which another server has since loaded.
+     * Every path that can put a session row on the wire (the synchronous handoff
+     * flush AND the crash checkpoint) asks this instead, so the §0 clobber has no
+     * remaining window.
+     *
+     * <p>A proven loss is acted on immediately: the belief is dropped and the
+     * rows are evicted, so this server stops being a writer for that subject
+     * rather than re-discovering the same loss on every later cycle. An
+     * unreachable lease store proves nothing, so the write is refused but nothing
+     * is evicted (the data stays in memory and the TTL settles it).
+     */
+    private boolean stillOwnsSession(String key) {
+        NetworkRuntime runtime = network;
+        if (runtime == null) {
+            return true;
+        }
+        LeaseManager.Ownership state = runtime.leases().check(key);
+        if (state == LeaseManager.Ownership.LOST) {
+            runtime.leases().forget(key);
+            evictSession(key);
+        }
+        return state == LeaseManager.Ownership.HELD;
+    }
+
+    /**
+     * The atomic write set of §3.2 — {@code add}, {@code subtract},
+     * {@code append}, {@code set at}, and an unconditional {@code set}.
+     *
+     * <p>Standalone applies them in memory exactly like the read-modify-write
+     * they replace. Network routes them by decl shape: a global goes through the
+     * replica (applied at the backend, then broadcast); a session row this
+     * server owns is applied in memory (single writer, no race); a session row
+     * owned elsewhere is routed to its owner; and a session row nobody owns
+     * (an offline subject) is applied straight at the backend.
+     *
+     * @param entryKey the map key for {@code set X at K to V}, else null
+     * @return the value the row now holds
+     */
+    public Object atomic(String opName, String name, String key, Object operand,
+            Object entryKey) {
+        PersistentDeclModel decl = requireDeclared(name);
+        AtomicOp op = AtomicOp.parse(opName);
+        if (op == null) {
+            throw new ScriptError("unknown atomic op '" + opName + "' on persistent '"
+                    + name + "'");
+        }
+        NetworkRuntime runtime = network;
+        if (mode.isNetwork() && runtime != null) {
+            if (!isSessionScoped(decl)) {
+                return runtime.replica().applyLocal(name, key, op, operand, entryKey);
+            }
+            if (!runtime.leases().holds(key)) {
+                if (runtime.leases().heldElsewhere(key)) {
+                    runtime.replica().routeOp(name, key, op, operand, entryKey);
+                    return null;
+                }
+                return runtime.replica().applyOffline(name, key, op, operand, entryKey);
+            }
+        }
+        Object next = op.apply(currentValue(decl, key), operand, entryKey);
+        set(name, key, next);
+        return next;
+    }
+
+    /**
+     * Apply an atomic op another server routed here (§3.2). Only the server
+     * that owns the subject's session acts on it — everyone else drops it, so
+     * the op lands exactly once, on the live copy.
+     */
+    public void applyRoutedOp(NetMessage message) {
+        PersistentDeclModel decl = declarations.get(message.var());
+        NetworkRuntime runtime = network;
+        if (decl == null || runtime == null || !isSessionScoped(decl)) {
+            return;
+        }
+        if (!runtime.leases().holds(message.key())) {
+            return;
+        }
+        AtomicOp op = message.atomicOp();
+        if (op == null) {
+            return;
+        }
+        Object operand = decodeRaw(message.value());
+        Object entryKey = message.entry() == null || message.entry().isJsonNull()
+                ? null : decodeRaw(message.entry());
+        try {
+            Object next = op.apply(currentValue(decl, message.key()), operand, entryKey);
+            set(decl.name(), message.key(), next);
+        } catch (Exception e) {
+            System.err.println("[persist] a routed atomic op on '" + decl.name()
+                    + rowLabel(message.key()) + "' failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * §3.1: is a read of {@code name} for {@code key} a REMOTE read — one this
+     * server cannot answer out of its own cache?
+     *
+     * <p>True only for a session-owned row, under {@code mode: network}, whose
+     * lease this server does not hold. That is the runtime half of the compiler
+     * rule: the compiler demands an {@code await} whenever the subject's static
+     * type is {@code OfflinePlayer} (it cannot know where the player is), and
+     * this decides — per read, from the actual lease — whether that await gets a
+     * real IO snapshot or a plain owned value. An owned subject stays a
+     * synchronous cache read in both modes, which is what makes the same source
+     * compile and behave the same way under either topology (§1).
+     */
+    public boolean isRemoteSession(String name, String key) {
+        if (!mode.isNetwork()) {
+            return false;
+        }
+        NetworkRuntime runtime = network;
+        return runtime != null && isSessionScoped(declarations.get(name))
+                && !runtime.leases().holds(key);
+    }
+
+    /**
+     * §3.1: a read of a subject this server does not own is an IO snapshot, not
+     * a cache read — the compiler turns it into a {@code Future<T>} the script
+     * must {@code await}. Never touches (or poisons) the local cache.
+     */
+    public java.util.concurrent.CompletableFuture<Object> readRemote(String name, String key) {
+        PersistentDeclModel decl = requireDeclared(name);
+        return java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonElement stored = storage.load(decl.name(), key);
+                Object value = stored == null ? null : coerceStoredValue(decl.type(), stored);
+                return value != null ? value : defaultOf(decl.name());
+            } catch (Exception e) {
+                System.err.println("[persist] remote read of '" + decl.name()
+                        + rowLabel(key) + "' failed: " + e.getMessage());
+                return defaultOf(decl.name());
+            }
+        }, runnable -> Thread.ofVirtual().name("swoft-persist-remote-read").start(runnable));
+    }
+
+    /** The declared default of a persistent variable. */
+    public Object defaultOf(String name) {
+        return defaults.get(name);
+    }
+
+    /** Serialize a whole value of {@code name} for the backend / the bus. */
+    public JsonElement encodeValue(String name, Object value) {
+        PersistentDeclModel decl = requireDeclared(name);
+        return toJson(coerceRuntime(decl, value));
+    }
+
+    /** Serialize an op operand or map key, with no declared type to coerce to. */
+    public static JsonElement encodeRaw(Object value) {
+        return value == null ? com.google.gson.JsonNull.INSTANCE : toJson(value);
+    }
+
+    /** Deserialize a stored/broadcast row of {@code name}; null when unusable. */
+    public Object decodeValue(String name, JsonElement element) {
+        PersistentDeclModel decl = declarations.get(name);
+        if (decl == null || element == null) {
+            return null;
+        }
+        return coerceStoredValue(decl.type(), element);
+    }
+
+    /**
+     * Install a value into the local replica: cache only, no dirty marker. A
+     * replicated global is already durable at the backend by the time it gets
+     * here (the writer applied it there first), so re-flushing it would be a
+     * write amplification at best and a clobber at worst.
+     */
+    public void putReplica(String name, String key, Object value) {
+        if (!declarations.containsKey(name)) {
+            return;
+        }
+        cache.computeIfAbsent(name, k -> new ConcurrentHashMap<>()).put(key, value);
+        // §4.2, same reason set() does it: installing a replica row can add or
+        // remove a reactive struct instance from the live set. This is the single
+        // funnel for BOTH a local atomic op on a global and a change another
+        // server broadcast, so covering it here covers every replica mutation.
+        // A cheap flag check when no struct declares a reactive field.
+        net.swofty.structs.InstanceReceiverRuntime.rebuild();
+    }
+
+    /** The live value of a row, falling back to the declared default. */
+    private Object currentValue(PersistentDeclModel decl, String key) {
+        ConcurrentHashMap<String, Object> rows = cache.get(decl.name());
+        Object value = rows != null ? rows.get(key) : null;
+        return value != null ? value : defaults.get(decl.name());
+    }
+
+    /**
+     * A synchronous read of a session-owned row this server does not own would
+     * silently answer with the declared default (§2.1: never serve defaults).
+     * The compiler routes such reads through {@code await} instead, so reaching
+     * here means something slipped past — say so, once per row.
+     */
+    private void warnUnownedRead(PersistentDeclModel decl, String key) {
+        NetworkRuntime runtime = network;
+        if (runtime == null || !isSessionScoped(decl) || runtime.leases().holds(key)) {
+            return;
+        }
+        if (unownedWarned.add(decl.name() + ' ' + key)) {
+            System.err.println("[persist] synchronous read of '" + decl.name()
+                    + rowLabel(key) + "', a session this server does not own -"
+                    + " the value is the declared default, not their data"
+                    + " (await a remote read instead)");
+        }
+    }
+
     /**
      * A script task that outlives shutdown can still reach the cache, but
      * its writes happen after the final flush snapshot and are lost when
@@ -290,11 +813,26 @@ public final class PersistStore {
             // Serialization (toJson) is inside the try alongside writeBatch: a
             // failure to serialize a row must keep the whole batch dirty for
             // the next cycle, never escape flush() and terminate the loop.
+            boolean sessionVar = mode.isNetwork() && isSessionScoped(declarations.get(var));
             try {
                 for (String key : taken) {
                     // Unmark before reading: a concurrent set() re-adds the
                     // marker, so its write can never be lost between cycles
                     keys.remove(key);
+                    // §2.1.4: the timer is a CRASH CHECKPOINT, never the handoff
+                    // path. A row whose lease we no longer hold belongs to
+                    // another server now - writing it is exactly the post-handoff
+                    // clobber, so drop it (the owner has the live copy).
+                    //
+                    // This asks the LEASE STORE, not the in-memory belief. The
+                    // dangerous case is precisely the one where memory is wrong:
+                    // this server paused (GC, partition), its lease lapsed, the
+                    // player was picked up elsewhere, and it woke up still
+                    // convinced it was the owner. One lease read per DIRTY session
+                    // row per checkpoint interval is the price of closing that.
+                    if (sessionVar && network != null && !stillOwnsSession(key)) {
+                        continue;
+                    }
                     Object value = rows != null ? rows.get(key) : null;
                     if (value != null) {
                         batch.put(key, toJson(value));
@@ -339,6 +877,20 @@ public final class PersistStore {
         try {
             flush();
         } finally {
+            // after the final flush: hand every session over cleanly (release the
+            // leases) and tear the replica subscription down. Doing this before
+            // the flush would let another server load a session this one has not
+            // written back yet.
+            NetworkRuntime runtime = network;
+            if (runtime != null) {
+                network = null;
+                try {
+                    runtime.close();
+                } catch (Exception e) {
+                    System.err.println("Warning: closing the persistence network"
+                            + " runtime failed: " + e.getMessage());
+                }
+            }
             try {
                 storage.close();
             } catch (Exception e) {
@@ -368,6 +920,14 @@ public final class PersistStore {
 
     private void loadAll() {
         for (PersistentDeclModel decl : declarations.values()) {
+            // §2.3 lifecycle difference: globals load eagerly at boot and stay
+            // live-synced; per-player values load lazily per join and are
+            // evicted per leave. Eagerly loading every player's rows here would
+            // both defeat ownership and pull the whole player table into memory.
+            if (mode.isNetwork() && isSessionScoped(decl)) {
+                cache.put(decl.name(), new ConcurrentHashMap<>());
+                continue;
+            }
             ConcurrentHashMap<String, Object> rows = new ConcurrentHashMap<>();
             Map<String, JsonElement> stored;
             try {

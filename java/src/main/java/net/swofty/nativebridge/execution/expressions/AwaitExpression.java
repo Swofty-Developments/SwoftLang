@@ -43,6 +43,14 @@ public class AwaitExpression extends AbstractAstNode implements Expression {
     public Object evaluate(ExecutionContext context) {
         Object value = context.evaluate(future);
         if (!(value instanceof FutureValue futureValue)) {
+            // 1.10.0 §3.1: awaiting a session-owned persistent read is a no-op
+            // when this server turns out to OWN the subject — the read already
+            // answered synchronously off the cache. The compiler permits the
+            // await either way on purpose, so one source file compiles unchanged
+            // under both topologies; honouring it here is the other half of that.
+            if (future instanceof PersistGetExpression) {
+                return value == null ? NoneValue.INSTANCE : value;
+            }
             throw new ScriptError("await expects a Future, got: "
                     + Values.displayString(value));
         }

@@ -133,7 +133,7 @@ public final class Phase9Harness {
     private static int loreTemplateRoundTrip() {
         int failures = 0;
         String source = """
-                item "rpg_sword" {
+                item RpgSword {
                     material: "DIAMOND_SWORD"
                     name: "<gold>RPG Sword"
                     rarity: epic

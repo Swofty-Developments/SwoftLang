@@ -216,6 +216,14 @@ public class SwoftLangEngine {
      * Register all components with their respective systems
      */
     public void register() {
+        // Re-arm the persistence network hook (1.10.0 §6). A reload runs the
+        // ReloadRegistry teardown and CLEARS it, but deliberately does not
+        // re-initialize persistence — so the hook that keeps a still-connected
+        // player's lease alive across the rebuild has to be put back here, on
+        // the same re-registration pass every other subsystem uses. No-op in
+        // mode: standalone and before persistence exists.
+        PersistStore.registerReloadHook();
+
         // Register commands
         commandProcessor.register();
 

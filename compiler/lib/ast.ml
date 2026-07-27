@@ -189,6 +189,13 @@ and stmt_node =
   | SEntry of expr * skin
   | SFill of skin
   | SPersistSet of string * expr option * expr
+  (* v1.10.0 §3.2 atomic persistent op: 'add N to X' / 'subtract N from X' /
+     'append V to X [for P]' / 'set X at K to V' / 'grant N X to P'. Legal in
+     BOTH modes; under 'mode: standalone' it emits [pa_legacy] — the plain local
+     desugaring this surface has always had — so unchanged programs stay
+     byte-identical. Under 'mode: network' it emits a persist_atomic node the
+     runtime routes to the backend / the owning server. *)
+  | SPersistAtomic of persist_atomic
   | SGiveItem of { gi_id : expr; gi_target : expr; gi_amount : expr option }
   | SSpawnMob of { sm_target : mob_spawn_target; sm_at : expr; sm_as : string option }
   | SDespawnMob of expr
@@ -394,6 +401,28 @@ and mob_spawn_target =
   | MSByType of { mst_name : string; mst_pos : pos; mutable mst_id : string }
   | MSById of expr
 
+(* v1.10.0 §3.2 atomic persistent op. [pa_op] is the SURFACE op as written;
+   [pa_kind] is refined by the typechecker from the persistent's declared value
+   type ("increment" for numbers, "append" for lists, "put" for maps), so the
+   runtime never has to re-derive it. [pa_legacy] is the plain local mutation
+   this surface desugars to in 'mode: standalone'. *)
+and persist_atomic_op =
+  | PAAdd
+  | PASubtract
+  | PAAppend
+  | PASetAt
+
+and persist_atomic = {
+  pa_op : persist_atomic_op;
+  pa_name : string;
+  pa_subject : expr option;
+  pa_key : expr option;
+  pa_value : expr;
+  mutable pa_legacy : stmt;
+  mutable pa_kind : string;
+  pa_pos : pos;
+}
+
 type argument = {
   arg_name : string;
   arg_type : data_type;
@@ -595,9 +624,27 @@ type npc = {
   n_pos : pos;
 }
 
+(* v1.10.0 §1: topology is CONFIG, not a keyword. 'mode: network' turns on
+   session ownership for player-keyed declarations and replication for globals;
+   'standalone' (the default) is exactly today's single-server behavior. *)
+type storage_mode =
+  | MStandalone
+  | MNetwork
+
+(* what to do when a session hand-off cannot complete (backend down, lease stuck
+   past its TTL). Default: kick with [default_handoff_message]. *)
+type handoff_failure = HFKick of string
+
+type coordinator = CoordRedis of string
+
+let default_handoff_message = "Loading your data — reconnect in a moment"
+
 type storage_conf = {
   st_backend : backend;
   st_flush_ticks : int;
+  st_mode : storage_mode;
+  st_handoff : handoff_failure;
+  st_coordinator : coordinator option;
   st_pos : pos;
 }
 

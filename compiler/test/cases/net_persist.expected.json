@@ -1,0 +1,460 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [],
+  "events": [
+    {
+      "line": 26,
+      "col": 5,
+      "name": "PlayerJoin",
+      "receiver": "Player",
+      "priority": 0,
+      "self": "player",
+      "params": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 29,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "coins",
+            "subject": {
+              "line": 29,
+              "col": 23,
+              "kind": "var",
+              "name": "player"
+            },
+            "value": {
+              "line": 29,
+              "col": 34,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 29,
+                "col": 34,
+                "kind": "persist_get",
+                "name": "coins",
+                "subject": {
+                  "line": 29,
+                  "col": 44,
+                  "kind": "var",
+                  "name": "player"
+                }
+              },
+              "right": {
+                "line": 29,
+                "col": 54,
+                "kind": "number",
+                "value": 10,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 30,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 30,
+              "col": 14,
+              "kind": "binary",
+              "op": "CONCATENATE",
+              "left": {
+                "line": 30,
+                "col": 14,
+                "kind": "binary",
+                "op": "CONCATENATE",
+                "left": {
+                  "line": 30,
+                  "col": 14,
+                  "kind": "string",
+                  "value": "You have "
+                },
+                "right": {
+                  "line": 30,
+                  "col": 14,
+                  "kind": "persist_get",
+                  "name": "coins",
+                  "subject": {
+                    "line": 30,
+                    "col": 14,
+                    "kind": "var",
+                    "name": "player"
+                  }
+                }
+              },
+              "right": {
+                "line": 30,
+                "col": 14,
+                "kind": "string",
+                "value": " coins"
+              }
+            },
+            "target": {
+              "line": 30,
+              "col": 54,
+              "kind": "var",
+              "name": "player"
+            }
+          },
+          {
+            "line": 33,
+            "col": 9,
+            "kind": "persist_atomic",
+            "op": "add",
+            "mutation": "increment",
+            "name": "pot",
+            "subject": null,
+            "key": null,
+            "value": {
+              "line": 33,
+              "col": 13,
+              "kind": "number",
+              "value": 50,
+              "integer": true
+            }
+          },
+          {
+            "line": 34,
+            "col": 9,
+            "kind": "persist_atomic",
+            "op": "subtract",
+            "mutation": "decrement",
+            "name": "pot",
+            "subject": null,
+            "key": null,
+            "value": {
+              "line": 34,
+              "col": 18,
+              "kind": "number",
+              "value": 5,
+              "integer": true
+            }
+          },
+          {
+            "line": 35,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "boss_active",
+            "subject": null,
+            "value": {
+              "line": 35,
+              "col": 28,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 36,
+            "col": 9,
+            "kind": "persist_atomic",
+            "op": "append",
+            "mutation": "append",
+            "name": "announcements",
+            "subject": null,
+            "key": null,
+            "value": {
+              "line": 36,
+              "col": 16,
+              "kind": "string",
+              "value": "a player joined"
+            }
+          },
+          {
+            "line": 37,
+            "col": 9,
+            "kind": "persist_atomic",
+            "op": "set_at",
+            "mutation": "put",
+            "name": "leaderboard",
+            "subject": null,
+            "key": {
+              "line": 37,
+              "col": 35,
+              "kind": "prop",
+              "target": {
+                "line": 37,
+                "col": 28,
+                "kind": "var",
+                "name": "player"
+              },
+              "name": "name"
+            },
+            "value": {
+              "line": 37,
+              "col": 43,
+              "kind": "persist_get",
+              "name": "coins",
+              "subject": {
+                "line": 37,
+                "col": 53,
+                "kind": "var",
+                "name": "player"
+              }
+            }
+          },
+          {
+            "line": 40,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "scores",
+            "subject": {
+              "line": 40,
+              "col": 24,
+              "kind": "string",
+              "value": "global"
+            },
+            "value": {
+              "line": 40,
+              "col": 36,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          },
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "visits",
+            "subject": {
+              "line": 41,
+              "col": 24,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            },
+            "value": {
+              "line": 41,
+              "col": 29,
+              "kind": "number",
+              "value": 2,
+              "integer": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "line": 45,
+      "col": 1,
+      "name": "reward",
+      "async": false,
+      "params": [
+        {
+          "line": 45,
+          "col": 17,
+          "name": "who",
+          "type": { "base": "OFFLINE_PLAYER" }
+        }
+      ],
+      "body": [
+        {
+          "line": 47,
+          "col": 5,
+          "kind": "persist_atomic",
+          "op": "add",
+          "mutation": "increment",
+          "name": "coins",
+          "subject": { "line": 47, "col": 24, "kind": "var", "name": "who" },
+          "key": null,
+          "value": {
+            "line": 47,
+            "col": 11,
+            "kind": "number",
+            "value": 100,
+            "integer": true
+          }
+        },
+        {
+          "line": 48,
+          "col": 5,
+          "kind": "persist_atomic",
+          "op": "append",
+          "mutation": "append",
+          "name": "history",
+          "subject": { "line": 48, "col": 42, "kind": "var", "name": "who" },
+          "key": null,
+          "value": {
+            "line": 48,
+            "col": 12,
+            "kind": "string",
+            "value": "was-rewarded"
+          }
+        },
+        {
+          "line": 50,
+          "col": 5,
+          "kind": "async_block",
+          "body": [
+            {
+              "line": 52,
+              "col": 9,
+              "kind": "assign",
+              "target": "bal",
+              "value": {
+                "line": 52,
+                "col": 20,
+                "kind": "await",
+                "future": {
+                  "line": 52,
+                  "col": 26,
+                  "kind": "persist_get",
+                  "name": "coins",
+                  "subject": {
+                    "line": 52,
+                    "col": 36,
+                    "kind": "var",
+                    "name": "who"
+                  }
+                }
+              }
+            },
+            {
+              "line": 53,
+              "col": 9,
+              "kind": "broadcast",
+              "message": {
+                "line": 53,
+                "col": 19,
+                "kind": "string",
+                "value": "balance is ${bal}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 5,
+    "col": 1,
+    "backend": {
+      "kind": "mysql",
+      "host": "10.0.0.5",
+      "port": 3306,
+      "database": "net",
+      "user": "mc",
+      "password": "hunter2"
+    },
+    "flush_ticks": 600,
+    "mode": "network",
+    "on_handoff_failure": {
+      "action": "kick",
+      "message": "Loading your data — reconnect in a moment"
+    },
+    "coordinator": { "kind": "redis", "uri": "redis://10.0.0.6" }
+  },
+  "persistents": [
+    {
+      "line": 14,
+      "col": 1,
+      "name": "pot",
+      "subject": null,
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 14,
+        "col": 27,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "scope": "replicated"
+    },
+    {
+      "line": 15,
+      "col": 1,
+      "name": "boss_active",
+      "subject": null,
+      "type": { "base": "BOOLEAN" },
+      "default": { "line": 15, "col": 35, "kind": "boolean", "value": false },
+      "scope": "replicated"
+    },
+    {
+      "line": 16,
+      "col": 1,
+      "name": "announcements",
+      "subject": null,
+      "type": { "base": "LIST", "subtypes": [ { "base": "STRING" } ] },
+      "default": { "line": 16, "col": 42, "kind": "list", "items": [] },
+      "scope": "replicated"
+    },
+    {
+      "line": 17,
+      "col": 1,
+      "name": "leaderboard",
+      "subject": null,
+      "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+      "default": {
+        "line": 17,
+        "col": 48,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      },
+      "scope": "replicated"
+    },
+    {
+      "line": 18,
+      "col": 1,
+      "name": "scores",
+      "subject": { "base": "STRING" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 18,
+        "col": 41,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "scope": "replicated"
+    },
+    {
+      "line": 19,
+      "col": 1,
+      "name": "visits",
+      "subject": { "base": "INTEGER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 19,
+        "col": 42,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "scope": "replicated"
+    },
+    {
+      "line": 22,
+      "col": 1,
+      "name": "coins",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 22,
+        "col": 40,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "scope": "session"
+    },
+    {
+      "line": 23,
+      "col": 1,
+      "name": "history",
+      "subject": { "base": "OFFLINE_PLAYER" },
+      "type": { "base": "LIST", "subtypes": [ { "base": "STRING" } ] },
+      "default": { "line": 23, "col": 54, "kind": "list", "items": [] },
+      "scope": "session"
+    }
+  ]
+}

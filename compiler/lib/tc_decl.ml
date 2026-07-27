@@ -279,7 +279,19 @@ let check_storages ctx storages =
       rest);
   List.iter
     (fun (s : storage_conf) ->
-      if s.st_flush_ticks <= 0 then err ctx s.st_pos "flush cadence must be positive")
+      if s.st_flush_ticks <= 0 then err ctx s.st_pos "flush cadence must be positive";
+      (* v1.10.0 §1: network topology needs a backend every server can reach and
+         coordinate through — a per-process store cannot hold a lease. *)
+      match (s.st_mode, s.st_backend) with
+      | MNetwork, BFiles _ ->
+        err ctx s.st_pos
+          "'mode: network' needs a shared backend: a files backend can't coordinate servers — \
+           use 'backend: mysql { ... }' or 'backend: mongodb \"...\"'"
+      | MNetwork, BSqlite _ ->
+        err ctx s.st_pos
+          "'mode: network' needs a shared backend: a sqlite backend can't coordinate servers — \
+           use 'backend: mysql { ... }' or 'backend: mongodb \"...\"'"
+      | _ -> ())
     storages
 
 let register_persistent ctx (pd : persistent_decl) =
@@ -302,10 +314,15 @@ let register_persistent ctx (pd : persistent_decl) =
       err ctx pd.pd_pos "persistent '%s' uses the reserved '__' name prefix (internal stores such \
                          as __seen_players live there) — pick another name"
         pd.pd_name;
+    let pi_subject = Option.map (resolve_ty ctx) pd.pd_subject in
     Hashtbl.add ctx.persists pd.pd_name
       {
-        pi_subject = Option.map (resolve_ty ctx) pd.pd_subject;
+        pi_subject;
         pi_ty = resolve_ty ctx pd.pd_type;
+        (* §2 decl-shape strategy: player-keyed => session-owned, everything
+           else (including 'for Integer' / 'for String') => replicated global *)
+        pi_session =
+          (match pi_subject with Some (TPlayer | TOfflinePlayer) -> true | _ -> false);
       }
   end
 

@@ -1,0 +1,1 @@
+net_sqlite_backend.sw:2:1: error: 'mode: network' needs a shared backend: a sqlite backend can't coordinate servers
