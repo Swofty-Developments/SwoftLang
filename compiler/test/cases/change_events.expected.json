@@ -1,0 +1,580 @@
+{
+  "format": "swoftlang-ast",
+  "version": 2,
+  "commands": [
+    {
+      "line": 61,
+      "col": 1,
+      "names": [ "econ" ],
+      "permission": null,
+      "description": null,
+      "arguments": [],
+      "execute": {
+        "async": false,
+        "statements": [
+          {
+            "line": 63,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "boss_active",
+            "subject": null,
+            "value": {
+              "line": 63,
+              "col": 28,
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "line": 64,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "coins",
+            "subject": {
+              "line": 64,
+              "col": 23,
+              "kind": "var",
+              "name": "sender"
+            },
+            "value": {
+              "line": 64,
+              "col": 34,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 64,
+                "col": 34,
+                "kind": "persist_get",
+                "name": "coins",
+                "subject": {
+                  "line": 64,
+                  "col": 44,
+                  "kind": "var",
+                  "name": "sender"
+                }
+              },
+              "right": {
+                "line": 64,
+                "col": 54,
+                "kind": "number",
+                "value": 5,
+                "integer": true
+              }
+            }
+          },
+          {
+            "line": 65,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "scores",
+            "subject": {
+              "line": 65,
+              "col": 31,
+              "kind": "prop",
+              "target": {
+                "line": 65,
+                "col": 24,
+                "kind": "var",
+                "name": "sender"
+              },
+              "name": "name"
+            },
+            "value": {
+              "line": 65,
+              "col": 39,
+              "kind": "number",
+              "value": 1,
+              "integer": true
+            }
+          },
+          {
+            "line": 66,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "leaderboard",
+            "subject": null,
+            "value": {
+              "line": 66,
+              "col": 9,
+              "kind": "call",
+              "name": "map_set",
+              "args": [
+                {
+                  "line": 66,
+                  "col": 9,
+                  "kind": "persist_get",
+                  "name": "leaderboard",
+                  "subject": null
+                },
+                {
+                  "line": 66,
+                  "col": 35,
+                  "kind": "prop",
+                  "target": {
+                    "line": 66,
+                    "col": 28,
+                    "kind": "var",
+                    "name": "sender"
+                  },
+                  "name": "name"
+                },
+                {
+                  "line": 66,
+                  "col": 43,
+                  "kind": "number",
+                  "value": 10,
+                  "integer": true
+                }
+              ]
+            }
+          },
+          {
+            "line": 67,
+            "col": 9,
+            "kind": "persist_set",
+            "name": "pot",
+            "subject": null,
+            "value": {
+              "line": 67,
+              "col": 20,
+              "kind": "binary",
+              "op": "ADD",
+              "left": {
+                "line": 67,
+                "col": 20,
+                "kind": "persist_get",
+                "name": "pot",
+                "subject": null
+              },
+              "right": {
+                "line": 67,
+                "col": 26,
+                "kind": "number",
+                "value": 1,
+                "integer": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [],
+  "functions": [],
+  "guis": [],
+  "scoreboards": [],
+  "tablists": [],
+  "bossbars": [],
+  "server": null,
+  "storage": {
+    "line": 5,
+    "col": 1,
+    "backend": { "kind": "files", "path": "data/game" },
+    "flush_ticks": 200
+  },
+  "persistents": [
+    {
+      "line": 11,
+      "col": 1,
+      "name": "boss_active",
+      "subject": null,
+      "type": { "base": "BOOLEAN" },
+      "default": { "line": 11, "col": 35, "kind": "boolean", "value": false },
+      "change": {
+        "line": 12,
+        "col": 5,
+        "kind": "on_change",
+        "binds": [ "old", "new", "caused_here" ],
+        "body": [
+          {
+            "line": 13,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 13,
+              "col": 12,
+              "kind": "var",
+              "name": "new"
+            },
+            "then": {
+              "line": 13,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 14,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 14,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "<red>The world boss has awoken!"
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 15,
+              "col": 16,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 16,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 16,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "<gray>The world boss is gone (was ${old})"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 22,
+      "col": 1,
+      "name": "coins",
+      "subject": { "base": "PLAYER" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 22,
+        "col": 40,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "change": {
+        "line": 23,
+        "col": 5,
+        "kind": "on_change",
+        "binds": [ "player", "old", "new", "caused_here" ],
+        "body": [
+          {
+            "line": 24,
+            "col": 9,
+            "kind": "send",
+            "message": {
+              "line": 24,
+              "col": 14,
+              "kind": "string",
+              "value": "<gold>${old} -> ${new} coins"
+            },
+            "target": {
+              "line": 24,
+              "col": 48,
+              "kind": "var",
+              "name": "player"
+            }
+          },
+          {
+            "line": 26,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 26,
+              "col": 12,
+              "kind": "var",
+              "name": "caused_here"
+            },
+            "then": {
+              "line": 26,
+              "col": 24,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 27,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 27,
+                    "col": 23,
+                    "kind": "string",
+                    "value": "<yellow>${player.name} now has ${new} coins"
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "line": 32,
+            "col": 9,
+            "kind": "foreach",
+            "var": "other",
+            "limit": null,
+            "iterable": { "line": 32, "col": 14, "kind": "all_players" },
+            "body": {
+              "line": 32,
+              "col": 35,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 33,
+                  "col": 13,
+                  "kind": "persist_set",
+                  "name": "coins",
+                  "subject": {
+                    "line": 33,
+                    "col": 30,
+                    "kind": "var",
+                    "name": "other"
+                  },
+                  "value": {
+                    "line": 33,
+                    "col": 13,
+                    "kind": "binary",
+                    "op": "ADD",
+                    "left": {
+                      "line": 33,
+                      "col": 13,
+                      "kind": "persist_get",
+                      "name": "coins",
+                      "subject": {
+                        "line": 33,
+                        "col": 30,
+                        "kind": "var",
+                        "name": "other"
+                      }
+                    },
+                    "right": {
+                      "line": 33,
+                      "col": 19,
+                      "kind": "number",
+                      "value": 1,
+                      "integer": true
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 39,
+      "col": 1,
+      "name": "scores",
+      "subject": { "base": "STRING" },
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 39,
+        "col": 41,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      },
+      "change": {
+        "line": 40,
+        "col": 5,
+        "kind": "on_change",
+        "binds": [ "key", "old", "new", "caused_here" ],
+        "body": [
+          {
+            "line": 41,
+            "col": 9,
+            "kind": "broadcast",
+            "message": {
+              "line": 41,
+              "col": 19,
+              "kind": "string",
+              "value": "<aqua>${key}: ${old} -> ${new}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 46,
+      "col": 1,
+      "name": "leaderboard",
+      "subject": null,
+      "type": { "base": "MAP", "subtypes": [ { "base": "INTEGER" } ] },
+      "default": {
+        "line": 46,
+        "col": 48,
+        "kind": "call",
+        "name": "new_map",
+        "args": []
+      },
+      "change": {
+        "line": 47,
+        "col": 5,
+        "kind": "on_entry_change",
+        "binds": [ "key", "old", "new", "caused_here" ],
+        "body": [
+          {
+            "line": 48,
+            "col": 9,
+            "kind": "if",
+            "condition": {
+              "line": 48,
+              "col": 12,
+              "kind": "unary",
+              "op": "NOT",
+              "operand": {
+                "line": 48,
+                "col": 12,
+                "kind": "unary",
+                "op": "EXISTS",
+                "operand": {
+                  "line": 48,
+                  "col": 12,
+                  "kind": "var",
+                  "name": "old"
+                }
+              }
+            },
+            "then": {
+              "line": 48,
+              "col": 27,
+              "kind": "block",
+              "statements": [
+                {
+                  "line": 49,
+                  "col": 13,
+                  "kind": "broadcast",
+                  "message": {
+                    "line": 49,
+                    "col": 23,
+                    "kind": "binary",
+                    "op": "CONCATENATE",
+                    "left": {
+                      "line": 49,
+                      "col": 23,
+                      "kind": "string",
+                      "value": "<green>${key} joined at "
+                    },
+                    "right": {
+                      "line": 49,
+                      "col": 23,
+                      "kind": "binary",
+                      "op": "OR_ELSE",
+                      "left": {
+                        "line": 49,
+                        "col": 23,
+                        "kind": "var",
+                        "name": "new"
+                      },
+                      "right": {
+                        "line": 49,
+                        "col": 23,
+                        "kind": "number",
+                        "value": 0,
+                        "integer": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "else": {
+              "line": 50,
+              "col": 16,
+              "kind": "if",
+              "condition": {
+                "line": 50,
+                "col": 19,
+                "kind": "unary",
+                "op": "NOT",
+                "operand": {
+                  "line": 50,
+                  "col": 19,
+                  "kind": "unary",
+                  "op": "EXISTS",
+                  "operand": {
+                    "line": 50,
+                    "col": 19,
+                    "kind": "var",
+                    "name": "new"
+                  }
+                }
+              },
+              "then": {
+                "line": 50,
+                "col": 34,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 51,
+                    "col": 13,
+                    "kind": "broadcast",
+                    "message": {
+                      "line": 51,
+                      "col": 23,
+                      "kind": "string",
+                      "value": "<gray>${key} fell off"
+                    }
+                  }
+                ]
+              },
+              "else": {
+                "line": 52,
+                "col": 16,
+                "kind": "block",
+                "statements": [
+                  {
+                    "line": 53,
+                    "col": 13,
+                    "kind": "broadcast",
+                    "message": {
+                      "line": 53,
+                      "col": 23,
+                      "kind": "binary",
+                      "op": "CONCATENATE",
+                      "left": {
+                        "line": 53,
+                        "col": 23,
+                        "kind": "string",
+                        "value": "<gold>${key} -> "
+                      },
+                      "right": {
+                        "line": 53,
+                        "col": 23,
+                        "kind": "binary",
+                        "op": "OR_ELSE",
+                        "left": {
+                          "line": 53,
+                          "col": 23,
+                          "kind": "var",
+                          "name": "new"
+                        },
+                        "right": {
+                          "line": 53,
+                          "col": 23,
+                          "kind": "number",
+                          "value": 0,
+                          "integer": true
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "line": 59,
+      "col": 1,
+      "name": "pot",
+      "subject": null,
+      "type": { "base": "INTEGER" },
+      "default": {
+        "line": 59,
+        "col": 27,
+        "kind": "number",
+        "value": 0,
+        "integer": true
+      }
+    }
+  ]
+}

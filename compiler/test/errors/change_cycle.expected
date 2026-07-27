@@ -1,0 +1,1 @@
+change_cycle.sw:8:5: error: change handlers form a cycle: coins -> leaderboard -> coins

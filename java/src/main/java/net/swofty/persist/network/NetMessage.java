@@ -5,6 +5,8 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import net.swofty.persist.change.CausalityToken;
+
 /**
  * One broadcast on the persistence bus (design 1.10.0 §2.2).
  *
@@ -30,7 +32,7 @@ import com.google.gson.JsonParser;
  * backend-polled bus carry exactly the same payload.
  */
 public record NetMessage(String kind, String var, String key, JsonElement value,
-        String origin, long version, String op, JsonElement entry) {
+        String origin, long version, String op, JsonElement entry, CausalityToken cause) {
 
     /** A whole-row snapshot after an atomic op was applied at the backend. */
     public static final String KIND_VALUE = "value";
@@ -38,14 +40,20 @@ public record NetMessage(String kind, String var, String key, JsonElement value,
     /** An atomic op routed to whichever server owns the subject's session. */
     public static final String KIND_OP = "op";
 
+    /** A message with no causality token attached (harness / legacy payload). */
     public static NetMessage value(String var, String key, JsonElement value,
             String origin, long version) {
-        return new NetMessage(KIND_VALUE, var, key, value, origin, version, null, null);
+        return value(var, key, value, origin, version, null);
+    }
+
+    public static NetMessage value(String var, String key, JsonElement value,
+            String origin, long version, CausalityToken cause) {
+        return new NetMessage(KIND_VALUE, var, key, value, origin, version, null, null, cause);
     }
 
     public static NetMessage op(String var, String key, AtomicOp op, JsonElement operand,
-            JsonElement entry, String origin) {
-        return new NetMessage(KIND_OP, var, key, operand, origin, 0L, op.name(), entry);
+            JsonElement entry, String origin, CausalityToken cause) {
+        return new NetMessage(KIND_OP, var, key, operand, origin, 0L, op.name(), entry, cause);
     }
 
     /** The atomic op of a {@link #KIND_OP} message, or null. */
@@ -66,6 +74,12 @@ public record NetMessage(String kind, String var, String key, JsonElement value,
         }
         if (entry != null) {
             object.add("entry", entry);
+        }
+        // §5.3: the causality token TRAVELS. Without it on the wire a
+        // cross-server cascade would restart at depth 0 on every hop and the
+        // cap would never trip on an A -> B -> A ping-pong.
+        if (cause != null) {
+            object.add("cause", cause.toJson());
         }
         return object.toString();
     }
@@ -90,7 +104,8 @@ public record NetMessage(String kind, String var, String key, JsonElement value,
                     object.has("version") ? object.get("version").getAsLong() : 0L,
                     object.has("op") && !object.get("op").isJsonNull()
                             ? object.get("op").getAsString() : null,
-                    object.get("entry"));
+                    object.get("entry"),
+                    CausalityToken.fromJson(object.get("cause")));
         } catch (Exception e) {
             System.err.println("[persist] dropping malformed bus message: " + e.getMessage());
             return null;

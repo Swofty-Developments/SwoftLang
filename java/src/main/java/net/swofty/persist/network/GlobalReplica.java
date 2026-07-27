@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import net.swofty.ScriptError;
+import net.swofty.persist.change.CausalityToken;
 import net.swofty.persist.PersistStore;
 import net.swofty.persist.SwoftStorage;
 
@@ -76,12 +77,14 @@ public final class GlobalReplica {
      * "routed to owner"). The owner applies it to its live copy; this server
      * only publishes it.
      */
-    public void routeOp(String var, String key, AtomicOp op, Object operand, Object entryKey) {
+    public void routeOp(String var, String key, AtomicOp op, Object operand, Object entryKey,
+            CausalityToken cause) {
         // the operand of an op is not a whole value (the element of a list, the
         // amount of an add), so it is encoded raw rather than coerced to the
-        // declared type
+        // declared type. The causality token rides along so the owner's change
+        // handlers continue this chain rather than starting a fresh one (§5.3).
         channel.publish(NetMessage.op(var, key, op, PersistStore.encodeRaw(operand),
-                PersistStore.encodeRaw(entryKey), origin));
+                PersistStore.encodeRaw(entryKey), origin, cause));
     }
 
     /**
@@ -89,9 +92,12 @@ public final class GlobalReplica {
      * where no server holds the session and the stored row IS the value.
      */
     public Object applyOffline(String var, String key, AtomicOp op, Object operand,
-            Object entryKey) {
+            Object entryKey, CausalityToken cause) {
         synchronized (monitor("session:" + var + ':' + key)) {
-            return compose(var, key, op, operand, entryKey, false);
+            // no server holds this session, so the row is not in anyone's memory
+            // and there is nothing to fire a change event against here (§2.1:
+            // session rows live on their owner). The backend value still moves.
+            return compose(var, key, op, operand, entryKey, false, cause);
         }
     }
 
@@ -102,9 +108,9 @@ public final class GlobalReplica {
      * @return the value the row now holds
      */
     public Object applyLocal(String var, String key, AtomicOp op, Object operand,
-            Object entryKey) {
+            Object entryKey, CausalityToken cause) {
         synchronized (monitor("global:" + var + ':' + key)) {
-            return compose(var, key, op, operand, entryKey, true);
+            return compose(var, key, op, operand, entryKey, true, cause);
         }
     }
 
@@ -116,7 +122,7 @@ public final class GlobalReplica {
      * concurrent {@code add 50 to pot} total 100 rather than 50.
      */
     private Object compose(String var, String key, AtomicOp op, Object operand,
-            Object entryKey, boolean publish) {
+            Object entryKey, boolean publish, CausalityToken cause) {
         String expected = readRaw(var, key);
         for (int attempt = 0; attempt < CAS_ATTEMPTS; attempt++) {
             Object current = decode(var, expected);
@@ -126,9 +132,12 @@ public final class GlobalReplica {
                     storage.compareAndSet(var, key, expected, encoded.toString());
             if (outcome.swapped()) {
                 if (publish) {
-                    store.putReplica(var, key, next);
+                    // §4.1: the writer fires its own handlers here (caused_here
+                    // = true) and then publishes; every other server fires from
+                    // applyRemote with caused_here = false.
+                    store.putReplica(var, key, next, true, cause);
                     long version = versions.nextGlobal(var, key);
-                    channel.publish(NetMessage.value(var, key, encoded, origin, version));
+                    channel.publish(NetMessage.value(var, key, encoded, origin, version, cause));
                 }
                 return next;
             }
@@ -180,6 +189,9 @@ public final class GlobalReplica {
      * dropped by the version stamp, so a replica can never roll backwards.
      */
     public void applyRemote(NetMessage message) {
+        // §5.4 self-echo suppression: this server already applied the change and
+        // already fired its handlers (caused_here = true) before publishing, so
+        // its own echo must not be applied - or fired - a second time.
         if (origin.equals(message.origin())) {
             return;
         }
@@ -204,7 +216,10 @@ public final class GlobalReplica {
                     + "' carried a value this program cannot hold - ignored");
             return;
         }
-        store.putReplica(message.var(), message.key(), value);
+        // §4.1: fires here too, with caused_here = false, and §5.3: the change
+        // continues the chain the message carries, so a cascade that bounces
+        // between servers accumulates depth instead of resetting on every hop.
+        store.putReplica(message.var(), message.key(), value, false, message.cause());
     }
 
 }

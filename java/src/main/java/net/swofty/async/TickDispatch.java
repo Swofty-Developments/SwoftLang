@@ -50,6 +50,26 @@ public final class TickDispatch {
         }
     }
 
+    /**
+     * Fire-and-forget onto the tick thread: run {@code action} inline when the
+     * caller is already inside the tick (so the effect lands in the same tick
+     * as whatever triggered it) or when no server is running (harnesses), and
+     * otherwise park it on the next tick WITHOUT blocking the caller.
+     *
+     * <p>{@link #call} is the wrong tool for a reaction — a persistence write on
+     * the bus-subscriber thread must not stall waiting for a tick — so this is
+     * the entry point for tick-thread work whose result nobody awaits.
+     */
+    public static void post(Runnable action) {
+        Thread current = Thread.currentThread();
+        if (current instanceof TickThread || current instanceof TickSchedulerThread
+                || !serverRunning()) {
+            action.run();
+            return;
+        }
+        MinecraftServer.getSchedulerManager().scheduleNextTick(action);
+    }
+
     private static boolean serverRunning() {
         try {
             return MinecraftServer.process() != null && MinecraftServer.isStarted();

@@ -697,13 +697,61 @@ type struct_decl = {
   su_pos : pos;
 }
 
+(* v1.10.0 §4 change events: a persistent declaration may carry a trailing block
+   holding exactly one change handler — `on_change { }` for a scalar value,
+   `on_entry_change { }` for a Map/List value. The body is BARE CONTEXT, the same
+   binding machinery receivers and reactive struct fields use: `old` / `new` /
+   `caused_here`, plus the declaration's key (`player` for `for Player` /
+   `for OfflinePlayer`, `key` for `for Integer` / `for String`), and for a
+   collection the changed entry's `key` with Optional `old` / `new`. Handlers run
+   on the tick thread, so the body is sync-coloured (an `await`/`wait` inside is
+   the existing colour error). *)
+type persist_change_kind =
+  | PCScalar (* on_change *)
+  | PCEntry (* on_entry_change *)
+
+type persist_change = {
+  pc_kind : persist_change_kind;
+  pc_body : stmt list;
+  pc_pos : pos;
+}
+
 type persistent_decl = {
   pd_name : string;
   pd_subject : data_type option;
   pd_type : data_type;
   pd_default : expr;
+  pd_change : persist_change option;
   pd_pos : pos;
 }
+
+let persist_change_kw = function PCScalar -> "on_change" | PCEntry -> "on_entry_change"
+
+(* the declared value is a per-ENTRY collection (on_entry_change) rather than a
+   scalar (on_change) *)
+let persist_is_collection (pd : persistent_decl) =
+  match pd.pd_type with DList _ | DMap _ -> true | _ -> false
+
+(* the bare name the declaration's own key binds under inside a change handler:
+   `player` for a player-keyed decl, `key` for any other `for <T>` decl, and
+   nothing for a global. Shared by the typechecker and the emitter so the bound
+   names in the JSON are exactly the ones that typechecked. *)
+let persist_subject_bind (pd : persistent_decl) =
+  match pd.pd_subject with
+  | None -> None
+  | Some (DSimple ("PLAYER" | "Player" | "OFFLINE_PLAYER" | "OfflinePlayer")) -> Some "player"
+  | Some _ -> Some "key"
+
+(* every bare name a change handler binds, in binding order. For a collection the
+   entry `key` owns the name, so an Integer/String-keyed collection exposes only
+   the entry key (the decl key would collide). *)
+let persist_change_binds (pd : persistent_decl) (pc : persist_change) =
+  let subj = persist_subject_bind pd in
+  match pc.pc_kind with
+  | PCScalar -> (match subj with Some b -> [ b ] | None -> []) @ [ "old"; "new"; "caused_here" ]
+  | PCEntry ->
+    (match subj with Some "player" -> [ "player" ] | _ -> [])
+    @ [ "key"; "old"; "new"; "caused_here" ]
 
 (* --- phase-5 content declarations (reduced to the generic core in phase 9:
    stats{}/ability{} are gone — gameplay systems are built in userland with

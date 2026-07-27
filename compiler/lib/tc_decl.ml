@@ -8,6 +8,15 @@ open Tc_registry_checks
 
 let base_gui_env = bind (bind empty_env "player" TPlayer) "state" TAny
 
+let check_binding_shadows ctx pos what bindings =
+  List.iter
+    (fun b ->
+      if Hashtbl.mem ctx.persists b then
+        err ctx pos "persistent '%s' shadows the built-in '%s' binding of %s — rename the \
+                     persistent"
+          b b what)
+    bindings
+
 let check_item_spec ctx bctx env spec =
   (match (spec.is_material, spec.is_skull) with
   | Some _, Some _ -> err ctx spec.is_pos "item cannot have both 'material' and 'skull'"
@@ -400,6 +409,58 @@ let first_reactive_nonserializable_field ctx n =
   | Some si ->
     List.find_opt (fun (_, t) -> not (reactive_serializable_ty ctx ~seen:[ n ] t)) si.si_fields
 
+(* v1.10.0 §4 the declaration-attached change handler. The handler KIND must match
+   the declared value's shape — a scalar reacts as a whole ('on_change'), a
+   Map/List reacts per ENTRY ('on_entry_change') — and the body typechecks in the
+   bare context the decl's shape induces (reusing the receiver / reactive-field
+   binding machinery). The body is SYNC-coloured because handlers run on the tick
+   thread, so an 'await'/'wait' inside surfaces the existing colour error and the
+   fix is an 'async { }' block. *)
+let check_persist_change ctx (pd : persistent_decl) declared =
+  match pd.pd_change with
+  | None -> ()
+  | Some pc ->
+    (match (pc.pc_kind, persist_is_collection pd) with
+    | PCScalar, true ->
+      err ctx pc.pc_pos
+        "persistent '%s' is %s, which changes one ENTRY at a time — use 'on_entry_change' (bound: \
+         key, old, new, caused_here), not 'on_change'"
+        pd.pd_name (ty_to_string declared)
+    | PCEntry, false ->
+      err ctx pc.pc_pos
+        "persistent '%s' is %s, a scalar with no entries — use 'on_change' (bound: old, new, \
+         caused_here), not 'on_entry_change'"
+        pd.pd_name (ty_to_string declared)
+    | _ -> ());
+    let binds = persist_change_binds pd pc in
+    check_binding_shadows ctx pc.pc_pos
+      (Printf.sprintf "the '%s' of persistent '%s'" (persist_change_kw pc.pc_kind) pd.pd_name)
+      binds;
+    let subject_ty = Option.map (resolve_ty ctx) pd.pd_subject in
+    (* the changed entry's key/value types: a map's declared key type, a list's
+       Integer index *)
+    let entry_key_ty = match declared with TMap (k, _) -> k | TList _ -> TInteger | _ -> TAny in
+    let entry_val_ty = match declared with TMap (_, v) -> v | TList v -> v | _ -> declared in
+    let ty_of_bind = function
+      | "player" -> ( match subject_ty with Some t -> t | None -> TPlayer)
+      | "key" -> (
+        match pc.pc_kind with
+        | PCEntry -> entry_key_ty
+        | PCScalar -> ( match subject_ty with Some t -> t | None -> TAny))
+      | "caused_here" -> TBoolean
+      (* §4 a collection entry's old/new are Optional: 'old is none' is an
+         insert, 'new is none' a removal, both present an update *)
+      | "old" | "new" -> (
+        match pc.pc_kind with PCEntry -> TOptional entry_val_ty | PCScalar -> declared)
+      | _ -> TAny
+    in
+    let env = List.fold_left (fun env b -> bind env b (ty_of_bind b)) (base_env ctx) binds in
+    let bctx =
+      { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false;
+        in_schedule = false; override = None }
+    in
+    ignore (check_stmts ctx bctx env pc.pc_body)
+
 let check_persistent ctx (pd : persistent_decl) =
   let bctx = { color = Sync; event = None; args = None; ret_sink = None; packet = false; api = false; in_schedule = false; override = None } in
   let declared = resolve_ty ctx pd.pd_type in
@@ -478,7 +539,8 @@ let check_persistent ctx (pd : persistent_decl) =
   | _ -> require_present ctx empty_env pd.pd_default dt ~use:"the default value");
   if not (param_compat declared dt) then
     err ctx pd.pd_default.epos "the default value of persistent '%s' must be %s (got %s)"
-      pd.pd_name (ty_to_string declared) (ty_to_string dt)
+      pd.pd_name (ty_to_string declared) (ty_to_string dt);
+  check_persist_change ctx pd declared
 
 (* --- phase-5 content declarations --- *)
 
@@ -811,15 +873,6 @@ let register_mobs ctx mobs =
       if Hashtbl.mem ctx.mob_ids mb.mb_id then err ctx mb.mb_pos "duplicate mob \"%s\"" mb.mb_id
       else Hashtbl.add ctx.mob_ids mb.mb_id ())
     mobs
-
-let check_binding_shadows ctx pos what bindings =
-  List.iter
-    (fun b ->
-      if Hashtbl.mem ctx.persists b then
-        err ctx pos "persistent '%s' shadows the built-in '%s' binding of %s — rename the \
-                     persistent"
-          b b what)
-    bindings
 
 (* first-class inline handlers on item/mob/hologram/npc declarations
    (W-inline-handlers). Each handler's event name is validated against the

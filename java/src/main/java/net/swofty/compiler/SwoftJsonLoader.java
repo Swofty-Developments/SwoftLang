@@ -2413,6 +2413,28 @@ public class SwoftJsonLoader {
                 has(obj, "subject") ? buildDataType(obj.getAsJsonObject("subject")) : null,
                 buildDataType(obj.getAsJsonObject("type")),
                 buildExpression(obj.getAsJsonObject("default")),
+                has(obj, "change") ? buildPersistChange(obj.getAsJsonObject("change")) : null,
+                has(obj, "line") ? obj.get("line").getAsInt() : -1,
+                has(obj, "col") ? obj.get("col").getAsInt() : -1);
+    }
+
+    /**
+     * 1.10.0 §4: the declaration-attached change handler. {@code kind} is the
+     * surface keyword ("on_change" for a scalar value, "on_entry_change" for a
+     * Map/List) so the runtime dispatches whole-value vs per-entry without
+     * re-deriving the shape, and {@code binds} lists the bare names the body
+     * reads, in binding order.
+     */
+    private static net.swofty.model.PersistChangeModel buildPersistChange(JsonObject obj) {
+        List<String> binds = new ArrayList<>();
+        for (JsonElement element : optArray(obj, "binds")) {
+            binds.add(element.getAsString());
+        }
+        return new net.swofty.model.PersistChangeModel(
+                has(obj, "kind") ? obj.get("kind").getAsString()
+                        : net.swofty.model.PersistChangeModel.SCALAR,
+                List.copyOf(binds),
+                buildExecuteBlock(obj.get("body")),
                 has(obj, "line") ? obj.get("line").getAsInt() : -1,
                 has(obj, "col") ? obj.get("col").getAsInt() : -1);
     }

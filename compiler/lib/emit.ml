@@ -1198,6 +1198,20 @@ let persist_scope pd =
   | Some (DSimple ("PLAYER" | "OFFLINE_PLAYER" | "Player" | "OfflinePlayer")) -> "session"
   | _ -> "replicated"
 
+(* v1.10.0 §4: the declaration's change handler. "kind" is the surface keyword
+   ("on_change" for a scalar value, "on_entry_change" for a Map/List, so the
+   runtime dispatches whole-value vs per-entry without re-deriving the shape),
+   "binds" the bare names the body reads in binding order (the runtime pushes the
+   frame in exactly that shape), and "body" the tick-thread statements. *)
+let persist_change pd (pc : persist_change) =
+  `Assoc
+    (with_pos pc.pc_pos
+       [
+         ("kind", `String (persist_change_kw pc.pc_kind));
+         ("binds", `List (List.map (fun b -> `String b) (persist_change_binds pd pc)));
+         ("body", statements pc.pc_body);
+       ])
+
 let persistent pd =
   `Assoc
     (with_pos pd.pd_pos
@@ -1207,7 +1221,11 @@ let persistent pd =
           ("type", data_type pd.pd_type);
           ("default", expr pd.pd_default);
         ]
-       @ if !network_mode then [ ("scope", `String (persist_scope pd)) ] else []))
+       @ (if !network_mode then [ ("scope", `String (persist_scope pd)) ] else [])
+       @
+       match pd.pd_change with
+       | None -> []
+       | Some pc -> [ ("change", persist_change pd pc) ]))
 
 (* Per-script content keys, shared between the flat shape and each entry of
    the bundle's "modules" array. In modular mode every symbol declaration

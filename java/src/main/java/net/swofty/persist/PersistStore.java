@@ -22,6 +22,9 @@ import net.swofty.model.StructDefModel;
 import net.swofty.model.StructFieldModel;
 import net.swofty.nativebridge.representation.BaseType;
 import net.swofty.nativebridge.representation.DataType;
+import net.swofty.persist.change.Causality;
+import net.swofty.persist.change.CausalityToken;
+import net.swofty.persist.change.ChangeDispatcher;
 import net.swofty.persist.network.AtomicOp;
 import net.swofty.persist.network.LeaseManager;
 import net.swofty.persist.network.NetMessage;
@@ -95,6 +98,23 @@ public final class PersistStore {
     /** Non-null only in {@link PersistMode#NETWORK}. */
     private volatile NetworkRuntime network;
 
+    /**
+     * §4 change events. Per store rather than static: the two-server harness
+     * runs two stores in one JVM and each has its OWN values, so each must diff
+     * against its own shadow (the handler bodies are shared and live in the
+     * {@link net.swofty.persist.change.ChangeRegistry}). Inert until some
+     * declaration carries an {@code on_change}.
+     */
+    private final ChangeDispatcher changes = new ChangeDispatcher(this);
+
+    /**
+     * Every store that has been built and not yet shut down, by identity. Only
+     * {@link #seedAllChangeShadows} needs it: seeding has to reach stores that
+     * are not {@link #active}, and there is no other handle on them.
+     */
+    private static final Set<PersistStore> LIVE =
+            java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
+
     private PersistStore(List<PersistentDeclModel> decls, SwoftStorage storage, long flushMillis,
             StorageConfigModel config) {
         this.storage = storage;
@@ -111,6 +131,7 @@ public final class PersistStore {
             }
             declarations.put(decl.name(), decl);
         }
+        LIVE.add(this);
     }
 
     /**
@@ -301,10 +322,30 @@ public final class PersistStore {
     /**
      * Write one persistent value to the cache and mark it dirty for the
      * next flush. Never blocks on IO.
+     *
+     * <p>The write takes a causality token (§5.3) first: a write made inside a
+     * change handler continues that handler's chain one level deeper, and past
+     * the cap it is REJECTED here — loudly, with the chain path — rather than
+     * allowed to cascade.
      */
     public void set(String name, String key, Object value) {
-        warnIfClosed("persist_set", name, key);
         PersistentDeclModel decl = requireDeclared(name);
+        CausalityToken token = Causality.forWrite(serverId(), name, key);
+        if (token == null) {
+            return;
+        }
+        write(decl, key, value, true, token);
+    }
+
+    /**
+     * The write itself, with the causality token and the {@code caused_here}
+     * flag already decided by the caller: true for a write this server made,
+     * false for one another server made and this one is applying (a routed
+     * atomic op).
+     */
+    private void write(PersistentDeclModel decl, String key, Object value, boolean causedHere,
+            CausalityToken token) {
+        warnIfClosed("persist_set", decl.name(), key);
         Object coerced = coerceRuntime(decl, value);
         if (mode.isNetwork() && network != null) {
             if (isSessionScoped(decl)) {
@@ -321,7 +362,9 @@ public final class PersistStore {
             } else {
                 // §2.2/§3.2: a global write is an unconditional atomic set -
                 // applied at the backend, then broadcast (last-writer-wins).
-                network.replica().applyLocal(decl.name(), key, AtomicOp.SET, coerced, null);
+                // The change event fires from putReplica, on this server and on
+                // every server the broadcast reaches (§4.1).
+                network.replica().applyLocal(decl.name(), key, AtomicOp.SET, coerced, null, token);
                 net.swofty.structs.InstanceReceiverRuntime.rebuild();
                 return;
             }
@@ -332,6 +375,46 @@ public final class PersistStore {
         // instance from the live set — re-derive the liveness index. No-op (a
         // cheap flag check) when no struct declares a reactive field.
         net.swofty.structs.InstanceReceiverRuntime.rebuild();
+        // §4.1: dispatch AFTER the value is in place and the liveness index is
+        // rebuilt, so a handler reading the value back sees the new one.
+        changes.observe(decl, key, coerced, causedHere, token);
+    }
+
+    /** This server's identity for a causality token; "local" in standalone. */
+    private String serverId() {
+        NetworkRuntime runtime = network;
+        return runtime != null ? runtime.serverId() : "local";
+    }
+
+    /** The declaration of {@code name}, or null when it is not declared. */
+    public PersistentDeclModel declaration(String name) {
+        return declarations.get(name);
+    }
+
+    /**
+     * Re-seed the §4 change shadows from the rows currently cached — what the
+     * handlers are considered to have already seen. Called after the change
+     * handlers are installed (load and every hot reload), because a reload is
+     * not a change: without this the first write after one would compare a live
+     * value against the declared default and fire a phantom event.
+     */
+    public void seedChangeShadows() {
+        forEachCachedRow(changes::seed);
+    }
+
+    /**
+     * Seed every live store, which is what {@link ChangeRegistry#install} calls.
+     * It has to be all of them rather than just {@link #active}: a store cannot
+     * usefully seed itself at construction (the handlers are installed from the
+     * compiled program AFTERWARDS, so there is nothing to seed against yet), and
+     * the two-server harness builds stores that are never {@link #active} at
+     * all — those would otherwise diff their first write against the declared
+     * default instead of the value they booted with, and fire a phantom change.
+     */
+    public static void seedAllChangeShadows() {
+        for (PersistStore store : LIVE) {
+            store.seedChangeShadows();
+        }
     }
 
     /** Visitor over one cached persistent row: its variable name, storage key, value. */
@@ -461,6 +544,10 @@ public final class PersistStore {
             } else {
                 rows.put(key, value);
             }
+            // §4.1: a join loading a player's values is a RESTORE, not a change.
+            // Seeding the shadow (instead of dispatching) is what stops every
+            // join from storming every handler.
+            changes.seed(decl.name(), key, value);
             // a marker left over from a previous session of this subject would
             // re-write a row we have just re-read
             Set<String> markers = dirty.get(decl.name());
@@ -548,6 +635,9 @@ public final class PersistStore {
             if (markers != null) {
                 markers.remove(key);
             }
+            // eviction is not a change (the value did not move, it left this
+            // server); dropping the shadow means a later re-load re-seeds it
+            changes.forget(decl.name(), key);
             if (runtime != null) {
                 runtime.versions().clear(decl.name(), key);
             }
@@ -606,21 +696,27 @@ public final class PersistStore {
             throw new ScriptError("unknown atomic op '" + opName + "' on persistent '"
                     + name + "'");
         }
+        CausalityToken token = Causality.forWrite(serverId(), name, key);
+        if (token == null) {
+            // §5.3: the cascade guard rejected the write (already logged). The
+            // row is untouched, so hand back what it still holds.
+            return currentValue(decl, key);
+        }
         NetworkRuntime runtime = network;
         if (mode.isNetwork() && runtime != null) {
             if (!isSessionScoped(decl)) {
-                return runtime.replica().applyLocal(name, key, op, operand, entryKey);
+                return runtime.replica().applyLocal(name, key, op, operand, entryKey, token);
             }
             if (!runtime.leases().holds(key)) {
                 if (runtime.leases().heldElsewhere(key)) {
-                    runtime.replica().routeOp(name, key, op, operand, entryKey);
+                    runtime.replica().routeOp(name, key, op, operand, entryKey, token);
                     return null;
                 }
-                return runtime.replica().applyOffline(name, key, op, operand, entryKey);
+                return runtime.replica().applyOffline(name, key, op, operand, entryKey, token);
             }
         }
         Object next = op.apply(currentValue(decl, key), operand, entryKey);
-        set(name, key, next);
+        write(decl, key, next, true, token);
         return next;
     }
 
@@ -647,7 +743,14 @@ public final class PersistStore {
                 ? null : decodeRaw(message.entry());
         try {
             Object next = op.apply(currentValue(decl, message.key()), operand, entryKey);
-            set(decl.name(), message.key(), next);
+            // §5.3: the op carries the chain of the write that issued it, so the
+            // handlers this fires here continue that chain instead of starting a
+            // fresh one - and caused_here is false, because the write was made
+            // on the server that routed it, not on this one.
+            CausalityToken token = message.cause() != null ? message.cause()
+                    : new CausalityToken(message.origin(), message.origin(), 0,
+                            java.util.List.of(CausalityToken.step(decl.name(), message.key())));
+            write(decl, message.key(), next, false, token);
         } catch (Exception e) {
             System.err.println("[persist] a routed atomic op on '" + decl.name()
                     + rowLabel(message.key()) + "' failed: " + e.getMessage());
@@ -728,7 +831,21 @@ public final class PersistStore {
      * write amplification at best and a clobber at worst.
      */
     public void putReplica(String name, String key, Object value) {
-        if (!declarations.containsKey(name)) {
+        putReplica(name, key, value, true, null);
+    }
+
+    /**
+     * As {@link #putReplica(String, String, Object)}, plus the §4.1 change
+     * dispatch: {@code causedHere} is true when THIS server made the write
+     * (an atomic op it applied at the backend) and false when it is applying a
+     * change another server broadcast. Both fire — "fires on EVERY server,
+     * INCLUDING the writer" — and the token keeps the cascade chain intact
+     * across the hop.
+     */
+    public void putReplica(String name, String key, Object value, boolean causedHere,
+            CausalityToken token) {
+        PersistentDeclModel decl = declarations.get(name);
+        if (decl == null) {
             return;
         }
         cache.computeIfAbsent(name, k -> new ConcurrentHashMap<>()).put(key, value);
@@ -738,6 +855,10 @@ public final class PersistStore {
         // server broadcast, so covering it here covers every replica mutation.
         // A cheap flag check when no struct declares a reactive field.
         net.swofty.structs.InstanceReceiverRuntime.rebuild();
+        changes.observe(decl, key, value, causedHere,
+                token != null ? token
+                        : new CausalityToken(serverId(), serverId(), 0,
+                                java.util.List.of(CausalityToken.step(name, key))));
     }
 
     /** The live value of a row, falling back to the declared default. */
@@ -865,6 +986,7 @@ public final class PersistStore {
         if (!closed.compareAndSet(false, true)) {
             return false;
         }
+        LIVE.remove(this);
         running = false;
         if (flushThread != null) {
             flushThread.interrupt();
@@ -948,6 +1070,13 @@ public final class PersistStore {
                 rows.put(entry.getKey(), value);
             }
             cache.put(decl.name(), rows);
+            // §4.1: the boot-time replica load is a restore too - seed, never
+            // dispatch. (Handlers are installed after this anyway, and
+            // ChangeRegistry.install re-seeds from the cache, so both orders
+            // agree that booting fires nothing.)
+            for (Map.Entry<String, Object> row : rows.entrySet()) {
+                changes.seed(decl.name(), row.getKey(), row.getValue());
+            }
         }
     }
 

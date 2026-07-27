@@ -1,0 +1,1 @@
+change_self_write.sw:9:9: error: the 'on_change' for 'pot' writes 'pot', which would re-fire itself forever

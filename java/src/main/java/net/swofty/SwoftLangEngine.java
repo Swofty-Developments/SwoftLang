@@ -224,6 +224,14 @@ public class SwoftLangEngine {
         // mode: standalone and before persistence exists.
         PersistStore.registerReloadHook();
 
+        // §4 change events: the handler BODIES come from the freshly-compiled
+        // program while the values do not, so they are (re-)installed on this
+        // same pass and dropped by the ReloadRegistry teardown — an edited or
+        // deleted on_change can never leave a ghost handler on the old body.
+        // Installing also re-seeds the change shadows from the surviving rows,
+        // because a reload is a restore, not a change.
+        net.swofty.persist.change.ChangeRegistry.install(persistents);
+
         // Register commands
         commandProcessor.register();
 

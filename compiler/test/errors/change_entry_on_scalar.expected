@@ -1,0 +1,1 @@
+change_entry_on_scalar.sw:7:5: error: persistent 'pot' is Integer, a scalar with no entries — use 'on_change' (bound: old, new, caused_here), not 'on_entry_change'

@@ -1,0 +1,1 @@
+change_scalar_on_collection.sw:7:5: error: persistent 'leaderboard' is Map<Integer>, which changes one ENTRY at a time — use 'on_entry_change' (bound: key, old, new, caused_here), not 'on_change'

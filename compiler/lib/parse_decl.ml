@@ -416,7 +416,48 @@ let parse_persistent st =
        defined";
   ignore (advance st);
   let pd_default = parse_expr st in
-  { pd_name; pd_subject; pd_type; pd_default; pd_pos }
+  (* v1.10.0 §4: an optional trailing block carrying the declaration's change
+     handler. A '{' can only start that block here — the default-value expression
+     is already complete, and a map-literal default was consumed by parse_expr. *)
+  let pd_change =
+    if peek_tok st <> Token.LBRACE then None
+    else begin
+      ignore (advance st);
+      let change = ref None in
+      while peek_tok st <> Token.RBRACE && peek_tok st <> Token.EOF do
+        let pc_pos = pos_here st in
+        let pc_kind =
+          match peek_tok st with
+          | Token.IDENT "on_change" ->
+            ignore (advance st);
+            PCScalar
+          | Token.IDENT "on_entry_change" ->
+            ignore (advance st);
+            PCEntry
+          | t ->
+            error st
+              (Printf.sprintf
+                 "Expected 'on_change' or 'on_entry_change' in the block of persistent '%s', \
+                  found %s"
+                 pd_name (Token.describe t))
+        in
+        let pc_body = parse_braced_statements st in
+        (match !change with
+        | Some (prev : persist_change) ->
+          error st
+            (Printf.sprintf
+               "persistent '%s' already declares '%s' — a declaration carries at most one change \
+                handler"
+               pd_name (persist_change_kw prev.pc_kind))
+        | None -> ());
+        change := Some { pc_kind; pc_body; pc_pos };
+        ignore (matches st Token.COMMA)
+      done;
+      expect st Token.RBRACE "'}' to close the persistent's change-handler block";
+      !change
+    end
+  in
+  { pd_name; pd_subject; pd_type; pd_default; pd_change; pd_pos }
 
 (* close the expr/decl module cycle: polar_storage_loader(...) parses its
    argument with the storage backend grammar above *)

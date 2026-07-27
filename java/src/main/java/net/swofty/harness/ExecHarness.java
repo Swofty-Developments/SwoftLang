@@ -57,6 +57,18 @@ public class ExecHarness {
         if (args.length == 2 && args[0].equals("--futures-cancel")) {
             System.exit(futuresCancelTest(args[1]));
         }
+        // 1.10.0 §4/§5: change events and the cascade guards — standalone first,
+        // then across two servers (where the causality token has to travel).
+        if (args.length == 1 && args[0].equals("--change-smoke")) {
+            int code;
+            try {
+                code = ChangeSmoke.run();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                code = 1;
+            }
+            System.exit(code);
+        }
         // 1.10.0 network persistence: TWO engines over one shared backend, with a
         // player walked between them. The only harness mode that needs two stores.
         if (args.length == 1 && args[0].equals("--net-smoke")) {
